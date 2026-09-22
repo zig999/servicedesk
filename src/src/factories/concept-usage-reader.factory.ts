@@ -33,7 +33,7 @@ async function resolveConceptUsage(concept: string, sources: ConceptUsageSources
   if (await sources.investigationStore.isConceptNamedByCitation(concept)) {
     return { named: true, reference: 'citation' };
   }
-  if (await sources.caseStore.isConceptCollectedByUnmanifestedHypothesisRevision(concept)) {
+  if (await sources.caseStore.isConceptCollectedByHypothesisRevision(concept)) {
     return { named: true, reference: 'hypothesis-revision-collects' };
   }
   return { named: false };

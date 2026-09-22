@@ -50,6 +50,14 @@
       "task": "task/concept-removal/remove-concept-route"
     },
     {
+      "id": "implementation/concept-usage-reader-manifested-revision-fix/broaden-hypothesis-revision-collects-check",
+      "kind": "implementation",
+      "file": "implementation/concept-usage-reader-manifested-revision-fix/broaden-hypothesis-revision-collects-check.md",
+      "title": "broaden the hypothesis-revision-collects check to any hypothesis-revision",
+      "summary": "resolveConceptUsage's fourth branch now reports a concept as named for any hypothesis-revision whose own collects lists it, manifested or not, draft or released, by broadening the case-store method it calls rather than adding a second one.",
+      "task": "task/concept-usage-reader-manifested-revision-fix/broaden-hypothesis-revision-collects-check"
+    },
+    {
       "id": "implementation/connector-configuration-removal/connector-configuration-store-delete",
       "kind": "implementation",
       "file": "implementation/connector-configuration-removal/connector-configuration-store-delete.md",
@@ -136,6 +144,14 @@
       "title": "Proof for the remove-concept HTTP route",
       "summary": "A new remove-concept.routes.spec.ts proves the route's own criteria (path/method, malformed-path refusal, named-refusal mapping to 409, unmapped-error propagation, unconditional 204/no-body answer), the build-app.spec.ts fixture is repaired for the now-required removeConcept dependency, and one added build-app.spec.ts test proves the route's path/method share register-concept's own PUT path without colliding, wiring it through the real build.",
       "task": "task/concept-removal/remove-concept-route"
+    },
+    {
+      "id": "proof/concept-usage-reader-manifested-revision-fix/broaden-hypothesis-revision-collects-check",
+      "kind": "proof",
+      "file": "proof/concept-usage-reader-manifested-revision-fix/broaden-hypothesis-revision-collects-check.md",
+      "title": "concept-usage-reader's hypothesis-revision-collects branch, corrected for a manifested revision",
+      "summary": "Corrects a test that asserted the pre-fix, narrower behavior and adds one boundary test, proving the reader now answers named for a manifested hypothesis-revision's own collects and still refuses it for an unrelated, unnamed one.",
+      "task": "task/concept-usage-reader-manifested-revision-fix/broaden-hypothesis-revision-collects-check"
     },
     {
       "id": "proof/connector-configuration-removal/connector-configuration-store-delete",
@@ -414,6 +430,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/concept-usage-reader-manifested-revision-fix/broaden-hypothesis-revision-collects-check",
+      "to": "rules/glossary/a-registered-concept-is-never-removed",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/concept-usage-reader-manifested-revision-fix/broaden-hypothesis-revision-collects-check",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/concept-usage-reader-manifested-revision-fix/broaden-hypothesis-revision-collects-check",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/concept-usage-reader-manifested-revision-fix/broaden-hypothesis-revision-collects-check",
+      "to": "task/concept-usage-reader-manifested-revision-fix/broaden-hypothesis-revision-collects-check",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/connector-configuration-removal/connector-configuration-store-delete",
       "to": "rules/integration/removing-a-connector-configuration-is-unconditional",
       "kind": "encodes",
@@ -614,6 +654,12 @@
     {
       "from": "proof/concept-removal/remove-concept-route",
       "to": "implementation/concept-removal/remove-concept-route",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/concept-usage-reader-manifested-revision-fix/broaden-hypothesis-revision-collects-check",
+      "to": "implementation/concept-usage-reader-manifested-revision-fix/broaden-hypothesis-revision-collects-check",
       "kind": "proves",
       "at": "the path"
     },

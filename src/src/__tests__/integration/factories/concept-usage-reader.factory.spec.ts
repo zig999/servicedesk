@@ -319,7 +319,7 @@ it('answers that a concept is not named when nothing answers, records, cites or 
 });
 
 it(
-  "answers that a concept is not named when a hypothesis-revision's own collects lists it but a case version already manifests that revision",
+  "answers that a concept is named, through reference \"hypothesis-revision-collects\", when a hypothesis-revision's own collects lists it and a case version already manifests that revision",
   async () => {
     const concept = await freshConcept();
     const glossary = await freshGlossaryFixtures();
@@ -330,6 +330,30 @@ it(
       hypothesis_name: 'a-hypothesis',
       criterion: 'a criterion',
       collects: [concept],
+      resolution: aResolution(glossary),
+    });
+    await caseStore.placeHypothesis({ slug, version, hypothesis_name: 'a-hypothesis', revision, position: 1 });
+    const reader = createConceptUsageReader(pool, createCapabilityRegistry(pool));
+
+    const resolution = await reader.readConceptUsage(concept);
+
+    expect(resolution).toEqual({ named: true, reference: 'hypothesis-revision-collects' });
+  },
+);
+
+it(
+  "answers that a concept is not named when a hypothesis-revision's own collects lists a different concept, even though that revision is manifested",
+  async () => {
+    const concept = await freshConcept();
+    const otherConcept = await freshConcept();
+    const glossary = await freshGlossaryFixtures();
+    const caseStore = new RelationalCaseStore(pool);
+    const { slug, version } = await freshCaseVersion(caseStore, glossary);
+    const revision = await caseStore.insertHypothesisRevision({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      criterion: 'a criterion',
+      collects: [otherConcept],
       resolution: aResolution(glossary),
     });
     await caseStore.placeHypothesis({ slug, version, hypothesis_name: 'a-hypothesis', revision, position: 1 });

@@ -215,10 +215,10 @@ export class RelationalCaseStore
     await runInTransaction(this.connection, raiseWriteFailure, (tx) => updateDraftVersion(tx, { slug, version }, attributes));
   }
 
-  public async isConceptCollectedByUnmanifestedHypothesisRevision(concept: string): Promise<boolean> {
+  public async isConceptCollectedByHypothesisRevision(concept: string): Promise<boolean> {
     const row = await queryOneOrAbsent(
       this.connection,
-      unmanifestedHypothesisRevisionCollectSelect(concept),
+      hypothesisRevisionCollectSelect(concept),
       raiseReadFailure,
     );
     return row !== undefined;
@@ -403,16 +403,10 @@ function manifestCollectsSelect(key: ICaseVersionKey): IStatement {
   };
 }
 
-function unmanifestedHypothesisRevisionCollectSelect(concept: string): IStatement {
+function hypothesisRevisionCollectSelect(concept: string): IStatement {
   return {
     text: `SELECT 1 FROM ${HYPOTHESIS_REVISION_COLLECTS_TABLE} hrc
            WHERE hrc.concept_name = $1
-             AND NOT EXISTS (
-               SELECT 1 FROM ${CASE_VERSION_HYPOTHESES_TABLE} cvh
-               WHERE cvh.case_slug = hrc.case_slug
-                 AND cvh.hypothesis_name = hrc.hypothesis_name
-                 AND cvh.revision = hrc.revision
-             )
            LIMIT 1`,
     params: [concept],
   };

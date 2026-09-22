@@ -507,7 +507,7 @@
         },
         {
           "path": "src/src/factories/concept-usage-reader.factory.ts",
-          "digest": "sha256:691f629459dfde79f683808e71afe84e90badaffb8b3ff6232623434aa5fc5ac"
+          "digest": "sha256:2d1cde1c6d6ad2d6d689769ade8581be4b48838150e7ad600e7dc14df9cd56b3"
         },
         {
           "path": "src/src/factories/investigation-store.factory.ts",
@@ -5213,7 +5213,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:574ae934f9abd7b901c5e946145c8b12ecb0033e224b602fdd80adece7013fa5"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         },
         {
           "path": "src/src/seed.ts",
@@ -5623,7 +5623,7 @@
     },
     {
       "node": "rules/glossary/a-registered-concept-is-never-removed",
-      "digest": "sha256:c326f7b29fcb9ba02c65ae69c7746109cb1f213d318b1c2907f8888939430f7f",
+      "digest": "sha256:df0d3b4117b4b7dd3cb6e3072950bbd3f26bbc637e5fe8ee7881e48edb732f95",
       "files": [
         {
           "path": "src/src/errors/concept-in-use.error.ts",
@@ -5638,6 +5638,10 @@
           "digest": "sha256:228baa17325a3e559ed9a0e52f6592d88cbfa17a1b0c3bcf22b4a7f56552848d"
         },
         {
+          "path": "src/src/factories/concept-usage-reader.factory.ts",
+          "digest": "sha256:2d1cde1c6d6ad2d6d689769ade8581be4b48838150e7ad600e7dc14df9cd56b3"
+        },
+        {
           "path": "src/src/factories/glossary.factory.ts",
           "digest": "sha256:cf012502b0dc14461e42c354c09efb49e7106e5c7331240fcb9a6e352f362f78"
         },
@@ -5648,6 +5652,10 @@
         {
           "path": "src/src/glossary/glossary.service.ts",
           "digest": "sha256:afd3cb6e4b686ae5b6f1ee4b28ab2ff5879f7cf026c65d452331bb376cc1ca55"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         },
         {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
