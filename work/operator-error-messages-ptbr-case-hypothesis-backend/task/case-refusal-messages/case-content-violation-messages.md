@@ -59,7 +59,9 @@ criteria:
 - Each of the two classes' context property holds exactly the properties and values it held before, with
   no value moved into or out of it.
 - IncoherentCaseError and InvalidCaseDocumentError are left untouched by this task.
-- The suite under src/src/__tests__ passes with no test file changed.
+- The suite under src/src/__tests__ passes, with every test asserting a violation string's or a
+  message's literal English text updated to assert the new PT-br text instead, and no other change
+  to any test file.
 ---
 ## What it is
 The two case refusals whose English message ends in a colon and a list of what was violated: a stored
@@ -69,7 +71,16 @@ release-only English strings that list can be built from.
 ## Notes
 CaseVersionNotReleasableError is the one of the two whose governing rule also speaks to the case where
 nothing specific was found to name.
-Neither is asserted against literal message text by any existing test.
+Neither CaseVersionNotValidError's nor CaseVersionNotReleasableError's own fixed wrapper text is
+asserted against literal message text by any existing test, but the violation strings they interpolate
+are pinned extensively: src/src/__tests__/unit/case/parse-case-document.spec.ts asserts roughly thirty
+literal English fragments documentProblems() produces, src/src/__tests__/unit/case/case-query.service.spec.ts
+and src/src/__tests__/integration/factories/case-query.factory.spec.ts assert CaseVersionNotValidError's
+context.violations against literal English strings, and src/src/__tests__/integration/case/release.operation.spec.ts
+asserts literal English violation strings including the one release-only violation this task also
+translates. This was found only when a first implementation attempt correctly refused to write against
+the original wording of the last criterion ("no test file changed"), which was self-contradictory
+against the criteria demanding these strings be translated; the criterion above is the correction.
 IncoherentCaseError and InvalidCaseDocumentError are excluded on purpose: the specification states that
 a structural or coherence failure at a read is CaseVersionNotValidError and never a condition of its own,
 so those two classes are a pre-existing drift between the code and the specification, left for a
