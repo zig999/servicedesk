@@ -16,7 +16,7 @@ export function ConnectorConfigurationHelper({
 
   return (
     <div className="flex flex-col gap-4 pt-4 border-t border-border">
-      <h3 className="text-lg font-semibold text-foreground">{CONFIGURATION_HELPER_HEADING}</h3>
+      <h3 className="text-lg font-semibold">{CONFIGURATION_HELPER_HEADING}</h3>
       <ConnectorConfigurationHelperFields state={state} onApply={onApply} />
     </div>
   );

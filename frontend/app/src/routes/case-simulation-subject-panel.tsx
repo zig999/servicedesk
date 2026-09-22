@@ -24,7 +24,7 @@ export function CaseSimulationSubjectPanel({
 
   return (
     <section className="flex flex-col gap-4">
-      <h2 className="text-lg font-semibold text-foreground">Subject</h2>
+      <h2 className="text-lg font-semibold">Subject</h2>
 
       <div className="grid grid-cols-2 gap-4">
         <Label className="flex flex-col gap-1">

@@ -67,7 +67,7 @@ export function CapabilitySchemaHelperFields({
 
   return (
     <div className="flex flex-col gap-4 pt-4 border-t border-border">
-      <h3 className="text-lg font-semibold text-foreground">{SCHEMA_HELPER_HEADING}</h3>
+      <h3 className="text-lg font-semibold">{SCHEMA_HELPER_HEADING}</h3>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="flex flex-col gap-1">
           <Label htmlFor="capability-schema-helper-link">{SCHEMA_HELPER_LINK_LABEL}</Label>

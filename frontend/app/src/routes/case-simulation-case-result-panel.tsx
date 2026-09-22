@@ -45,7 +45,7 @@ export function CaseSimulationCaseResultPanel({
 
   return (
     <section aria-label="Case result" className="flex flex-col gap-4">
-      <h2 className="text-lg font-semibold text-foreground">Case result</h2>
+      <h2 className="text-lg font-semibold">Case result</h2>
 
       <div className="flex flex-wrap items-center gap-3">
         {shownRun.consolidationCall.called ? (
@@ -81,7 +81,7 @@ export function CaseSimulationCaseResultPanel({
       </div>
 
       <div className="flex flex-col gap-3 border-t border-border pt-4">
-        <h2 className="text-lg font-semibold text-foreground">Debug</h2>
+        <h2 className="text-lg font-semibold">Debug</h2>
         <Tabs defaultValue="prompt">
           <TabsList>
             <TabsTrigger value="evidence">Evidence</TabsTrigger>

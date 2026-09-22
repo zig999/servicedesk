@@ -64,7 +64,7 @@ export function CapabilityDetailScreen(): JSX.Element {
 
   return (
     <section className="flex flex-col gap-4">
-      <h1 className="text-lg font-semibold text-foreground">
+      <h1 className="text-lg font-semibold">
         Capability {name} {version}
       </h1>
       <CapabilityDetailReadyView state={state} />

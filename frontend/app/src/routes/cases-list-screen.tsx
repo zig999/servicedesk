@@ -142,7 +142,7 @@ export function CasesListScreen(): JSX.Element {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold text-foreground">Cases</h1>
+        <h1 className="text-lg font-semibold">Cases</h1>
         <Button type="button" onClick={() => void navigate({ to: "/cases/new" })}>
           Create case
         </Button>

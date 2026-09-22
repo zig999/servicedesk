@@ -57,7 +57,7 @@ function VocabularyPanel({
 export function GlossaryBrowserScreen(): JSX.Element {
   return (
     <section className="flex flex-col gap-4">
-      <h1 className="text-lg font-semibold text-foreground">Glossary</h1>
+      <h1 className="text-lg font-semibold">Glossary</h1>
       <Tabs defaultValue="concepts">
         <TabsList>
           <TabsTrigger value="concepts">Concepts</TabsTrigger>

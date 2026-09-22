@@ -64,7 +64,7 @@ export function CaseSimulationReadyView({
       />
 
       <div className="flex flex-col gap-3 border-t border-border pt-4">
-        <h2 className="text-lg font-semibold text-foreground">Debug</h2>
+        <h2 className="text-lg font-semibold">Debug</h2>
         <details>
           <summary className="cursor-pointer text-sm text-muted-foreground">
             View subject JSON

@@ -10,7 +10,7 @@ export function CaseCreationScreen(): JSX.Element {
 
   return (
     <section className="flex flex-col gap-4">
-      <h1 className="text-lg font-semibold text-foreground">New case</h1>
+      <h1 className="text-lg font-semibold">New case</h1>
       {state.phase === "loading" && (
         <>
           <p>Loading…</p>

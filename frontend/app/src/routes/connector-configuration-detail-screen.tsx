@@ -46,7 +46,7 @@ export function ConnectorConfigurationDetailScreen(): JSX.Element {
 
   return (
     <section className="flex flex-col gap-4">
-      <h1 className="text-lg font-semibold text-foreground">Connector {connector}</h1>
+      <h1 className="text-lg font-semibold">Connector {connector}</h1>
       <ConnectorConfigurationDetailReadyView state={state} connector={connector} />
     </section>
   );

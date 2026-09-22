@@ -26,7 +26,7 @@ export function CapabilityCreateScreen(): JSX.Element {
 
   return (
     <section className="flex flex-col gap-4">
-      <h1 className="text-lg font-semibold text-foreground">New capability</h1>
+      <h1 className="text-lg font-semibold">New capability</h1>
       {state.phase === "loading" && (
         <>
           <p>Loading…</p>

@@ -84,7 +84,7 @@ export function CapabilitiesBrowserScreen(): JSX.Element {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold text-foreground">Capabilities</h1>
+        <h1 className="text-lg font-semibold">Capabilities</h1>
         {/*
           "New capability" renders unconditionally, ahead of the
           loading/error/empty branches above, so criterion 4 (this task's

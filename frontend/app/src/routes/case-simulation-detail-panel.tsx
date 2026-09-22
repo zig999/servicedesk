@@ -24,7 +24,7 @@ export function CaseSimulationDetailPanel({
     <section className="flex flex-col gap-4" aria-label={`Detail — ${evaluation.hypothesis}`}>
       <div className="flex flex-col gap-3">
         <div className="flex flex-wrap items-center gap-4">
-          <h3 className="font-semibold text-foreground">{evaluation.hypothesis}</h3>
+          <h3 className="font-semibold">{evaluation.hypothesis}</h3>
           {evaluation.stale && <CaseSimulationStatusDot color="bg-warning" label="Stale" />}
         </div>
 
@@ -55,7 +55,7 @@ export function CaseSimulationDetailPanel({
       </div>
 
       <div className="flex flex-col gap-3 border-t border-border pt-4">
-        <h2 className="text-lg font-semibold text-foreground">Debug</h2>
+        <h2 className="text-lg font-semibold">Debug</h2>
         <Tabs defaultValue="evidence">
           <TabsList>
             <TabsTrigger value="evidence">Evidence</TabsTrigger>

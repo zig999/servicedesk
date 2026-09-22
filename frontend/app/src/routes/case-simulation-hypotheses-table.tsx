@@ -167,7 +167,7 @@ export function CaseSimulationHypothesesTable({
 
   return (
     <section>
-      <h2 className="text-lg font-semibold text-foreground">Hypotheses</h2>
+      <h2 className="text-lg font-semibold">Hypotheses</h2>
       {orderedRows.length === 0 ? (
 
         <p>This version&apos;s manifest holds no hypothesis.</p>

@@ -46,6 +46,25 @@ body {
   overflow: hidden;
 }
 
+/*
+  Title hierarchy — theme-level, not per-component. h1 is the screen's own
+  title (Destaque 1); h2/h3 are section titles within a screen (Destaque 2).
+  Screens must not set text-foreground (or any other text-* color) on a
+  heading — that utility class sits in Tailwind's utilities layer, which
+  wins over this base-layer rule regardless of selector specificity. A new
+  heading added anywhere in the app picks up the right color for free.
+*/
+@layer base {
+  h1 {
+    color: var(--color-highlight-1);
+  }
+
+  h2,
+  h3 {
+    color: var(--color-highlight-2);
+  }
+}
+
 .brand-logo-mask {
   aspect-ratio: 355 / 114;
   background-color: currentColor;
