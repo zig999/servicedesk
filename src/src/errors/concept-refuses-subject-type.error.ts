@@ -10,7 +10,7 @@ export class ConceptRefusesSubjectTypeError extends Error {
 
   public constructor(context: ConceptRefusesSubjectTypeContext) {
     super(
-      `hypothesis "${context.hypothesis_name}" of case "${context.slug}" collects a concept that does not accept the subject type "${context.subject}" the case version declares: ${context.concepts.join(', ')}`,
+      `a hipótese "${context.hypothesis_name}" do caso "${context.slug}" coleta um conceito que não aceita o tipo de sujeito "${context.subject}" que a versão do caso declara: ${context.concepts.join(', ')}`,
     );
     this.name = 'ConceptRefusesSubjectTypeError';
     this.context = { ...context, concepts: [...context.concepts] };
