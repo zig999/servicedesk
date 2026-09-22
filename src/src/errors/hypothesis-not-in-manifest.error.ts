@@ -3,7 +3,7 @@ export class HypothesisNotInManifestError extends Error {
 
   public constructor(slug: string, version: number, hypothesis: string) {
     super(
-      `hypothesis "${hypothesis}" is not in the manifest of case "${slug}" version ${version}`,
+      `a hipótese "${hypothesis}" não está no manifesto do caso "${slug}" versão ${version}`,
     );
     this.name = 'HypothesisNotInManifestError';
     this.context = { slug, version, hypothesis };
