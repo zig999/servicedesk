@@ -1,0 +1,20 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/hypothesis-refusal-messages-hypothesis-revision-state-messages-setup",
+  "cwd": "/home/siegfriedneto/projects/wt-hypothesis-revision-state-messages/src",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-22T20:02:12.340+00:00",
+      "ended_at": "2026-09-22T20:02:19.399+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

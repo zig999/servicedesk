@@ -26,6 +26,22 @@
       "task": "task/case-refusal-messages/case-version-state-messages"
     },
     {
+      "id": "implementation/hypothesis-refusal-messages/hypothesis-revision-concept-messages",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-refusal-messages/hypothesis-revision-concept-messages.md",
+      "title": "PT-br messages for the three hypothesis-revision collects refusals",
+      "summary": "ConceptNotInGlossaryError, ConceptRefusesSubjectTypeError and HypothesisRevisionCollectsNoConceptError now raise their message in Brazilian Portuguese, each naming the hypothesis and case in the same fixed wording and order.",
+      "task": "task/hypothesis-refusal-messages/hypothesis-revision-concept-messages"
+    },
+    {
+      "id": "implementation/hypothesis-refusal-messages/hypothesis-revision-state-messages",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-refusal-messages/hypothesis-revision-state-messages.md",
+      "title": "PT-br messages for the two refusals a hypothesis revision's own state raises",
+      "summary": "HypothesisRevisionNotDraftAtReleaseError's and ReleasedHypothesisRevisionNotAlterableError's messages rewritten in PT-br, with every test in src/src/__tests__ that pinned either message's literal English text -- including one outside the risk inventory's original survey -- updated in the same change.",
+      "task": "task/hypothesis-refusal-messages/hypothesis-revision-state-messages"
+    },
+    {
       "id": "proof/case-refusal-messages/case-content-violation-messages",
       "kind": "proof",
       "file": "proof/case-refusal-messages/case-content-violation-messages.md",
@@ -48,6 +64,22 @@
       "title": "PT-br message proof for the five case-version-state refusals",
       "summary": "New unit tests over the five case-version-state error classes pin each class's PT-br message content, fact-before-state ordering, cross-class distinguishability, unchanged name and unchanged context.",
       "task": "task/case-refusal-messages/case-version-state-messages"
+    },
+    {
+      "id": "proof/hypothesis-refusal-messages/hypothesis-revision-concept-messages",
+      "kind": "proof",
+      "file": "proof/hypothesis-refusal-messages/hypothesis-revision-concept-messages.md",
+      "title": "PT-br message proof for the three hypothesis-revision-collects refusals",
+      "summary": "New unit tests over ConceptNotInGlossaryError, ConceptRefusesSubjectTypeError and HypothesisRevisionCollectsNoConceptError pin each class's PT-br message content, its fixed vocabulary, its unchanged name and context, and the three classes' mutual distinguishability and shared hypothesis/case opening.",
+      "task": "task/hypothesis-refusal-messages/hypothesis-revision-concept-messages"
+    },
+    {
+      "id": "proof/hypothesis-refusal-messages/hypothesis-revision-state-messages",
+      "kind": "proof",
+      "file": "proof/hypothesis-refusal-messages/hypothesis-revision-state-messages.md",
+      "title": "PT-br messages for the two refusals a hypothesis revision's own state raises — proof",
+      "summary": "Tests for HypothesisRevisionNotDraftAtReleaseError's and ReleasedHypothesisRevisionNotAlterableError's PT-br messages, combining new tests with citations of pre-existing tests that already decide obligations this task's own message change did not touch.",
+      "task": "task/hypothesis-refusal-messages/hypothesis-revision-state-messages"
     }
   ],
   "edges": [
@@ -166,6 +198,90 @@
       "at": "the path"
     },
     {
+      "from": "implementation/hypothesis-refusal-messages/hypothesis-revision-concept-messages",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-refusal-messages/hypothesis-revision-concept-messages",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-refusal-messages/hypothesis-revision-concept-messages",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-refusal-messages/hypothesis-revision-concept-messages",
+      "to": "constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-refusal-messages/hypothesis-revision-concept-messages",
+      "to": "constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/hypothesis-refusal-messages/hypothesis-revision-concept-messages",
+      "to": "task/hypothesis-refusal-messages/hypothesis-revision-concept-messages",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/hypothesis-refusal-messages/hypothesis-revision-state-messages",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-refusal-messages/hypothesis-revision-state-messages",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-refusal-messages/hypothesis-revision-state-messages",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-refusal-messages/hypothesis-revision-state-messages",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-refusal-messages/hypothesis-revision-state-messages",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/hypothesis-refusal-messages/hypothesis-revision-state-messages",
+      "to": "constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/hypothesis-refusal-messages/hypothesis-revision-state-messages",
+      "to": "constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/hypothesis-refusal-messages/hypothesis-revision-state-messages",
+      "to": "task/hypothesis-refusal-messages/hypothesis-revision-state-messages",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-refusal-messages/case-content-violation-messages",
       "to": "implementation/case-refusal-messages/case-content-violation-messages",
       "kind": "proves",
@@ -180,6 +296,18 @@
     {
       "from": "proof/case-refusal-messages/case-version-state-messages",
       "to": "implementation/case-refusal-messages/case-version-state-messages",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-refusal-messages/hypothesis-revision-concept-messages",
+      "to": "implementation/hypothesis-refusal-messages/hypothesis-revision-concept-messages",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-refusal-messages/hypothesis-revision-state-messages",
+      "to": "implementation/hypothesis-refusal-messages/hypothesis-revision-state-messages",
       "kind": "proves",
       "at": "the path"
     }

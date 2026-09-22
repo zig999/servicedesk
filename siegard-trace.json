@@ -92,6 +92,26 @@
         {
           "path": "src/src/errors/case-version-not-valid.error.ts",
           "digest": "sha256:5447495f57eaea3fbe3e6b7da84fbdca94cc008f3da8f4637ec335eb06ed782e"
+        },
+        {
+          "path": "src/src/errors/concept-not-in-glossary.error.ts",
+          "digest": "sha256:2b50c319a68b792ac05df892ce18d0fe291aae87080e43ac725fa6a93e5151e3"
+        },
+        {
+          "path": "src/src/errors/concept-refuses-subject-type.error.ts",
+          "digest": "sha256:aa3db72101e6ce5153ccd7ec8625f5d7b67b5fc04ff60cb54b1e032c6cf34cd2"
+        },
+        {
+          "path": "src/src/errors/hypothesis-revision-collects-no-concept.error.ts",
+          "digest": "sha256:7b72dba4ea47f89b38ffce1488dae5f27b347b8338063260c1044e75d3b461c6"
+        },
+        {
+          "path": "src/src/errors/hypothesis-revision-not-draft-at-release.error.ts",
+          "digest": "sha256:9e272c23e71ae772cdceb17af09372c2e97013a620c5ec568e373670b042508f"
+        },
+        {
+          "path": "src/src/errors/released-hypothesis-revision-not-alterable.error.ts",
+          "digest": "sha256:672ea1c7e1f00252d28b43e38655b7027bfc221006c08b4bd95a35fbdd7c8fc5"
         }
       ]
     },
@@ -142,6 +162,26 @@
         {
           "path": "src/src/errors/case-version-not-valid.error.ts",
           "digest": "sha256:5447495f57eaea3fbe3e6b7da84fbdca94cc008f3da8f4637ec335eb06ed782e"
+        },
+        {
+          "path": "src/src/errors/concept-not-in-glossary.error.ts",
+          "digest": "sha256:2b50c319a68b792ac05df892ce18d0fe291aae87080e43ac725fa6a93e5151e3"
+        },
+        {
+          "path": "src/src/errors/concept-refuses-subject-type.error.ts",
+          "digest": "sha256:aa3db72101e6ce5153ccd7ec8625f5d7b67b5fc04ff60cb54b1e032c6cf34cd2"
+        },
+        {
+          "path": "src/src/errors/hypothesis-revision-collects-no-concept.error.ts",
+          "digest": "sha256:7b72dba4ea47f89b38ffce1488dae5f27b347b8338063260c1044e75d3b461c6"
+        },
+        {
+          "path": "src/src/errors/hypothesis-revision-not-draft-at-release.error.ts",
+          "digest": "sha256:9e272c23e71ae772cdceb17af09372c2e97013a620c5ec568e373670b042508f"
+        },
+        {
+          "path": "src/src/errors/released-hypothesis-revision-not-alterable.error.ts",
+          "digest": "sha256:672ea1c7e1f00252d28b43e38655b7027bfc221006c08b4bd95a35fbdd7c8fc5"
         }
       ]
     },
@@ -4594,6 +4634,10 @@
           "digest": "sha256:f94c4650c5c57038158e5f590a0d9d68da604436803f27b31f60562fe4fc69f0"
         },
         {
+          "path": "src/src/errors/released-hypothesis-revision-not-alterable.error.ts",
+          "digest": "sha256:672ea1c7e1f00252d28b43e38655b7027bfc221006c08b4bd95a35fbdd7c8fc5"
+        },
+        {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
           "digest": "sha256:d498f772273ed722b9fff9089f6c1f6eb16918e93d6c76637c103e11f69e3514"
         },
@@ -5142,6 +5186,10 @@
           "digest": "sha256:1682d4a8884537199aa06ac16e4aecffacf74e1665f9bd80c47dc6c7fa4640c5"
         },
         {
+          "path": "src/src/errors/released-hypothesis-revision-not-alterable.error.ts",
+          "digest": "sha256:672ea1c7e1f00252d28b43e38655b7027bfc221006c08b4bd95a35fbdd7c8fc5"
+        },
+        {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
           "digest": "sha256:d498f772273ed722b9fff9089f6c1f6eb16918e93d6c76637c103e11f69e3514"
         },
@@ -5318,6 +5366,14 @@
         {
           "path": "src/src/case/validate-case-coherence.ts",
           "digest": "sha256:1682d4a8884537199aa06ac16e4aecffacf74e1665f9bd80c47dc6c7fa4640c5"
+        },
+        {
+          "path": "src/src/errors/hypothesis-revision-not-draft-at-release.error.ts",
+          "digest": "sha256:9e272c23e71ae772cdceb17af09372c2e97013a620c5ec568e373670b042508f"
+        },
+        {
+          "path": "src/src/errors/released-hypothesis-revision-not-alterable.error.ts",
+          "digest": "sha256:672ea1c7e1f00252d28b43e38655b7027bfc221006c08b4bd95a35fbdd7c8fc5"
         },
         {
           "path": "src/src/factories/concept-usage-reader.factory.ts",
@@ -9053,7 +9109,7 @@
         },
         {
           "path": "src/src/errors/concept-refuses-subject-type.error.ts",
-          "digest": "sha256:21e9dbf9f7548faef72a0b4efb99260c3d83a949d23f314b3608b6975d4c7e24"
+          "digest": "sha256:aa3db72101e6ce5153ccd7ec8625f5d7b67b5fc04ff60cb54b1e032c6cf34cd2"
         },
         {
           "path": "src/src/errors/status-map.ts",
@@ -9139,7 +9195,7 @@
         },
         {
           "path": "src/src/errors/hypothesis-revision-collects-no-concept.error.ts",
-          "digest": "sha256:27c11ee717286814da538e8e512a0cacd4f9a06aeaeb82b4a15388f891ff0944"
+          "digest": "sha256:7b72dba4ea47f89b38ffce1488dae5f27b347b8338063260c1044e75d3b461c6"
         },
         {
           "path": "src/src/errors/status-map.ts",
@@ -9390,6 +9446,14 @@
           "digest": "sha256:4b96b96fda62d0e4ff103ebcb2aefb9f7bef35dfac112024ad934ca8a4cdbe33"
         },
         {
+          "path": "src/src/__tests__/unit/errors/hypothesis-revision-not-draft-at-release.error.spec.ts",
+          "digest": "sha256:5935c8259f6fa92dd659dba02dc14d3ed8a9a3546b97ea57dcead8b6571b70db"
+        },
+        {
+          "path": "src/src/__tests__/unit/http/error-handler.middleware.spec.ts",
+          "digest": "sha256:76d7251142dd9df1da39efe84f445048a918a0908c921667f6597fc2ad3d3939"
+        },
+        {
           "path": "src/src/case/hypothesis-revision-own-state.port.ts",
           "digest": "sha256:3648bc1ed7254c27d43e374e864623492ddd3f4e8b9ff16217ce09452ca28b94"
         },
@@ -9403,7 +9467,7 @@
         },
         {
           "path": "src/src/errors/hypothesis-revision-not-draft-at-release.error.ts",
-          "digest": "sha256:8bcb5386f6ef348185848339076d5257f0dc22b77d2c37368439e5381cf744f9"
+          "digest": "sha256:9e272c23e71ae772cdceb17af09372c2e97013a620c5ec568e373670b042508f"
         },
         {
           "path": "src/src/errors/status-map.ts",
@@ -9788,6 +9852,10 @@
           "digest": "sha256:f2377593eb2817b9cab94700d3608c07a0451c2a14e10a878d4d5f9eb3dba663"
         },
         {
+          "path": "src/src/errors/released-hypothesis-revision-not-alterable.error.ts",
+          "digest": "sha256:672ea1c7e1f00252d28b43e38655b7027bfc221006c08b4bd95a35fbdd7c8fc5"
+        },
+        {
           "path": "src/src/errors/status-map.ts",
           "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
         }
@@ -9997,7 +10065,7 @@
         },
         {
           "path": "src/src/errors/concept-not-in-glossary.error.ts",
-          "digest": "sha256:3a0f81fb3bfb57c2262695c880704f15206add74a5760ba52ef2e8a35c542285"
+          "digest": "sha256:2b50c319a68b792ac05df892ce18d0fe291aae87080e43ac725fa6a93e5151e3"
         },
         {
           "path": "src/src/errors/status-map.ts",
