@@ -47,7 +47,7 @@ it("answers a mapped domain error with its own class name as the code and its ow
   expect(response.json()).toEqual({
     error: {
       code: 'CaseNotFoundError',
-      message: 'no version 1 of the case "a-slug" is stored',
+      message: 'o caso "a-slug" não tem a versão 1 armazenada',
       details: { slug: 'a-slug', version: 1 },
     },
   });

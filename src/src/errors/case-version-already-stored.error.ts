@@ -3,7 +3,7 @@ export class CaseVersionAlreadyStoredError extends Error {
 
   public constructor(slug: string, version: number) {
     super(
-      `the case "${slug}" already has a stored version ${version}, and a case version is written once and never altered`,
+      `o caso "${slug}" já tem a versão ${version} armazenada, e uma versão já armazenada nesse número nunca é recriada por uma nova escrita`,
     );
     this.name = 'CaseVersionAlreadyStoredError';
     this.context = { slug, version };
