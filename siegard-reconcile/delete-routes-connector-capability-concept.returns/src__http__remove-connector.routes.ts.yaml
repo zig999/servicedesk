@@ -1,0 +1,106 @@
+read:
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: the 400 branch of removeConnectorHandler
+    evidence: >-
+      return reply.code(400).send({ error: { code: 'VALIDATION_ERROR', message: 'the request path failed validation', details: issues } });
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: the unconditional return after awaiting handleRemoveConnectorRequest
+    evidence: >-
+      await handleRemoveConnectorRequest(dependencies, parsedParams.data);
+      return reply.code(204).send();
+  - node: constraints/no-route-enforces-authentication
+    held_at: the route registration, which declares no guard
+    evidence: >-
+      app.delete(`${API_PREFIX}/connectors/:connector`, (request, reply) =>
+            removeConnectorHandler(dependencies, request, reply),
+          );
+  - node: contracts/integration/connector-configuration-registry
+    held_at: the DELETE route registration for remove-connector
+    evidence: >-
+      app.delete(`${API_PREFIX}/connectors/:connector`, (request, reply) =>
+            removeConnectorHandler(dependencies, request, reply),
+          );
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      the file only reads a `connector` path parameter through removeConnectorParamsSchema.safeParse(request.params); the configuration value object's own attributes are declared elsewhere
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: >-
+      the single unconditional return after handleRemoveConnectorRequest, with no branch on whether a configuration existed
+    evidence: >-
+      await handleRemoveConnectorRequest(dependencies, parsedParams.data);
+      return reply.code(204).send();
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      removeConnectorHandler awaits handleRemoveConnectorRequest with no try/catch or status mapping of its own
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      app.delete(`${API_PREFIX}/connectors/:connector`, ...) — this file registers only the connector removal route, not the capability registry's
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      app.delete(`${API_PREFIX}/connectors/:connector`, ...) — this file registers only the connector removal route, not the glossary's
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: >-
+      the file declares no read route; its only route is app.delete(`${API_PREFIX}/connectors/:connector`, ...)
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: >-
+      import type { FastifyInstance, FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify'; — this is an HTTP-layer file, not the domain layer the constraint scopes
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: >-
+      removeConnectorHandler delegates to handleRemoveConnectorRequest and never reads or writes a store directly
+  - node: contracts/glossary/glossary-authoring
+    held_at: nowhere
+    evidence: >-
+      the file's only route is app.delete(`${API_PREFIX}/connectors/:connector`, ...); it declares no glossary operation
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: >-
+      the file's only route is app.delete(`${API_PREFIX}/connectors/:connector`, ...); it declares no capability-registry operation
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: >-
+      the file's params schema is removeConnectorParamsSchema, not a concept schema
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: >-
+      the file has no reference to a subject type anywhere in its 27 lines
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: >-
+      the file's params schema is removeConnectorParamsSchema; no capability attribute is read or written
+  - node: domain/integration/capability-registry
+    held_at: nowhere
+    evidence: >-
+      removeConnectorHandler calls handleRemoveConnectorRequest, a connector-registry dependency, never a capability-registry one
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: >-
+      await handleRemoveConnectorRequest(dependencies, parsedParams.data); — the registry's own remove-connector operation is invoked through this dependency, not implemented in this file
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: >-
+      the file has no reference to a citation anywhere in its 27 lines
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: >-
+      the file has no reference to an evidence item anywhere in its 27 lines
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: >-
+      the file has no reference to a hypothesis or a revision anywhere in its 27 lines
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      the file's only removal is over a `connector` path parameter, never a glossary concept name
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      the file's only removal is over a `connector` path parameter, never a capability name and version
+looked_past: >-
+  The 400-VALIDATION_ERROR block is hand-written inline in this handler rather than shared with the sibling remove-capability and remove-concept route files, which repeat the same shape; that duplication is a code-review concern about the implementation, not a domain fact the specification states differently, so it is not reported as a finding.

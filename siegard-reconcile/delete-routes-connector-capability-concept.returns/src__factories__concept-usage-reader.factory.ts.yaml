@@ -1,0 +1,136 @@
+findings:
+  - file: src/factories/concept-usage-reader.factory.ts
+    where: "resolveConceptUsage, the fourth conditional branch, lines 36-38"
+    evidence: |-
+      if (await sources.caseStore.isConceptCollectedByUnmanifestedHypothesisRevision(concept)) {
+        return { named: true, reference: 'hypothesis-revision-collects' };
+      }
+    cost: A concept collected by a hypothesis-revision that a case version's manifest currently points at (a manifested one) never trips this branch, so remove-concept can proceed against a concept the rule's own decided text requires it still refuse; the glossary row is removed while a manifested hypothesis_revision_collects row still names it, stranding exactly the reference the rule exists to keep from stranding.
+    kind: contradicts
+    node: rules/glossary/a-registered-concept-is-never-removed
+    correction: Resolve concept usage from any hypothesis-revision's own collects, manifested or not, rather than narrowing the fourth source to an unmanifested-only check.
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      createConceptUsageReader, which builds the concrete persistence classes internally and exposes only the
+      IConceptUsageReader port shape to its caller
+    evidence: |-
+      export function createConceptUsageReader(
+        connection: DatabaseConnection,
+        capabilityQuery: ICapabilityQuery,
+      ): IConceptUsageReader {
+        const sources: ConceptUsageSources = {
+          capabilityQuery,
+          investigationStore: new RelationalInvestigationStore(connection),
+          caseStore: new RelationalCaseStore(connection),
+        };
+        return { readConceptUsage: (concept) => resolveConceptUsage(concept, sources) };
+      }
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: |-
+      const capability = await sources.capabilityQuery.readCapability(concept);
+      if (capability.held) {
+        return { named: true, reference: 'capability' };
+      }
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: |-
+      if (await sources.investigationStore.isConceptNamedByCitation(concept)) {
+        return { named: true, reference: 'citation' };
+      }
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: |-
+      if (await sources.investigationStore.isConceptNamedByEvidence(concept)) {
+        return { named: true, reference: 'evidence' };
+      }
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: |-
+      if (await sources.caseStore.isConceptCollectedByUnmanifestedHypothesisRevision(concept)) {
+        return { named: true, reference: 'hypothesis-revision-collects' };
+      }
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: |-
+      async function resolveConceptUsage(concept: string, sources: ConceptUsageSources): Promise<ConceptUsageResolution> {
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "export function createConceptUsageReader(\n  connection: DatabaseConnection,\n  capabilityQuery: ICapabilityQuery,\n): IConceptUsageReader {"
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: "return { readConceptUsage: (concept) => resolveConceptUsage(concept, sources) };"
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: "return { readConceptUsage: (concept) => resolveConceptUsage(concept, sources) };"
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: "return { readConceptUsage: (concept) => resolveConceptUsage(concept, sources) };"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: "export function createConceptUsageReader(\n  connection: DatabaseConnection,\n  capabilityQuery: ICapabilityQuery,\n): IConceptUsageReader {"
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: |-
+      const capability = await sources.capabilityQuery.readCapability(concept);
+      if (capability.held) {
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: |-
+      investigationStore: new RelationalInvestigationStore(connection),
+      caseStore: new RelationalCaseStore(connection),
+  - node: contracts/glossary/glossary-authoring
+    held_at: nowhere
+    evidence: "type ConceptUsageSources = {\n  readonly capabilityQuery: ICapabilityQuery;\n  readonly investigationStore: RelationalInvestigationStore;\n  readonly caseStore: RelationalCaseStore;\n};"
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "import type { ICapabilityQuery } from '../capability-registry/capability-query.port.js';"
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: "import type { DatabaseConnection } from '../persistence/database-connection.js';"
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: "async function resolveConceptUsage(concept: string, sources: ConceptUsageSources): Promise<ConceptUsageResolution> {"
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: "async function resolveConceptUsage(concept: string, sources: ConceptUsageSources): Promise<ConceptUsageResolution> {"
+  - node: domain/integration/capability-registry
+    held_at: nowhere
+    evidence: "const capability = await sources.capabilityQuery.readCapability(concept);"
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: "import type { DatabaseConnection } from '../persistence/database-connection.js';"
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: "import type { DatabaseConnection } from '../persistence/database-connection.js';"
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: >-
+      resolveConceptUsage's four conditional branches, lines 26-39, which resolve named/reference for a
+      registered capability, a collected evidence item, its citation, and — narrowed to unmanifested revisions
+      only — a hypothesis-revision's own collects
+    evidence: |-
+      const capability = await sources.capabilityQuery.readCapability(concept);
+      if (capability.held) {
+        return { named: true, reference: 'capability' };
+      }
+      if (await sources.investigationStore.isConceptNamedByEvidence(concept)) {
+        return { named: true, reference: 'evidence' };
+      }
+      if (await sources.investigationStore.isConceptNamedByCitation(concept)) {
+        return { named: true, reference: 'citation' };
+      }
+      if (await sources.caseStore.isConceptCollectedByUnmanifestedHypothesisRevision(concept)) {
+        return { named: true, reference: 'hypothesis-revision-collects' };
+      }
+      return { named: false };
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: "const capability = await sources.capabilityQuery.readCapability(concept);"
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: "import type { DatabaseConnection } from '../persistence/database-connection.js';"
+looked_past: >-
+  The factory instantiates RelationalInvestigationStore and RelationalCaseStore directly with `new` rather than
+  receiving them as injected dependencies, unlike capabilityQuery which is passed in — a wiring-style choice this
+  pass leaves to a code review rather than a conformance finding.

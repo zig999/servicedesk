@@ -1,0 +1,217 @@
+findings:
+  - file: src/persistence/relational-glossary-store.repository.ts
+    where: readTerms (lines 30-36) and readWholeConcepts (lines 111-119)
+    evidence: |-
+      return runStatement<GlossaryTerm>(
+            this.connection,
+            { text: `SELECT name FROM ${VOCABULARY_TABLES[vocabulary]}` },
+            raiseReadFailure,
+          );
+      ...
+      return rows.map((row) => ({ name: row.name, accepts: accepts.get(row.name) ?? [], ttl: row.ttl, description: row.description }));
+    cost: >-
+      If the underlying table ever holds two rows sharing one name, readTerms and readConcepts
+      hand both rows to the caller silently instead of refusing the read — the caller never sees
+      the distinct HTTP 500 DuplicateGlossaryNameError the rule promises, so a corrupted store is
+      read as an odd-but-valid one and the next reader has to notice a duplicate downstream rather
+      than trusting the store layer to have already refused it.
+    kind: contradicts
+    correction: >-
+      readTerms and readWholeConcepts would need to check the rows they are about to return for a
+      repeated name and raise a failure carrying DuplicateGlossaryNameError instead of returning
+      the rows unchecked.
+    node: rules/glossary/a-vocabulary-holds-each-name-once
+
+read:
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: >-
+      the whole class — every read and write goes through the one injected connection, in a
+      transaction or a single statement, never a file
+    evidence: |-
+      public constructor(private readonly connection: IConnectableQueryable) {}
+      ...
+      await runInTransaction(this.connection, raiseWriteFailure, async (tx) => {
+      ...
+      { text: `INSERT INTO ${table} (name) VALUES ($1)`, params: [term.name] }
+  - node: contracts/glossary/glossary-authoring
+    held_at: writeConcepts (register, lines 61-71) and deleteConcept (remove, lines 73-78)
+    evidence: |-
+      text: `INSERT INTO ${CONCEPTS_TABLE} (name, ttl, description) VALUES ($1, $2, $3) ON CONFLICT (name) DO UPDATE SET ttl = EXCLUDED.ttl, description = EXCLUDED.description`
+      ...
+      function deleteConceptStatement(name: string): IStatement {
+        return { text: `DELETE FROM ${CONCEPTS_TABLE} WHERE name = $1`, params: [name] };
+      }
+  - node: domain/glossary/action
+    held_at: "VOCABULARY_TABLES mapping plus the generic term read/write/insert-missing methods"
+    evidence: |-
+      const VOCABULARY_TABLES: Readonly<Record<TermVocabulary, string>> = {
+        'subject-type': 'subject_types',
+        outcome: 'outcomes',
+        action: 'actions',
+        recipient: 'recipients',
+      };
+  - node: domain/glossary/concept
+    held_at: readWholeConcepts (lines 111-119), IConceptRow and IConceptAcceptRow (lines 6-15)
+    evidence: |-
+      interface IConceptRow {
+        readonly name: string;
+        readonly ttl: number;
+        readonly description: string;
+      }
+      ...
+      return rows.map((row) => ({ name: row.name, accepts: accepts.get(row.name) ?? [], ttl: row.ttl, description: row.description }));
+  - node: domain/glossary/outcome
+    held_at: "VOCABULARY_TABLES['outcome'] plus the generic term methods"
+    evidence: "outcome: 'outcomes',"
+  - node: domain/glossary/recipient
+    held_at: "VOCABULARY_TABLES['recipient'] plus the generic term methods"
+    evidence: "recipient: 'recipients',"
+  - node: domain/glossary/subject-type
+    held_at: >-
+      VOCABULARY_TABLES['subject-type'] and the concept_accepts columns
+      (subject_type_name)
+    evidence: |-
+      'subject-type': 'subject_types',
+      ...
+      interface IConceptAcceptRow {
+        readonly concept_name: string;
+        readonly subject_type_name: string;
+      }
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: >-
+      writeConcepts (batch never deletes a concept absent from the batch, only upserts) and
+      deleteConcept (removes the concept's own accepts rows with it, never touches subject_types)
+    evidence: |-
+      public async writeConcepts(concepts: readonly Concept[]): Promise<void> {
+          await runInTransaction(this.connection, raiseWriteFailure, async (tx) => {
+            for (const concept of concepts) {
+              await runStatement(tx, upsertConceptStatement(concept), raiseWriteFailure);
+      ...
+      public async deleteConcept(name: string): Promise<void> {
+          await runInTransaction(this.connection, raiseWriteFailure, async (tx) => {
+            await runStatement(tx, deleteConceptAcceptsStatement(name), raiseWriteFailure);
+            await runStatement(tx, deleteConceptStatement(name), raiseWriteFailure);
+          });
+        }
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: |-
+      return runStatement<GlossaryTerm>(
+            this.connection,
+            { text: `SELECT name FROM ${VOCABULARY_TABLES[vocabulary]}` },
+            raiseReadFailure,
+          );
+      ...
+      return rows.map((row) => ({ name: row.name, accepts: accepts.get(row.name) ?? [], ttl: row.ttl, description: row.description }));
+  - node: rules/glossary/the-non-conclusion-outcomes-precede-the-first-case
+    held_at: insertMissingTerms (lines 48-55) and insertMissingTermStatement (lines 85-87)
+    evidence: |-
+      return { text: `INSERT INTO ${table} (name) VALUES ($1) ON CONFLICT DO NOTHING`, params: [term.name] };
+  - node: scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone
+    held_at: "readWholeConcepts's row mapping of description"
+    evidence: "description: row.description"
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: |-
+      function raiseReadFailure(cause: unknown): Error {
+        return new GlossaryStoreError('a read against the glossary store failed', { operation: 'read' }, { cause });
+      }
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: |-
+      export class RelationalGlossaryStore implements IGlossaryStore {
+        public constructor(private readonly connection: IConnectableQueryable) {}
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      export class RelationalGlossaryStore implements IGlossaryStore {
+        public constructor(private readonly connection: IConnectableQueryable) {}
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      public async deleteConcept(name: string): Promise<void> {
+          await runInTransaction(this.connection, raiseWriteFailure, async (tx) => {
+            await runStatement(tx, deleteConceptAcceptsStatement(name), raiseWriteFailure);
+            await runStatement(tx, deleteConceptStatement(name), raiseWriteFailure);
+          });
+        }
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      export class RelationalGlossaryStore implements IGlossaryStore {
+        public constructor(private readonly connection: IConnectableQueryable) {}
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: |-
+      export class RelationalGlossaryStore implements IGlossaryStore {
+        public constructor(private readonly connection: IConnectableQueryable) {}
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: |-
+      export class RelationalGlossaryStore implements IGlossaryStore {
+        public constructor(private readonly connection: IConnectableQueryable) {}
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: |-
+      import { runInTransaction, runStatement, type IConnectableQueryable, type IQueryable, type IStatement } from './database-access.js';
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: |-
+      export class RelationalGlossaryStore implements IGlossaryStore {
+        public constructor(private readonly connection: IConnectableQueryable) {}
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: |-
+      export class RelationalGlossaryStore implements IGlossaryStore {
+        public constructor(private readonly connection: IConnectableQueryable) {}
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: |-
+      export class RelationalGlossaryStore implements IGlossaryStore {
+        public constructor(private readonly connection: IConnectableQueryable) {}
+  - node: domain/integration/capability-registry
+    held_at: nowhere
+    evidence: |-
+      export class RelationalGlossaryStore implements IGlossaryStore {
+        public constructor(private readonly connection: IConnectableQueryable) {}
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: |-
+      export class RelationalGlossaryStore implements IGlossaryStore {
+        public constructor(private readonly connection: IConnectableQueryable) {}
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: |-
+      export class RelationalGlossaryStore implements IGlossaryStore {
+        public constructor(private readonly connection: IConnectableQueryable) {}
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: |-
+      export class RelationalGlossaryStore implements IGlossaryStore {
+        public constructor(private readonly connection: IConnectableQueryable) {}
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: |-
+      export class RelationalGlossaryStore implements IGlossaryStore {
+        public constructor(private readonly connection: IConnectableQueryable) {}
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: |-
+      export class RelationalGlossaryStore implements IGlossaryStore {
+        public constructor(private readonly connection: IConnectableQueryable) {}
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: |-
+      export class RelationalGlossaryStore implements IGlossaryStore {
+        public constructor(private readonly connection: IConnectableQueryable) {}
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: |-
+      export class RelationalGlossaryStore implements IGlossaryStore {
+        public constructor(private readonly connection: IConnectableQueryable) {}
+
+looked_past: >-
+  writeTerms replaces a whole vocabulary table on every call (`DELETE FROM ${table}` then
+  reinsert only the given terms); whether any caller ever invokes it with a list missing a
+  released outcome or a term another record still names is a question about glossary.service.ts's
+  own usage of this method, not about this repository file.

@@ -176,6 +176,36 @@
       "title": "Concept-usage reader — capability, evidence, citation and unmanifested-collects resolution",
       "summary": "Integration tests against the real database prove each of the four reference kinds the reader answers, its negative and manifested-exclusion cases, and its fixed capability-first check order, alongside a unit test proving the glossary port carries zero imports.",
       "task": "task/cross-context-usage-reads/concept-usage-reader"
+    },
+    {
+      "id": "review/delete-routes-connector-capability-concept",
+      "kind": "review",
+      "file": "review/delete-routes-connector-capability-concept.md",
+      "title": "Delete routes for connector, capability and concept — first review",
+      "summary": "Four passes over the 11 tasks delivering DELETE routes and their supporting store/service/reader layers for connector-configuration, capability and concept removal.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A capability naming the removed connector is still registered after the removal, the removal writing to no capability.",
+        "A request naming a concept nothing answers, records, cites or collects leaves that name unheld by the glossary, a subsequent read of it answering as the specification already states it answers for an unheld name.",
+        "A request naming a registered connector leaves that connector unregistered, a subsequent read of the name answering as the specification already states it answers for a name nothing is registered at.",
+        "A request naming an identity no collected evidence names leaves nothing registered at that identity, a subsequent identity read answering as the specification already states it answers for an identity nothing is registered at.",
+        "The adapter is constructible from the same composition point that already builds the capability registry's other cross-module reader.",
+        "The adapter is constructible from the same composition point that already builds the other cross-module readers.",
+        "The controller re-raises whatever the operation raises rather than mapping it to a response itself.",
+        "The guard consults no case version's collection plan and no derived input requirement, nothing else persisting a reference to a capability by identity.",
+        "The port is declared in the capability-registry module and the adapter answering it reads the recorded evidence through the relational store that holds it, the capability-registry module importing no database driver to obtain the answer.",
+        "The port is declared in the glossary module and the glossary module imports no database driver to obtain the answer.",
+        "The refusal is raised as a domain error of its own, distinct from every error already raised by registering a capability.",
+        "The route, its controller, its request shape and the operation it calls are four separate files, following the separation the existing delete routes use.",
+        "The store port declares a removal keyed by the concept name alone, the one identity a concept has.",
+        "The store port declares a removal keyed by the connector name alone, the one identity a connector configuration has.",
+        "The store port declares a removal taking name and version together, the composite identity a capability is registered at."
+      ],
+      "findings": 11
     }
   ],
   "edges": [
@@ -616,6 +646,72 @@
       "to": "implementation/cross-context-usage-reads/concept-usage-reader",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/delete-routes-connector-capability-concept",
+      "to": "task/capability-removal/capability-store-delete",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/delete-routes-connector-capability-concept",
+      "to": "task/cross-context-usage-reads/concept-usage-reader",
+      "kind": "reviews",
+      "at": "tasks[10]"
+    },
+    {
+      "from": "review/delete-routes-connector-capability-concept",
+      "to": "task/capability-removal/remove-capability-operation",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/delete-routes-connector-capability-concept",
+      "to": "task/capability-removal/remove-capability-route",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/delete-routes-connector-capability-concept",
+      "to": "task/concept-removal/concept-store-delete",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/delete-routes-connector-capability-concept",
+      "to": "task/concept-removal/remove-concept-operation",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/delete-routes-connector-capability-concept",
+      "to": "task/concept-removal/remove-concept-route",
+      "kind": "reviews",
+      "at": "tasks[5]"
+    },
+    {
+      "from": "review/delete-routes-connector-capability-concept",
+      "to": "task/connector-configuration-removal/connector-configuration-store-delete",
+      "kind": "reviews",
+      "at": "tasks[6]"
+    },
+    {
+      "from": "review/delete-routes-connector-capability-concept",
+      "to": "task/connector-configuration-removal/remove-connector-operation",
+      "kind": "reviews",
+      "at": "tasks[7]"
+    },
+    {
+      "from": "review/delete-routes-connector-capability-concept",
+      "to": "task/connector-configuration-removal/remove-connector-route",
+      "kind": "reviews",
+      "at": "tasks[8]"
+    },
+    {
+      "from": "review/delete-routes-connector-capability-concept",
+      "to": "task/cross-context-usage-reads/capability-evidence-usage-reader",
+      "kind": "reviews",
+      "at": "tasks[9]"
     }
   ]
 }

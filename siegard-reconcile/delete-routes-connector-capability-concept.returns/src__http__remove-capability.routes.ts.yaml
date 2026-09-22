@@ -1,0 +1,107 @@
+read:
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: the 400 branch of removeCapabilityHandler, lines 21-24
+    evidence: >-
+      const issues = parsedParams.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`);
+      return reply.code(400).send({ error: { code: 'VALIDATION_ERROR', message: 'the request path failed validation', details: issues } });
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: the return statement of removeCapabilityHandler, line 26
+    evidence: >-
+      return reply.code(204).send();
+  - node: constraints/no-route-enforces-authentication
+    held_at: the route registration in createRemoveCapabilityRoutesPlugin, lines 9-11
+    evidence: >-
+      app.delete(`${API_PREFIX}/capabilities/:name/:version`, (request, reply) =>
+            removeCapabilityHandler(dependencies, request, reply),
+          );
+  - node: contracts/integration/capability-registry
+    held_at: the DELETE route registration, lines 9-11
+    evidence: >-
+      app.delete(`${API_PREFIX}/capabilities/:name/:version`, (request, reply) =>
+            removeCapabilityHandler(dependencies, request, reply),
+          );
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: >-
+      const parsedParams = removeCapabilityParamsSchema.safeParse(request.params);
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      await handleRemoveCapabilityRequest(dependencies, parsedParams.data);
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      app.delete(`${API_PREFIX}/capabilities/:name/:version`, (request, reply) =>
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      app.delete(`${API_PREFIX}/capabilities/:name/:version`, (request, reply) =>
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: >-
+      app.delete(`${API_PREFIX}/capabilities/:name/:version`, (request, reply) =>
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: >-
+      import type { FastifyInstance, FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify';
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: >-
+      await handleRemoveCapabilityRequest(dependencies, parsedParams.data);
+  - node: contracts/glossary/glossary-authoring
+    held_at: nowhere
+    evidence: >-
+      import { handleRemoveCapabilityRequest, type RemoveCapabilityControllerDependencies } from './remove-capability.controller.js';
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: >-
+      import { removeCapabilityParamsSchema } from './dto/remove-capability.dto.js';
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: >-
+      import { removeCapabilityParamsSchema } from './dto/remove-capability.dto.js';
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: >-
+      import { removeCapabilityParamsSchema } from './dto/remove-capability.dto.js';
+  - node: domain/integration/capability-registry
+    held_at: nowhere
+    evidence: >-
+      await handleRemoveCapabilityRequest(dependencies, parsedParams.data);
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      app.delete(`${API_PREFIX}/capabilities/:name/:version`, (request, reply) =>
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: >-
+      app.delete(`${API_PREFIX}/capabilities/:name/:version`, (request, reply) =>
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: >-
+      await handleRemoveCapabilityRequest(dependencies, parsedParams.data);
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: >-
+      await handleRemoveCapabilityRequest(dependencies, parsedParams.data);
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: >-
+      await handleRemoveCapabilityRequest(dependencies, parsedParams.data);
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      app.delete(`${API_PREFIX}/capabilities/:name/:version`, (request, reply) =>
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      await handleRemoveCapabilityRequest(dependencies, parsedParams.data);
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: >-
+      app.delete(`${API_PREFIX}/capabilities/:name/:version`, (request, reply) =>
+looked_past: >-
+  The 409 refusal rules/integration/a-registered-capability-cited-by-evidence-is-never-removed states, and the
+  generic 500 mapping constraints/a-domain-error-unmapped-by-status-is-refused-generically states, are both raised
+  and mapped inside handleRemoveCapabilityRequest, remove-capability.controller.ts and errors/status-map.ts rather
+  than in this routing file, so their conformance belongs to those files' own review.

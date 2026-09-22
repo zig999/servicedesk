@@ -1,0 +1,138 @@
+read:
+  - node: domain/integration/capability
+    held_at: >-
+      the removeCapabilityParamsSchema object, lines 3-6
+    evidence: |-
+      export const removeCapabilityParamsSchema = z.object({
+        name: z.string().min(1),
+        version: z.string().min(1),
+      });
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      the whole file only declares removeCapabilityParamsSchema and its inferred type; no status
+      mapping or generic-refusal handling appears here
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: >-
+      the removeCapabilityParamsSchema object, lines 3-6, which is the route's declared shape a
+      malformed request is checked against
+    evidence: |-
+      export const removeCapabilityParamsSchema = z.object({
+        name: z.string().min(1),
+        version: z.string().min(1),
+      });
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the file declares only path-param validation; no response status or body is stated here
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the file declares only capability name/version params; nothing here concerns the glossary's
+      remove-concept route
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the file declares only capability name/version params; nothing here concerns remove-connector
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: |-
+      import { z } from 'zod';
+
+      export const removeCapabilityParamsSchema = z.object({
+        name: z.string().min(1),
+        version: z.string().min(1),
+      });
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: >-
+      the file declares only the removal params schema; no read-capability-by-identity refusal or
+      CapabilityIdentityNotFoundError appears here
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: >-
+      import { z } from 'zod'; — this file is the HTTP-layer DTO, not a domain module, so this
+      constraint's own subject (domain-layer imports) does not apply to it
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: >-
+      the file declares only a zod params schema and its inferred type; no persistence or storage
+      concern appears here
+  - node: contracts/glossary/glossary-authoring
+    held_at: nowhere
+    evidence: >-
+      the file declares capability name/version params only; nothing here concerns register-concept
+      or remove-concept
+  - node: contracts/integration/capability-registry
+    held_at: >-
+      the removeCapabilityParamsSchema object, lines 3-6, supplying the identity params for the
+      remove-capability operation
+    evidence: |-
+      export const removeCapabilityParamsSchema = z.object({
+        name: z.string().min(1),
+        version: z.string().min(1),
+      });
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: >-
+      the file declares capability name/version params only; nothing here concerns
+      register-connector or remove-connector
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: >-
+      the file declares capability name/version params only; nothing here concerns a glossary
+      concept's attributes
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: >-
+      the file declares capability name/version params only; nothing here concerns a subject-type
+      vocabulary term
+  - node: domain/integration/capability-registry
+    held_at: >-
+      the removeCapabilityParamsSchema object, lines 3-6, supplying the identity params the
+      registry's remove-capability operation is invoked by
+    evidence: |-
+      export const removeCapabilityParamsSchema = z.object({
+        name: z.string().min(1),
+        version: z.string().min(1),
+      });
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      the file declares capability name/version params only; nothing here concerns a connector
+      configuration's own name/configuration attributes
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: >-
+      the file declares capability name/version params only; nothing here concerns
+      register-connector or remove-connector
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: >-
+      the file declares capability name/version params only; nothing here concerns a citation's
+      concept/field attributes
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: >-
+      the file declares capability name/version params only; nothing here concerns an evidence
+      item's attributes
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: >-
+      the file declares capability name/version params only; nothing here concerns a
+      hypothesis-revision's attributes or lifecycle
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      the file declares capability name/version params only; nothing here concerns concept
+      removal or ConceptInUseError
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      the file declares capability name/version params only; the refusal this rule states
+      (CapabilityCitedByEvidenceError, HTTP 409) is not decided in a params schema
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: >-
+      the file declares capability name/version params only; nothing here concerns connector
+      configuration removal

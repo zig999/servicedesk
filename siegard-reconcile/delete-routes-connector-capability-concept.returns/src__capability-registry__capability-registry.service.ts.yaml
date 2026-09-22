@@ -1,0 +1,146 @@
+read:
+  - node: constraints/listings-are-paged
+    held_at: >-
+      listCapabilities()
+    evidence: >-
+      const total = held.length;
+      const data = held.slice(pagination.offset, pagination.offset + pagination.limit);
+      return { data, total, limit: pagination.limit, offset: pagination.offset, pageCount: pageCountOf(total, pagination.limit) };
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: >-
+      readCapabilityByIdentityOrThrow()
+    evidence: >-
+      const resolution = await this.readCapabilityByIdentity(name, version);
+      if (!resolution.held) {
+        throw new CapabilityIdentityNotFoundError(resolution.name, resolution.version);
+      }
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: >-
+      the constructor's sole persistence dependency and every read/write/delete call routed through it
+    evidence: >-
+      private readonly store: ICapabilityStore, ... await this.store.readCapabilities(); ... await this.store.writeCapabilities([...kept, capability]); ... await this.store.deleteCapability(name, version);
+  - node: contracts/integration/capability-registry
+    held_at: >-
+      the five public methods registerCapability, readCapability, readCapabilityByIdentity, listCapabilities and removeCapability
+    evidence: >-
+      public async registerCapability(...) ... public async readCapability(...) ... public async readCapabilityByIdentity(...) ... public async listCapabilities(...) ... public async removeCapability(name: string, version: string): Promise<void>
+  - node: domain/integration/capability
+    held_at: >-
+      heldCapability()
+    evidence: >-
+      return { name: registration.name, version: registration.version, nature: registration.nature, input_schema: registration.input_schema, output_schema: registration.output_schema, timeout: registration.timeout ?? DEFAULT_CAPABILITY_TIMEOUT_MS, connector: registration.connector, concept: registration.concept, ...(isUndeclared(registration.payload_notes) ? {} : { payload_notes: registration.payload_notes }) };
+  - node: domain/integration/capability-registry
+    held_at: >-
+      registerCapability(), removeCapability() and readCapability() (concept resolution)
+    evidence: >-
+      public async registerCapability(registration: CapabilityRegistration): Promise<Capability> { ... } public async removeCapability(name: string, version: string): Promise<void> { ... }
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: >-
+      refuseContractDepartures()/contractProblems() and the timeout default in heldCapability()
+    evidence: >-
+      function contractProblems(registration: CapabilityRegistration): string[] { return REQUIRED_REGISTRATION_ATTRIBUTES.filter((attribute) => isUndeclared(registration[attribute])).map((attribute) => `${attribute} is undeclared`); } ... timeout: registration.timeout ?? DEFAULT_CAPABILITY_TIMEOUT_MS
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: >-
+      refuseMalformedSchemas()
+    evidence: >-
+      const malformed = SCHEMA_ATTRIBUTES.filter((attribute) => !isWellFormedJson(registration[attribute])); if (malformed.length > 0) { throw new CapabilitySchemaNotWellFormedError(malformed); }
+  - node: rules/integration/a-capability-input-schema-holds-a-well-formed-object
+    held_at: >-
+      refuseMalformedInputSchemaShape()
+    evidence: >-
+      const parsed: unknown = JSON.parse(registration.input_schema); const problems = inputSchemaShapeProblems(parsed); if (problems.length > 0) { throw new MalformedCapabilityInputSchemaError(problems); }
+  - node: rules/integration/a-capability-is-read-only
+    held_at: >-
+      the nature check in heldCapability()
+    evidence: >-
+      if (registration.nature !== READ_ONLY_NATURE) { throw new CapabilityNotReadOnlyError(registration.nature); }
+  - node: rules/integration/a-connector-placeholder-is-declared-by-its-capability
+    held_at: >-
+      refuseOrphanedPlaceholders() and orphanedAcrossEveryConfiguration()
+    evidence: >-
+      const orphaned = orphanedAcrossEveryConfiguration(capability, configurations); if (orphaned.length > 0) { throw new ConnectorPlaceholderOutsideInputSchemaError(orphaned); }
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: >-
+      removeCapability()
+    evidence: >-
+      const cited = await this.evidenceUsageReader.isCapabilityNamedByEvidence({ name, version }); if (cited) { throw new CapabilityCitedByEvidenceError(name, version); } await this.store.deleteCapability(name, version);
+  - node: rules/integration/one-capability-answers-one-concept
+    held_at: >-
+      the duplicate check in readCapability() and refuseAnsweredConcept() called from registerCapability()
+    evidence: >-
+      if (answers.length > 1) { throw new DuplicateConceptAnswerError(concept, answers); } ... const answering = kept.find((candidate) => candidate.concept === registering.concept); if (answering !== undefined) { throw new ConceptAlreadyAnsweredError(registering.concept, answering, registering); }
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      the file only throws domain errors (e.g. throw new CapabilityCitedByEvidenceError(name, version)); no HTTP status mapping or fallback response is constructed anywhere in this service
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      the file takes registration: CapabilityRegistration, name: string, version: string and pagination: PaginationRequest as already-typed inputs; no request-shape validation is performed here
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      public async removeCapability(name: string, version: string): Promise<void> { ... await this.store.deleteCapability(name, version); } — the method returns void with no HTTP response construction
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      this file has no glossary or remove-concept operation; it only implements capability-registry operations
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      this file has no remove-connector operation; readRegisteredConnectorConfigurations() only reads configurations for placeholder checking
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: >-
+      the file declares no route or middleware; it is a domain service consumed through ICapabilityQuery with no identity or auth handling
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the import list at the top of the file
+    evidence: >-
+      import { orphanedPlaceholders } from '../connector-registry/connector-placeholder-declaration-check.js'; ... import type { ICapabilityStore } from './capability-store.port.js'; — only relative modules, error classes and ports are imported, no framework or driver
+  - node: contracts/glossary/glossary-authoring
+    held_at: nowhere
+    evidence: >-
+      the file implements only capability-registry operations; no register-concept or remove-concept logic appears
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: >-
+      readRegisteredConnectorConfigurations() only forwards to this.connectorConfigurationsReader.readConnectorConfigurations() for placeholder checking; no register-connector or remove-connector operation is implemented here
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: >-
+      capability.concept and registration.concept are compared and stored only as opaque strings (candidate.concept === concept); the concept's own attributes (accepts, ttl, description) are never read or constructed here
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: >-
+      the file contains no reference to subject types anywhere
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      configurations are consumed only through RegisteredConnectorConfigurationForPlaceholderCheck (configuration.connector, configuration.configuration) for placeholder checking; the connector-configuration aggregate itself is not implemented in this file
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: >-
+      the file has no register-connector or remove-connector implementation; connectorConfigurationsReader is only read from, never written to
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: >-
+      the file contains no reference to citation or field
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: >-
+      evidence is consumed only through the narrow isCapabilityNamedByEvidence({ name, version }) boolean check; the evidence aggregate's own attributes are never read or constructed here
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: >-
+      the file contains no reference to hypothesis revisions
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      the file implements no concept removal; it is scoped to capability-registry operations only
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: >-
+      the file implements no connector-configuration removal; readRegisteredConnectorConfigurations() only reads
+looked_past: >-
+  The default no-op readers (NO_REGISTERED_CONNECTOR_CONFIGURATIONS, NO_CAPABILITY_NAMED_BY_EVIDENCE) and the Set-based de-duplication in orphanedAcrossEveryConfiguration are implementation/DI-wiring choices, not domain facts, and are not reported.

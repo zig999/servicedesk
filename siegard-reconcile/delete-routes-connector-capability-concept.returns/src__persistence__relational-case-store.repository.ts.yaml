@@ -1,0 +1,373 @@
+findings:
+  - file: src/persistence/relational-case-store.repository.ts
+    where: function overwriteRevision (used by RelationalCaseStore.overwriteHypothesisRevision)
+    evidence: |-
+      async function overwriteRevision(tx: IQueryable, input: OverwriteHypothesisRevisionInput): Promise<void> {
+        const key: IRevisionKey = { slug: input.slug, hypothesis_name: input.hypothesis_name, revision: input.revision };
+        await runStatement(tx, revisionOverwriteStatement(input), raiseOverwriteFailure(input));
+        await runStatement(tx, revisionCollectsDeleteStatement(key), raiseWriteFailure);
+    cost: >-
+      overwriteRevision never calls requireCaseHoldsDraft — the guard its sibling insertRevision
+      applies immediately (`await requireCaseHoldsDraft(tx, input.slug);`) before touching a
+      hypothesis-revision. An in-place edit of a hypothesis-revision therefore reaches the UPDATE
+      whether or not the case currently holds a draft, so an overwrite issued after the draft was
+      released or discarded proceeds silently instead of being refused with CaseHoldsNoDraftError,
+      and the concept-acceptance check the rule anchors to a draft's declared subject type has no
+      draft to anchor to. The next reader who trusts this guard because insertRevision enforces it
+      will not find it enforced on the overwrite path.
+    kind: contradicts
+    node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    correction: >-
+      overwriteRevision would need to call requireCaseHoldsDraft(tx, input.slug) before issuing
+      revisionOverwriteStatement, the same guard insertRevision already applies.
+
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: |-
+      function assembleWholeVersion(tx, key) — reads versionRow, then readManifest(tx, key), both
+      inside the one transaction assembleVersion opens
+    evidence: |-
+      return runInTransaction(this.connection, raiseReadFailure, (tx) => assembleWholeVersion(tx, { slug, version }));
+  - node: contracts/knowledge/case-lifecycle
+    held_at: |-
+      RelationalCaseStore's methods createDraft, insertHypothesisRevision, overwriteHypothesisRevision,
+      releaseHypothesisRevision, placeHypothesis, removeManifestEntry, release, discard, updateDraft
+    evidence: |-
+      public async createDraft(input: CreateDraftInput): Promise<number> {
+        return runInTransaction(this.connection, raiseWriteFailure, (tx) => createDraftVersion(tx, input));
+      }
+  - node: contracts/knowledge/case-query
+    held_at: |-
+      RelationalCaseStore's methods assembleVersion, listCases, listCaseVersions, listHypotheses,
+      listHypothesisRevisions
+    evidence: |-
+      public async listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>> {
+        return runInTransaction(this.connection, raiseReadFailure, (tx) => listCasesPage(tx, pagination));
+      }
+  - node: domain/knowledge/case
+    held_at: caseIdentityStatement (slug) and assignNextVersion/nextVersionUpdateStatement (next_version)
+    evidence: |-
+      function caseIdentityStatement(slug: string): IStatement {
+        return { text: `INSERT INTO ${CASES_TABLE} (slug) VALUES ($1) ON CONFLICT (slug) DO NOTHING`, params: [slug] };
+      }
+  - node: domain/knowledge/case-summary
+    held_at: caseCatalogEntryOf, built from casesPageSelect's latest/released subqueries
+    evidence: |-
+      return {
+          slug: row.slug,
+          ...(row.current_state !== null ? { current_state: caseVersionStateOf(row.current_state) } : {}),
+          version_count: Number(row.version_count),
+  - node: domain/knowledge/case-version
+    held_at: ICaseVersionRow and assembledCaseVersionOf
+    evidence: |-
+      return {
+          slug: key.slug,
+          version: key.version,
+          title: row.title,
+          when_to_use: row.when_to_use,
+          authored_at: row.authored_at.toISOString(),
+  - node: domain/knowledge/case-version-state
+    held_at: DRAFT_STATE/RELEASED_STATE constants and caseVersionStateOf/isCaseVersionState
+    evidence: |-
+      const CASE_VERSION_STATE_VALUES: ReadonlySet<string> = new Set<string>(CASE_VERSION_STATES);
+      const DRAFT_STATE: CaseVersionState = 'draft';
+      const RELEASED_STATE: CaseVersionState = 'released';
+  - node: domain/knowledge/hypothesis
+    held_at: hypothesisIdentityStatement and requireHypothesisIdentity
+    evidence: |-
+      function hypothesisIdentityStatement(key: IHypothesisKey): IStatement {
+        return {
+          text: `INSERT INTO ${HYPOTHESES_TABLE} (case_slug, name) VALUES ($1, $2) ON CONFLICT (case_slug, name) DO NOTHING`,
+  - node: domain/knowledge/hypothesis-revision
+    held_at: IHypothesisRevisionRow, hypothesisRevisionListItemOf and manifestEntryOf
+    evidence: |-
+      function hypothesisRevisionListItemOf(row: IHypothesisRevisionRow, collects: readonly string[]): HypothesisRevisionListItem {
+        return {
+          revision: row.revision,
+          criterion: row.criterion,
+          collects,
+          resolution: resolutionOf(row.resolution_outcome, row.resolution_action, row.resolution_recipient),
+          state: hypothesisRevisionStateOf(row.state),
+        };
+      }
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: HYPOTHESIS_REVISION_DRAFT_STATE/RELEASED_STATE and hypothesisRevisionStateOf/isHypothesisRevisionState
+    evidence: |-
+      const HYPOTHESIS_REVISION_DRAFT_STATE: HypothesisRevisionState = 'draft';
+      const HYPOTHESIS_REVISION_RELEASED_STATE: HypothesisRevisionState = 'released';
+  - node: domain/knowledge/manifest-entry
+    held_at: IManifestRow, manifestEntryOf and placeHypothesisStatement
+    evidence: |-
+      function manifestEntryOf(row: IManifestRow, collects: readonly string[]): ManifestEntry {
+        const hypothesisRevision: HypothesisRevisionContent = {
+          hypothesis_name: row.hypothesis_name,
+          revision: row.revision,
+      return { position: row.position, hypothesis_revision: hypothesisRevision };
+  - node: rules/knowledge/a-case-has-at-most-one-draft
+    held_at: raiseCreateDraftFailure, testing ONE_DRAFT_PER_CASE_CONSTRAINT
+    evidence: |-
+      function raiseCreateDraftFailure(slug: string): RaiseStoreError {
+        return (cause) => (isConstraintViolation(cause, ONE_DRAFT_PER_CASE_CONSTRAINT) ? new CaseAlreadyHasDraftError(slug) : raiseWriteFailure(cause));
+      }
+  - node: rules/knowledge/a-case-listing-answers-cases-in-slug-order
+    held_at: casesPageSelect's outer ordering
+    evidence: |-
+      FROM (SELECT slug FROM ${CASES_TABLE} ORDER BY slug LIMIT $1 OFFSET $2) c
+      ...
+      ORDER BY c.slug`,
+  - node: rules/knowledge/a-case-summary-is-derived-from-its-existing-versions
+    held_at: casesPageSelect's latest/released subqueries and caseCatalogEntryOf
+    evidence: |-
+      SELECT DISTINCT ON (slug) slug, state, authored_at,
+             COUNT(*) OVER (PARTITION BY slug) AS version_count
+      FROM ${CASE_VERSIONS_TABLE}
+      ORDER BY slug, version DESC
+  - node: rules/knowledge/a-case-version-is-written-once
+    held_at: refuseUnlessDraft, called before every write against updateDraftVersion/insertManifestEntry/deleteManifestEntry/discardDraft
+    evidence: |-
+      function refuseUnlessDraft(key: ICaseVersionKey, state: CaseVersionState): void {
+        if (state !== DRAFT_STATE) {
+          throw new CaseVersionNotDraftError(key.slug, key.version, state);
+        }
+      }
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: refuseUnlessDraft and refuseUnlessDraftAtRelease
+    evidence: |-
+      function refuseUnlessDraftAtRelease(key: ICaseVersionKey, state: CaseVersionState): void {
+        if (state !== DRAFT_STATE) {
+          throw new CaseVersionNotDraftAtReleaseError(key.slug, key.version, state);
+        }
+      }
+  - node: rules/knowledge/a-case-version-number-is-never-reused
+    held_at: nextVersionUpdateStatement
+    evidence: |-
+      text: `UPDATE ${CASES_TABLE} SET next_version = next_version + 1
+             WHERE slug = $1
+             RETURNING next_version - 1 AS version`,
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: |-
+      requireCaseHoldsDraft, called at the top of insertRevision only — overwriteRevision omits
+      it entirely (see findings)
+    evidence: |-
+      async function insertRevision(tx: IQueryable, input: HypothesisRevisionInput): Promise<number> {
+        await requireCaseHoldsDraft(tx, input.slug);
+  - node: rules/knowledge/a-hypothesis-name-is-unique-within-its-case
+    held_at: hypothesisIdentityStatement's ON CONFLICT (case_slug, name) DO NOTHING
+    evidence: |-
+      text: `INSERT INTO ${HYPOTHESES_TABLE} (case_slug, name) VALUES ($1, $2) ON CONFLICT (case_slug, name) DO NOTHING`,
+  - node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+    held_at: raisePlaceHypothesisFailure, testing POSITION_UNIQUE_CONSTRAINT
+    evidence: |-
+      function raisePlaceHypothesisFailure(input: PlaceHypothesisInput): RaiseStoreError {
+        return (cause) =>
+          isConstraintViolation(cause, POSITION_UNIQUE_CONSTRAINT)
+            ? new ManifestPositionOccupiedError(input.slug, input.version, input.position)
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: |-
+      insertRevisionRow (creates the next revision) and overwriteRevision plus raiseOverwriteFailure
+      (in-place edit, refused when the revision is released)
+    evidence: |-
+      SELECT $1, $2, COALESCE(MAX(revision), 0) + 1, $3, $4, $5, $6, $7
+      FROM ${HYPOTHESIS_REVISIONS_TABLE}
+      WHERE case_slug = $1 AND hypothesis_name = $2
+      RETURNING revision`,
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: refuseUnlessHypothesisRevisionDraftAtRelease and resolveHypothesisRevisionOwnState
+    evidence: |-
+      function refuseUnlessHypothesisRevisionDraftAtRelease(state: HypothesisRevisionState | undefined): void {
+        if (state !== HYPOTHESIS_REVISION_DRAFT_STATE) {
+          throw new HypothesisRevisionNotDraftAtReleaseError();
+        }
+      }
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: revisionInsertStatement
+    evidence: |-
+      SELECT $1, $2, COALESCE(MAX(revision), 0) + 1, $3, $4, $5, $6, $7
+      FROM ${HYPOTHESIS_REVISIONS_TABLE}
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: hypothesisRevisionsPageSelect
+    evidence: |-
+      text: `SELECT revision, criterion, resolution_outcome, resolution_action, resolution_recipient, state
+             FROM ${HYPOTHESIS_REVISIONS_TABLE}
+             WHERE case_slug = $1 AND hypothesis_name = $2
+             ORDER BY revision DESC
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: hypothesisRevisionListItemOf's state field, sourced from the state column selected in hypothesisRevisionsPageSelect
+    evidence: |-
+      state: hypothesisRevisionStateOf(row.state),
+  - node: rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version
+    held_at: resolveSourceVersion and manifestCopyStatement
+    evidence: |-
+      async function resolveSourceVersion(tx: IQueryable, input: CreateDraftInput): Promise<number | undefined> {
+        if (input.source_version !== undefined) {
+          return input.source_version;
+        }
+        const row = await queryOneOrAbsent<{ version: number | null }>(tx, latestReleasedVersionSelect(input.slug), raiseWriteFailure);
+        return row?.version ?? undefined;
+      }
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: caseIdentityStatement's ON CONFLICT (slug) DO NOTHING
+    evidence: |-
+      text: `INSERT INTO ${CASES_TABLE} (slug) VALUES ($1) ON CONFLICT (slug) DO NOTHING`, params: [slug] };
+  - node: rules/knowledge/every-case-version-remains-readable
+    held_at: |-
+      discardDraft, restricted by refuseUnlessDraft to draft versions only — no other operation in
+      the file deletes a case_versions row
+    evidence: |-
+      async function discardDraft(tx: IQueryable, key: ICaseVersionKey): Promise<void> {
+        refuseUnlessDraft(key, await requireVersionState(tx, key));
+        await runStatement(tx, deleteManifestEntriesStatement(key), raiseWriteFailure);
+        await runStatement(tx, deleteCaseVersionStatement(key), raiseWriteFailure);
+      }
+  - node: rules/knowledge/hypotheses-are-ordered-by-precedence
+    held_at: manifestSelect
+    evidence: |-
+      WHERE cvh.case_slug = $1 AND cvh.case_version = $2
+             ORDER BY cvh.position`,
+  - node: scenarios/knowledge/a-catalog-entry-follows-the-released-version
+    held_at: casesPageSelect's released subquery joined into caseCatalogEntryOf
+    evidence: |-
+      SELECT DISTINCT ON (slug) slug, version, title, when_to_use
+      FROM ${CASE_VERSIONS_TABLE}
+      WHERE state = $3
+      ORDER BY slug, version DESC
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: releaseHypothesisRevisionRow, which touches only hypothesis_revisions
+    evidence: |-
+      async function releaseHypothesisRevisionRow(tx: IQueryable, key: IRevisionKey): Promise<void> {
+        refuseUnlessHypothesisRevisionDraftAtRelease(await resolveHypothesisRevisionOwnState(tx, key));
+        await runStatement(tx, releaseHypothesisRevisionStatement(key), raiseWriteFailure);
+      }
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: insertRevisionRow, always inserting the next revision number
+    evidence: |-
+      async function insertRevisionRow(tx: IQueryable, input: HypothesisRevisionInput): Promise<number> {
+        const columns = referralColumns(input.resolution);
+        const row = await queryOneOrAbsent<{ revision: number }>(tx, revisionInsertStatement(input, columns), raiseWriteFailure);
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      This file raises domain and store errors (CaseStoreError, CaseNotFoundError, etc.) but maps
+      none of them to an HTTP status; that mapping is the HTTP layer's concern, absent from this
+      persistence file.
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      This file contains no route or request-shape validation; it operates on already-typed
+      TypeScript inputs from the port interfaces.
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      No capability-removal route or status is present in this file, which persists only the
+      knowledge (case) aggregate.
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      No glossary/concept-removal route or status is present in this file.
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      No connector-configuration-removal route or status is present in this file.
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: >-
+      This file declares no HTTP route or middleware at all; it is a persistence adapter behind
+      the case-store ports.
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: >-
+      No capability-registry read is implemented in this file.
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: >-
+      This file is itself the infrastructure adapter (imports DatabaseConnection and the
+      database-access helpers) rather than one of the domain modules the constraint's own fitness
+      audits for framework/driver imports.
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: |-
+      The whole file — every read and write goes through runInTransaction/runStatement/queryOneOrAbsent
+      against the injected DatabaseConnection, never a file
+    evidence: |-
+      import type { DatabaseConnection } from './database-connection.js';
+      ...
+      public constructor(private readonly connection: DatabaseConnection) {}
+  - node: contracts/glossary/glossary-authoring
+    held_at: nowhere
+    evidence: >-
+      This file implements no glossary operation; register-concept and remove-concept are outside
+      its port surface.
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: >-
+      This file implements no capability-registry operation.
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: >-
+      This file implements no connector-configuration-registry operation.
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: >-
+      concept_name appears only as an opaque foreign-key string (e.g. in ICollectRow and the
+      collects statements); this file declares none of the concept's own attributes (accepts, ttl,
+      description).
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: >-
+      subject is read and written as an opaque string (`subject: row.subject`); this file does not
+      declare or validate the subject-type value object itself.
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: >-
+      No capability aggregate is read, written or referenced in this file.
+  - node: domain/integration/capability-registry
+    held_at: nowhere
+    evidence: >-
+      No capability-registry operation is implemented in this file.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      No connector-configuration value object is read, written or referenced in this file.
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: >-
+      No connector-configuration-registry operation is implemented in this file.
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: >-
+      No citation value object is read, written or referenced in this file.
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: >-
+      No investigation-evidence row or table is read or written here; hypothesis_revision_collects
+      (concept names a hypothesis-revision collects) is a different table from investigation
+      evidence, and this file never queries the evidence table.
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: |-
+      isConceptCollectedByUnmanifestedHypothesisRevision / unmanifestedHypothesisRevisionCollectSelect
+      — the query answering whether a concept is still collected by a hypothesis-revision that is not
+      currently placed in any case version's manifest, the branch the rule's own broadened text ("any
+      hypothesis/revision, of any case version") requires beyond the manifested case
+    evidence: |-
+      text: `SELECT 1 FROM ${HYPOTHESIS_REVISION_COLLECTS_TABLE} hrc
+             WHERE hrc.concept_name = $1
+               AND NOT EXISTS (
+                 SELECT 1 FROM ${CASE_VERSION_HYPOTHESES_TABLE} cvh
+                 WHERE cvh.case_slug = hrc.case_slug
+                   AND cvh.hypothesis_name = hrc.hypothesis_name
+                   AND cvh.revision = hrc.revision
+               )
+             LIMIT 1`,
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      No capability-removal logic is implemented in this file.
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: >-
+      No connector-configuration removal logic is implemented in this file.
+
+looked_past: >-
+  The literal 'draft'/'released' constants duplicated across DRAFT_STATE/RELEASED_STATE and
+  HYPOTHESIS_REVISION_DRAFT_STATE/RELEASED_STATE, and resolveSourceVersion's silent acceptance of a
+  caller-supplied source_version without checking it names an existing version, are implementation
+  shape rather than an unheld domain fact and are left for a code review rather than reported here.

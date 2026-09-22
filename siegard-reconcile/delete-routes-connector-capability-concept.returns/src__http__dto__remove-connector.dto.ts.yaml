@@ -1,0 +1,143 @@
+read:
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: >-
+      the params schema declaring the route's shape, whose failure a validation layer turns into the 400 refusal
+    evidence: |
+      export const removeConnectorParamsSchema = z.object({
+        connector: z.string().min(1),
+      });
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: >-
+      import { z } from 'zod';
+  - node: contracts/integration/connector-configuration-registry
+    held_at: the connector field, naming the identifier remove-connector removes by
+    evidence: >-
+      connector: z.string().min(1),
+  - node: domain/integration/connector-configuration
+    held_at: the connector field, matching the value object's own connector attribute
+    evidence: >-
+      connector: z.string().min(1),
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: |
+      export const removeConnectorParamsSchema = z.object({
+        connector: z.string().min(1),
+      });
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |
+      export const removeConnectorParamsSchema = z.object({
+        connector: z.string().min(1),
+      });
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |
+      export const removeConnectorParamsSchema = z.object({
+        connector: z.string().min(1),
+      });
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |
+      export const removeConnectorParamsSchema = z.object({
+        connector: z.string().min(1),
+      });
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: |
+      export const removeConnectorParamsSchema = z.object({
+        connector: z.string().min(1),
+      });
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: >-
+      import { z } from 'zod';
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: |
+      export const removeConnectorParamsSchema = z.object({
+        connector: z.string().min(1),
+      });
+  - node: contracts/glossary/glossary-authoring
+    held_at: nowhere
+    evidence: |
+      export const removeConnectorParamsSchema = z.object({
+        connector: z.string().min(1),
+      });
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: |
+      export const removeConnectorParamsSchema = z.object({
+        connector: z.string().min(1),
+      });
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: |
+      export const removeConnectorParamsSchema = z.object({
+        connector: z.string().min(1),
+      });
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: |
+      export const removeConnectorParamsSchema = z.object({
+        connector: z.string().min(1),
+      });
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: |
+      export const removeConnectorParamsSchema = z.object({
+        connector: z.string().min(1),
+      });
+  - node: domain/integration/capability-registry
+    held_at: nowhere
+    evidence: |
+      export const removeConnectorParamsSchema = z.object({
+        connector: z.string().min(1),
+      });
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: |
+      export const removeConnectorParamsSchema = z.object({
+        connector: z.string().min(1),
+      });
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: |
+      export const removeConnectorParamsSchema = z.object({
+        connector: z.string().min(1),
+      });
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: |
+      export const removeConnectorParamsSchema = z.object({
+        connector: z.string().min(1),
+      });
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: |
+      export const removeConnectorParamsSchema = z.object({
+        connector: z.string().min(1),
+      });
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: |
+      export const removeConnectorParamsSchema = z.object({
+        connector: z.string().min(1),
+      });
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: |
+      export const removeConnectorParamsSchema = z.object({
+        connector: z.string().min(1),
+      });
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: |
+      export const removeConnectorParamsSchema = z.object({
+        connector: z.string().min(1),
+      });
+looked_past: >-
+  The z.string().min(1) non-empty constraint on the connector name is a technical enforcement of
+  "required" rather than a domain fact of its own, so it is not reported as an unstated rule; the
+  file's remaining scope (route wiring, response status, refusal branching) belongs to the sibling
+  controller and routes files, not this DTO.

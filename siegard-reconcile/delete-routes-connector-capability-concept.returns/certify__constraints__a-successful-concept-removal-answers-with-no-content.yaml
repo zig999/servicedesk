@@ -1,0 +1,20 @@
+certified:
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    state: covered
+    tests:
+      - file: src/__tests__/unit/http/remove-concept.routes.spec.ts
+        name: >-
+          answers 204 with a wholly empty body, identically for a concept currently held and one nothing answers,
+          records, cites or collects
+    why: >-
+      The fact is certified: with removeConcept resolving — the removal standing rather than being refused — the test
+      asserts statusCode 204 and both that the body is the empty string and that rawPayload holds zero bytes, so a route
+      answering any other status, or attaching any body to the success, fails it; the sibling tests in the file assert
+      the three refusals other nodes state and bear on this fact only by establishing that the 204 belongs to the
+      removal path alone. Two facts a reader should route rather than read as coverage of this node: the same test also
+      asserts removeConcept was called with 'a-concept' and 'an-absent-concept', which binds the controller's internal
+      call to its injected dependency and would fail on a rearrangement that still answered 204 with no body — excess
+      over what this node states; and the test's name claims the answer is identical for a concept currently held and
+      one nothing references, while the double-resolved mock makes those two injections the same path, so the
+      held/unheld distinction the name announces is not in fact exercised by anything in the offered proof. Neither
+      weakens the 204-with-no-body assertions, which stand on their own.

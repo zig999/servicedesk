@@ -1,0 +1,88 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the whole file — a port interface and its identity type, carrying no import
+      statement at all
+    evidence: |-
+      export type CapabilityIdentityForEvidenceUsageCheck = {
+        readonly name: string;
+        readonly version: string;
+      };
+
+      export interface IEvidenceUsageReader {
+
+        isCapabilityNamedByEvidence(identity: CapabilityIdentityForEvidenceUsageCheck): Promise<boolean>;
+      }
+  - node: domain/integration/capability
+    held_at: the `CapabilityIdentityForEvidenceUsageCheck` type, lines 1-4
+    evidence: |-
+      export type CapabilityIdentityForEvidenceUsageCheck = {
+        readonly name: string;
+        readonly version: string;
+      };
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: 'export interface IEvidenceUsageReader {'
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: 'export interface IEvidenceUsageReader {'
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: 'export interface IEvidenceUsageReader {'
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: 'export interface IEvidenceUsageReader {'
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: 'export interface IEvidenceUsageReader {'
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: 'export interface IEvidenceUsageReader {'
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: 'export interface IEvidenceUsageReader {'
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: 'export interface IEvidenceUsageReader {'
+  - node: contracts/glossary/glossary-authoring
+    held_at: nowhere
+    evidence: 'export interface IEvidenceUsageReader {'
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: 'export interface IEvidenceUsageReader {'
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: 'export interface IEvidenceUsageReader {'
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: 'export interface IEvidenceUsageReader {'
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: 'export interface IEvidenceUsageReader {'
+  - node: domain/integration/capability-registry
+    held_at: nowhere
+    evidence: 'export interface IEvidenceUsageReader {'
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: 'export interface IEvidenceUsageReader {'
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: 'export interface IEvidenceUsageReader {'
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: 'export interface IEvidenceUsageReader {'
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: 'export interface IEvidenceUsageReader {'
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: 'export interface IEvidenceUsageReader {'
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: 'export interface IEvidenceUsageReader {'
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: the `isCapabilityNamedByEvidence` method signature, line 8
+    evidence: 'isCapabilityNamedByEvidence(identity: CapabilityIdentityForEvidenceUsageCheck): Promise<boolean>;'
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: 'export interface IEvidenceUsageReader {'

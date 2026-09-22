@@ -1,0 +1,125 @@
+read:
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: the `if (!parsedParams.success)` branch of removeConceptHandler
+    evidence: |-
+      return reply.code(400).send({ error: { code: 'VALIDATION_ERROR', message: 'the request path failed validation', details: issues } });
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: the final statement of removeConceptHandler
+    evidence: |-
+      return reply.code(204).send();
+  - node: constraints/no-route-enforces-authentication
+    held_at: >-
+      the route registration in createRemoveConceptRoutesPlugin, which wires the DELETE route
+      to the handler with no authentication hook, guard or middleware in between
+    evidence: |-
+      app.delete(`${API_PREFIX}/glossary/concepts/:name`, (request, reply) =>
+        removeConceptHandler(dependencies, request, reply),
+      );
+  - node: contracts/glossary/glossary-authoring
+    held_at: the DELETE route registration, which implements the contract's remove-concept operation
+    evidence: |-
+      app.delete(`${API_PREFIX}/glossary/concepts/:name`, (request, reply) =>
+        removeConceptHandler(dependencies, request, reply),
+      );
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: >-
+      `${API_PREFIX}/glossary/concepts/:name` — the file carries the concept's name only as a
+      routing parameter used to identify it for removal; it declares or reads none of the value
+      object's other attributes (accepts, ttl, description)
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: |-
+      await handleRemoveConceptRequest(dependencies, parsedParams.data);
+      return reply.code(204).send();
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the file's only route is `${API_PREFIX}/glossary/concepts/:name`; nothing in it concerns a
+      capability removal
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the file's only route is `${API_PREFIX}/glossary/concepts/:name`; nothing in it concerns a
+      connector configuration removal
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: >-
+      the file's only route is `${API_PREFIX}/glossary/concepts/:name`; it declares no
+      capability-identity read
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: |-
+      import type { FastifyInstance, FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify';
+      import { handleRemoveConceptRequest, type RemoveConceptControllerDependencies } from './remove-concept.controller.js';
+      import { removeConceptParamsSchema } from './dto/remove-concept.dto.js';
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: >-
+      the file holds no store, connection or persistence call of any kind — it only parses
+      params, delegates to `handleRemoveConceptRequest`, and writes the HTTP response
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: >-
+      the file's only route is `${API_PREFIX}/glossary/concepts/:name`; none of the
+      capability-registry operations appear
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: >-
+      the file's only route is `${API_PREFIX}/glossary/concepts/:name`; none of the
+      connector-configuration-registry operations appear
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: >-
+      the file references no subject-type value; it only reads the `:name` path parameter
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: >-
+      the file declares no capability attribute (name, version, nature, schemas, timeout,
+      connector, concept, payload_notes)
+  - node: domain/integration/capability-registry
+    held_at: nowhere
+    evidence: >-
+      the file invokes no capability-registry operation (register-capability, remove-capability,
+      resolve-concept)
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      the file declares no connector or configuration attribute
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: >-
+      the file invokes no connector-configuration-registry operation
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: >-
+      the file declares no citation, concept-plus-field pair
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: >-
+      the file declares no evidence attribute or reference to a collected observation
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: >-
+      the file declares no hypothesis-revision attribute or operation
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: |-
+      const parsedParams = removeConceptParamsSchema.safeParse(request.params);
+      if (!parsedParams.success) { ... }
+      await handleRemoveConceptRequest(dependencies, parsedParams.data);
+      return reply.code(204).send();
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      the file's only route is `${API_PREFIX}/glossary/concepts/:name`; nothing in it concerns a
+      capability removal or evidence citation
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: >-
+      the file's only route is `${API_PREFIX}/glossary/concepts/:name`; nothing in it concerns a
+      connector configuration removal
+looked_past: >-
+  the choice of HTTP method DELETE, the `/v1` prefix constant and the `{ error: { ... } }`
+  response envelope are routing conventions this file shares with the sibling remove routes
+  rather than domain facts, so they were not weighed as findings.

@@ -1,0 +1,132 @@
+read:
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: >-
+      the ConceptInUseError class's constructor (message and name) and the describe function's
+      four-branch switch, which enumerates exactly the four reference kinds the rule names as
+      blocking a concept's removal
+    evidence: |-
+      super(`the glossary refuses to remove concept "${concept}": it is still named by ${describe(reference)}`);
+      this.name = 'ConceptInUseError';
+      ...
+      case 'capability':
+        return 'a registered capability that answers it';
+      case 'evidence':
+        return 'a collected evidence item';
+      case 'citation':
+        return 'an evaluation citation';
+      case 'hypothesis-revision-collects':
+        return "a hypothesis-revision's own collects";
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      export class ConceptInUseError extends Error { ... } — the file constructs a domain error
+      and its message/context but performs no status mapping or generic-fallback handling.
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      the file declares only ConceptInUseError and its describe helper; nothing here validates a
+      request's path, query or body.
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the file's only export is ConceptInUseError, which models a refusal, not a capability
+      removal's successful answer.
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the file's only export is ConceptInUseError, which models the refusal of a concept removal,
+      not the successful, no-content answer.
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the file has no reference to connector configurations or their removal's answer.
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: >-
+      the file declares an error class and a describe helper; it contains no route, guard or
+      authentication check.
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: >-
+      the only capability-related text in the file is the switch's `case 'capability':` label
+      naming a reference kind; nothing here reads a capability by identity.
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: >-
+      import type { ConceptUsageReference } from '../glossary/concept-usage-reader.port.js'; —
+      the file imports a type only, and otherwise extends the built-in Error; it names no
+      framework, driver or provider client, but nothing here declares or enforces that domain
+      constraint either.
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: >-
+      the file holds no store, connection or persistence logic.
+  - node: contracts/glossary/glossary-authoring
+    held_at: nowhere
+    evidence: >-
+      the file exports an error class, not an operation, route or service method; register-concept
+      and remove-concept are not named here.
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: >-
+      the file's only capability-related text is the switch's `case 'capability':` label; the
+      registry's own operations are not present.
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: >-
+      the file has no reference to connector configurations or their registry.
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: >-
+      public constructor(concept: string, reference: ConceptUsageReference) — concept is carried
+      as a bare string identifier, not as the concept value-object's own declared attributes.
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: >-
+      the file makes no reference to subject types.
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: >-
+      case 'capability': return 'a registered capability that answers it'; — the file only names
+      the reference kind by string; it does not hold the capability's own declared attributes.
+  - node: domain/integration/capability-registry
+    held_at: nowhere
+    evidence: >-
+      the file's only capability-related text is the switch's `case 'capability':` label; the
+      registry's own operations and responsibilities are not present.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      the file has no reference to connector configurations.
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: >-
+      the file has no reference to the connector configuration registry.
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: >-
+      case 'citation': return 'an evaluation citation'; — the file only names the reference kind
+      by string; it does not hold the citation value-object's own declared attributes.
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: >-
+      case 'evidence': return 'a collected evidence item'; — the file only names the reference
+      kind by string; it does not hold the evidence value-object's own declared attributes.
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: >-
+      case 'hypothesis-revision-collects': return "a hypothesis-revision's own collects"; — the
+      file only names the reference kind by string; it does not hold the hypothesis-revision
+      aggregate's own declared attributes or operations.
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      the file names only ConceptInUseError; CapabilityCitedByEvidenceError and the capability
+      removal refusal this rule states live outside this file.
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: >-
+      the file has no reference to connector configuration removal.
+looked_past: >-
+  the describe function's switch has no default/exhaustiveness guard beyond TypeScript's own
+  control-flow narrowing, which is a code-quality question rather than a domain-fact one.

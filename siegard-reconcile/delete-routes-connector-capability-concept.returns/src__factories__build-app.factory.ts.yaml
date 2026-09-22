@@ -1,0 +1,143 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      composeResources, which threads one shared DatabaseConnection into every store/service
+      factory rather than letting a domain service reach out to infrastructure itself.
+    evidence: |-
+      const capabilitiesReader = createCapabilitiesReader(connection);
+        const capabilityRegistry = createCapabilityRegistry(connection, createConnectorConfigurationsReader(connection));
+        const connectorConfigurationRegistry = createConnectorConfigurationRegistry(connection, capabilitiesReader);
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: >-
+      draftConnectorConfigurationFromOpenApiDependencies, readOpenApiDocumentOperationsDependencies
+      and draftCapabilitySchemaFromOpenApiDependencies, each instantiating the fetcher server-side.
+    evidence: "documentFetcher: new OpenApiDocumentFetcher(),"
+  - node: contracts/glossary/glossary-authoring
+    held_at: composeResources and removeConceptDependencies, wiring register-concept and remove-concept to the glossary service.
+    evidence: "registerConcept: (registration) => glossary.registerConcept(registration), removeConcept: (name) => glossary.removeConcept(name),"
+  - node: contracts/integration/capability-registry
+    held_at: composeResources, readDependencies, listDependencies and removeCapabilityDependencies, wiring all five operations.
+    evidence: "removeCapability: (name, version) => capabilityRegistry.removeCapability(name, version),"
+  - node: contracts/integration/connector-configuration-registry
+    held_at: composeResources, readDependencies, listDependencies and removeConnectorDependencies, wiring all four operations.
+    evidence: "removeConnector: (connector) => connectorConfigurationRegistry.removeConnector(connector),"
+  - node: contracts/integration/openapi-document-operations
+    held_at: readOpenApiDocumentOperationsDependencies.
+    evidence: |-
+      function readOpenApiDocumentOperationsDependencies(): Pick<BuildAppDependencies, 'readOpenApiDocumentOperations'> {
+        const dependencies: ReadOpenApiDocumentOperationsControllerDependencies = {
+          documentFetcher: new OpenApiDocumentFetcher(),
+        };
+  - node: contracts/knowledge/case-input-requirements
+    held_at: readDependencies.
+    evidence: "readCaseInputRequirements: { caseInputRequirementsQuery: resources.caseInputRequirementsQuery },"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: lifecycleDependencies, wiring all eight lifecycle operations.
+    evidence: |-
+      createDraft: { createDraft: caseLifecycle.createDraft },
+        updateDraft: { caseStore, caseQuery },
+        release: { release: caseLifecycle.release, caseQuery },
+        releaseHypothesisRevision: { releaseHypothesisRevision: caseLifecycle.releaseHypothesisRevision },
+        discard: { discard: caseLifecycle.discard },
+        reviseHypothesis: { reviseHypothesis: caseLifecycle.reviseHypothesis },
+        placeHypothesis: { placeHypothesis: caseLifecycle.placeHypothesis },
+        removeHypothesis: { removeHypothesis: caseLifecycle.removeHypothesis },
+  - node: domain/integration/capability-registry
+    held_at: composeResources, wiring register-capability and remove-capability to the capability registry service.
+    evidence: "registerCapability: (registration) => capabilityRegistry.registerCapability(registration),\n    removeCapability: (name, version) => capabilityRegistry.removeCapability(name, version),"
+  - node: domain/integration/connector-configuration-registry
+    held_at: composeResources, wiring register-connector and remove-connector to the connector configuration registry service.
+    evidence: "registerConnector: (registration) => connectorConfigurationRegistry.registerConnector(registration),\n    removeConnector: (connector) => connectorConfigurationRegistry.removeConnector(connector),"
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      removeConcept: (name) => glossary.removeConcept(name), — this file only delegates the call to
+      the glossary service; the refusal conditions the rule states are not decided here.
+  - node: rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      readConnectorConfigurationOrThrow: (connector) => connectorConfigurationRegistry.readConnectorConfigurationOrThrow(connector),
+      — this file only wires the throwing read to controllers; the 404/refusal itself is not decided here.
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: |-
+      return {
+          bodyLimit: env.MAX_REQUEST_BODY_BYTES,
+          diagnose,
+          simulateCase,
+          simulateHypothesis,
+          ...readDependencies(resources),
+          ...listDependencies(resources),
+          ...lifecycleDependencies(resources),
+          ...registrationDependencies(resources),
+          ...removeConnectorDependencies(resources),
+          ...removeCapabilityDependencies(resources),
+          ...removeConceptDependencies(resources),
+          ...testConnectorDependencies(resources),
+          ...draftConnectorConfigurationFromOpenApiDependencies(resources),
+          ...readOpenApiDocumentOperationsDependencies(),
+          ...draftCapabilitySchemaFromOpenApiDependencies(),
+        };
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: This file composes dependency objects only; it declares no route shape or validation.
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: "removeCapability: { removeCapability: resources.removeCapability },"
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: "removeConcept: { removeConcept: resources.removeConcept },"
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: "removeConnector: { removeConnector: resources.removeConnector },"
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: This file builds dependency objects for controllers; it declares no route and no authentication check.
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: "readCapabilityByIdentityOrThrow: (name, version) => capabilityRegistry.readCapabilityByIdentityOrThrow(name, version),"
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: composeResources, passing the one connection argument into every store/service factory.
+    evidence: |-
+      function composeResources(env: Env, connection: DatabaseConnection, caseQuery: ICaseQuery): ComposedResources {
+        const capabilitiesReader = createCapabilitiesReader(connection);
+        const capabilityRegistry = createCapabilityRegistry(connection, createConnectorConfigurationsReader(connection));
+        const connectorConfigurationRegistry = createConnectorConfigurationRegistry(connection, capabilitiesReader);
+        const evidenceUsageReader = createEvidenceUsageReader(connection);
+        const conceptUsageReader = createConceptUsageReader(connection, capabilityRegistry);
+        const glossary = createGlossary(connection, conceptUsageReader);
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: This file imports only port and service types (e.g. IGlossaryQuery), never the concept value-object module.
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: This file imports only port and service types; the subject-type module is not referenced.
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: This file imports ICapabilityQuery and CapabilityRegistryService, not the capability aggregate module.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: This file imports ConnectorConfigurationRegistryService and its resolution type, not the connector-configuration value-object module.
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: This file does not import or reference the citation module.
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: "readonly evidenceUsageReader: IEvidenceUsageReader;"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "releaseHypothesisRevision: { releaseHypothesisRevision: caseLifecycle.releaseHypothesisRevision },"
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      removeCapability: (name, version) => capabilityRegistry.removeCapability(name, version), —
+      this file only delegates; the citation guard the rule states is not decided here.
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: >-
+      removeConnector: (connector) => connectorConfigurationRegistry.removeConnector(connector), —
+      this file only delegates; the unconditionality the rule states is not decided here.
+looked_past: >-
+  Line 89 crams two dependency bindings (registerConcept and removeConcept) onto one physical
+  line, and testConnectorDependencies wires the global fetch directly as httpClient — both are
+  style/composition-root concerns, not domain facts, and outside this pass's judgment.

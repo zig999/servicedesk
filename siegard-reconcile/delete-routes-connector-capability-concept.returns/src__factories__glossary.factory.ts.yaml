@@ -1,0 +1,192 @@
+read:
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: >-
+      the store construction inside createGlossary, wiring the sole
+      RelationalGlossaryStore over the one injected DatabaseConnection
+    evidence: >-
+      return new GlossaryService(new RelationalGlossaryStore(connection), conceptUsageReader);
+  - node: contracts/glossary/glossary-query
+    held_at: >-
+      createGlossaryQuery, which hands back the GlossaryService instance typed as IGlossaryQuery
+    evidence: |-
+      export function createGlossaryQuery(connection: DatabaseConnection): IGlossaryQuery {
+        return createGlossary(connection);
+      }
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: >-
+      only the conceptUsageReader default and its pass-through into GlossaryService; the
+      refusal decision itself (throwing on usage.named) is made in
+      glossary.service.ts's removeConcept, not in this file
+    evidence: |-
+      const NO_CONCEPT_NAMED: IConceptUsageReader = {
+        readConceptUsage: () => Promise.resolve({ named: false }),
+      };
+
+      export function createGlossary(
+        connection: DatabaseConnection,
+        conceptUsageReader: IConceptUsageReader = NO_CONCEPT_NAMED,
+      ): GlossaryService {
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: |-
+      export function createGlossary(
+        connection: DatabaseConnection,
+        conceptUsageReader: IConceptUsageReader = NO_CONCEPT_NAMED,
+      ): GlossaryService {
+        return new GlossaryService(new RelationalGlossaryStore(connection), conceptUsageReader);
+      }
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: |-
+      export function createGlossary(
+        connection: DatabaseConnection,
+        conceptUsageReader: IConceptUsageReader = NO_CONCEPT_NAMED,
+      ): GlossaryService {
+        return new GlossaryService(new RelationalGlossaryStore(connection), conceptUsageReader);
+      }
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      export function createGlossary(
+        connection: DatabaseConnection,
+        conceptUsageReader: IConceptUsageReader = NO_CONCEPT_NAMED,
+      ): GlossaryService {
+        return new GlossaryService(new RelationalGlossaryStore(connection), conceptUsageReader);
+      }
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      export function createGlossary(
+        connection: DatabaseConnection,
+        conceptUsageReader: IConceptUsageReader = NO_CONCEPT_NAMED,
+      ): GlossaryService {
+        return new GlossaryService(new RelationalGlossaryStore(connection), conceptUsageReader);
+      }
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      export function createGlossary(
+        connection: DatabaseConnection,
+        conceptUsageReader: IConceptUsageReader = NO_CONCEPT_NAMED,
+      ): GlossaryService {
+        return new GlossaryService(new RelationalGlossaryStore(connection), conceptUsageReader);
+      }
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: |-
+      import type { IConceptUsageReader } from '../glossary/concept-usage-reader.port.js';
+      import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
+      import { GlossaryService } from '../glossary/glossary.service.js';
+      import type { DatabaseConnection } from '../persistence/database-connection.js';
+      import { RelationalGlossaryStore } from '../persistence/relational-glossary-store.repository.js';
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: |-
+      import type { IConceptUsageReader } from '../glossary/concept-usage-reader.port.js';
+      import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
+      import { GlossaryService } from '../glossary/glossary.service.js';
+      import type { DatabaseConnection } from '../persistence/database-connection.js';
+      import { RelationalGlossaryStore } from '../persistence/relational-glossary-store.repository.js';
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: |-
+      import type { DatabaseConnection } from '../persistence/database-connection.js';
+      import { RelationalGlossaryStore } from '../persistence/relational-glossary-store.repository.js';
+  - node: contracts/glossary/glossary-authoring
+    held_at: nowhere
+    evidence: |-
+      export function createGlossary(
+        connection: DatabaseConnection,
+        conceptUsageReader: IConceptUsageReader = NO_CONCEPT_NAMED,
+      ): GlossaryService {
+        return new GlossaryService(new RelationalGlossaryStore(connection), conceptUsageReader);
+      }
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: |-
+      import type { IConceptUsageReader } from '../glossary/concept-usage-reader.port.js';
+      import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
+      import { GlossaryService } from '../glossary/glossary.service.js';
+      import type { DatabaseConnection } from '../persistence/database-connection.js';
+      import { RelationalGlossaryStore } from '../persistence/relational-glossary-store.repository.js';
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: |-
+      import type { IConceptUsageReader } from '../glossary/concept-usage-reader.port.js';
+      import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
+      import { GlossaryService } from '../glossary/glossary.service.js';
+      import type { DatabaseConnection } from '../persistence/database-connection.js';
+      import { RelationalGlossaryStore } from '../persistence/relational-glossary-store.repository.js';
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: |-
+      export function createGlossaryQuery(connection: DatabaseConnection): IGlossaryQuery {
+        return createGlossary(connection);
+      }
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: |-
+      export function createGlossaryQuery(connection: DatabaseConnection): IGlossaryQuery {
+        return createGlossary(connection);
+      }
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: |-
+      import type { IConceptUsageReader } from '../glossary/concept-usage-reader.port.js';
+      import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
+      import { GlossaryService } from '../glossary/glossary.service.js';
+  - node: domain/integration/capability-registry
+    held_at: nowhere
+    evidence: |-
+      import type { IConceptUsageReader } from '../glossary/concept-usage-reader.port.js';
+      import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
+      import { GlossaryService } from '../glossary/glossary.service.js';
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: |-
+      import type { IConceptUsageReader } from '../glossary/concept-usage-reader.port.js';
+      import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
+      import { GlossaryService } from '../glossary/glossary.service.js';
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: |-
+      import type { IConceptUsageReader } from '../glossary/concept-usage-reader.port.js';
+      import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
+      import { GlossaryService } from '../glossary/glossary.service.js';
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: |-
+      const NO_CONCEPT_NAMED: IConceptUsageReader = {
+        readConceptUsage: () => Promise.resolve({ named: false }),
+      };
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: |-
+      const NO_CONCEPT_NAMED: IConceptUsageReader = {
+        readConceptUsage: () => Promise.resolve({ named: false }),
+      };
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: |-
+      const NO_CONCEPT_NAMED: IConceptUsageReader = {
+        readConceptUsage: () => Promise.resolve({ named: false }),
+      };
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: |-
+      import type { IConceptUsageReader } from '../glossary/concept-usage-reader.port.js';
+      import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
+      import { GlossaryService } from '../glossary/glossary.service.js';
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: |-
+      import type { IConceptUsageReader } from '../glossary/concept-usage-reader.port.js';
+      import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
+      import { GlossaryService } from '../glossary/glossary.service.js';
+looked_past: >-
+  The NO_CONCEPT_NAMED default object literal here duplicates the identically-shaped
+  default already declared inside glossary.service.ts (both default an unsupplied
+  conceptUsageReader to `{ named: false }`); it carries no independent value, threshold
+  or name of its own and never runs in production (build-app.factory.ts always wires the
+  real reader), so it reads as wiring redundancy rather than a domain-fact conflict for
+  this pass.

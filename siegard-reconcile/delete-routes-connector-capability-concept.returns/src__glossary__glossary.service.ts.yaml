@@ -1,0 +1,272 @@
+read:
+  - node: constraints/listings-are-paged
+    held_at: >-
+      listVocabularyTerms and listConcepts, which page the full held set by offset and limit and report
+      total, offset, limit and page count.
+    evidence: |-
+      public async listConcepts(pagination: PaginationRequest): Promise<PaginatedResponse<Concept>> {
+          const held = await this.concepts();
+          const data = held.slice(pagination.offset, pagination.offset + pagination.limit);
+          return {
+            data,
+            total: held.length,
+            limit: pagination.limit,
+            offset: pagination.offset,
+            pageCount: pageCountOf(held.length, pagination.limit),
+          };
+        }
+  - node: contracts/glossary/glossary-authoring
+    held_at: registerConcept (register-concept) and removeConcept (remove-concept).
+    evidence: |-
+      public async registerConcept(registration: ConceptRegistration): Promise<Concept> {
+      ...
+      public async removeConcept(name: string): Promise<void> {
+          const usage = await this.conceptUsageReader.readConceptUsage(name);
+          if (usage.named) {
+            throw new ConceptInUseError(name, usage.reference);
+          }
+          await this.store.deleteConcept(name);
+        }
+  - node: contracts/glossary/glossary-query
+    held_at: readVocabularyTerm, readConcept, listVocabularyTerms and listConcepts.
+    evidence: |-
+      public async readVocabularyTerm(vocabulary: TermVocabulary, name: string): Promise<TermResolution> {
+      public async readConcept(name: string): Promise<ConceptResolution> {
+      public async listVocabularyTerms(
+      public async listConcepts(pagination: PaginationRequest): Promise<PaginatedResponse<Concept>> {
+  - node: domain/glossary/action
+    held_at: >-
+      the generic terms(vocabulary) method, which handles every TermVocabulary (including action) uniformly
+      except outcome; no action-specific branch exists.
+    evidence: |-
+      public async terms(vocabulary: TermVocabulary): Promise<readonly GlossaryTerm[]> {
+          const held = await this.store.readTerms(vocabulary);
+          assertUniqueNames(vocabulary, held);
+          if (vocabulary !== 'outcome') {
+            return held;
+          }
+  - node: domain/glossary/concept
+    held_at: concepts(), which maps stored registrations to the Concept shape (name, accepts, ttl, description).
+    evidence: |-
+      return registrations.map((registration) => ({
+          name: registration.name,
+          accepts: registration.accepts,
+          ttl: registration.ttl ?? DEFAULT_CONCEPT_TTL_SECONDS,
+          description: registration.description ?? '',
+        }));
+  - node: domain/glossary/outcome
+    held_at: >-
+      terms()'s outcome branch and withNonConclusionOutcomes, which ensure the two non-conclusion outcomes are
+      present.
+    evidence: |-
+      if (vocabulary !== 'outcome') {
+            return held;
+          }
+          return this.withNonConclusionOutcomes(held);
+  - node: domain/glossary/recipient
+    held_at: >-
+      the same generic terms(vocabulary) mechanism as action; no recipient-specific branch exists in this file.
+    evidence: |-
+      public async terms(vocabulary: TermVocabulary): Promise<readonly GlossaryTerm[]> {
+          const held = await this.store.readTerms(vocabulary);
+          assertUniqueNames(vocabulary, held);
+  - node: domain/glossary/subject-type
+    held_at: >-
+      the same generic terms(vocabulary) mechanism as action and recipient; no subject-type-specific branch
+      exists in this file.
+    evidence: |-
+      public async terms(vocabulary: TermVocabulary): Promise<readonly GlossaryTerm[]> {
+          const held = await this.store.readTerms(vocabulary);
+          assertUniqueNames(vocabulary, held);
+  - node: rules/glossary/a-concept-declares-its-description
+    held_at: registerConcept's refusal at the top of the method, before any write.
+    evidence: |-
+      if (namesNoDescription(registration.description)) {
+            throw new ConceptDescriptionRequiredError(registration.name, registration.description);
+          }
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: >-
+      readVocabularyTerm and readConcept, which answer the absence as an ordinary { held: false } resolution
+      rather than throwing — the internal-resolution half of the rule; the HTTP refusal itself is not in this
+      file.
+    evidence: |-
+      const term = held.find((candidate) => candidate.name === name);
+          return term === undefined ? { held: false, vocabulary, name } : { held: true, term };
+        }
+
+        public async readConcept(name: string): Promise<ConceptResolution> {
+          const held = await this.concepts();
+          const concept = held.find((candidate) => candidate.name === name);
+          return concept === undefined ? { held: false, name } : { held: true, concept };
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: >-
+      registerConcept's replace-by-name write (never dropping any other concept) and removeConcept's
+      usage-guarded delete.
+    evidence: |-
+      const held = await this.concepts();
+          const kept = held.filter((candidate) => candidate.name !== concept.name);
+          await this.store.writeConcepts([...kept, concept]);
+          ...
+          const usage = await this.conceptUsageReader.readConceptUsage(name);
+          if (usage.named) {
+            throw new ConceptInUseError(name, usage.reference);
+          }
+          await this.store.deleteConcept(name);
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: assertUniqueNames, invoked from both terms() and concepts().
+    evidence: |-
+      function assertUniqueNames(vocabulary: string, records: readonly { readonly name: string }[]): void {
+        const seen = new Set<string>();
+        for (const record of records) {
+          if (seen.has(record.name)) {
+            throw new DuplicateGlossaryNameError(vocabulary, record.name);
+          }
+          seen.add(record.name);
+        }
+      }
+  - node: rules/glossary/the-non-conclusion-outcomes-precede-the-first-case
+    held_at: withNonConclusionOutcomes, which only inserts whichever of the two outcomes is missing.
+    evidence: |-
+      private async withNonConclusionOutcomes(held: readonly GlossaryTerm[]): Promise<readonly GlossaryTerm[]> {
+          const missing = NON_CONCLUSION_OUTCOMES.filter(
+            (outcome) => !held.some((term) => term.name === outcome.name),
+          );
+          if (missing.length === 0) {
+            return held;
+          }
+          await this.store.insertMissingTerms('outcome', missing);
+          return [...held, ...missing];
+        }
+  - node: rules/knowledge/a-collected-concept-declares-a-ttl
+    held_at: >-
+      the absent-ttl default only, applied in registerConcept and concepts(); no check in this file refuses a
+      stated ttl of zero, a negative number, or a non-integer.
+    evidence: |-
+      ttl: registration.ttl ?? DEFAULT_CONCEPT_TTL_SECONDS,
+  - node: scenarios/glossary/a-concept-with-no-description-is-refused
+    held_at: registerConcept's refusal, which throws before store.writeConcepts is ever called.
+    evidence: |-
+      if (namesNoDescription(registration.description)) {
+            throw new ConceptDescriptionRequiredError(registration.name, registration.description);
+          }
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: |-
+      export class GlossaryService implements IGlossaryQuery {
+        public constructor(
+          private readonly store: IGlossaryStore,
+          private readonly conceptUsageReader: IConceptUsageReader = NO_CONCEPT_NAMED,
+        ) {}
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: |-
+      export class GlossaryService implements IGlossaryQuery {
+        public constructor(
+          private readonly store: IGlossaryStore,
+          private readonly conceptUsageReader: IConceptUsageReader = NO_CONCEPT_NAMED,
+        ) {}
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      export class GlossaryService implements IGlossaryQuery {
+        public constructor(
+          private readonly store: IGlossaryStore,
+          private readonly conceptUsageReader: IConceptUsageReader = NO_CONCEPT_NAMED,
+        ) {}
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      public async removeConcept(name: string): Promise<void> {
+          const usage = await this.conceptUsageReader.readConceptUsage(name);
+          if (usage.named) {
+            throw new ConceptInUseError(name, usage.reference);
+          }
+          await this.store.deleteConcept(name);
+        }
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      export class GlossaryService implements IGlossaryQuery {
+        public constructor(
+          private readonly store: IGlossaryStore,
+          private readonly conceptUsageReader: IConceptUsageReader = NO_CONCEPT_NAMED,
+        ) {}
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: |-
+      export class GlossaryService implements IGlossaryQuery {
+        public constructor(
+          private readonly store: IGlossaryStore,
+          private readonly conceptUsageReader: IConceptUsageReader = NO_CONCEPT_NAMED,
+        ) {}
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: |-
+      export class GlossaryService implements IGlossaryQuery {
+        public constructor(
+          private readonly store: IGlossaryStore,
+          private readonly conceptUsageReader: IConceptUsageReader = NO_CONCEPT_NAMED,
+        ) {}
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the import list, which names only local error, type and port modules — no framework, driver or provider
+      client.
+    evidence: |-
+      import { ConceptDescriptionRequiredError } from '../errors/concept-description-required.error.js';
+      import { ConceptInUseError } from '../errors/concept-in-use.error.js';
+      import { DuplicateGlossaryNameError } from '../errors/duplicate-glossary-name.error.js';
+      import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
+      import type { IConceptUsageReader } from './concept-usage-reader.port.js';
+      import type { ConceptResolution, IGlossaryQuery, TermResolution } from './glossary-query.port.js';
+      import type { IGlossaryStore } from './glossary-store.port.js';
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: |-
+      private readonly store: IGlossaryStore,
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: |-
+      export class GlossaryService implements IGlossaryQuery {
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: |-
+      export class GlossaryService implements IGlossaryQuery {
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: |-
+      export class GlossaryService implements IGlossaryQuery {
+  - node: domain/integration/capability-registry
+    held_at: nowhere
+    evidence: |-
+      export class GlossaryService implements IGlossaryQuery {
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: |-
+      export class GlossaryService implements IGlossaryQuery {
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: |-
+      export class GlossaryService implements IGlossaryQuery {
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: |-
+      export class GlossaryService implements IGlossaryQuery {
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: |-
+      export class GlossaryService implements IGlossaryQuery {
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: |-
+      export class GlossaryService implements IGlossaryQuery {
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: |-
+      export class GlossaryService implements IGlossaryQuery {
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: |-
+      export class GlossaryService implements IGlossaryQuery {
+looked_past: >-
+  The NO_CONCEPT_NAMED default-injection pattern for conceptUsageReader, the double-negative naming of
+  namesNoDescription, and other structural/style choices are code-quality matters this pass does not judge.

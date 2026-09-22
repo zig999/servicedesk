@@ -1,0 +1,31 @@
+certified:
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    state: partial
+    tests:
+      - file: src/__tests__/unit/http/remove-connector.routes.spec.ts
+        name: >-
+          answers 204 with a wholly empty body, identically for a connector name currently
+          registered and one nothing is registered under
+    why: >-
+      The status-and-absent-body half is exercised and would fail if it stopped holding: the test
+      asserts statusCode 204, body '' and rawPayload.length 0 on the answer. The other half the
+      node states — "the same answer whether a configuration stood at that name or none did" — is
+      unexercised. The test drives a Fastify instance whose removeConnector is a vi.fn() mocked to
+      resolve undefined for both injections, so nothing in it ever places the system in the state
+      where no configuration stands at the requested name; the two injections differ only in the
+      path string, and the mocked dependency answers both identically by construction. If the
+      absent-name branch stopped answering 204 with no body — removeConnector signalling absence
+      and the surface rendering it as anything other than 204 — this test would still pass. The
+      node's own fitness asks for a test that "removes a registered connector configuration and
+      then a connector name nothing is registered under", and its scope is integration; the offered
+      proof registers nothing and removes nothing. The test's closing assertions
+      (toHaveBeenNthCalledWith on the mock) assert an internal call rather than the answer, so they
+      add nothing to the fact. The file's other two tests bear on the surface's two refusals, which
+      this node places in their own nodes rather than stating here.
+    remainder: testable
+    remainder_why: >-
+      One test at the node's stated integration scope, over the real removal path rather than a
+      mock: register a connector configuration, issue DELETE /v1/connectors/:connector for its
+      name, then issue DELETE for a name nothing is registered under (the just-removed name serves),
+      and assert each of the two answers is HTTP 204 with a wholly empty body — the same status and
+      the same absent body, with nothing in either answer telling the two apart.

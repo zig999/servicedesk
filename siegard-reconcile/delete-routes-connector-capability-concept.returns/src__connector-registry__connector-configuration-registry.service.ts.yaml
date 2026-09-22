@@ -1,0 +1,215 @@
+read:
+  - node: constraints/listings-are-paged
+    held_at: >-
+      the return statement of listConnectorConfigurations(), lines 66-72
+    evidence: |
+      return {
+        data,
+        total,
+        limit: pagination.limit,
+        offset: pagination.offset,
+        pageCount: pageCountOf(total, pagination.limit),
+      };
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the file's own import list, lines 1-15 — every import is an own-domain
+      error, an own type, or a port interface
+    evidence: |
+      import { ConnectorConfigurationNotFoundError } from '../errors/connector-configuration-not-found.error.js';
+      import { ConnectorConfigurationNotWellFormedError } from '../errors/connector-configuration-not-well-formed.error.js';
+      import type { IConnectorConfigurationStore } from './connector-configuration-store.port.js';
+  - node: contracts/integration/connector-configuration-registry
+    held_at: >-
+      the class's four public methods — registerConnector, removeConnector,
+      readConnectorConfiguration/readConnectorConfigurationOrThrow and
+      listConnectorConfigurations — lines 31-77
+    evidence: |
+      public async registerConnector(
+      public async removeConnector(connector: string): Promise<void> {
+      public async readConnectorConfiguration(connector: string): Promise<ConnectorConfigurationResolution> {
+      public async listConnectorConfigurations(
+  - node: domain/integration/connector-configuration
+    held_at: registerConnector(), lines 34-39
+    evidence: |
+      const configuration = heldConfiguration(registration);
+      await this.refuseOrphanedPlaceholders(configuration);
+      const held = await this.store.readConnectorConfigurations();
+      const kept = held.filter((candidate) => candidate.connector !== configuration.connector);
+      await this.store.writeConnectorConfigurations([...kept, configuration]);
+  - node: domain/integration/connector-configuration-registry
+    held_at: >-
+      the whole ConnectorConfigurationRegistryService class — registerConnector,
+      removeConnector and refuseOrphanedPlaceholders together
+    evidence: |
+      export class ConnectorConfigurationRegistryService {
+        public async registerConnector(
+        public async removeConnector(connector: string): Promise<void> {
+        private async refuseOrphanedPlaceholders(configuration: ConnectorConfiguration): Promise<void> {
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: >-
+      wellFormedConfiguration(), textConfigurationOrThrow() and
+      registrationProblems(), lines 123-146 and 168-177
+    evidence: |
+      function wellFormedConfiguration(configuration: unknown): unknown {
+        if (typeof configuration === 'string') {
+          return textConfigurationOrThrow(configuration);
+        }
+        if (isPlainObject(configuration)) {
+          return JSON.stringify(configuration);
+        }
+        if (configuration === null || Array.isArray(configuration)) {
+          throw new ConnectorConfigurationNotWellFormedError('configuration is not a JSON object');
+        }
+        return configuration;
+      }
+  - node: rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
+    held_at: readConnectorConfigurationOrThrow(), lines 52-58
+    evidence: |
+      const resolution = await this.readConnectorConfiguration(connector);
+      if (!resolution.held) {
+        throw new ConnectorConfigurationNotFoundError(resolution.connector);
+      }
+  - node: rules/integration/a-connector-placeholder-is-declared-by-its-capability
+    held_at: >-
+      refuseOrphanedPlaceholders() and orphanedAcrossEveryCapability(), lines 79-103
+    evidence: |
+      const capabilities = (await this.capabilitiesReader.readCapabilities()).filter(
+        (capability) => capability.connector === configuration.connector,
+      );
+      const orphaned = orphanedAcrossEveryCapability(configuration.configuration, capabilities);
+      if (orphaned.length > 0) {
+        throw new ConnectorPlaceholderOutsideInputSchemaError(orphaned);
+      }
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: removeConnector(), lines 42-44
+    evidence: |
+      public async removeConnector(connector: string): Promise<void> {
+        await this.store.deleteConnectorConfiguration(connector);
+      }
+  - node: scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused
+    held_at: >-
+      refuseOrphanedPlaceholders(), lines 79-87, via orphanedAcrossEveryCapability()
+    evidence: |
+      const orphaned = orphanedAcrossEveryCapability(configuration.configuration, capabilities);
+      if (orphaned.length > 0) {
+        throw new ConnectorPlaceholderOutsideInputSchemaError(orphaned);
+      }
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      the file throws only its own named domain errors
+      (ConnectorConfigurationNotFoundError, ConnectorConfigurationNotWellFormedError,
+      IncompleteConnectorConfigurationError, ConnectorPlaceholderOutsideInputSchemaError)
+      and never maps a status or a generic fallback — that mapping is not this
+      file's concern.
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      the file takes a ConnectorConfigurationRegistration and a PaginationRequest
+      already resolved by its caller; no path, query or body shape validation
+      appears in it.
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the file has no capability-removal operation at all; removeConnector()
+      is the only removal it exposes.
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the file has no glossary or concept operation at all.
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |
+      public async removeConnector(connector: string): Promise<void> {
+        await this.store.deleteConnectorConfiguration(connector);
+      }
+      the method returns void with no status/body shape — the HTTP 204/no-body answer is stated and produced at the route layer, not here.
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: >-
+      the file declares no route and no authentication guard or middleware;
+      it is a domain service with no HTTP concern.
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: >-
+      the file has no read-capability-by-identity operation; its own reads
+      are readConnectorConfiguration/readConnectorConfigurationOrThrow.
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: >-
+      the file reads and writes only through `this.store`
+      (IConnectorConfigurationStore), an injected port; it names no database,
+      connection or driver.
+  - node: contracts/glossary/glossary-authoring
+    held_at: nowhere
+    evidence: >-
+      the file has no register-concept or remove-concept operation; it is
+      the connector-configuration surface, not the glossary's.
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: >-
+      the file has no read-capability, list-capabilities, register-capability
+      or remove-capability operation; capabilities reach it only as a
+      read-only projection via ICapabilitiesReader for placeholder checking.
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: >-
+      no concept attribute (name, accepts, ttl, description) appears anywhere
+      in the file.
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: >-
+      no subject-type value appears in the file; only a placeholder naming
+      a Subject attribute is referenced, and only through the imported
+      orphanedPlaceholders() helper, not declared here.
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: >-
+      the file only consumes RegisteredCapabilityForPlaceholderCheck, a
+      narrowed read-only projection exposing `connector` and `input_schema`
+      via ICapabilitiesReader — the full capability aggregate (nature, both
+      schemas, timeout, concept, payload_notes) is declared and owned
+      elsewhere.
+  - node: domain/integration/capability-registry
+    held_at: nowhere
+    evidence: >-
+      the file registers and removes connector configurations only; it
+      resolves no concept and registers no capability.
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: >-
+      no citation, field or evidence-pointing construct appears in the file.
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: >-
+      no evidence item, result or observation construct appears in the file.
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: >-
+      no hypothesis, revision, criterion or release construct appears in
+      the file.
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      the file's only removal is removeConnector(), unconditional by design
+      (rules/integration/removing-a-connector-configuration-is-unconditional);
+      no concept-in-use guard of any kind appears in it.
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      the file's only removal is removeConnector(), which performs no
+      evidence-citation check of any kind; that guard belongs to the
+      capability registry's own remove-capability, not to this file.
+
+looked_past: >-
+  orphanedAcrossEveryCapability() flags a placeholder as orphaned only when it is
+  absent from every capability currently registered against the connector's name
+  (an intersection across capabilities, `rest.every((set) => set.has(placeholder))`),
+  which reads as consistent with rules/integration/a-connector-placeholder-is-declared-by-its-capability's
+  own description of the check running "against whatever is registered on the
+  other side at that moment" — a reasonable resolution of the node's singular
+  "a capability" wording for the multi-capability-per-connector case rather than
+  a departure from it, so it is not reported as a finding.
+
+candidates_opened:
+  - rules/integration/a-connector-configuration-names-its-connector

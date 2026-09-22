@@ -1,0 +1,144 @@
+read:
+  - node: contracts/integration/capability-registry
+    held_at: >-
+      the deleteCapability method signature, which is the store-level operation register-capability's
+      sibling remove-capability route ultimately calls to remove a capability by name and version
+    evidence: |-
+      deleteCapability(name: string, version: string): Promise<void>;
+  - node: domain/integration/capability-registry
+    held_at: >-
+      the same deleteCapability signature — the port's shape for "remove a capability's own
+      registration by name and version"; the refusal the node also states is not this file's concern
+    evidence: |-
+      deleteCapability(name: string, version: string): Promise<void>;
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: |-
+      import type { Capability } from './capability.js';
+
+      export interface ICapabilityStore {
+
+        readCapabilities(): Promise<readonly Capability[]>;
+
+        writeCapabilities(capabilities: readonly Capability[]): Promise<void>;
+
+        deleteCapability(name: string, version: string): Promise<void>;
+      }
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: |-
+      export interface ICapabilityStore {
+
+        readCapabilities(): Promise<readonly Capability[]>;
+
+        writeCapabilities(capabilities: readonly Capability[]): Promise<void>;
+
+        deleteCapability(name: string, version: string): Promise<void>;
+      }
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      deleteCapability(name: string, version: string): Promise<void>;
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      import type { Capability } from './capability.js';
+
+      export interface ICapabilityStore {
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      import type { Capability } from './capability.js';
+
+      export interface ICapabilityStore {
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: |-
+      export interface ICapabilityStore {
+
+        readCapabilities(): Promise<readonly Capability[]>;
+
+        writeCapabilities(capabilities: readonly Capability[]): Promise<void>;
+
+        deleteCapability(name: string, version: string): Promise<void>;
+      }
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: |-
+      readCapabilities(): Promise<readonly Capability[]>;
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: |-
+      import type { Capability } from './capability.js';
+
+      export interface ICapabilityStore {
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: |-
+      readCapabilities(): Promise<readonly Capability[]>;
+
+      writeCapabilities(capabilities: readonly Capability[]): Promise<void>;
+  - node: contracts/glossary/glossary-authoring
+    held_at: nowhere
+    evidence: |-
+      import type { Capability } from './capability.js';
+
+      export interface ICapabilityStore {
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: |-
+      import type { Capability } from './capability.js';
+
+      export interface ICapabilityStore {
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: |-
+      import type { Capability } from './capability.js';
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: |-
+      import type { Capability } from './capability.js';
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: |-
+      import type { Capability } from './capability.js';
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: |-
+      import type { Capability } from './capability.js';
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: |-
+      import type { Capability } from './capability.js';
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: |-
+      import type { Capability } from './capability.js';
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: |-
+      import type { Capability } from './capability.js';
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: |-
+      import type { Capability } from './capability.js';
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: |-
+      import type { Capability } from './capability.js';
+
+      export interface ICapabilityStore {
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: |-
+      deleteCapability(name: string, version: string): Promise<void>;
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: |-
+      import type { Capability } from './capability.js';
+
+      export interface ICapabilityStore {
+looked_past: >-
+  The blank lines between each interface member and the choice of returning the full array from
+  readCapabilities/writeCapabilities rather than paging at the port level are stylistic, and say
+  nothing about a domain fact, so they are not reported here.

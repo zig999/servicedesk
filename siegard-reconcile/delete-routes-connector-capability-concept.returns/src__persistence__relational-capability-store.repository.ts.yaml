@@ -1,0 +1,188 @@
+read:
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: >-
+      the ICapabilityRow interface and the column lists of the SELECT and
+      upsert statements, which enumerate exactly the nine attributes
+      domain/integration/capability declares
+    evidence: |-
+      SELECT name, version, nature, input_schema, output_schema, timeout, connector, concept, payload_notes
+             FROM ${CAPABILITIES_TABLE}
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: >-
+      the single injected DatabaseConnection the class is built around, and
+      the transactional write/delete paths that run through it
+    evidence: |-
+      public constructor(private readonly connection: DatabaseConnection) {}
+  - node: contracts/integration/capability-registry
+    held_at: >-
+      the three public methods — readCapabilities, writeCapabilities,
+      deleteCapability — which back the registry's read, register and remove
+      operations
+    evidence: |-
+      public async readCapabilities(): Promise<readonly Capability[]> {
+      public async writeCapabilities(capabilities: readonly Capability[]): Promise<void> {
+      public async deleteCapability(name: string, version: string): Promise<void> {
+  - node: domain/integration/capability
+    held_at: toCapability(), which maps a stored row back into a Capability carrying all nine declared attributes
+    evidence: |-
+      return {
+          name: row.name,
+          version: row.version,
+          nature: row.nature,
+          input_schema: row.input_schema,
+          output_schema: row.output_schema,
+          timeout: row.timeout,
+          connector: row.connector,
+          concept: row.concept,
+          ...(row.payload_notes !== null && row.payload_notes !== '' ? { payload_notes: row.payload_notes } : {}),
+        };
+  - node: domain/integration/capability-nature
+    held_at: >-
+      isCapabilityNature(), which checks a stored value against the imported
+      CAPABILITY_NATURE_VALUES set rather than redeclaring the enumeration
+    evidence: |-
+      const CAPABILITY_NATURE_VALUES: ReadonlySet<string> = new Set<string>(CAPABILITY_NATURES);
+      function isCapabilityNature(value: string): value is CapabilityNature {
+        return CAPABILITY_NATURE_VALUES.has(value);
+      }
+  - node: domain/integration/capability-registry
+    held_at: >-
+      writeCapabilities and deleteCapability, the persistence backing for
+      the domain service's register-capability and remove-capability
+      operations; resolve-concept has no counterpart here
+    evidence: |-
+      public async writeCapabilities(capabilities: readonly Capability[]): Promise<void> {
+      public async deleteCapability(name: string, version: string): Promise<void> {
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: |-
+      export class RelationalCapabilityStore implements ICapabilityStore {
+        public constructor(private readonly connection: DatabaseConnection) {}
+        public async readCapabilities(): Promise<readonly Capability[]> { ... }
+        public async writeCapabilities(capabilities: readonly Capability[]): Promise<void> { ... }
+        public async deleteCapability(name: string, version: string): Promise<void> { ... }
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: nowhere
+    evidence: |-
+      params: [
+            capability.name,
+            capability.version,
+            capability.nature,
+            capability.input_schema,
+            capability.output_schema,
+            capability.timeout,
+            capability.connector,
+            capability.concept,
+            capability.payload_notes ?? null,
+          ],
+  - node: rules/knowledge/the-contract-check-reads-the-current-registration
+    held_at: readCapabilities(), which queries the table directly on every call with no cache
+    evidence: |-
+      SELECT name, version, nature, input_schema, output_schema, timeout, connector, concept, payload_notes
+             FROM ${CAPABILITIES_TABLE}
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: |-
+      return new CapabilityStoreError('a read against the capability store failed', { operation: 'read' }, { cause });
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: |-
+      public async deleteCapability(name: string, version: string): Promise<void> {
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      public async deleteCapability(name: string, version: string): Promise<void> {
+        await runInTransaction(this.connection, raiseWriteFailure, (tx) =>
+          runStatement(tx, deleteStatementFor(name, version), raiseWriteFailure),
+        );
+      }
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      import type { ICapabilityStore } from '../capability-registry/capability-store.port.js';
+      import { CAPABILITY_NATURES, type Capability, type CapabilityNature } from '../capability-registry/capability.js';
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      import type { ICapabilityStore } from '../capability-registry/capability-store.port.js';
+      import { CAPABILITY_NATURES, type Capability, type CapabilityNature } from '../capability-registry/capability.js';
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: |-
+      export class RelationalCapabilityStore implements ICapabilityStore {
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: |-
+      public async readCapabilities(): Promise<readonly Capability[]> {
+        const rows = await runStatement<ICapabilityRow>(
+          this.connection,
+          {
+            text: `SELECT name, version, nature, input_schema, output_schema, timeout, connector, concept, payload_notes
+                   FROM ${CAPABILITIES_TABLE}`,
+          },
+          raiseReadFailure,
+        );
+        return rows.map(toCapability);
+      }
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the class itself, as the infrastructure adapter implementing
+      ICapabilityStore and importing the relational driver directly rather
+      than being domain code
+    evidence: |-
+      import { runInTransaction, runStatement, type IStatement } from './database-access.js';
+      import type { DatabaseConnection } from './database-connection.js';
+      export class RelationalCapabilityStore implements ICapabilityStore {
+  - node: contracts/glossary/glossary-authoring
+    held_at: nowhere
+    evidence: |-
+      import type { ICapabilityStore } from '../capability-registry/capability-store.port.js';
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: |-
+      import type { ICapabilityStore } from '../capability-registry/capability-store.port.js';
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: |-
+      import type { ICapabilityStore } from '../capability-registry/capability-store.port.js';
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: |-
+      import type { ICapabilityStore } from '../capability-registry/capability-store.port.js';
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: |-
+      import type { ICapabilityStore } from '../capability-registry/capability-store.port.js';
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: |-
+      import type { ICapabilityStore } from '../capability-registry/capability-store.port.js';
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: |-
+      import type { ICapabilityStore } from '../capability-registry/capability-store.port.js';
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: |-
+      import type { ICapabilityStore } from '../capability-registry/capability-store.port.js';
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: |-
+      import type { ICapabilityStore } from '../capability-registry/capability-store.port.js';
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: |-
+      public async deleteCapability(name: string, version: string): Promise<void> {
+        await runInTransaction(this.connection, raiseWriteFailure, (tx) =>
+          runStatement(tx, deleteStatementFor(name, version), raiseWriteFailure),
+        );
+      }
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: |-
+      import type { ICapabilityStore } from '../capability-registry/capability-store.port.js';
+looked_past: >-
+  raiseReadFailure and raiseWriteFailure duplicate the same
+  CapabilityStoreError construction with only the operation label and
+  message differing, which is a style/DRY observation rather than a domain
+  fact, so it is not reported as a finding.

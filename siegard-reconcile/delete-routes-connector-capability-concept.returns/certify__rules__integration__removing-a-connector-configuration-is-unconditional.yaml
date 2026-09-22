@@ -1,0 +1,37 @@
+certified:
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    state: partial
+    tests:
+      - file: src/__tests__/integration/persistence/relational-connector-configuration-store.repository.spec.ts
+        name: >-
+          resolves without refusal, and leaves every currently registered configuration untouched, when the named
+          connector is one nothing is registered under
+      - file: src/__tests__/integration/persistence/relational-connector-configuration-store.repository.spec.ts
+        name: >-
+          removes the named connector configuration so a subsequent read no longer includes it, leaving a different,
+          unrelated connector configuration untouched
+    why: >-
+      The second branch — a removal naming a connector nothing is registered under — is exercised in two of its three
+      parts: the removal is awaited and resolves, so it is not refused for the absence, and the subsequent read
+      resolving to exactly the already-held configuration shows every registered configuration left as it stood.
+      Two parts of the fact go unexercised. First, the branch the statement opens with — whether or not any
+      capability currently names the connector as its own connector — appears nowhere in the offered proof: the file
+      exercises only the connector-configuration store, never registers a capability whose own connector attribute
+      names the connector being removed, and so never establishes that such a capability's existence does not
+      condition the removal. Every removal in the set names a connector no capability in the test refers to, so the
+      removal would answer identically if it had begun consulting capabilities and refusing. Second, "answered
+      exactly as a removal that removed one" is anchored on only one side: the absent-name test asserts
+      `expect(outcome).toBeUndefined()`, but the test that does remove a registered configuration discards the
+      result of `store.deleteConnectorConfiguration('a-removed-connector')` without asserting on it, so the two
+      answers are never compared and the removal that removed one could begin answering something other than
+      undefined with both tests still passing. Nothing in the file is assertion-free or asserts on a literal; the
+      gap is in what the assertions reach, not in whether they can fail.
+    remainder: testable
+    remainder_why: >-
+      Two assertions close it, each one input against one expected result. For the capability branch: with a
+      configuration registered under a connector name and a capability registered whose own connector attribute is
+      that same name, a removal of that connector configuration resolves without refusal, leaves the capability
+      exactly as it stood, and leaves the registry holding no configuration under that name — the same answer the
+      removal gives when no capability names it. For the equivalence of answers: assert the result of the removal
+      that did remove a registered configuration is the same value the removal naming a never-registered connector
+      answers with — undefined — so that the two branches are pinned to one answer rather than each to its own.

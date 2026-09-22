@@ -1,0 +1,364 @@
+findings:
+  - file: src/persistence/relational-investigation-store.repository.ts
+    where: readWholeInvestigation and the contentHash helper it calls
+    evidence: |-
+      const document = investigationOf({ id, row, attributes, evidence, evaluations });
+      return { document, hash: contentHash(document) };
+      ...
+      function contentHash(document: Investigation): string {
+        return createHash('sha256').update(JSON.stringify(document), 'utf8').digest('hex');
+      }
+    cost: Every read of an investigation now answers a SHA-256 hex digest of the JSON-serialized
+      record alongside the document itself. No node states that a read carries such a digest, what
+      it is for, or that JSON.stringify plus sha256 is the exact scheme a caller may depend on;
+      whoever reads the specification to learn what read() answers will not learn this attribute
+      exists at all, and a later change to the serialization or the algorithm has no node holding
+      it accountable.
+    kind: unstated
+    correction: state, against domain/investigation/investigation or the store's own contract, that
+      a read answers the record together with a content hash and how that hash is computed
+    node: domain/investigation/investigation
+
+read:
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: >-
+      the row interfaces and the INSERT/SELECT column lists, each column paired one-to-one with a
+      declared domain attribute
+    evidence: |-
+      INSERT INTO ${INVESTIGATIONS_TABLE}
+          (id, requester, ticket_ref, narrative, subject_type, prompt_version, model,
+           pinned_case_slug, pinned_case_version, assessment_outcome, assessment_action, assessment_recipient,
+           assessment_determining_hypothesis, assessment_text, assessment_register, assessment_usage_input_tokens,
+           assessment_usage_output_tokens, assessment_elapsed_ms, assessment_prompt, cost_calls, cost_input_tokens,
+           cost_output_tokens, durations_collection, durations_judgment, durations_writing, durations_total)
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: write() and read(), which run every statement through one transactional connection
+    evidence: |-
+      public async write(investigation: Investigation): Promise<void> {
+          await runInTransaction(this.connection, raiseWriteFailure, (tx) => writeWholeInvestigation(tx, investigation));
+        }
+
+        public async read(id: string): Promise<StoredInvestigation | undefined> {
+          return runInTransaction(this.connection, raiseReadFailure, (tx) => readWholeInvestigation(tx, id));
+        }
+  - node: domain/investigation/assessment
+    held_at: assessmentParams (write) and assessmentOf (read)
+    evidence: |-
+      function assessmentParams(assessment: Assessment): readonly unknown[] {
+        return [
+          assessment.outcome,
+          assessment.referral.action,
+          assessment.referral.recipient,
+          assessment.determining_hypothesis ?? null,
+          assessment.text,
+          assessment.register,
+          assessment.usage.input_tokens,
+          assessment.usage.output_tokens,
+          assessment.elapsed_ms,
+          assessment.prompt,
+        ];
+      }
+  - node: domain/investigation/citation
+    held_at: citationStatement/citationOf, and nonEmptyCitations enforcing a citation for every
+      decided verdict
+    evidence: |-
+      function nonEmptyCitations(citations: readonly Citation[], hypothesis: string): readonly [Citation, ...Citation[]] {
+        if (citations.length === 0) {
+          throw raiseReadFailure(new Error(`investigation_evaluations holds a decided verdict for hypothesis "${hypothesis}" with no citations`));
+        }
+        return citations as readonly [Citation, ...Citation[]];
+      }
+  - node: domain/investigation/cost
+    held_at: costParams (write) and the inline object assembled in investigationOf (read)
+    evidence: |-
+      function costParams(cost: Cost): readonly unknown[] {
+        return [cost.calls, cost.input_tokens, cost.output_tokens];
+      }
+  - node: domain/investigation/durations
+    held_at: durationsParams (write) and the conditional writing spread in investigationOf (read)
+    evidence: |-
+      durations: {
+            collection: row.durations_collection,
+            judgment: row.durations_judgment,
+            ...(row.durations_writing !== null ? { writing: row.durations_writing } : {}),
+            total: row.durations_total,
+          },
+  - node: domain/investigation/evaluation
+    held_at: evaluationStatement/evaluationOf, tying reason to the inconclusive verdict and
+      citations to a decided one
+    evidence: |-
+      const reason = evaluation.verdict === 'inconclusive' ? evaluation.reason : null;
+      ...
+      if (verdict === 'confirmed') {
+          return { hypothesis: row.hypothesis, verdict, citations: nonEmptyCitations(citations, row.hypothesis), ...callRecord };
+        }
+  - node: domain/investigation/evaluation-reason
+    held_at: reasonOf/isEvaluationReason
+    evidence: |-
+      function isEvaluationReason(value: string): value is EvaluationReason {
+        return EVALUATION_REASON_VALUES.has(value);
+      }
+  - node: domain/investigation/evidence
+    held_at: evidenceStatement (write) and evidenceOf (read)
+    evidence: |-
+      return {
+          concept: row.concept,
+          inputs: row.inputs,
+          observation: row.observation,
+          observed_at: row.observed_at.toISOString(),
+          ttl: row.ttl,
+          origin: row.origin,
+          result: resultOf(row.result),
+          ...(row.result_detail !== null ? { result_detail: row.result_detail } : {}),
+          capability_name: row.capability_name,
+          capability_version: row.capability_version,
+          elapsed_ms: row.elapsed_ms,
+          fields: row.fields,
+          concept_description: row.concept_description,
+          capability_payload_notes: row.capability_payload_notes,
+        };
+  - node: domain/investigation/evidence-result
+    held_at: resultOf/isEvidenceResult
+    evidence: |-
+      function isEvidenceResult(value: string): value is EvidenceResult {
+        return EVIDENCE_RESULT_VALUES.has(value);
+      }
+  - node: domain/investigation/field-semantics
+    held_at: the fields column, written as JSON and read back untouched
+    evidence: |-
+      JSON.stringify(evidence.fields),
+      ...
+      fields: row.fields,
+  - node: domain/investigation/investigation
+    held_at: investigationStatement/investigationParams (write) and investigationOf (read)
+    evidence: |-
+      return {
+          id,
+          requester: row.requester,
+          ...(row.ticket_ref !== null ? { ticket_ref: row.ticket_ref } : {}),
+          narrative: row.narrative,
+          subject: { type: row.subject_type, attributes },
+          pinned_case: { slug: row.pinned_case_slug, version: row.pinned_case_version },
+          prompt_version: row.prompt_version,
+          model: row.model,
+          evidence,
+          evaluations,
+          assessment: assessmentOf(row),
+          cost: { calls: row.cost_calls, input_tokens: row.cost_input_tokens, output_tokens: row.cost_output_tokens },
+  - node: domain/investigation/subject
+    held_at: the subject_type column plus the per-attribute inserts driven by subject.attributes
+    evidence: |-
+      ...investigation.subject.attributes.map((attribute) => subjectAttributeValueStatement(investigation.id, attribute)),
+      ...
+      subject: { type: row.subject_type, attributes },
+  - node: domain/investigation/subject-attribute-value
+    held_at: subjectAttributeValueStatement (write) and readSubjectAttributeValues (read)
+    evidence: |-
+      function subjectAttributeValueStatement(investigationId: string, attribute: SubjectAttributeValue): IStatement {
+        return {
+          text: `INSERT INTO ${INVESTIGATION_SUBJECT_ATTRIBUTE_VALUES_TABLE} (investigation_id, attribute, value) VALUES ($1, $2, $3)`,
+          params: [investigationId, attribute.attribute, attribute.value],
+        };
+      }
+  - node: domain/investigation/usage
+    held_at: assessment's required usage columns and an evaluation's optional usage columns
+    evidence: |-
+      if (row.input_tokens !== null && row.output_tokens !== null) {
+          record.usage = { input_tokens: row.input_tokens, output_tokens: row.output_tokens };
+        }
+  - node: domain/investigation/verdict
+    held_at: verdictOf/isVerdict
+    evidence: |-
+      function isVerdict(value: string): value is Verdict {
+        return VERDICT_VALUES.has(value);
+      }
+  - node: domain/knowledge/consolidation-register
+    held_at: registerOf/isConsolidationRegister
+    evidence: |-
+      function isConsolidationRegister(value: string): value is ConsolidationRegister {
+        return CONSOLIDATION_REGISTER_VALUES.has(value);
+      }
+  - node: rules/investigation/an-empty-ticket-reference-is-no-ticket-reference
+    held_at: ticketRefForWrite/holdsNoTicketReference (write) and the conditional ticket_ref
+      spread in investigationOf (read)
+    evidence: |-
+      function ticketRefForWrite(ticketRef: string | undefined): string | undefined {
+        return holdsNoTicketReference(ticketRef) ? undefined : ticketRef;
+      }
+
+      function holdsNoTicketReference(value: string | undefined): boolean {
+        return value === undefined || value === '';
+      }
+  - node: rules/investigation/an-investigation-is-written-once
+    held_at: raiseRootInsertFailure/isUniqueViolation, which turns a duplicate id into a
+      distinguishable InvestigationAlreadyStoredError rather than the generic write failure
+    evidence: |-
+      function raiseRootInsertFailure(id: string): RaiseStoreError {
+        return (cause) => (isUniqueViolation(cause) ? new InvestigationAlreadyStoredError(id) : raiseWriteFailure(cause));
+      }
+  - node: rules/investigation/written-at-records-when-the-write-settled
+    held_at: investigationParams, which excludes written_at from what is handed to the store, and
+      investigationSelect/investigationOf, which read it back as the store fixed it
+    evidence: |-
+      function investigationParams(investigation: Investigation): readonly unknown[] {
+        return [
+          ...identityParams(investigation),
+          ...assessmentParams(investigation.assessment),
+          ...costParams(investigation.cost),
+          ...durationsParams(investigation.durations),
+        ];
+      }
+      ...
+      written_at: row.written_at.toISOString(),
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: &class_surface |-
+      export class RelationalInvestigationStore implements IInvestigationStore {
+        public constructor(private readonly connection: IConnectableQueryable) {}
+
+        public async write(investigation: Investigation): Promise<void> {
+          await runInTransaction(this.connection, raiseWriteFailure, (tx) => writeWholeInvestigation(tx, investigation));
+        }
+
+        public async read(id: string): Promise<StoredInvestigation | undefined> {
+          return runInTransaction(this.connection, raiseReadFailure, (tx) => readWholeInvestigation(tx, id));
+        }
+
+        public async isCapabilityNamedByEvidence(name: string, version: string): Promise<boolean> {
+          const row = await queryOneOrAbsent(
+            this.connection,
+            {
+              text: `SELECT 1 FROM ${INVESTIGATION_EVIDENCE_TABLE} WHERE capability_name = $1 AND capability_version = $2 LIMIT 1`,
+              params: [name, version],
+            },
+            raiseReadFailure,
+          );
+          return row !== undefined;
+        }
+
+        public async isConceptNamedByEvidence(concept: string): Promise<boolean> {
+          const row = await queryOneOrAbsent(
+            this.connection,
+            {
+              text: `SELECT 1 FROM ${INVESTIGATION_EVIDENCE_TABLE} WHERE concept = $1 LIMIT 1`,
+              params: [concept],
+            },
+            raiseReadFailure,
+          );
+          return row !== undefined;
+        }
+
+        public async isConceptNamedByCitation(concept: string): Promise<boolean> {
+          const row = await queryOneOrAbsent(
+            this.connection,
+            {
+              text: `SELECT 1 FROM ${INVESTIGATION_EVALUATION_CITATIONS_TABLE} WHERE concept = $1 LIMIT 1`,
+              params: [concept],
+            },
+            raiseReadFailure,
+          );
+          return row !== undefined;
+        }
+      }
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: *class_surface
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: *class_surface
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: *class_surface
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: *class_surface
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: *class_surface
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: *class_surface
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: *class_surface
+  - node: contracts/glossary/glossary-authoring
+    held_at: nowhere
+    evidence: *class_surface
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: *class_surface
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: *class_surface
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: *class_surface
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: *class_surface
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: *class_surface
+  - node: domain/integration/capability-registry
+    held_at: nowhere
+    evidence: *class_surface
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: *class_surface
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: *class_surface
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: *class_surface
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: isConceptNamedByEvidence and isConceptNamedByCitation, the evidence-item and
+      citation legs of the concept-in-use check this rule states
+    evidence: |-
+      public async isConceptNamedByEvidence(concept: string): Promise<boolean> {
+          const row = await queryOneOrAbsent(
+            this.connection,
+            {
+              text: `SELECT 1 FROM ${INVESTIGATION_EVIDENCE_TABLE} WHERE concept = $1 LIMIT 1`,
+              params: [concept],
+            },
+            raiseReadFailure,
+          );
+          return row !== undefined;
+        }
+
+        public async isConceptNamedByCitation(concept: string): Promise<boolean> {
+          const row = await queryOneOrAbsent(
+            this.connection,
+            {
+              text: `SELECT 1 FROM ${INVESTIGATION_EVALUATION_CITATIONS_TABLE} WHERE concept = $1 LIMIT 1`,
+              params: [concept],
+            },
+            raiseReadFailure,
+          );
+          return row !== undefined;
+        }
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: isCapabilityNamedByEvidence, checking evidence for the exact name and version pair
+    evidence: |-
+      public async isCapabilityNamedByEvidence(name: string, version: string): Promise<boolean> {
+        const row = await queryOneOrAbsent(
+          this.connection,
+          {
+            text: `SELECT 1 FROM ${INVESTIGATION_EVIDENCE_TABLE} WHERE capability_name = $1 AND capability_version = $2 LIMIT 1`,
+            params: [name, version],
+          },
+          raiseReadFailure,
+        );
+        return row !== undefined;
+      }
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: *class_surface
+
+looked_past: >-
+  isConceptNamedByEvidence and isConceptNamedByCitation share near-identical bodies (same
+  queryOneOrAbsent/raiseReadFailure shape over two tables), and the read-side validators
+  (resultOf/isVerdict/isConsolidationRegister/isEvaluationReason) repeat the same guard-and-throw
+  pattern four times — code shape, not a domain fact, so it is left to a code review rather than
+  reported here.

@@ -1,0 +1,161 @@
+read:
+  - node: domain/glossary/concept
+    held_at: >-
+      the `name` field of `removeConceptParamsSchema`, which carries the concept's identity as a
+      required string
+    evidence: |
+      export const removeConceptParamsSchema = z.object({
+        name: z.string().min(1),
+      });
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: |
+      import { z } from 'zod';
+
+      export const removeConceptParamsSchema = z.object({
+        name: z.string().min(1),
+      });
+
+      export type RemoveConceptParamsDto = z.infer<typeof removeConceptParamsSchema>;
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: >-
+      the schema itself, which is the route's declared shape a request's path is validated
+      against
+    evidence: |
+      export const removeConceptParamsSchema = z.object({
+        name: z.string().min(1),
+      });
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |
+      export const removeConceptParamsSchema = z.object({
+        name: z.string().min(1),
+      });
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |
+      export const removeConceptParamsSchema = z.object({
+        name: z.string().min(1),
+      });
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |
+      export const removeConceptParamsSchema = z.object({
+        name: z.string().min(1),
+      });
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: |
+      import { z } from 'zod';
+
+      export const removeConceptParamsSchema = z.object({
+        name: z.string().min(1),
+      });
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: |
+      export const removeConceptParamsSchema = z.object({
+        name: z.string().min(1),
+      });
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import { z } from 'zod';"
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: |
+      export const removeConceptParamsSchema = z.object({
+        name: z.string().min(1),
+      });
+  - node: contracts/glossary/glossary-authoring
+    held_at: >-
+      the whole schema, which declares the path-parameter shape the remove-concept operation's
+      route consumes
+    evidence: |
+      export const removeConceptParamsSchema = z.object({
+        name: z.string().min(1),
+      });
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: |
+      export const removeConceptParamsSchema = z.object({
+        name: z.string().min(1),
+      });
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: |
+      export const removeConceptParamsSchema = z.object({
+        name: z.string().min(1),
+      });
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: |
+      export const removeConceptParamsSchema = z.object({
+        name: z.string().min(1),
+      });
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: |
+      export const removeConceptParamsSchema = z.object({
+        name: z.string().min(1),
+      });
+  - node: domain/integration/capability-registry
+    held_at: nowhere
+    evidence: |
+      export const removeConceptParamsSchema = z.object({
+        name: z.string().min(1),
+      });
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: |
+      export const removeConceptParamsSchema = z.object({
+        name: z.string().min(1),
+      });
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: |
+      export const removeConceptParamsSchema = z.object({
+        name: z.string().min(1),
+      });
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: |
+      export const removeConceptParamsSchema = z.object({
+        name: z.string().min(1),
+      });
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: |
+      export const removeConceptParamsSchema = z.object({
+        name: z.string().min(1),
+      });
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: |
+      export const removeConceptParamsSchema = z.object({
+        name: z.string().min(1),
+      });
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: |
+      export const removeConceptParamsSchema = z.object({
+        name: z.string().min(1),
+      });
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: |
+      export const removeConceptParamsSchema = z.object({
+        name: z.string().min(1),
+      });
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: |
+      export const removeConceptParamsSchema = z.object({
+        name: z.string().min(1),
+      });
+looked_past: >-
+  The `.min(1)` guard on `name` is the same non-empty-path-segment convention every other params
+  DTO in this codebase applies (register-concept.dto.ts, remove-capability.dto.ts,
+  remove-connector.dto.ts and the rest), confirmed by remove-concept.routes.spec.ts's own test for
+  "the route with an empty string param for this segment" — a technical validation-shape choice
+  implementing constraints/a-malformed-request-is-refused-with-a-validation-error rather than a
+  domain fact of its own, so it is not reported as a finding.

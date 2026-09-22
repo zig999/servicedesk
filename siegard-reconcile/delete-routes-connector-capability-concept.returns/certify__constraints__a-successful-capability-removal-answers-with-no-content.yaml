@@ -1,0 +1,35 @@
+certified:
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    state: partial
+    tests:
+      - file: src/__tests__/unit/http/remove-capability.routes.spec.ts
+        name: >-
+          answers 204 with a wholly empty body, identically for a capability identity currently
+          registered and one nothing is registered under
+    why: >-
+      The status-and-empty-body half holds: the test injects DELETE /v1/capabilities/:name/:version
+      and asserts statusCode 204, body '' and rawPayload.length 0, so a route that answered another
+      status or attached any body would fail it. The other half the node states — "the same answer
+      whether a capability stood at that name and version or none did" — goes unexercised. Both
+      requests run against a single vi.fn() stub of removeCapability primed with
+      mockResolvedValueOnce(undefined) twice, so the two calls differ only in the URL segments; no
+      capability is ever registered and no identity is ever genuinely absent. The mock, not the
+      system, is what makes the absent-identity branch resolve, so if removal at a name and version
+      nothing is registered under stopped answering 204 — if it began rejecting and the surface
+      mapped that to a 404 or a 409 — this test would still pass unchanged. The node's scope is
+      integration and its fitness asks for a capability no collected evidence item names to be
+      actually removed and then for a name and version no capability is currently registered at;
+      neither is reached here, and nothing in the offered proof touches the registry service or
+      evidence collection. Separately, the test's closing expectations —
+      toHaveBeenNthCalledWith(1, 'a-capability', '1.0.0') and (2, 'an-absent-capability', '9.9.9')
+      — assert an internal call rather than the answer, so they bind the controller's delegation
+      shape and add nothing to this fact; a reader should not read them as covering the two-branch
+      equivalence.
+    remainder: testable
+    remainder_why: >-
+      Two inputs against one expected result, run against the real remove-capability path rather
+      than a stub: first a DELETE at the name and version of a capability that is registered and
+      that no collected evidence item names, then a DELETE at a name and version no capability is
+      currently registered at — each asserted to answer HTTP 204 with a wholly empty body, and the
+      two answers asserted indistinguishable, so nothing in the response tells the removal apart
+      from the absence.

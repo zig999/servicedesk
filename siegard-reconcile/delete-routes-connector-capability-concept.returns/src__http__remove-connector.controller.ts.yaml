@@ -1,0 +1,147 @@
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: >-
+      the handler `handleRemoveConnectorRequest` — it dispatches straight to
+      `dependencies.removeConnector` with no authentication middleware, guard or check invoked
+      first.
+    evidence: |
+      export async function handleRemoveConnectorRequest(
+        dependencies: RemoveConnectorControllerDependencies,
+        params: RemoveConnectorParamsDto,
+      ): Promise<void> {
+        await dependencies.removeConnector(params.connector);
+      }
+  - node: contracts/integration/connector-configuration-registry
+    held_at: >-
+      the exported handler `handleRemoveConnectorRequest`, which implements the surface's
+      remove-connector operation by delegating to the injected `removeConnector` dependency.
+    evidence: |
+      export async function handleRemoveConnectorRequest(
+        dependencies: RemoveConnectorControllerDependencies,
+        params: RemoveConnectorParamsDto,
+      ): Promise<void> {
+        await dependencies.removeConnector(params.connector);
+      }
+  - node: domain/integration/connector-configuration-registry
+    held_at: >-
+      the `RemoveConnectorControllerDependencies` type and its use in the handler, matching the
+      domain service's remove-connector operation, invoked by connector name.
+    evidence: |
+      export type RemoveConnectorControllerDependencies = {
+        readonly removeConnector: (connector: string) => Promise<void>;
+      };
+      ...
+      await dependencies.removeConnector(params.connector);
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: >-
+      the handler body — a single unconditional call with no branch testing whether a
+      configuration is currently registered under the name, and no distinct return for either
+      case.
+    evidence: "await dependencies.removeConnector(params.connector);"
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      the handler performs no error handling of any kind — it awaits `dependencies.removeConnector`
+      and returns nothing else; the whole file was examined for this fact and holds no catch, no
+      status assignment and no error mapping.
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      the handler receives `params: RemoveConnectorParamsDto` already typed and performs no
+      validation of its own — `await dependencies.removeConnector(params.connector);` is the only
+      use made of it.
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the file names only `RemoveConnectorControllerDependencies`, `RemoveConnectorParamsDto` and
+      `handleRemoveConnectorRequest` — nothing about a capability or its removal appears anywhere
+      in it.
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the file names only `RemoveConnectorControllerDependencies`, `RemoveConnectorParamsDto` and
+      `handleRemoveConnectorRequest` — nothing about a glossary concept or its removal appears
+      anywhere in it.
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      `handleRemoveConnectorRequest` returns `Promise<void>` and constructs no response of its
+      own — `await dependencies.removeConnector(params.connector);` is the entire body, with no
+      status or body assignment.
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: >-
+      the file contains no read operation and no capability identity — its only operation is
+      `handleRemoveConnectorRequest`, which removes a connector by name.
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: >-
+      this file is the HTTP handler, not a domain module; its only import is
+      `import type { RemoveConnectorParamsDto } from './dto/remove-connector.dto.js';` — no
+      framework, driver or provider client import appears, but the file is not the domain layer
+      this constraint's fitness audits.
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: >-
+      the file contains no store access, no connection and no record — it only calls
+      `dependencies.removeConnector(params.connector)`.
+  - node: contracts/glossary/glossary-authoring
+    held_at: nowhere
+    evidence: >-
+      the file names only `RemoveConnectorControllerDependencies`, `RemoveConnectorParamsDto` and
+      `handleRemoveConnectorRequest` — nothing about a glossary concept, register-concept or
+      remove-concept appears anywhere in it.
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: >-
+      the file names only `RemoveConnectorControllerDependencies`, `RemoveConnectorParamsDto` and
+      `handleRemoveConnectorRequest` — nothing about a capability, its identity or its registry
+      appears anywhere in it.
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: >-
+      the file has no reference to a concept, its name, accepts, ttl or description anywhere.
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: >-
+      the file has no reference to a subject type anywhere.
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: >-
+      the file has no reference to a capability, its name, version, schemas, timeout, connector
+      attribute or concept anywhere.
+  - node: domain/integration/capability-registry
+    held_at: nowhere
+    evidence: >-
+      the file has no reference to register-capability, remove-capability or resolve-concept
+      anywhere; its only operation is `removeConnector`.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      the handler passes only `params.connector`, a string name, to `dependencies.removeConnector`
+      — it never constructs, reads or holds a connector-configuration value with a `connector`
+      and `configuration` attribute pair.
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: >-
+      the file has no reference to a citation, a concept or a field anywhere.
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: >-
+      the file has no reference to an evidence item, an observation or a capability reference
+      anywhere.
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: >-
+      the file has no reference to a hypothesis revision, its criterion, collects or state
+      anywhere.
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      the file has no reference to a concept removal, a ConceptInUseError or any glossary
+      operation anywhere.
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      the file has no reference to a capability removal, a CapabilityCitedByEvidenceError or
+      collected evidence anywhere.

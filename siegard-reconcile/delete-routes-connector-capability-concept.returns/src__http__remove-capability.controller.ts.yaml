@@ -1,0 +1,130 @@
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      await dependencies.removeCapability(params.name, params.version); — the
+      handler has no try/catch and performs no error-to-status mapping of its own.
+  - node: domain/integration/capability-registry
+    held_at: the dependency shape and its invocation
+    evidence: >-
+      readonly removeCapability: (name: string, version: string) => Promise<void>;
+      ... await dependencies.removeCapability(params.name, params.version);
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      params: RemoveCapabilityParamsDto — the params are consumed as an
+      already-typed DTO; the handler contains no shape check of its own.
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      ): Promise<void> {
+        await dependencies.removeCapability(params.name, params.version);
+      } — no status code or response body is constructed here.
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      export async function handleRemoveCapabilityRequest( — the file concerns
+      only the capability-removal handler, no glossary operation.
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      export async function handleRemoveCapabilityRequest( — the file concerns
+      only the capability-removal handler, no connector operation.
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: >-
+      export async function handleRemoveCapabilityRequest(
+        dependencies: RemoveCapabilityControllerDependencies,
+        params: RemoveCapabilityParamsDto,
+      ): Promise<void> { — no authentication guard, middleware or check is
+      declared or invoked.
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: >-
+      the file declares only handleRemoveCapabilityRequest, a removal handler,
+      not the read-capability-by-identity route.
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: >-
+      import type { RemoveCapabilityParamsDto } from './dto/remove-capability.dto.js';
+      — the file's only import is a local DTO type; it is not a domain module.
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: >-
+      the file contains no store, connection or persistence code of any kind.
+  - node: contracts/glossary/glossary-authoring
+    held_at: nowhere
+    evidence: >-
+      import type { RemoveCapabilityParamsDto } from './dto/remove-capability.dto.js';
+      — nothing in the file addresses register-concept or remove-concept.
+  - node: contracts/integration/capability-registry
+    held_at: the exported handler dispatching the remove-capability operation
+    evidence: >-
+      export async function handleRemoveCapabilityRequest(
+        dependencies: RemoveCapabilityControllerDependencies,
+        params: RemoveCapabilityParamsDto,
+      ): Promise<void> {
+        await dependencies.removeCapability(params.name, params.version);
+      }
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: >-
+      the file declares only a capability-removal handler, nothing about
+      connector configurations.
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: >-
+      the file's params type is RemoveCapabilityParamsDto; no concept attribute
+      appears anywhere in the file.
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: >-
+      the file's params type is RemoveCapabilityParamsDto; no subject-type
+      appears anywhere in the file.
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: >-
+      params.name, params.version — only two of the aggregate's attributes are
+      referenced, and only as pass-through arguments; no declaration of the
+      aggregate's shape is made here.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      the file declares only a capability-removal handler, nothing about
+      connector configurations.
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: >-
+      the file declares only a capability-removal handler, nothing about the
+      connector-configuration registry.
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: >-
+      the file declares only a capability-removal handler, nothing about
+      citations.
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: >-
+      the file declares only a capability-removal handler, nothing about
+      evidence.
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: >-
+      the file declares only a capability-removal handler, nothing about
+      hypothesis revisions.
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      the file declares only a capability-removal handler, nothing about
+      glossary concept removal.
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      await dependencies.removeCapability(params.name, params.version); — no
+      conditional refusal logic appears; the call is forwarded unconditionally
+      to the dependency.
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: >-
+      the file declares only a capability-removal handler, nothing about
+      connector configuration removal.

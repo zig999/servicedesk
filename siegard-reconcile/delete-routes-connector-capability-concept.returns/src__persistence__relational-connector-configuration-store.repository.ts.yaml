@@ -1,0 +1,118 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the class declaration, which realizes the domain-declared port rather than being reached
+      into by it — the domain layer itself carries none of this file's infrastructure imports
+    evidence: >-
+      export class RelationalConnectorConfigurationStore implements IConnectorConfigurationStore {
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: >-
+      writeConnectorConfigurations and deleteConnectorConfiguration, both executed against the
+      relational connection inside a transaction, with no file read or write anywhere in the file
+    evidence: |-
+      await runInTransaction(this.connection, raiseWriteFailure, async (tx) => {
+        await runStatement(tx, deleteStatementFor(connector), raiseWriteFailure);
+      });
+  - node: contracts/integration/connector-configuration-registry
+    held_at: >-
+      readConnectorConfigurations, writeConnectorConfigurations and deleteConnectorConfiguration
+      — the store-level operations backing the published read/list, register-connector and
+      remove-connector operations
+    evidence: >-
+      public async readConnectorConfigurations(): Promise<readonly ConnectorConfiguration[]>
+  - node: domain/integration/connector-configuration
+    held_at: toConnectorConfiguration, which answers the stored configuration as JSON object text
+    evidence: >-
+      return { connector: row.connector, configuration: JSON.stringify(row.configuration) };
+  - node: domain/integration/connector-configuration-registry
+    held_at: >-
+      writeConnectorConfigurations' upsert (holding the current configuration for a name,
+      replacing it whole rather than merging) and deleteConnectorConfiguration (removing by
+      name); the registration's own refusal responsibility is not implemented in this file
+    evidence: >-
+      VALUES ($1, $2)
+      ON CONFLICT (connector) DO UPDATE SET configuration = EXCLUDED.configuration
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: >-
+      deleteStatementFor and deleteConnectorConfiguration, which issue an unconditional DELETE
+      with no existence check beforehand and no distinct handling of zero rows affected
+    evidence: |-
+      text: `DELETE FROM ${CONNECTOR_CONFIGURATIONS_TABLE} WHERE connector = $1`,
+      params: [connector],
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      export class RelationalConnectorConfigurationStore implements IConnectorConfigurationStore {
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      export class RelationalConnectorConfigurationStore implements IConnectorConfigurationStore {
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      export class RelationalConnectorConfigurationStore implements IConnectorConfigurationStore {
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      export class RelationalConnectorConfigurationStore implements IConnectorConfigurationStore {
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      public async deleteConnectorConfiguration(connector: string): Promise<void> {
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: >-
+      export class RelationalConnectorConfigurationStore implements IConnectorConfigurationStore {
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: >-
+      export class RelationalConnectorConfigurationStore implements IConnectorConfigurationStore {
+  - node: contracts/glossary/glossary-authoring
+    held_at: nowhere
+    evidence: >-
+      export class RelationalConnectorConfigurationStore implements IConnectorConfigurationStore {
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: >-
+      export class RelationalConnectorConfigurationStore implements IConnectorConfigurationStore {
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: >-
+      export class RelationalConnectorConfigurationStore implements IConnectorConfigurationStore {
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: >-
+      export class RelationalConnectorConfigurationStore implements IConnectorConfigurationStore {
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: >-
+      export class RelationalConnectorConfigurationStore implements IConnectorConfigurationStore {
+  - node: domain/integration/capability-registry
+    held_at: nowhere
+    evidence: >-
+      export class RelationalConnectorConfigurationStore implements IConnectorConfigurationStore {
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: >-
+      export class RelationalConnectorConfigurationStore implements IConnectorConfigurationStore {
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: >-
+      export class RelationalConnectorConfigurationStore implements IConnectorConfigurationStore {
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: >-
+      export class RelationalConnectorConfigurationStore implements IConnectorConfigurationStore {
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      export class RelationalConnectorConfigurationStore implements IConnectorConfigurationStore {
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      export class RelationalConnectorConfigurationStore implements IConnectorConfigurationStore {
+looked_past: >-
+  The configuration column is read back as a Record<string, unknown> (implying a JSONB store) and
+  re-serialized with JSON.stringify rather than kept as the exact text a registration supplied —
+  a table-schema question this file alone cannot settle and that domain/integration/connector-configuration
+  does not state a byte-exact requirement for, so it is left unreported here.

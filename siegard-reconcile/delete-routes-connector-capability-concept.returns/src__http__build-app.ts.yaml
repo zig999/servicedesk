@@ -1,0 +1,173 @@
+read:
+  - node: contracts/glossary/glossary-authoring
+    held_at: >-
+      the routePluginFactories entries wiring register-concept and remove-concept, lines 148 and 151
+    evidence: |-
+      (dependencies) => createRegisterConceptRoutesPlugin(dependencies.registerConcept),
+      (dependencies) => createRemoveConceptRoutesPlugin(dependencies.removeConcept),
+  - node: contracts/integration/capability-registry
+    held_at: >-
+      the routePluginFactories entries wiring read-capability, read-capability-by-identity,
+      list-capabilities, register-capability and remove-capability, lines 123-124 and 126-129
+    evidence: |-
+      (dependencies) => createReadCapabilityRoutesPlugin(dependencies.readCapability),
+      (dependencies) => createReadCapabilityByIdentityRoutesPlugin(dependencies.readCapabilityByIdentity),
+      (dependencies) => createListCapabilitiesRoutesPlugin(dependencies.listCapabilities),
+      (dependencies) => createRegisterCapabilityRoutesPlugin(dependencies.registerCapability),
+      (dependencies) => createRemoveCapabilityRoutesPlugin(dependencies.removeCapability),
+  - node: contracts/integration/capability-schema-draft
+    held_at: >-
+      the routePluginFactories entry wiring draft-capability-schema-from-openapi, line 155
+    evidence: >-
+      (dependencies) => createDraftCapabilitySchemaFromOpenApiRoutesPlugin(dependencies.draftCapabilitySchemaFromOpenApi),
+  - node: contracts/integration/connector-configuration-draft
+    held_at: >-
+      the routePluginFactories entry wiring draft-connector-configuration-from-openapi, lines 152-153
+    evidence: >-
+      createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
+  - node: contracts/integration/connector-configuration-registry
+    held_at: >-
+      the routePluginFactories entries wiring read-connector-configuration, list-connector-configurations,
+      register-connector and remove-connector, lines 125, 127, 149-150
+    evidence: |-
+      (dependencies) => createReadConnectorConfigurationRoutesPlugin(dependencies.readConnectorConfiguration),
+      (dependencies) => createListConnectorConfigurationsRoutesPlugin(dependencies.listConnectorConfigurations),
+      (dependencies) => createRegisterConnectorRoutesPlugin(dependencies.registerConnector),
+      (dependencies) => createRemoveConnectorRoutesPlugin(dependencies.removeConnector),
+  - node: contracts/integration/openapi-document-operations
+    held_at: >-
+      the routePluginFactories entry wiring read-openapi-document-operations, line 154
+    evidence: >-
+      (dependencies) => createReadOpenApiDocumentOperationsRoutesPlugin(dependencies.readOpenApiDocumentOperations),
+  - node: contracts/knowledge/case-input-requirements
+    held_at: >-
+      the routePluginFactories entry wiring read-case-input-requirements, line 139
+    evidence: >-
+      (dependencies) => createCaseInputRequirementsRoutesPlugin(dependencies.readCaseInputRequirements),
+  - node: contracts/knowledge/case-lifecycle
+    held_at: >-
+      the routePluginFactories entries wiring create-draft, update-draft, release, release-hypothesis,
+      discard, revise-hypothesis, place-hypothesis and remove-hypothesis, lines 130-137
+    evidence: |-
+      (dependencies) => createCreateDraftRoutesPlugin(dependencies.createDraft),
+      (dependencies) => createUpdateDraftRoutesPlugin(dependencies.updateDraft),
+      (dependencies) => createReleaseRoutesPlugin(dependencies.release),
+      (dependencies) => createReleaseHypothesisRevisionRoutesPlugin(dependencies.releaseHypothesisRevision),
+      (dependencies) => createDiscardRoutesPlugin(dependencies.discard),
+      (dependencies) => createReviseHypothesisRoutesPlugin(dependencies.reviseHypothesis),
+      (dependencies) => createPlaceHypothesisRoutesPlugin(dependencies.placeHypothesis),
+      (dependencies) => createRemoveHypothesisRoutesPlugin(dependencies.removeHypothesis),
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: >-
+      the file references this domain service only through a controller-dependency type,
+      `readonly removeConnector: RemoveConnectorControllerDependencies;`, never through the
+      service's own operations or unconditional-removal behavior
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      app.setErrorHandler(handleUnexpectedError); wires a handler defined elsewhere; the 500
+      status, INTERNAL_ERROR code and fixed message this constraint states do not appear in this file
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      the file declares no request validation and no 400/VALIDATION_ERROR response; it only
+      imports route-plugin factories and registers them
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createRemoveCapabilityRoutesPlugin(dependencies.removeCapability), wires
+      the route but states no response status or body
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createRemoveConceptRoutesPlugin(dependencies.removeConcept), wires the
+      route but states no response status or body
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createRemoveConnectorRoutesPlugin(dependencies.removeConnector), wires
+      the route but states no response status or body
+  - node: constraints/no-route-enforces-authentication
+    held_at: >-
+      the buildApp function, lines 162-169
+    evidence: |-
+      export function buildApp(dependencies: BuildAppDependencies): FastifyInstance {
+        const app = Fastify({ bodyLimit: dependencies.bodyLimit });
+        app.setErrorHandler(handleUnexpectedError);
+        for (const plugin of routePlugins(dependencies)) {
+          app.register(plugin);
+        }
+        return app;
+      }
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createReadCapabilityByIdentityRoutesPlugin(dependencies.readCapabilityByIdentity),
+      wires the route but states no 404 or CapabilityIdentityNotFoundError
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: >-
+      the file is the HTTP composition root, not a domain module, and imports only Fastify and
+      route-plugin/controller-dependency types, never a domain module's own imports
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: >-
+      the file declares no store, connection or persistence dependency of its own
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: >-
+      the file names `removeConcept`/`registerConcept` dependencies but declares none of the
+      concept's own attributes (name, accepts, ttl, description)
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: >-
+      the file contains no reference to subject-type or its attributes
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: >-
+      the file names `removeCapability`/`registerCapability` dependencies but declares none of
+      capability's own attributes
+  - node: domain/integration/capability-registry
+    held_at: nowhere
+    evidence: >-
+      the file wires the capability HTTP routes but declares no capability-registry
+      domain-service operation or refusal of its own
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      the file names `removeConnector`/`registerConnector` dependencies but declares none of
+      connector-configuration's own attributes
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: >-
+      the file contains no reference to citation or its attributes
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: >-
+      the file contains no reference to evidence or its attributes
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: >-
+      the file wires createReleaseHypothesisRevisionRoutesPlugin and createReviseHypothesisRoutesPlugin
+      but declares none of hypothesis-revision's own attributes or state transitions
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createRemoveConceptRoutesPlugin(dependencies.removeConcept), wires the
+      route but states no refusal condition or ConceptInUseError
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createRemoveCapabilityRoutesPlugin(dependencies.removeCapability), wires
+      the route but states no refusal condition or CapabilityCitedByEvidenceError
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createRemoveConnectorRoutesPlugin(dependencies.removeConnector), wires
+      the route but states no unconditional-removal behavior of its own
+looked_past: >-
+  the file also wires routes and dependency types for operations outside this node set — diagnose,
+  simulate-case, simulate-hypothesis, test-connector, list-cases, list-case-versions,
+  list-hypotheses, list-hypothesis-revisions, read-vocabulary-term, list-vocabulary-terms,
+  read-concept, list-concepts and read-case — which this delegation's node set does not cover.

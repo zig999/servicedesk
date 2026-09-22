@@ -1,0 +1,227 @@
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: >-
+      partially — the fallback branch of statusForError that returns undefined for an error class
+      the map does not name, which is what lets a caller downstream treat it as unmapped; the
+      fixed INTERNAL_ERROR code and message the node also requires are not stated in this file.
+    evidence: |
+      for (const [errorClass, status] of STATUS_BY_ERROR_CLASS) {
+          if (error instanceof errorClass) {
+            return status;
+          }
+        }
+        return undefined;
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: the CapabilityIdentityNotFoundError entry of STATUS_BY_ERROR_CLASS
+    evidence: "[CapabilityIdentityNotFoundError, 404],"
+  - node: contracts/integration/connector-configuration-registry
+    held_at: >-
+      the ConnectorConfigurationNotFoundError, ConnectorConfigurationNotWellFormedError and
+      IncompleteConnectorConfigurationError entries, which carry this surface's own refusals
+    evidence: |
+      [ConnectorConfigurationNotFoundError, 404],
+      ...
+      [ConnectorConfigurationNotWellFormedError, 422],
+      [IncompleteConnectorConfigurationError, 422],
+  - node: contracts/investigation/diagnosis
+    held_at: >-
+      the SubjectDoesNotCoverCaseInputsError, SubjectCarriesNoAttributeError and
+      InvestigationWriteDeadlineExceededError entries
+    evidence: |
+      [SubjectDoesNotCoverCaseInputsError, 422],
+      [SubjectCarriesNoAttributeError, 422],
+      ...
+      [InvestigationWriteDeadlineExceededError, 500],
+  - node: contracts/knowledge/case-lifecycle
+    held_at: >-
+      the CaseHoldsNoDraftError, HypothesisRevisionNotDraftAtReleaseError,
+      ReleasedHypothesisRevisionNotAlterableError, HypothesisRevisionCollectsNoConceptError and
+      ConceptRefusesSubjectTypeError entries
+    evidence: |
+      [CaseHoldsNoDraftError, 409],
+      [ReleasedHypothesisRevisionNotAlterableError, 409],
+      [HypothesisRevisionNotDraftAtReleaseError, 409],
+      ...
+      [HypothesisRevisionCollectsNoConceptError, 422],
+      [ConceptRefusesSubjectTypeError, 422],
+  - node: rules/glossary/a-concept-declares-its-description
+    held_at: the ConceptDescriptionRequiredError entry
+    evidence: "[ConceptDescriptionRequiredError, 422],"
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: the VocabularyTermNotHeldError and ConceptNotHeldError entries
+    evidence: |
+      [ConceptNotHeldError, 404],
+      [VocabularyTermNotHeldError, 404],
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: the ConceptInUseError entry
+    evidence: "[ConceptInUseError, 409],"
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: the DuplicateGlossaryNameError entry
+    evidence: "[DuplicateGlossaryNameError, 500],"
+  - node: rules/integration/a-capability-input-schema-holds-a-well-formed-object
+    held_at: the MalformedCapabilityInputSchemaError entry
+    evidence: "[MalformedCapabilityInputSchemaError, 422],"
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: the ConnectorConfigurationNotWellFormedError and IncompleteConnectorConfigurationError entries
+    evidence: |
+      [ConnectorConfigurationNotWellFormedError, 422],
+      [IncompleteConnectorConfigurationError, 422],
+  - node: rules/integration/a-connector-configuration-names-its-connector
+    held_at: the IncompleteConnectorConfigurationError entry (shared with the well-formed-object rule)
+    evidence: "[IncompleteConnectorConfigurationError, 422],"
+  - node: rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
+    held_at: the ConnectorConfigurationNotFoundError entry
+    evidence: "[ConnectorConfigurationNotFoundError, 404],"
+  - node: rules/integration/a-connector-placeholder-is-declared-by-its-capability
+    held_at: the ConnectorPlaceholderOutsideInputSchemaError entry
+    evidence: "[ConnectorPlaceholderOutsideInputSchemaError, 422],"
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: the OpenApiDocumentNotFetchedError and OpenApiDocumentNotReadableError entries
+    evidence: |
+      [OpenApiDocumentNotFetchedError, 422],
+      [OpenApiDocumentNotReadableError, 422],
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: >-
+      the OpenApiDocumentNotReadableError entry, the status the sibling node states once for both
+      draft refusals
+    evidence: "[OpenApiDocumentNotReadableError, 422],"
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+    held_at: the OpenApiDocumentNotReadableError entry, shared with the operations-read pair
+    evidence: "[OpenApiDocumentNotReadableError, 422],"
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: the CapabilityCitedByEvidenceError entry
+    evidence: "[CapabilityCitedByEvidenceError, 409],"
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: the OpenApiOperationNotFoundError entry
+    evidence: "[OpenApiOperationNotFoundError, 422],"
+  - node: rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: the OpenApiDocumentNotFetchedError and OpenApiDocumentNotReadableError entries
+    evidence: |
+      [OpenApiDocumentNotFetchedError, 422],
+      [OpenApiDocumentNotReadableError, 422],
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read
+    held_at: the OpenApiDocumentNotFetchedError entry, shared with the draft's own fetch refusal
+    evidence: "[OpenApiDocumentNotFetchedError, 422],"
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: the SubjectDoesNotCoverCaseInputsError entry
+    evidence: "[SubjectDoesNotCoverCaseInputsError, 422],"
+  - node: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+    held_at: the HypothesisNotInManifestError entry
+    evidence: "[HypothesisNotInManifestError, 404],"
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: the SubjectCarriesNoAttributeError entry
+    evidence: "[SubjectCarriesNoAttributeError, 422],"
+  - node: rules/investigation/no-stage-aborts-on-its-deadline
+    held_at: the InvestigationWriteDeadlineExceededError entry
+    evidence: "[InvestigationWriteDeadlineExceededError, 500],"
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: the CaseVersionNotValidError entry
+    evidence: "[CaseVersionNotValidError, 409],"
+  - node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+    held_at: the ConceptRefusesSubjectTypeError entry
+    evidence: "[ConceptRefusesSubjectTypeError, 422],"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: the HypothesisRevisionCollectsNoConceptError entry
+    evidence: "[HypothesisRevisionCollectsNoConceptError, 422],"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: the CaseHoldsNoDraftError entry
+    evidence: "[CaseHoldsNoDraftError, 409],"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: the HypothesisRevisionNotDraftAtReleaseError entry
+    evidence: "[HypothesisRevisionNotDraftAtReleaseError, 409],"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: the ReleasedHypothesisRevisionNotAlterableError entry
+    evidence: "[ReleasedHypothesisRevisionNotAlterableError, 409],"
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: the ConceptNotInGlossaryError entry
+    evidence: "[ConceptNotInGlossaryError, 404],"
+  - node: scenarios/glossary/a-concept-with-no-description-is-refused
+    held_at: the ConceptDescriptionRequiredError entry (same as the rule it instances)
+    evidence: "[ConceptDescriptionRequiredError, 422],"
+  - node: scenarios/investigation/a-diagnose-refuses-a-subject-missing-a-required-attribute
+    held_at: the SubjectDoesNotCoverCaseInputsError entry (same as the rule it instances)
+    evidence: "[SubjectDoesNotCoverCaseInputsError, 422],"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      the file maps only Error subclasses to a status; it declares no VALIDATION_ERROR code and no
+      handling of a route's own shape validation
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      statusForError only ever returns a number or undefined for a thrown error; it states nothing
+      about a successful response
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      statusForError only ever returns a number or undefined for a thrown error; it states nothing
+      about a successful response
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      statusForError only ever returns a number or undefined for a thrown error; it states nothing
+      about a successful response
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: the file declares no route, middleware, guard or check of any kind
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: >-
+      the file's own imports name only local error classes under ./*.error.js; it carries no
+      framework, driver or provider client either way
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: the file holds no store, connection or persistence call of any kind
+  - node: contracts/glossary/glossary-authoring
+    held_at: the ConceptDescriptionRequiredError and ConceptInUseError entries
+    evidence: |
+      [ConceptInUseError, 409],
+      ...
+      [ConceptDescriptionRequiredError, 422],
+  - node: contracts/integration/capability-registry
+    held_at: >-
+      the CapabilityIdentityNotFoundError, CapabilityCitedByEvidenceError and
+      MalformedCapabilityInputSchemaError entries, among others this surface's operations raise
+    evidence: |
+      [CapabilityIdentityNotFoundError, 404],
+      [CapabilityCitedByEvidenceError, 409],
+      [MalformedCapabilityInputSchemaError, 422],
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: the file declares no attribute, shape or responsibility of a concept
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: the file declares no attribute, shape or responsibility of a subject type
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: the file declares no attribute, shape or responsibility of a capability
+  - node: domain/integration/capability-registry
+    held_at: nowhere
+    evidence: the file declares no operation or responsibility of the capability registry itself
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: the file declares no attribute, shape or responsibility of a connector configuration
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: the file declares no operation or responsibility of the connector-configuration registry itself
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: the file declares no attribute, shape or responsibility of a citation
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: the file declares no attribute, shape or responsibility of an evidence item
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: the file declares no attribute, shape or responsibility of a hypothesis-revision
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: >-
+      nowhere, correctly — the rule states this removal names no error value of its own, and the
+      map holds no entry for one
+    evidence: |
+      const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>([
+        [CaseNotFoundError, 404],
+        ...
+looked_past: >-
+  the map's own linear instanceof scan over every entry on each lookup, and the broad
+  DomainErrorClass type it is keyed by, are implementation choices with no domain fact riding on
+  them, so I left them for a code-review pass rather than this one.

@@ -1,0 +1,144 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the interface IConceptUsageReader — a pure port declared with no import of any framework,
+      driver or provider client, so infrastructure can reach the domain's concept-in-use check
+      only by implementing it.
+    evidence: |
+      export interface IConceptUsageReader {
+
+        readConceptUsage(concept: string): Promise<ConceptUsageResolution>;
+      }
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: |
+      export type ConceptUsageReference = 'capability' | 'evidence' | 'citation' | 'hypothesis-revision-collects';
+
+      export type ConceptUsageResolution =
+        | { readonly named: true; readonly reference: ConceptUsageReference }
+        | { readonly named: false };
+
+      export interface IConceptUsageReader {
+
+        readConceptUsage(concept: string): Promise<ConceptUsageResolution>;
+      }
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: |
+      export interface IConceptUsageReader {
+
+        readConceptUsage(concept: string): Promise<ConceptUsageResolution>;
+      }
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |
+      export type ConceptUsageReference = 'capability' | 'evidence' | 'citation' | 'hypothesis-revision-collects';
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |
+      export interface IConceptUsageReader {
+
+        readConceptUsage(concept: string): Promise<ConceptUsageResolution>;
+      }
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |
+      export type ConceptUsageReference = 'capability' | 'evidence' | 'citation' | 'hypothesis-revision-collects';
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: |
+      export interface IConceptUsageReader {
+
+        readConceptUsage(concept: string): Promise<ConceptUsageResolution>;
+      }
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: |
+      export type ConceptUsageReference = 'capability' | 'evidence' | 'citation' | 'hypothesis-revision-collects';
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: |
+      export interface IConceptUsageReader {
+
+        readConceptUsage(concept: string): Promise<ConceptUsageResolution>;
+      }
+  - node: contracts/glossary/glossary-authoring
+    held_at: nowhere
+    evidence: |
+      export interface IConceptUsageReader {
+
+        readConceptUsage(concept: string): Promise<ConceptUsageResolution>;
+      }
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: |
+      export type ConceptUsageReference = 'capability' | 'evidence' | 'citation' | 'hypothesis-revision-collects';
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: |
+      export interface IConceptUsageReader {
+
+        readConceptUsage(concept: string): Promise<ConceptUsageResolution>;
+      }
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: |
+      readConceptUsage(concept: string): Promise<ConceptUsageResolution>;
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: |
+      export interface IConceptUsageReader {
+
+        readConceptUsage(concept: string): Promise<ConceptUsageResolution>;
+      }
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: |
+      export type ConceptUsageReference = 'capability' | 'evidence' | 'citation' | 'hypothesis-revision-collects';
+  - node: domain/integration/capability-registry
+    held_at: nowhere
+    evidence: |
+      export type ConceptUsageReference = 'capability' | 'evidence' | 'citation' | 'hypothesis-revision-collects';
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: |
+      export interface IConceptUsageReader {
+
+        readConceptUsage(concept: string): Promise<ConceptUsageResolution>;
+      }
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: |
+      export interface IConceptUsageReader {
+
+        readConceptUsage(concept: string): Promise<ConceptUsageResolution>;
+      }
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: |
+      export type ConceptUsageReference = 'capability' | 'evidence' | 'citation' | 'hypothesis-revision-collects';
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: |
+      export type ConceptUsageReference = 'capability' | 'evidence' | 'citation' | 'hypothesis-revision-collects';
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: |
+      export type ConceptUsageReference = 'capability' | 'evidence' | 'citation' | 'hypothesis-revision-collects';
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: >-
+      the ConceptUsageReference union type, whose four members mirror the rule's own four
+      referencing sources.
+    evidence: |
+      export type ConceptUsageReference = 'capability' | 'evidence' | 'citation' | 'hypothesis-revision-collects';
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: |
+      export type ConceptUsageReference = 'capability' | 'evidence' | 'citation' | 'hypothesis-revision-collects';
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: |
+      export interface IConceptUsageReader {
+
+        readConceptUsage(concept: string): Promise<ConceptUsageResolution>;
+      }

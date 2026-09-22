@@ -1,0 +1,126 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the interface declaration itself — the only import is a domain type import, and the
+      interface carries no framework, driver or provider client reference.
+    evidence: |
+      import type { Concept, ConceptRegistration, GlossaryTerm, TermVocabulary } from './terms.js';
+
+      export interface IGlossaryStore {
+  - node: contracts/glossary/glossary-authoring
+    held_at: >-
+      the writeConcepts and deleteConcept method signatures, which back the register-concept and
+      remove-concept operations respectively.
+    evidence: |
+      writeConcepts(concepts: readonly Concept[]): Promise<void>;
+
+      deleteConcept(name: string): Promise<void>;
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: >-
+      import type { Concept, ConceptRegistration, GlossaryTerm, TermVocabulary } from './terms.js';
+      — Concept's own attributes (name, accepts, ttl, description) are declared in terms.js, not
+      restated in this file.
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      deleteConcept(name: string): Promise<void>; — the signature carries no refusal condition;
+      it is a plain removal-by-name declaration with no indication of the in-use guard.
+  - node: rules/glossary/the-non-conclusion-outcomes-precede-the-first-case
+    held_at: >-
+      the insertMissingTerms method signature, the add-only operation the rule's own "ensuring"
+      mechanism uses.
+    evidence: |
+      insertMissingTerms(vocabulary: TermVocabulary, terms: readonly GlossaryTerm[]): Promise<void>;
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      This file declares no route or error-mapping behavior; it is a persistence port interface
+      with no HTTP-status concern anywhere in its six method signatures.
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      This file declares no route and no request validation of any kind.
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      This file has no capability-registry operation at all; its six methods are readTerms,
+      writeTerms, insertMissingTerms, readConcepts, writeConcepts and deleteConcept.
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      deleteConcept(name: string): Promise<void>; states a return type only, never an HTTP
+      status or body shape.
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      This file has no connector-configuration operation at all.
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: >-
+      This file declares no route.
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: >-
+      This file has no capability-registry read operation.
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: >-
+      The interface is an abstraction over storage with no mention of any store engine or
+      connection; readTerms, writeTerms, insertMissingTerms, readConcepts, writeConcepts and
+      deleteConcept name no persistence mechanism.
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: >-
+      This file declares no capability-registry operation.
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: >-
+      This file declares no connector-configuration-registry operation.
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: >-
+      readTerms/writeTerms/insertMissingTerms operate generically over TermVocabulary; the
+      subject-type value-object's own shape is not declared in this file.
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: >-
+      No method or type in this file names a capability.
+  - node: domain/integration/capability-registry
+    held_at: nowhere
+    evidence: >-
+      No method in this file performs register-capability, remove-capability or resolve-concept.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      No method or type in this file names a connector configuration.
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: >-
+      No method in this file performs register-connector or remove-connector.
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: >-
+      No method or type in this file names a citation.
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: >-
+      No method or type in this file names evidence.
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: >-
+      No method or type in this file names a hypothesis revision.
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      This file declares no capability removal operation.
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: >-
+      This file declares no connector-configuration removal operation.
+looked_past: >-
+  The refusal condition rules/glossary/a-registered-concept-is-never-removed states (a concept
+  named by a capability, evidence item, citation or hypothesis-revision blocks removal) is
+  implemented against IConceptUsageReader in glossary.service.ts rather than in this port
+  interface — that file's conformance to the rule, not this one's plain deleteConcept(name)
+  signature, is the judgment that belongs to it.

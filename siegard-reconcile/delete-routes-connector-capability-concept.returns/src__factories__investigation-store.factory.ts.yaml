@@ -1,0 +1,135 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the exported factory functions' return types, which hide the concrete relational
+      implementation behind the domain's own ports
+    evidence: >-
+      export function createInvestigationStore(connection: DatabaseConnection): IInvestigationStore {
+        return new RelationalInvestigationStore(connection);
+      }
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: the construction of the store from the injected DatabaseConnection
+    evidence: "return new RelationalInvestigationStore(connection);"
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      import type { IEvidenceUsageReader } from '../capability-registry/evidence-usage-reader.port.js';
+      import type { IInvestigationStore } from '../investigation/investigation-store.port.js';
+      import type { DatabaseConnection } from '../persistence/database-connection.js';
+      import { RelationalInvestigationStore } from '../persistence/relational-investigation-store.repository.js';
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      export function createInvestigationStore(connection: DatabaseConnection): IInvestigationStore {
+        return new RelationalInvestigationStore(connection);
+      }
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      export function createEvidenceUsageReader(connection: DatabaseConnection): IEvidenceUsageReader {
+        const store = new RelationalInvestigationStore(connection);
+        return {
+          isCapabilityNamedByEvidence: (identity) => store.isCapabilityNamedByEvidence(identity.name, identity.version),
+        };
+      }
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      export function createInvestigationStore(connection: DatabaseConnection): IInvestigationStore {
+        return new RelationalInvestigationStore(connection);
+      }
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      export function createEvidenceUsageReader(connection: DatabaseConnection): IEvidenceUsageReader {
+        const store = new RelationalInvestigationStore(connection);
+        ...
+      }
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: >-
+      import type { DatabaseConnection } from '../persistence/database-connection.js';
+      import { RelationalInvestigationStore } from '../persistence/relational-investigation-store.repository.js';
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: >-
+      isCapabilityNamedByEvidence: (identity) => store.isCapabilityNamedByEvidence(identity.name, identity.version),
+  - node: contracts/glossary/glossary-authoring
+    held_at: nowhere
+    evidence: >-
+      import type { IEvidenceUsageReader } from '../capability-registry/evidence-usage-reader.port.js';
+      import type { IInvestigationStore } from '../investigation/investigation-store.port.js';
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: >-
+      isCapabilityNamedByEvidence: (identity) => store.isCapabilityNamedByEvidence(identity.name, identity.version),
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: >-
+      export function createInvestigationStore(connection: DatabaseConnection): IInvestigationStore {
+        return new RelationalInvestigationStore(connection);
+      }
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: >-
+      import type { IEvidenceUsageReader } from '../capability-registry/evidence-usage-reader.port.js';
+      import type { IInvestigationStore } from '../investigation/investigation-store.port.js';
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: >-
+      import type { IEvidenceUsageReader } from '../capability-registry/evidence-usage-reader.port.js';
+      import type { IInvestigationStore } from '../investigation/investigation-store.port.js';
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: >-
+      isCapabilityNamedByEvidence: (identity) => store.isCapabilityNamedByEvidence(identity.name, identity.version),
+  - node: domain/integration/capability-registry
+    held_at: nowhere
+    evidence: >-
+      isCapabilityNamedByEvidence: (identity) => store.isCapabilityNamedByEvidence(identity.name, identity.version),
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      import type { DatabaseConnection } from '../persistence/database-connection.js';
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: >-
+      import type { DatabaseConnection } from '../persistence/database-connection.js';
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: >-
+      export function createInvestigationStore(connection: DatabaseConnection): IInvestigationStore {
+        return new RelationalInvestigationStore(connection);
+      }
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: >-
+      const store = new RelationalInvestigationStore(connection);
+      return {
+        isCapabilityNamedByEvidence: (identity) => store.isCapabilityNamedByEvidence(identity.name, identity.version),
+      };
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: >-
+      export function createInvestigationStore(connection: DatabaseConnection): IInvestigationStore {
+        return new RelationalInvestigationStore(connection);
+      }
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      import type { IEvidenceUsageReader } from '../capability-registry/evidence-usage-reader.port.js';
+      import type { IInvestigationStore } from '../investigation/investigation-store.port.js';
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      isCapabilityNamedByEvidence: (identity) => store.isCapabilityNamedByEvidence(identity.name, identity.version),
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: >-
+      import type { DatabaseConnection } from '../persistence/database-connection.js';
+looked_past: >-
+  This file is pure dependency-injection wiring — two factory functions that instantiate
+  RelationalInvestigationStore behind port types — and carries none of the domain,
+  removal-rule or HTTP-surface facts most of the delivered node set names; those facts,
+  where the file set implements them at all, are held by the store, the routes and the
+  registry services the trace binds them to rather than by this factory.

@@ -1,0 +1,119 @@
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      await dependencies.removeConcept(params.name);
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      export async function handleRemoveConceptRequest(
+        dependencies: RemoveConceptControllerDependencies,
+        params: RemoveConceptParamsDto,
+      ): Promise<void> {
+        await dependencies.removeConcept(params.name);
+      }
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      ): Promise<void> {
+        await dependencies.removeConcept(params.name);
+      }
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      ): Promise<void> {
+        await dependencies.removeConcept(params.name);
+      }
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      ): Promise<void> {
+        await dependencies.removeConcept(params.name);
+      }
+  - node: constraints/no-route-enforces-authentication
+    held_at: nowhere
+    evidence: >-
+      export async function handleRemoveConceptRequest(
+        dependencies: RemoveConceptControllerDependencies,
+        params: RemoveConceptParamsDto,
+      ): Promise<void> {
+        await dependencies.removeConcept(params.name);
+      }
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: >-
+      await dependencies.removeConcept(params.name);
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: >-
+      import type { GlossaryService } from '../glossary/glossary.service.js';
+      import type { RemoveConceptParamsDto } from './dto/remove-concept.dto.js';
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: nowhere
+    evidence: >-
+      await dependencies.removeConcept(params.name);
+  - node: contracts/glossary/glossary-authoring
+    held_at: the function handleRemoveConceptRequest
+    evidence: >-
+      export async function handleRemoveConceptRequest(
+        dependencies: RemoveConceptControllerDependencies,
+        params: RemoveConceptParamsDto,
+      ): Promise<void> {
+        await dependencies.removeConcept(params.name);
+      }
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: >-
+      await dependencies.removeConcept(params.name);
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: >-
+      await dependencies.removeConcept(params.name);
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: >-
+      await dependencies.removeConcept(params.name);
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: >-
+      await dependencies.removeConcept(params.name);
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: >-
+      await dependencies.removeConcept(params.name);
+  - node: domain/integration/capability-registry
+    held_at: nowhere
+    evidence: >-
+      await dependencies.removeConcept(params.name);
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      await dependencies.removeConcept(params.name);
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: >-
+      await dependencies.removeConcept(params.name);
+  - node: domain/investigation/citation
+    held_at: nowhere
+    evidence: >-
+      await dependencies.removeConcept(params.name);
+  - node: domain/investigation/evidence
+    held_at: nowhere
+    evidence: >-
+      await dependencies.removeConcept(params.name);
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: >-
+      await dependencies.removeConcept(params.name);
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      await dependencies.removeConcept(params.name);
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      await dependencies.removeConcept(params.name);
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: >-
+      await dependencies.removeConcept(params.name);
