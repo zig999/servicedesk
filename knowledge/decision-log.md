@@ -5506,5 +5506,15 @@ entries:
     registry holds, so an identity nothing is registered at has no citation to find and the guard cannot
     fire, leaving the identity's emptiness as the sole condition a refusal could rest on — and the state such
     a refusal would report is precisely the state the removal was issued to produce.
+- location: rules/glossary/a-registered-concept-is-never-removed.md
+  field: statement
+  unstated: The statement names the refusal (HTTP 409, ConceptInUseError) and the four conditions that raise
+    it, but states nothing about what the refusal reports of which condition was found — no node states that
+    a reference identifying what still names the concept accompanies the finding, nor what that reference
+    is when a hypothesis-revision's own collects lists the concept.
+  found: 'work/delete-routes-connector-capability-concept/intake/2026-09-22-concept-usage-reader-manifested-revision-gap.md,
+    "Reproduction" step 6: "Expected, per the rule''s own decided text: the removal is refused with
+    `ConceptInUseError` (reference `hypothesis-revision-collects`), exactly as it already is for the
+    *unmanifested* case."'
 
 ---
