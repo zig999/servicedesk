@@ -14,6 +14,7 @@ import { CaseVersionNotReleasedError } from './case-version-not-released.error.j
 import { CaseVersionNotValidError } from './case-version-not-valid.error.js';
 import { ConceptAlreadyAnsweredError } from './concept-already-answered.error.js';
 import { ConceptDescriptionRequiredError } from './concept-description-required.error.js';
+import { ConceptInUseError } from './concept-in-use.error.js';
 import { ConceptNotAnsweredError } from './concept-not-answered.error.js';
 import { ConceptNotHeldError } from './concept-not-held.error.js';
 import { ConceptNotInGlossaryError } from './concept-not-in-glossary.error.js';
@@ -60,6 +61,7 @@ const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<Dom
   [ConceptAlreadyAnsweredError, 409],
   [CapabilityConnectorMismatchError, 409],
   [CapabilityCitedByEvidenceError, 409],
+  [ConceptInUseError, 409],
   [CaseVersionNotReleasedError, 409],
   [CaseHoldsNoDraftError, 409],
   [ReleasedHypothesisRevisionNotAlterableError, 409],

@@ -286,9 +286,9 @@ function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): Bui
     createDraft: { createDraft: async () => ({ slug: 'a-slug', version: 1 }) },
     releaseHypothesisRevision: { releaseHypothesisRevision: async () => undefined }, discard: { discard: async () => undefined },
     reviseHypothesis: { reviseHypothesis: async () => ({ hypothesis_name: 'a-hypothesis', revision: 1 }) },
-    placeHypothesis: { placeHypothesis: async () => undefined },
-    removeHypothesis: { removeHypothesis: async () => undefined },
+    placeHypothesis: { placeHypothesis: async () => undefined }, removeHypothesis: { removeHypothesis: async () => undefined },
     registerConcept: stubRegisterConcept(),
+    removeConcept: { removeConcept: async () => undefined },
     registerConnector: stubRegisterConnector(),
     removeConnector: { removeConnector: async () => undefined },
     readConnectorConfiguration: stubReadConnectorConfiguration(),
@@ -700,6 +700,25 @@ it(
       method: 'PUT',
       url: '/v1/connectors/a-connector',
       payload: { configuration: '{}' },
+    });
+
+    expect(deleteResponse.statusCode).toBe(204);
+    expect(putResponse.statusCode).toBe(200);
+  },
+);
+
+it(
+  'answers the DELETE to /v1/glossary/concepts/{name} through remove-concept and the PUT to the identical path ' +
+    'through register-concept, neither one colliding with the other',
+  async () => {
+    const built = buildTestApp();
+    app = built.app;
+
+    const deleteResponse = await app.inject({ method: 'DELETE', url: '/v1/glossary/concepts/a-concept' });
+    const putResponse = await app.inject({
+      method: 'PUT',
+      url: '/v1/glossary/concepts/a-concept',
+      payload: { accepts: ['a-subject-type'], ttl: 60, description: 'a description' },
     });
 
     expect(deleteResponse.statusCode).toBe(204);

@@ -55,6 +55,8 @@ import type { RegisterConnectorControllerDependencies } from './register-connect
 import { createRegisterConnectorRoutesPlugin } from './register-connector.routes.js';
 import type { RemoveCapabilityControllerDependencies } from './remove-capability.controller.js';
 import { createRemoveCapabilityRoutesPlugin } from './remove-capability.routes.js';
+import type { RemoveConceptControllerDependencies } from './remove-concept.controller.js';
+import { createRemoveConceptRoutesPlugin } from './remove-concept.routes.js';
 import type { RemoveConnectorControllerDependencies } from './remove-connector.controller.js';
 import { createRemoveConnectorRoutesPlugin } from './remove-connector.routes.js';
 import type { ReleaseControllerDependencies } from './release.controller.js';
@@ -105,6 +107,7 @@ export type BuildAppDependencies = {
   readonly registerConcept: RegisterConceptControllerDependencies;
   readonly registerConnector: RegisterConnectorControllerDependencies;
   readonly removeConnector: RemoveConnectorControllerDependencies;
+  readonly removeConcept: RemoveConceptControllerDependencies;
   readonly draftConnectorConfigurationFromOpenApi: DraftConnectorConfigurationFromOpenApiControllerDependencies;
   readonly readOpenApiDocumentOperations: ReadOpenApiDocumentOperationsControllerDependencies;
   readonly draftCapabilitySchemaFromOpenApi: DraftCapabilitySchemaFromOpenApiControllerDependencies;
@@ -145,6 +148,7 @@ const routePluginFactories: ReadonlyArray<
   (dependencies) => createRegisterConceptRoutesPlugin(dependencies.registerConcept),
   (dependencies) => createRegisterConnectorRoutesPlugin(dependencies.registerConnector),
   (dependencies) => createRemoveConnectorRoutesPlugin(dependencies.removeConnector),
+  (dependencies) => createRemoveConceptRoutesPlugin(dependencies.removeConcept),
   (dependencies) =>
     createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
   (dependencies) => createReadOpenApiDocumentOperationsRoutesPlugin(dependencies.readOpenApiDocumentOperations),

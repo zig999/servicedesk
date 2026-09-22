@@ -38,6 +38,10 @@
         {
           "path": "src/src/http/remove-capability.controller.ts",
           "digest": "sha256:d3af34c3a4be67299278f36a3325a9181422baefc8b94607957b48cf3662b33a"
+        },
+        {
+          "path": "src/src/http/remove-concept.controller.ts",
+          "digest": "sha256:6697b060584b3dc4f0ca94feece06417ee70765d751a8d842c621c34a53a9f86"
         }
       ]
     },
@@ -74,6 +78,10 @@
           "digest": "sha256:ea23e0350bb8b15e4a417167cf27cf7993fcadd62e0270eaacb081f83cfdc87d"
         },
         {
+          "path": "src/src/http/remove-concept.routes.ts",
+          "digest": "sha256:0a318a4e6b52de5d5e60c3cce6e984b259d5b3ee254bc0faf55a8e19bda3722d"
+        },
+        {
           "path": "src/src/http/remove-connector.routes.ts",
           "digest": "sha256:77c968ac9080bbc48507fe6222c11ae788ba43a8d259d5a4c15e046f66883908"
         }
@@ -86,6 +94,16 @@
         {
           "path": "src/src/http/remove-capability.routes.ts",
           "digest": "sha256:ea23e0350bb8b15e4a417167cf27cf7993fcadd62e0270eaacb081f83cfdc87d"
+        }
+      ]
+    },
+    {
+      "node": "constraints/a-successful-concept-removal-answers-with-no-content",
+      "digest": "sha256:1984fe0e225843f530ec0e99ccfed89ae2508bed581e785c6db35c604b61883e",
+      "files": [
+        {
+          "path": "src/src/http/remove-concept.routes.ts",
+          "digest": "sha256:0a318a4e6b52de5d5e60c3cce6e984b259d5b3ee254bc0faf55a8e19bda3722d"
         }
       ]
     },
@@ -258,6 +276,10 @@
         {
           "path": "src/src/http/remove-capability.routes.ts",
           "digest": "sha256:ea23e0350bb8b15e4a417167cf27cf7993fcadd62e0270eaacb081f83cfdc87d"
+        },
+        {
+          "path": "src/src/http/remove-concept.routes.ts",
+          "digest": "sha256:0a318a4e6b52de5d5e60c3cce6e984b259d5b3ee254bc0faf55a8e19bda3722d"
         },
         {
           "path": "src/src/http/remove-connector.controller.ts",
@@ -907,7 +929,7 @@
         },
         {
           "path": "src/src/http/build-app.ts",
-          "digest": "sha256:700880c44ed7a412443f81c46a9641e441240a92b79a653e7e3a88f256017275"
+          "digest": "sha256:a74bc2bcd36379ca47e05d52d3a51ef40a3c13c7cc19cdd9be5110f2d31986aa"
         },
         {
           "path": "src/src/http/dto/register-concept.dto.ts",
@@ -920,6 +942,10 @@
         {
           "path": "src/src/http/register-concept.routes.ts",
           "digest": "sha256:f9eb02a96a03153d8e2bd6744d0200f0a67b7ad923a4efb6fe104b66c6f64109"
+        },
+        {
+          "path": "src/src/http/remove-concept.routes.ts",
+          "digest": "sha256:0a318a4e6b52de5d5e60c3cce6e984b259d5b3ee254bc0faf55a8e19bda3722d"
         },
         {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
@@ -2198,6 +2224,10 @@
           "digest": "sha256:076ee1820943a5684939c155540836893928f75b28931a0a6ed09de99b93cef1"
         },
         {
+          "path": "src/src/http/dto/remove-concept.dto.ts",
+          "digest": "sha256:3526a32c6deef48c2662b75460032eef90193dcdbc991167f7f38a10e6bb7dbb"
+        },
+        {
           "path": "src/src/http/list-concepts.controller.ts",
           "digest": "sha256:a028965ca5bacc96b26dc241ebf0674efa35bcfc996a50a90ac34837f81a287d"
         },
@@ -2212,6 +2242,10 @@
         {
           "path": "src/src/http/register-concept.routes.ts",
           "digest": "sha256:f9eb02a96a03153d8e2bd6744d0200f0a67b7ad923a4efb6fe104b66c6f64109"
+        },
+        {
+          "path": "src/src/http/remove-concept.routes.ts",
+          "digest": "sha256:0a318a4e6b52de5d5e60c3cce6e984b259d5b3ee254bc0faf55a8e19bda3722d"
         },
         {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
@@ -5598,6 +5632,18 @@
         {
           "path": "src/src/errors/concept-in-use.error.ts",
           "digest": "sha256:c892aef163e3fc89b120e9a20b2fa153ae8b61a607fc1ca3c02a2243d60221ee"
+        },
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:9cddbe3139c4e1243f85b2ec5b9656e0275c76301bf74fb221c9f9f7dc03174e"
+        },
+        {
+          "path": "src/src/factories/build-app.factory.ts",
+          "digest": "sha256:228baa17325a3e559ed9a0e52f6592d88cbfa17a1b0c3bcf22b4a7f56552848d"
+        },
+        {
+          "path": "src/src/factories/glossary.factory.ts",
+          "digest": "sha256:cf012502b0dc14461e42c354c09efb49e7106e5c7331240fcb9a6e352f362f78"
         },
         {
           "path": "src/src/glossary/glossary-store.port.ts",

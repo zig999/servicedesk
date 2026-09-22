@@ -56,6 +56,7 @@ type ComposedResources = {
   readonly readCapabilityByIdentityOrThrow: CapabilityRegistryService['readCapabilityByIdentityOrThrow'];
   readonly glossaryQuery: IGlossaryQuery;
   readonly registerConcept: GlossaryService['registerConcept'];
+  readonly removeConcept: GlossaryService['removeConcept'];
   readonly registerConnector: ConnectorConfigurationRegistryService['registerConnector'];
   readonly removeConnector: ConnectorConfigurationRegistryService['removeConnector'];
   readonly readConnectorConfiguration: (connector: string) => Promise<ConnectorConfigurationResolution>;
@@ -71,10 +72,10 @@ type ComposedResources = {
 function composeResources(env: Env, connection: DatabaseConnection, caseQuery: ICaseQuery): ComposedResources {
   const capabilitiesReader = createCapabilitiesReader(connection);
   const capabilityRegistry = createCapabilityRegistry(connection, createConnectorConfigurationsReader(connection));
-  const glossary = createGlossary(connection);
   const connectorConfigurationRegistry = createConnectorConfigurationRegistry(connection, capabilitiesReader);
   const evidenceUsageReader = createEvidenceUsageReader(connection);
   const conceptUsageReader = createConceptUsageReader(connection, capabilityRegistry);
+  const glossary = createGlossary(connection, conceptUsageReader);
   return {
     caseQuery,
     caseInputRequirementsQuery: createCaseInputRequirementsQuery(connection),
@@ -85,7 +86,7 @@ function composeResources(env: Env, connection: DatabaseConnection, caseQuery: I
     readCapabilityByIdentity: (name, version) => capabilityRegistry.readCapabilityByIdentity(name, version),
     readCapabilityByIdentityOrThrow: (name, version) => capabilityRegistry.readCapabilityByIdentityOrThrow(name, version),
     glossaryQuery: glossary,
-    registerConcept: (registration) => glossary.registerConcept(registration),
+    registerConcept: (registration) => glossary.registerConcept(registration), removeConcept: (name) => glossary.removeConcept(name),
     registerConnector: (registration) => connectorConfigurationRegistry.registerConnector(registration),
     removeConnector: (connector) => connectorConfigurationRegistry.removeConnector(connector),
     readConnectorConfiguration: (connector) => connectorConfigurationRegistry.readConnectorConfiguration(connector),
@@ -161,6 +162,12 @@ function removeCapabilityDependencies(resources: ComposedResources): Pick<BuildA
   };
 }
 
+function removeConceptDependencies(resources: ComposedResources): Pick<BuildAppDependencies, 'removeConcept'> {
+  return {
+    removeConcept: { removeConcept: resources.removeConcept },
+  };
+}
+
 function testConnectorDependencies(resources: ComposedResources): Pick<BuildAppDependencies, 'testConnector'> {
   return {
     testConnector: {
@@ -210,6 +217,7 @@ export function buildAppDependencies(inputs: BuildAppDependenciesInputs): BuildA
     ...registrationDependencies(resources),
     ...removeConnectorDependencies(resources),
     ...removeCapabilityDependencies(resources),
+    ...removeConceptDependencies(resources),
     ...testConnectorDependencies(resources),
     ...draftConnectorConfigurationFromOpenApiDependencies(resources),
     ...readOpenApiDocumentOperationsDependencies(),
