@@ -2,7 +2,7 @@ export class CaseVersionNotDraftError extends Error {
   public readonly context: Readonly<{ slug: string; version: number; state: string }>;
 
   public constructor(slug: string, version: number, state: string) {
-    super(`case "${slug}" version ${version} is in state "${state}", not draft`);
+    super(`o caso "${slug}" na versão ${version} está no estado "${state}", e não em rascunho`);
     this.name = 'CaseVersionNotDraftError';
     this.context = { slug, version, state };
   }

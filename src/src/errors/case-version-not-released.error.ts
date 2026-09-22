@@ -3,7 +3,7 @@ export class CaseVersionNotReleasedError extends Error {
 
   public constructor(slug: string, version: number, state: string) {
     super(
-      `the case "${slug}" version ${version} is in state "${state}", and diagnosis only ever runs against a released version`,
+      `o caso "${slug}" na versão ${version} está no estado "${state}", e o diagnóstico só é executado contra uma versão liberada`,
     );
     this.name = 'CaseVersionNotReleasedError';
     this.context = { slug, version, state };
