@@ -49,8 +49,9 @@ criteria:
   it held before, with no value moved into or out of it.
 - HypothesisRevisionNotDraftAtReleaseError still takes no constructor argument and still declares no context
   property.
-- The suite under src/src/__tests__ passes, with hypothesis-revision-not-draft-at-release.error.spec.ts
-  the only test file changed.
+- The suite under src/src/__tests__ passes, with every test asserting either class's literal English
+  text updated to assert the new PT-br text instead — including hypothesis-revision-not-draft-at-release.error.spec.ts's
+  FIXED_MESSAGE constant — and no other change to any test file.
 ---
 ## What it is
 The two refusals that turn on whether a hypothesis revision is still in draft.
@@ -59,5 +60,6 @@ One of them carries a fully fixed English sentence with no interpolation, which 
 ## Notes
 The route specs release-hypothesis-revision.routes.spec.ts and revise-hypothesis.routes.spec.ts derive their expected envelope from a locally constructed instance's message, so they follow the new text without being edited.
 The fixed message's lack of any identifier is a property of the class, not a gap the PT-br text may fill.
+src/src/__tests__/unit/http/error-handler.middleware.spec.ts also pins HypothesisRevisionNotDraftAtReleaseError's literal English message (found only during a first implementation attempt, outside the risk inventory's original survey scope); the criterion above was corrected to require it updated too, the same pattern as the sibling case-domain tasks.
 UNDERDETERMINED, from the specification — HypothesisRevisionNotDraftAtReleaseError's governing rule states the refusal discloses its own condition and message but never which of its two triggers (not currently in draft, or an identity nothing was ever stored for) raised it; the PT-br text must not name the triggering condition even though no criterion here forbids it in so many words.
 ADVISORY, from the specification — the decision log's entry for the released-revision's-collects-removal exception is indexed on a-released-hypothesis-revision-is-never-altered's own statement rather than on the separate node that states the exception (a-released-revisions-collect-removal-is-accepted-with-no-effect); the two disagree about which node holds that fact today.
