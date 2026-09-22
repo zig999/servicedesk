@@ -3,7 +3,7 @@ export class CaseVersionNotDraftAtReleaseError extends Error {
 
   public constructor(slug: string, version: number, state: string) {
     super(
-      `the case "${slug}" version ${version} is in state "${state}", and release is the one trigger that only ever moves a version out of draft`,
+      `o caso "${slug}" na versão ${version} está no estado "${state}", e a liberação é o único gatilho que move uma versão para fora do rascunho`,
     );
     this.name = 'CaseVersionNotDraftAtReleaseError';
     this.context = { slug, version, state };
