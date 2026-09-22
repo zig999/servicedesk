@@ -3,7 +3,7 @@ export class ManifestWouldHoldNoHypothesisError extends Error {
 
   public constructor(slug: string, version: number) {
     super(
-      `removing this entry would leave case "${slug}" version ${version}'s manifest holding no hypothesis, and a case version's manifest declares at least one entry`,
+      `remover esta entrada deixaria o manifesto do caso "${slug}" versão ${version} sem nenhuma hipótese, e o manifesto de uma versão do caso declara ao menos uma entrada`,
     );
     this.name = 'ManifestWouldHoldNoHypothesisError';
     this.context = { slug, version };
