@@ -794,6 +794,10 @@
           "digest": "sha256:c17b48dc07f09b549b562eacc46ef5cdc16c47228e8fda45c2ed403990cdf1df"
         },
         {
+          "path": "src/src/capability-registry/capability-registry.service.ts",
+          "digest": "sha256:8065724fa9851bcd8756b89e7049156b697695b337949fad0bceb62bbf9090d3"
+        },
+        {
           "path": "src/src/case/case.ts",
           "digest": "sha256:5d71161a8f764669622f1035727028b68e96e21685e53bdc3d6a022308881296"
         },
@@ -1013,7 +1017,7 @@
         },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:217728ae61493dc10d2473493fa96f728d374c2c1533b0fb55d148db3e5cb68a"
+          "digest": "sha256:8065724fa9851bcd8756b89e7049156b697695b337949fad0bceb62bbf9090d3"
         },
         {
           "path": "src/src/capability-registry/capability-store.port.ts",
@@ -2485,7 +2489,7 @@
         },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:e0c219ae637d6100a28e69977db832fc6eafe383fa81eb039aa9d621587b6697"
+          "digest": "sha256:8065724fa9851bcd8756b89e7049156b697695b337949fad0bceb62bbf9090d3"
         },
         {
           "path": "src/src/capability-registry/capability.ts",
@@ -2597,7 +2601,7 @@
         },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:217728ae61493dc10d2473493fa96f728d374c2c1533b0fb55d148db3e5cb68a"
+          "digest": "sha256:8065724fa9851bcd8756b89e7049156b697695b337949fad0bceb62bbf9090d3"
         },
         {
           "path": "src/src/capability-registry/capability-store.port.ts",
@@ -6758,6 +6762,20 @@
         {
           "path": "frontend/app/src/services/capability-schema-messages.ts",
           "digest": "sha256:302114c5172bf38c6aba8c92f1fc454fee72f453572d2654768f8d8fe60b9b44"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-registered-capability-cited-by-evidence-is-never-removed",
+      "digest": "sha256:8195034158d28a4e3c3b39c3b7506a739d6f0aad4f54c7ff289c26b278056a08",
+      "files": [
+        {
+          "path": "src/src/capability-registry/capability-registry.service.ts",
+          "digest": "sha256:8065724fa9851bcd8756b89e7049156b697695b337949fad0bceb62bbf9090d3"
+        },
+        {
+          "path": "src/src/errors/capability-cited-by-evidence.error.ts",
+          "digest": "sha256:430a641694444a953cbeada75c8c9ebb0412ca08907ac26cc55c31e8a4f459c7"
         }
       ]
     },

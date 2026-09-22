@@ -10,6 +10,14 @@
       "task": "task/capability-removal/capability-store-delete"
     },
     {
+      "id": "implementation/capability-removal/remove-capability-operation",
+      "kind": "implementation",
+      "file": "implementation/capability-removal/remove-capability-operation.md",
+      "title": "CapabilityRegistryService.removeCapability, refused where evidence names the identity",
+      "summary": "Adds removeCapability(name, version) to CapabilityRegistryService, refusing through a new CapabilityCitedByEvidenceError when the evidence-usage reader reports the identity is named by collected evidence, and otherwise deleting unconditionally through the capability store.",
+      "task": "task/capability-removal/remove-capability-operation"
+    },
+    {
       "id": "implementation/concept-removal/concept-store-delete",
       "kind": "implementation",
       "file": "implementation/concept-removal/concept-store-delete.md",
@@ -64,6 +72,14 @@
       "title": "Store-level capability removal, keyed by name and version together",
       "summary": "Proof that ICapabilityStore.deleteCapability and RelationalCapabilityStore.deleteCapability satisfy this task's five criteria and the one underdetermined entry the task's Notes name, while every node this task implements is left in untested because its fact spans more than a store-only delete decides.",
       "task": "task/capability-removal/capability-store-delete"
+    },
+    {
+      "id": "proof/capability-removal/remove-capability-operation",
+      "kind": "proof",
+      "file": "proof/capability-removal/remove-capability-operation.md",
+      "title": "CapabilityRegistryService.removeCapability, refused where evidence names the identity",
+      "summary": "Five new unit tests over CapabilityRegistryService.removeCapability prove both branches of the cited-evidence guard — refusal with CapabilityCitedByEvidenceError before any store write, and unconditional delete completing with no refusal for an uncited or absent identity.",
+      "task": "task/capability-removal/remove-capability-operation"
     },
     {
       "id": "proof/concept-removal/concept-store-delete",
@@ -136,6 +152,42 @@
     {
       "from": "implementation/capability-removal/capability-store-delete",
       "to": "task/capability-removal/capability-store-delete",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/capability-removal/remove-capability-operation",
+      "to": "rules/integration/a-registered-capability-cited-by-evidence-is-never-removed",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-removal/remove-capability-operation",
+      "to": "domain/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/capability-removal/remove-capability-operation",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/capability-removal/remove-capability-operation",
+      "to": "contracts/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/capability-removal/remove-capability-operation",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/capability-removal/remove-capability-operation",
+      "to": "task/capability-removal/remove-capability-operation",
       "kind": "implements",
       "at": "the path"
     },
@@ -334,6 +386,12 @@
     {
       "from": "proof/capability-removal/capability-store-delete",
       "to": "implementation/capability-removal/capability-store-delete",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-removal/remove-capability-operation",
+      "to": "implementation/capability-removal/remove-capability-operation",
       "kind": "proves",
       "at": "the path"
     },

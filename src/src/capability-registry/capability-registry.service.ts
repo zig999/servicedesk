@@ -1,4 +1,5 @@
 import { orphanedPlaceholders } from '../connector-registry/connector-placeholder-declaration-check.js';
+import { CapabilityCitedByEvidenceError } from '../errors/capability-cited-by-evidence.error.js';
 import { CapabilityIdentityNotFoundError } from '../errors/capability-identity-not-found.error.js';
 import { CapabilityNotReadOnlyError } from '../errors/capability-not-read-only.error.js';
 import { CapabilitySchemaNotWellFormedError } from '../errors/capability-schema-not-well-formed.error.js';
@@ -18,6 +19,7 @@ import type {
   IConnectorConfigurationsReader,
   RegisteredConnectorConfigurationForPlaceholderCheck,
 } from './connector-configurations-reader.port.js';
+import type { IEvidenceUsageReader } from './evidence-usage-reader.port.js';
 import {
   DEFAULT_CAPABILITY_TIMEOUT_MS,
   READ_ONLY_NATURE,
@@ -35,10 +37,15 @@ const NO_REGISTERED_CONNECTOR_CONFIGURATIONS: IConnectorConfigurationsReader = {
   readConnectorConfigurations: () => Promise.resolve([]),
 };
 
+const NO_CAPABILITY_NAMED_BY_EVIDENCE: IEvidenceUsageReader = {
+  isCapabilityNamedByEvidence: () => Promise.resolve(false),
+};
+
 export class CapabilityRegistryService implements ICapabilityQuery {
   public constructor(
     private readonly store: ICapabilityStore,
     private readonly connectorConfigurationsReader: IConnectorConfigurationsReader = NO_REGISTERED_CONNECTOR_CONFIGURATIONS,
+    private readonly evidenceUsageReader: IEvidenceUsageReader = NO_CAPABILITY_NAMED_BY_EVIDENCE,
   ) {}
 
   public async registerCapability(registration: CapabilityRegistration): Promise<Capability> {
@@ -92,6 +99,14 @@ export class CapabilityRegistryService implements ICapabilityQuery {
     readonly RegisteredConnectorConfigurationForPlaceholderCheck[]
   > {
     return this.connectorConfigurationsReader.readConnectorConfigurations();
+  }
+
+  public async removeCapability(name: string, version: string): Promise<void> {
+    const cited = await this.evidenceUsageReader.isCapabilityNamedByEvidence({ name, version });
+    if (cited) {
+      throw new CapabilityCitedByEvidenceError(name, version);
+    }
+    await this.store.deleteCapability(name, version);
   }
 
   private async refuseOrphanedPlaceholders(capability: Capability): Promise<void> {

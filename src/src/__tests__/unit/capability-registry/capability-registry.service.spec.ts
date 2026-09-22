@@ -6,6 +6,8 @@ import type {
   IConnectorConfigurationsReader,
   RegisteredConnectorConfigurationForPlaceholderCheck,
 } from '../../../capability-registry/connector-configurations-reader.port.js';
+import type { IEvidenceUsageReader } from '../../../capability-registry/evidence-usage-reader.port.js';
+import { CapabilityCitedByEvidenceError } from '../../../errors/capability-cited-by-evidence.error.js';
 import { CapabilityIdentityNotFoundError } from '../../../errors/capability-identity-not-found.error.js';
 import { CapabilityNotReadOnlyError } from '../../../errors/capability-not-read-only.error.js';
 import { CapabilitySchemaNotWellFormedError } from '../../../errors/capability-schema-not-well-formed.error.js';
@@ -19,6 +21,10 @@ const SIXTY_SECONDS_IN_MILLISECONDS = 60_000;
 const STATED_TIMEOUT_MS = 5_000;
 
 const READ_ONLY = 'read-only';
+
+const EVIDENCE_REPORTS_CITED: IEvidenceUsageReader = { isCapabilityNamedByEvidence: async () => true };
+
+const EVIDENCE_REPORTS_NOT_CITED: IEvidenceUsageReader = { isCapabilityNamedByEvidence: async () => false };
 
 class InMemoryCapabilityStore implements ICapabilityStore {
   public constructor(private records: readonly Capability[] = []) {}
@@ -866,4 +872,63 @@ it('propagates a failure the connector-configurations reader itself raises while
   expect(outcome).toBeInstanceOf(Error);
   expect(outcome).not.toBeInstanceOf(ConnectorPlaceholderOutsideInputSchemaError);
   expect((outcome as Error).message).toBe('the connector-configuration store is unavailable');
+});
+
+it('refuses removal with CapabilityCitedByEvidenceError when the evidence-usage reader reports the identity is cited', async () => {
+  const registry = new CapabilityRegistryService(
+    new InMemoryCapabilityStore([heldCapability()]),
+    undefined,
+    EVIDENCE_REPORTS_CITED,
+  );
+
+  const refusal = await registry.removeCapability('a-capability', '1.0.0').catch((error: unknown) => error);
+
+  expect(refusal).toBeInstanceOf(CapabilityCitedByEvidenceError);
+});
+
+it('leaves the capability registered at that identity when the removal is refused', async () => {
+  const registry = new CapabilityRegistryService(
+    new InMemoryCapabilityStore([heldCapability()]),
+    undefined,
+    EVIDENCE_REPORTS_CITED,
+  );
+
+  await registry.removeCapability('a-capability', '1.0.0').catch(() => undefined);
+
+  const resolution = await registry.readCapabilityByIdentity('a-capability', '1.0.0');
+  expect(resolution).toEqual({ held: true, capability: heldCapability() });
+});
+
+it('refuses before any delete statement is issued, so a failure the store would raise on delete never reaches the caller in place of the refusal', async () => {
+  const storeThatExplodesOnDelete: ICapabilityStore = {
+    readCapabilities: async () => [heldCapability()],
+    writeCapabilities: async () => undefined,
+    deleteCapability: async () => {
+      throw new Error('a database constraint violation');
+    },
+  };
+  const registry = new CapabilityRegistryService(storeThatExplodesOnDelete, undefined, EVIDENCE_REPORTS_CITED);
+
+  const outcome = await registry.removeCapability('a-capability', '1.0.0').catch((error: unknown) => error);
+
+  expect(outcome).toBeInstanceOf(CapabilityCitedByEvidenceError);
+});
+
+it('removes the capability, so a subsequent read of the registry finds nothing registered at that identity, when the evidence-usage reader reports it is not cited', async () => {
+  const registry = new CapabilityRegistryService(
+    new InMemoryCapabilityStore([heldCapability()]),
+    undefined,
+    EVIDENCE_REPORTS_NOT_CITED,
+  );
+
+  await registry.removeCapability('a-capability', '1.0.0');
+
+  const resolution = await registry.readCapabilityByIdentity('a-capability', '1.0.0');
+  expect(resolution).toEqual({ held: false, name: 'a-capability', version: '1.0.0' });
+});
+
+it('completes with no refusal when nothing is registered at the requested identity, since nothing there is named by evidence either', async () => {
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore(), undefined, EVIDENCE_REPORTS_NOT_CITED);
+
+  await expect(registry.removeCapability('an-absent-capability', '9.9.9')).resolves.toBeUndefined();
 });
