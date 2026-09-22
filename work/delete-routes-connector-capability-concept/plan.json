@@ -9,11 +9,25 @@
       "summary": "remove-capability end to end — a real deletion keyed by name and version, the operation that refuses where collected evidence names that identity, and the DELETE route whose refusal is answered by a named status."
     },
     {
+      "id": "epic/case-overwrite-revision-draft-guard-fix",
+      "kind": "epic",
+      "file": "epic/case-overwrite-revision-draft-guard-fix.md",
+      "title": "overwriteRevision refuses once the case no longer holds a draft",
+      "summary": "A corrective increment fixing overwriteRevision in the relational case store, which today skips the requireCaseHoldsDraft guard its sibling insertRevision applies, letting an in-place hypothesis-revision edit proceed after the case's draft was released or discarded."
+    },
+    {
       "id": "epic/concept-removal",
       "kind": "epic",
       "file": "epic/concept-removal.md",
       "title": "Removing a registered concept",
       "summary": "remove-concept end to end — a deletion of the concept row with its accepted subject types, the operation that refuses where a capability answers the concept or evidence, a citation or a hypothesis-revision's collects names it, and the DELETE route on the concept name."
+    },
+    {
+      "id": "epic/concept-usage-reader-manifested-revision-fix",
+      "kind": "epic",
+      "file": "epic/concept-usage-reader-manifested-revision-fix.md",
+      "title": "concept-usage-reader detects a concept a manifested hypothesis-revision still collects",
+      "summary": "A corrective increment fixing resolveConceptUsage's fourth branch, which today reports a concept as unnamed by a hypothesis-revision's own collects whenever a case version manifests that revision — the opposite of what the governing rule's decided text requires."
     },
     {
       "id": "epic/connector-configuration-removal",
@@ -68,6 +82,14 @@
       "epic": "capability-removal"
     },
     {
+      "id": "task/case-overwrite-revision-draft-guard-fix/apply-require-case-holds-draft-guard",
+      "kind": "task",
+      "file": "task/case-overwrite-revision-draft-guard-fix/apply-require-case-holds-draft-guard.md",
+      "title": "overwriteRevision applies requireCaseHoldsDraft before writing",
+      "summary": "overwriteRevision now refuses with CaseHoldsNoDraftError before touching a hypothesis-revision when the case no longer holds a draft, matching insertRevision's own precedent.",
+      "epic": "case-overwrite-revision-draft-guard-fix"
+    },
+    {
       "id": "task/concept-removal/concept-store-delete",
       "kind": "task",
       "file": "task/concept-removal/concept-store-delete.md",
@@ -90,6 +112,14 @@
       "title": "DELETE on a concept name",
       "summary": "The HTTP surface for remove-concept — route, controller and request shape as separate files, the refusal named in the status map, wired into the application build.",
       "epic": "concept-removal"
+    },
+    {
+      "id": "task/concept-usage-reader-manifested-revision-fix/broaden-hypothesis-revision-collects-check",
+      "kind": "task",
+      "file": "task/concept-usage-reader-manifested-revision-fix/broaden-hypothesis-revision-collects-check.md",
+      "title": "concept-usage-reader's fourth branch answers named for a manifested hypothesis-revision too",
+      "summary": "resolveConceptUsage's hypothesis-revision-collects branch reports a concept as named whether or not a case version currently manifests the hypothesis-revision that collects it, matching the governing rule's own decided text.",
+      "epic": "concept-usage-reader-manifested-revision-fix"
     },
     {
       "id": "task/connector-configuration-removal/connector-configuration-store-delete",
@@ -290,6 +320,198 @@
       "at": "covers[9]"
     },
     {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "rules/knowledge/a-case-has-at-most-one-draft",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "rules/knowledge/a-case-listing-answers-cases-in-slug-order",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "rules/knowledge/a-case-summary-is-derived-from-its-existing-versions",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "rules/knowledge/a-case-version-number-is-never-reused",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "rules/knowledge/a-hypothesis-name-is-unique-within-its-case",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "rules/knowledge/a-hypothesis-revision-number-is-never-reused",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first",
+      "kind": "covers",
+      "at": "covers[23]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state",
+      "kind": "covers",
+      "at": "covers[24]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version",
+      "kind": "covers",
+      "at": "covers[25]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "rules/knowledge/a-slug-identifies-one-case",
+      "kind": "covers",
+      "at": "covers[26]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "rules/knowledge/every-case-version-remains-readable",
+      "kind": "covers",
+      "at": "covers[27]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "rules/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "covers",
+      "at": "covers[28]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "scenarios/knowledge/a-catalog-entry-follows-the-released-version",
+      "kind": "covers",
+      "at": "covers[29]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "contracts/knowledge/case-query",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest",
+      "kind": "covers",
+      "at": "covers[30]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "scenarios/knowledge/revising-a-released-revision-creates-the-next",
+      "kind": "covers",
+      "at": "covers[31]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "domain/knowledge/case",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "domain/knowledge/case-summary",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/case-overwrite-revision-draft-guard-fix",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
       "from": "epic/concept-removal",
       "to": "contracts/glossary/glossary-authoring",
       "kind": "covers",
@@ -426,6 +648,42 @@
       "to": "domain/glossary/subject-type",
       "kind": "covers",
       "at": "covers[9]"
+    },
+    {
+      "from": "epic/concept-usage-reader-manifested-revision-fix",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/concept-usage-reader-manifested-revision-fix",
+      "to": "domain/investigation/citation",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/concept-usage-reader-manifested-revision-fix",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/concept-usage-reader-manifested-revision-fix",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/concept-usage-reader-manifested-revision-fix",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/concept-usage-reader-manifested-revision-fix",
+      "to": "rules/glossary/a-registered-concept-is-never-removed",
+      "kind": "covers",
+      "at": "covers[5]"
     },
     {
       "from": "epic/connector-configuration-removal",
@@ -782,6 +1040,12 @@
       "at": "implements[8]"
     },
     {
+      "from": "task/case-overwrite-revision-draft-guard-fix/apply-require-case-holds-draft-guard",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
       "from": "task/concept-removal/concept-store-delete",
       "to": "rules/glossary/a-registered-concept-is-never-removed",
       "kind": "implements",
@@ -900,6 +1164,24 @@
       "to": "constraints/a-successful-concept-removal-answers-with-no-content",
       "kind": "implements",
       "at": "implements[6]"
+    },
+    {
+      "from": "task/concept-usage-reader-manifested-revision-fix/broaden-hypothesis-revision-collects-check",
+      "to": "rules/glossary/a-registered-concept-is-never-removed",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/concept-usage-reader-manifested-revision-fix/broaden-hypothesis-revision-collects-check",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/concept-usage-reader-manifested-revision-fix/broaden-hypothesis-revision-collects-check",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[2]"
     },
     {
       "from": "task/connector-configuration-removal/connector-configuration-store-delete",
