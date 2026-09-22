@@ -18,6 +18,14 @@
       "task": "task/capability-removal/remove-capability-operation"
     },
     {
+      "id": "implementation/capability-removal/remove-capability-route",
+      "kind": "implementation",
+      "file": "implementation/capability-removal/remove-capability-route.md",
+      "title": "DELETE /v1/capabilities/:name/:version route",
+      "summary": "Adds the route/controller/dto trio exposing remove-capability over HTTP, maps its refusal to HTTP 409 in status-map.ts, and wires it through build-app.ts and build-app.factory.ts.",
+      "task": "task/capability-removal/remove-capability-route"
+    },
+    {
       "id": "implementation/concept-removal/concept-store-delete",
       "kind": "implementation",
       "file": "implementation/concept-removal/concept-store-delete.md",
@@ -80,6 +88,14 @@
       "title": "CapabilityRegistryService.removeCapability, refused where evidence names the identity",
       "summary": "Five new unit tests over CapabilityRegistryService.removeCapability prove both branches of the cited-evidence guard — refusal with CapabilityCitedByEvidenceError before any store write, and unconditional delete completing with no refusal for an uncited or absent identity.",
       "task": "task/capability-removal/remove-capability-operation"
+    },
+    {
+      "id": "proof/capability-removal/remove-capability-route",
+      "kind": "proof",
+      "file": "proof/capability-removal/remove-capability-route.md",
+      "title": "Proof for the remove-capability HTTP route",
+      "summary": "A new remove-capability.routes.spec.ts proves the route's own criteria (path/method, malformed-path refusal, named-refusal mapping to 409, unmapped-error propagation, unconditional 204/no-body answer), the build-app.spec.ts fixture is repaired for the now-required removeCapability dependency, and one added build-app.spec.ts test proves the route's path/method share the identity-read route's own path without colliding, wiring it through the real build.",
+      "task": "task/capability-removal/remove-capability-route"
     },
     {
       "id": "proof/concept-removal/concept-store-delete",
@@ -188,6 +204,60 @@
     {
       "from": "implementation/capability-removal/remove-capability-operation",
       "to": "task/capability-removal/remove-capability-operation",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/capability-removal/remove-capability-route",
+      "to": "contracts/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-removal/remove-capability-route",
+      "to": "domain/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/capability-removal/remove-capability-route",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/capability-removal/remove-capability-route",
+      "to": "rules/integration/a-registered-capability-cited-by-evidence-is-never-removed",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/capability-removal/remove-capability-route",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/capability-removal/remove-capability-route",
+      "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/capability-removal/remove-capability-route",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/capability-removal/remove-capability-route",
+      "to": "constraints/a-successful-capability-removal-answers-with-no-content",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/capability-removal/remove-capability-route",
+      "to": "task/capability-removal/remove-capability-route",
       "kind": "implements",
       "at": "the path"
     },
@@ -392,6 +462,12 @@
     {
       "from": "proof/capability-removal/remove-capability-operation",
       "to": "implementation/capability-removal/remove-capability-operation",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-removal/remove-capability-route",
+      "to": "implementation/capability-removal/remove-capability-route",
       "kind": "proves",
       "at": "the path"
     },

@@ -53,6 +53,8 @@ import type { RegisterConceptControllerDependencies } from './register-concept.c
 import { createRegisterConceptRoutesPlugin } from './register-concept.routes.js';
 import type { RegisterConnectorControllerDependencies } from './register-connector.controller.js';
 import { createRegisterConnectorRoutesPlugin } from './register-connector.routes.js';
+import type { RemoveCapabilityControllerDependencies } from './remove-capability.controller.js';
+import { createRemoveCapabilityRoutesPlugin } from './remove-capability.routes.js';
 import type { RemoveConnectorControllerDependencies } from './remove-connector.controller.js';
 import { createRemoveConnectorRoutesPlugin } from './remove-connector.routes.js';
 import type { ReleaseControllerDependencies } from './release.controller.js';
@@ -81,6 +83,7 @@ export type BuildAppDependencies = {
   readonly listCapabilities: ListCapabilitiesControllerDependencies;
   readonly listConnectorConfigurations: ListConnectorConfigurationsControllerDependencies;
   readonly registerCapability: RegisterCapabilityControllerDependencies;
+  readonly removeCapability: RemoveCapabilityControllerDependencies;
   readonly createDraft: CreateDraftControllerDependencies;
   readonly updateDraft: UpdateDraftControllerDependencies;
   readonly release: ReleaseControllerDependencies;
@@ -120,6 +123,7 @@ const routePluginFactories: ReadonlyArray<
   (dependencies) => createListCapabilitiesRoutesPlugin(dependencies.listCapabilities),
   (dependencies) => createListConnectorConfigurationsRoutesPlugin(dependencies.listConnectorConfigurations),
   (dependencies) => createRegisterCapabilityRoutesPlugin(dependencies.registerCapability),
+  (dependencies) => createRemoveCapabilityRoutesPlugin(dependencies.removeCapability),
   (dependencies) => createCreateDraftRoutesPlugin(dependencies.createDraft),
   (dependencies) => createUpdateDraftRoutesPlugin(dependencies.updateDraft),
   (dependencies) => createReleaseRoutesPlugin(dependencies.release),

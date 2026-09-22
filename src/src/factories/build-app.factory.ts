@@ -51,6 +51,7 @@ type ComposedResources = {
   readonly caseStore: ICaseStore;
   readonly capabilityQuery: ICapabilityQuery;
   readonly registerCapability: CapabilityRegistryService['registerCapability'];
+  readonly removeCapability: CapabilityRegistryService['removeCapability'];
   readonly readCapabilityByIdentity: CapabilityRegistryService['readCapabilityByIdentity'];
   readonly readCapabilityByIdentityOrThrow: CapabilityRegistryService['readCapabilityByIdentityOrThrow'];
   readonly glossaryQuery: IGlossaryQuery;
@@ -80,6 +81,7 @@ function composeResources(env: Env, connection: DatabaseConnection, caseQuery: I
     caseStore: createCaseStore(connection),
     capabilityQuery: capabilityRegistry,
     registerCapability: (registration) => capabilityRegistry.registerCapability(registration),
+    removeCapability: (name, version) => capabilityRegistry.removeCapability(name, version),
     readCapabilityByIdentity: (name, version) => capabilityRegistry.readCapabilityByIdentity(name, version),
     readCapabilityByIdentityOrThrow: (name, version) => capabilityRegistry.readCapabilityByIdentityOrThrow(name, version),
     glossaryQuery: glossary,
@@ -153,6 +155,12 @@ function removeConnectorDependencies(resources: ComposedResources): Pick<BuildAp
   };
 }
 
+function removeCapabilityDependencies(resources: ComposedResources): Pick<BuildAppDependencies, 'removeCapability'> {
+  return {
+    removeCapability: { removeCapability: resources.removeCapability },
+  };
+}
+
 function testConnectorDependencies(resources: ComposedResources): Pick<BuildAppDependencies, 'testConnector'> {
   return {
     testConnector: {
@@ -201,6 +209,7 @@ export function buildAppDependencies(inputs: BuildAppDependenciesInputs): BuildA
     ...lifecycleDependencies(resources),
     ...registrationDependencies(resources),
     ...removeConnectorDependencies(resources),
+    ...removeCapabilityDependencies(resources),
     ...testConnectorDependencies(resources),
     ...draftConnectorConfigurationFromOpenApiDependencies(resources),
     ...readOpenApiDocumentOperationsDependencies(),

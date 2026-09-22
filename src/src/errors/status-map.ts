@@ -1,3 +1,4 @@
+import { CapabilityCitedByEvidenceError } from './capability-cited-by-evidence.error.js';
 import { CapabilityConnectorMismatchError } from './capability-connector-mismatch.error.js';
 import { CapabilityIdentityNotFoundError } from './capability-identity-not-found.error.js';
 import { CapabilityNotReadOnlyError } from './capability-not-read-only.error.js';
@@ -58,6 +59,7 @@ const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<Dom
   [CaseVersionNotValidError, 409],
   [ConceptAlreadyAnsweredError, 409],
   [CapabilityConnectorMismatchError, 409],
+  [CapabilityCitedByEvidenceError, 409],
   [CaseVersionNotReleasedError, 409],
   [CaseHoldsNoDraftError, 409],
   [ReleasedHypothesisRevisionNotAlterableError, 409],

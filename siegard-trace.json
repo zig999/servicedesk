@@ -34,6 +34,10 @@
         {
           "path": "src/src/errors/status-map.ts",
           "digest": "sha256:aea4fdb38b7e4bc15eee7397e295a3ec165720759afbdc8bf1aa93130347c87f"
+        },
+        {
+          "path": "src/src/http/remove-capability.controller.ts",
+          "digest": "sha256:d3af34c3a4be67299278f36a3325a9181422baefc8b94607957b48cf3662b33a"
         }
       ]
     },
@@ -66,8 +70,22 @@
           "digest": "sha256:54fd40cdf227fef5dfa32aa54fbd321a98d288fbfb384673de9564863a91791f"
         },
         {
+          "path": "src/src/http/remove-capability.routes.ts",
+          "digest": "sha256:ea23e0350bb8b15e4a417167cf27cf7993fcadd62e0270eaacb081f83cfdc87d"
+        },
+        {
           "path": "src/src/http/remove-connector.routes.ts",
           "digest": "sha256:77c968ac9080bbc48507fe6222c11ae788ba43a8d259d5a4c15e046f66883908"
+        }
+      ]
+    },
+    {
+      "node": "constraints/a-successful-capability-removal-answers-with-no-content",
+      "digest": "sha256:b6096e0b5208d67397fae54613a754b9e2de23299d55860eed833190c316201a",
+      "files": [
+        {
+          "path": "src/src/http/remove-capability.routes.ts",
+          "digest": "sha256:ea23e0350bb8b15e4a417167cf27cf7993fcadd62e0270eaacb081f83cfdc87d"
         }
       ]
     },
@@ -236,6 +254,10 @@
         {
           "path": "src/src/http/release-hypothesis-revision.routes.ts",
           "digest": "sha256:54fd40cdf227fef5dfa32aa54fbd321a98d288fbfb384673de9564863a91791f"
+        },
+        {
+          "path": "src/src/http/remove-capability.routes.ts",
+          "digest": "sha256:ea23e0350bb8b15e4a417167cf27cf7993fcadd62e0270eaacb081f83cfdc87d"
         },
         {
           "path": "src/src/http/remove-connector.controller.ts",
@@ -1029,7 +1051,7 @@
         },
         {
           "path": "src/src/http/build-app.ts",
-          "digest": "sha256:700880c44ed7a412443f81c46a9641e441240a92b79a653e7e3a88f256017275"
+          "digest": "sha256:324897b200b2065fca850482c1df82c40f4948598056bb376d23015ccd3c05b3"
         },
         {
           "path": "src/src/http/dto/list-capabilities.dto.ts",
@@ -1074,6 +1096,10 @@
         {
           "path": "src/src/http/register-capability.routes.ts",
           "digest": "sha256:5f558308eab1cc4e9226813f5e30e259b23ee2c2039adba7b280159c1b11ebd2"
+        },
+        {
+          "path": "src/src/http/remove-capability.routes.ts",
+          "digest": "sha256:ea23e0350bb8b15e4a417167cf27cf7993fcadd62e0270eaacb081f83cfdc87d"
         },
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
@@ -2528,8 +2554,16 @@
           "digest": "sha256:8446c0d004adbea16b4c758d04fd1fbd3f2e5ac344f90faec00150786cbed7f8"
         },
         {
+          "path": "src/src/http/dto/remove-capability.dto.ts",
+          "digest": "sha256:277a08fd791415a1534ae3000a2e6e7d4cfaa37d8b881c88c35e7d6caae6322d"
+        },
+        {
           "path": "src/src/http/read-capability-by-identity.controller.ts",
           "digest": "sha256:0bb0c7da926651d101d91edd64c88b454f795ce235af9efcf70b04323cc69b66"
+        },
+        {
+          "path": "src/src/http/remove-capability.routes.ts",
+          "digest": "sha256:ea23e0350bb8b15e4a417167cf27cf7993fcadd62e0270eaacb081f83cfdc87d"
         },
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
@@ -2612,6 +2646,10 @@
           "digest": "sha256:9150bc452a14cbbe033e12d1e97ff55c1c454680eb3c615b42486ad590172168"
         },
         {
+          "path": "src/src/factories/build-app.factory.ts",
+          "digest": "sha256:10e7ac6cb18fe02d8240e52c285926827e093b305b9905248be729746c4d48fc"
+        },
+        {
           "path": "src/src/factories/capability-registry.factory.ts",
           "digest": "sha256:e29c3ab38b9c6cc8e4f0eb8408388a0c098ac2a88ae63dc18b2e13584dd6893d"
         },
@@ -2626,6 +2664,10 @@
         {
           "path": "src/src/http/register-capability.routes.ts",
           "digest": "sha256:5f558308eab1cc4e9226813f5e30e259b23ee2c2039adba7b280159c1b11ebd2"
+        },
+        {
+          "path": "src/src/http/remove-capability.controller.ts",
+          "digest": "sha256:d3af34c3a4be67299278f36a3325a9181422baefc8b94607957b48cf3662b33a"
         },
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
@@ -6776,6 +6818,10 @@
         {
           "path": "src/src/errors/capability-cited-by-evidence.error.ts",
           "digest": "sha256:430a641694444a953cbeada75c8c9ebb0412ca08907ac26cc55c31e8a4f459c7"
+        },
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:78d38fbb01aa1f7d1569be3b86a401e5be911ef03abfc14bf90a1706a4fa4723"
         }
       ]
     },

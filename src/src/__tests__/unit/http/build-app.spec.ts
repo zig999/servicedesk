@@ -282,9 +282,9 @@ function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): Bui
     readCaseInputRequirements: { caseInputRequirementsQuery: { readCaseInputRequirements: async () => ({ requirements: [], capabilities_with_malformed_input_schema: [] }) } },
     listCapabilities: { capabilityQuery: stubCapabilityQuery(), defaultLimit: 10, maxLimit: 100 },
     registerCapability: stubRegisterCapability(),
+    removeCapability: { removeCapability: async () => undefined },
     createDraft: { createDraft: async () => ({ slug: 'a-slug', version: 1 }) },
-    releaseHypothesisRevision: { releaseHypothesisRevision: async () => undefined },
-    discard: { discard: async () => undefined },
+    releaseHypothesisRevision: { releaseHypothesisRevision: async () => undefined }, discard: { discard: async () => undefined },
     reviseHypothesis: { reviseHypothesis: async () => ({ hypothesis_name: 'a-hypothesis', revision: 1 }) },
     placeHypothesis: { placeHypothesis: async () => undefined },
     removeHypothesis: { removeHypothesis: async () => undefined },
@@ -670,6 +670,21 @@ it(
 
     expect(getResponse.statusCode).toBe(200);
     expect(putResponse.statusCode).toBe(200);
+  },
+);
+
+it(
+  'answers the DELETE to /v1/capabilities/{name}/{version} through remove-capability and the GET to the identical path ' +
+    'through read-capability-by-identity, neither one colliding with the other',
+  async () => {
+    const built = buildTestApp();
+    app = built.app;
+
+    const deleteResponse = await app.inject({ method: 'DELETE', url: '/v1/capabilities/a-capability/1.0.0' });
+    const getResponse = await app.inject({ method: 'GET', url: '/v1/capabilities/a-capability/1.0.0' });
+
+    expect(deleteResponse.statusCode).toBe(204);
+    expect(getResponse.statusCode).toBe(200);
   },
 );
 
