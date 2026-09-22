@@ -3,7 +3,7 @@ export class ConceptNotInGlossaryError extends Error {
 
   public constructor(slug: string, hypothesisName: string, concepts: readonly string[]) {
     super(
-      `hypothesis "${hypothesisName}" of case "${slug}" collects a concept the glossary does not hold: ${concepts.join(', ')}`,
+      `a hipótese "${hypothesisName}" do caso "${slug}" coleta um conceito que o glossário não possui: ${concepts.join(', ')}`,
     );
     this.name = 'ConceptNotInGlossaryError';
     this.context = { slug, hypothesis_name: hypothesisName, concepts: [...concepts] };

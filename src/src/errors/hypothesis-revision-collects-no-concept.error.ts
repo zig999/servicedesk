@@ -3,7 +3,7 @@ export class HypothesisRevisionCollectsNoConceptError extends Error {
 
   public constructor(slug: string, hypothesisName: string) {
     super(
-      `hypothesis "${hypothesisName}" of case "${slug}" collects no concept, and a hypothesis-revision collects at least one`,
+      `a hipótese "${hypothesisName}" do caso "${slug}" não coleta nenhum conceito, e uma revisão coleta ao menos um`,
     );
     this.name = 'HypothesisRevisionCollectsNoConceptError';
     this.context = { slug, hypothesis_name: hypothesisName };
