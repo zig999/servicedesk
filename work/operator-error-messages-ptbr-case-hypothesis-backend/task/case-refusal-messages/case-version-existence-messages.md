@@ -33,7 +33,8 @@ criteria:
   it mapped to before.
 - Each of the two classes' context property holds exactly the properties and values it held before, with
   no value moved into or out of it.
-- The suite under src/src/__tests__ passes with no test file changed.
+- The suite under src/src/__tests__ passes, with every test asserting a violation string's or a message's
+  literal English text updated to assert the new PT-br text instead, and no other change to any test file.
 ---
 ## What it is
 The refusal an operator meets when the slug and version they named answers nothing, and the refusal they meet when that version is already written.
@@ -41,6 +42,11 @@ Neither says anything about the state of a version; both say only whether one is
 
 ## Notes
 CaseNotFoundError is the refusal the specification holds apart from the one a version failing validation receives, so its PT-br text has to stay distinguishable from CaseVersionNotValidError's as well.
-Neither class is asserted against literal message text by any existing test.
+Neither class's own file under src/src/__tests__/unit/errors is asserted against literal message text
+by any existing test, but src/src/__tests__/unit/http/error-handler.middleware.spec.ts constructs
+CaseNotFoundError directly and asserts the full envelope against the literal English message; this was
+found only when a first implementation attempt correctly refused to write against the original wording
+of the last criterion ("no test file changed"), self-contradictory against the PT-br criteria. The
+criterion above is the correction.
 UNDERDETERMINED, from the specification — CaseVersionAlreadyStoredError is declared under src/src/errors/ but no code path constructs it today, and status-map.ts names no HTTP status for it; rewriting its message in PT-br is correct regardless, but the refusal is not currently reachable, so the class's dead-code status stands unresolved by this task.
 ADVISORY, from the specification — CaseNotFoundError's message must also stay distinguishable from the slug-only branch of its own governing rule (a read naming a slug alone, with no version, is answered by the same class); the template must not force a version placeholder onto a request that named none.
