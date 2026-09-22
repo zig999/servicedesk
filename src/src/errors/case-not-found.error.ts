@@ -2,7 +2,7 @@ export class CaseNotFoundError extends Error {
   public readonly context: Readonly<{ slug: string; version: number }>;
 
   public constructor(slug: string, version: number) {
-    super(`no version ${version} of the case "${slug}" is stored`);
+    super(`o caso "${slug}" não tem a versão ${version} armazenada`);
     this.name = 'CaseNotFoundError';
     this.context = { slug, version };
   }
