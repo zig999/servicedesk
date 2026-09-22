@@ -36,3 +36,20 @@ writes into) is rules/knowledge/a-hypothesis-revision-is-overwritten-while-unrel
 changes none of that rule's clauses and does not implement it.
 ADVISORY, from the specification — criterion 3's helper-sharing requirement is implementation structure,
 backed by insertRevision's own existing code and the intake's observation, not by the specification.
+
+ABANDONED, 2026-09-22 — this task is not delivered. A build of the implementation (requireCaseHoldsDraft
+added to overwriteRevision, exactly as this task's criteria state) broke a pre-existing, deliberate
+integration test: src/src/__tests__/integration/persistence/relational-case-store.repository.spec.ts,
+"does not refuse an overwrite attempt against a hypothesis-revision whose own state is draft, even though
+a released case version's manifest still references that revision" (lines 2085-2116 at time of observation).
+That test creates a draft version, inserts and places a hypothesis-revision, releases the version — leaving
+the case with no draft version at all — and asserts that overwriteHypothesisRevision still succeeds. This
+task's own guard would refuse that call with CaseHoldsNoDraftError, contradicting an established,
+Postgres-backed test nobody flagged as wrong. Put to the human (who authorized this corrective increment
+via the review this task was cut from), the decision was to abandon this task rather than override the
+existing test: the source change (the requireCaseHoldsDraft call in overwriteRevision) has been reverted,
+and no implementation record was written. Whether rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+genuinely governs the overwrite-in-place path, or governs only the insert path (a-hypothesis-revision-is-overwritten-while-unreleased's
+own concern) and the review's original conformance finding was a false positive, is unresolved and would
+need a fresh /analyse over both the rule's own text and this test's own established behavior before any
+future attempt.
