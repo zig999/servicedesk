@@ -102,12 +102,24 @@
           "digest": "sha256:aa3db72101e6ce5153ccd7ec8625f5d7b67b5fc04ff60cb54b1e032c6cf34cd2"
         },
         {
+          "path": "src/src/errors/hypothesis-not-in-manifest.error.ts",
+          "digest": "sha256:d018884d2343c16cb4560df5728c780d91ac52018b3efec5df8e3f956449e05f"
+        },
+        {
           "path": "src/src/errors/hypothesis-revision-collects-no-concept.error.ts",
           "digest": "sha256:7b72dba4ea47f89b38ffce1488dae5f27b347b8338063260c1044e75d3b461c6"
         },
         {
           "path": "src/src/errors/hypothesis-revision-not-draft-at-release.error.ts",
           "digest": "sha256:9e272c23e71ae772cdceb17af09372c2e97013a620c5ec568e373670b042508f"
+        },
+        {
+          "path": "src/src/errors/manifest-position-occupied.error.ts",
+          "digest": "sha256:b61acf27aa7e468f5896582a7b9c9d3c098c92c18fcaab1cc881073cedfc565f"
+        },
+        {
+          "path": "src/src/errors/manifest-would-hold-no-hypothesis.error.ts",
+          "digest": "sha256:e16c9320c04024b64366590d93713eac592dae5edafb918d18d9fe50cf4562eb"
         },
         {
           "path": "src/src/errors/released-hypothesis-revision-not-alterable.error.ts",
@@ -172,12 +184,24 @@
           "digest": "sha256:aa3db72101e6ce5153ccd7ec8625f5d7b67b5fc04ff60cb54b1e032c6cf34cd2"
         },
         {
+          "path": "src/src/errors/hypothesis-not-in-manifest.error.ts",
+          "digest": "sha256:d018884d2343c16cb4560df5728c780d91ac52018b3efec5df8e3f956449e05f"
+        },
+        {
           "path": "src/src/errors/hypothesis-revision-collects-no-concept.error.ts",
           "digest": "sha256:7b72dba4ea47f89b38ffce1488dae5f27b347b8338063260c1044e75d3b461c6"
         },
         {
           "path": "src/src/errors/hypothesis-revision-not-draft-at-release.error.ts",
           "digest": "sha256:9e272c23e71ae772cdceb17af09372c2e97013a620c5ec568e373670b042508f"
+        },
+        {
+          "path": "src/src/errors/manifest-position-occupied.error.ts",
+          "digest": "sha256:b61acf27aa7e468f5896582a7b9c9d3c098c92c18fcaab1cc881073cedfc565f"
+        },
+        {
+          "path": "src/src/errors/manifest-would-hold-no-hypothesis.error.ts",
+          "digest": "sha256:e16c9320c04024b64366590d93713eac592dae5edafb918d18d9fe50cf4562eb"
         },
         {
           "path": "src/src/errors/released-hypothesis-revision-not-alterable.error.ts",
@@ -8011,11 +8035,11 @@
         },
         {
           "path": "src/src/errors/hypothesis-not-in-manifest.error.ts",
-          "digest": "sha256:8de175a2ee59d05b80b1c93591214a500f50270166da5054048afb783a26872d"
+          "digest": "sha256:d018884d2343c16cb4560df5728c780d91ac52018b3efec5df8e3f956449e05f"
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         }
       ]
     },
@@ -8719,7 +8743,11 @@
         },
         {
           "path": "src/src/errors/manifest-would-hold-no-hypothesis.error.ts",
-          "digest": "sha256:b092a8a5fe7c122dae7763eaf18b723fc80bb97dd78f46ecbd49920d8febd517"
+          "digest": "sha256:e16c9320c04024b64366590d93713eac592dae5edafb918d18d9fe50cf4562eb"
+        },
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -9365,7 +9393,11 @@
         },
         {
           "path": "src/src/errors/manifest-position-occupied.error.ts",
-          "digest": "sha256:eb8864b7b6f8a083e764d2f101a5e4dcc5ee3ed5f40215854ddd51abb8353a0a"
+          "digest": "sha256:b61acf27aa7e468f5896582a7b9c9d3c098c92c18fcaab1cc881073cedfc565f"
+        },
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/http/place-hypothesis.routes.ts",

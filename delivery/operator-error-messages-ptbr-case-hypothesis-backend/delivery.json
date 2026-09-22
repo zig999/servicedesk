@@ -42,6 +42,14 @@
       "task": "task/hypothesis-refusal-messages/hypothesis-revision-state-messages"
     },
     {
+      "id": "implementation/hypothesis-refusal-messages/manifest-composition-messages",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-refusal-messages/manifest-composition-messages.md",
+      "title": "PT-br messages for the three refusals a case version's manifest raises",
+      "summary": "HypothesisNotInManifestError, ManifestPositionOccupiedError and ManifestWouldHoldNoHypothesisError now build their message in Brazilian Portuguese, naming the case, the version and, where the English original did, the hypothesis or the position, with context, name and status-map untouched.",
+      "task": "task/hypothesis-refusal-messages/manifest-composition-messages"
+    },
+    {
       "id": "proof/case-refusal-messages/case-content-violation-messages",
       "kind": "proof",
       "file": "proof/case-refusal-messages/case-content-violation-messages.md",
@@ -80,6 +88,14 @@
       "title": "PT-br messages for the two refusals a hypothesis revision's own state raises — proof",
       "summary": "Tests for HypothesisRevisionNotDraftAtReleaseError's and ReleasedHypothesisRevisionNotAlterableError's PT-br messages, combining new tests with citations of pre-existing tests that already decide obligations this task's own message change did not touch.",
       "task": "task/hypothesis-refusal-messages/hypothesis-revision-state-messages"
+    },
+    {
+      "id": "proof/hypothesis-refusal-messages/manifest-composition-messages",
+      "kind": "proof",
+      "file": "proof/hypothesis-refusal-messages/manifest-composition-messages.md",
+      "title": "PT-br message tests for the three manifest-composition refusals",
+      "summary": "Unit tests over HypothesisNotInManifestError, ManifestPositionOccupiedError and ManifestWouldHoldNoHypothesisError proving each message's Brazilian-Portuguese content, fixed vocabulary, mutual distinguishability, shared case/version wording, unchanged name and unchanged context.",
+      "task": "task/hypothesis-refusal-messages/manifest-composition-messages"
     }
   ],
   "edges": [
@@ -282,6 +298,42 @@
       "at": "the path"
     },
     {
+      "from": "implementation/hypothesis-refusal-messages/manifest-composition-messages",
+      "to": "rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-refusal-messages/manifest-composition-messages",
+      "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-refusal-messages/manifest-composition-messages",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-refusal-messages/manifest-composition-messages",
+      "to": "constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-refusal-messages/manifest-composition-messages",
+      "to": "constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/hypothesis-refusal-messages/manifest-composition-messages",
+      "to": "task/hypothesis-refusal-messages/manifest-composition-messages",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-refusal-messages/case-content-violation-messages",
       "to": "implementation/case-refusal-messages/case-content-violation-messages",
       "kind": "proves",
@@ -308,6 +360,12 @@
     {
       "from": "proof/hypothesis-refusal-messages/hypothesis-revision-state-messages",
       "to": "implementation/hypothesis-refusal-messages/hypothesis-revision-state-messages",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-refusal-messages/manifest-composition-messages",
+      "to": "implementation/hypothesis-refusal-messages/manifest-composition-messages",
       "kind": "proves",
       "at": "the path"
     }
