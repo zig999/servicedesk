@@ -1,0 +1,144 @@
+findings:
+  - file: src/investigation/http-declarative-observation-source.adapter.ts
+    where: parsedBodyOrUndefined, and its use inside outcomeFromResponse
+    evidence: |-
+      async function parsedBodyOrUndefined(response: Response): Promise<unknown> {
+        try {
+          return await response.json();
+        } catch {
+          return undefined;
+        }
+      }
+      ...
+      const body = await parsedBodyOrUndefined(response);
+      const observation = observationOf(capability, configuration.responseMap, body);
+      return { result: 'ok', observation: JSON.stringify(observation) };
+    cost: >-
+      An HTTP response whose status the statusMap classifies as ok, but whose body is not valid
+      JSON (or is empty), is not ended unavailable or otherwise flagged — it is silently recorded
+      as a successful observation carrying an empty object (`observation: '{}'`). domain/investigation/evidence-result
+      states that only an ok result "may enter a cache", so a call that returned no usable data at
+      all is eligible to be cached as if it had answered. No node states what ending an ok-classified
+      response with an unparseable body should produce; the next reader who wants to know how the
+      system treats a malformed response body will not find that answer in the specification, only
+      in this catch block.
+    kind: unstated
+    correction: >-
+      State, alongside the existing endings for an unclassified status and an unreachable connector,
+      what result a response whose statusMap-classified status is ok but whose body cannot be parsed
+      as JSON should produce (e.g. unavailable, with a result detail naming the parse failure), then
+      have this function implement that ending instead of defaulting to an ok observation.
+
+read:
+  - node: constraints/evidence-normalization-is-an-anticorruption-layer
+    held_at: observationOf, which keeps only fields whose name is the capability's own declared (glossary) field name
+    evidence: |-
+      return Object.fromEntries(Object.entries(extracted).filter(([field]) => declaredFields.includes(field)));
+  - node: contracts/integration/concept-observation
+    held_at: the public observeConcept method
+    evidence: |-
+      public async observeConcept({ concept, subject, requester, remainingBudgetMs }: ObserveConceptOptions): Promise<ObservationOutcome> {
+  - node: contracts/integration/corporate-records-source
+    held_at: resolveCapability/resolveConnectorConfiguration, which reach a system only through the capability's own registered connector, never a named system
+    evidence: |-
+      const configurationResolution = await this.resolveConnectorConfiguration(capability.connector);
+  - node: contracts/investigation/observation-source
+    held_at: observeConcept, one call per concept passed in
+    evidence: |-
+      public async observeConcept({ concept, subject, requester, remainingBudgetMs }: ObserveConceptOptions): Promise<ObservationOutcome> {
+  - node: contracts/system/corporate-records
+    held_at: issueRequestOrUnreachable, which issues the call only by the capability's registered connector name, never a hardcoded system
+    evidence: |-
+      const call = await this.issueRequestOrUnreachable({ connector: capability.connector, method: httpFields.method, request, timeoutMs });
+  - node: domain/integration/capability
+    held_at: effectiveTimeoutMsFor and outcomeFromResponse, reading the capability's own timeout, connector and output_schema
+    evidence: |-
+      function effectiveTimeoutMsFor(capability: Capability, remainingBudgetMs: number | undefined): number {
+        return remainingBudgetMs === undefined ? capability.timeout : Math.min(capability.timeout, remainingBudgetMs);
+      }
+  - node: domain/investigation/evidence-result
+    held_at: isEvidenceResult/DEFAULT_STATUS_ENDING/endingForStatus, using the imported EVIDENCE_RESULTS vocabulary
+    evidence: |-
+      function isEvidenceResult(value: unknown): value is EvidenceResult {
+        return typeof value === 'string' && (EVIDENCE_RESULTS as readonly string[]).includes(value);
+      }
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: resolveAssembledRequest, which delegates assembly to resolveConnectorRequest and only maps its placeholder/descriptor failures
+    evidence: |-
+      return { ok: true, value: resolveConnectorRequest({ configuration, subject, requester }) };
+  - node: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+    held_at: observationOf
+    evidence: |-
+      function observationOf(capability: Capability, responseMap: ResponseFieldPaths, body: unknown): Record<string, unknown> {
+        const extracted = extractResponseFields(responseMap, body);
+        const declaredFields = declaredFieldsOf(capability.output_schema);
+        return Object.fromEntries(Object.entries(extracted).filter(([field]) => declaredFields.includes(field)));
+      }
+  - node: rules/integration/an-unclassified-status-ends-unavailable
+    held_at: endingForStatus / DEFAULT_STATUS_ENDING
+    evidence: |-
+      function endingForStatus(statusMap: StatusEndingMap, status: number): EvidenceResult {
+        const mapped = statusMap[String(status)];
+        return isEvidenceResult(mapped) ? mapped : DEFAULT_STATUS_ENDING;
+      }
+  - node: rules/integration/an-unreachable-connector-ends-unavailable
+    held_at: unavailableForUnreachableConnector and its use in issueRequestOrUnreachable's catch
+    evidence: |-
+      function unavailableForUnreachableConnector(connector: string, cause: unknown): ObservationOutcome {
+        const error = new ConnectorUnreachableError(connector, { cause });
+        return { result: 'unavailable', result_detail: `${error.name}: ${connector}` };
+      }
+  - node: rules/integration/an-unresolvable-observation-ends-unavailable
+    held_at: resolveCapability, resolveConnectorConfiguration and resolveAssembledRequest
+    evidence: |-
+      if (!resolution.held) {
+        return { ok: false, outcome: unavailableFor(new CapabilityNotResolvedForObservationError(concept)) };
+      }
+  - node: rules/integration/evidence-arrives-in-the-glossary-vocabulary
+    held_at: observationOf, the same field filter that keeps only capability (glossary) field names
+    evidence: |-
+      return Object.fromEntries(Object.entries(extracted).filter(([field]) => declaredFields.includes(field)));
+  - node: rules/investigation/collection-has-its-own-budget-within-the-total
+    held_at: effectiveTimeoutMsFor
+    evidence: |-
+      return remainingBudgetMs === undefined ? capability.timeout : Math.min(capability.timeout, remainingBudgetMs);
+  - node: rules/investigation/collection-runs-in-the-requester-scope
+    held_at: observeConcept threading requester through to resolveAssembledRequest; the file only forwards it, it does not itself enforce the scope
+    evidence: |-
+      return { ok: true, value: resolveConnectorRequest({ configuration, subject, requester }) };
+  - node: rules/investigation/no-stage-aborts-on-its-deadline
+    held_at: observeConcept, recording a timeout result instead of throwing when the call times out
+    evidence: |-
+      if (call.value.kind === 'timed-out') {
+        return { result: 'timeout' };
+      }
+  - node: scenarios/integration/a-response-map-key-no-output-schema-field-names-observes-nothing
+    held_at: observationOf
+    evidence: |-
+      const extracted = extractResponseFields(responseMap, body);
+      const declaredFields = declaredFieldsOf(capability.output_schema);
+      return Object.fromEntries(Object.entries(extracted).filter(([field]) => declaredFields.includes(field)));
+  - node: scenarios/integration/an-optional-attribute-absent-degrades-its-observation
+    held_at: resolveAssembledRequest's catch for ConnectorPlaceholderNotResolvedError
+    evidence: |-
+      if (error instanceof ConnectorPlaceholderNotResolvedError || error instanceof IncompleteConnectorCallDescriptorError) {
+        return { ok: false, outcome: unavailableFor(error) };
+      }
+  - node: scenarios/investigation/a-collection-timeout-degrades-to-no-data
+    held_at: observeConcept's timeout branch
+    evidence: |-
+      if (call.value.kind === 'timed-out') {
+        return { result: 'timeout' };
+      }
+  - node: scenarios/investigation/a-slow-capability-yields-to-the-collection-budget
+    held_at: effectiveTimeoutMsFor
+    evidence: |-
+      return remainingBudgetMs === undefined ? capability.timeout : Math.min(capability.timeout, remainingBudgetMs);
+
+looked_past: >-
+  The Resolution<T>/PreparedCall control-flow decomposition (resolvePreparedCall, its four
+  sequential resolve* steps, and the CallResult/Resolution helper types) is a code-structure
+  choice with no domain fact of its own, so it is left to whatever pass judges construction rather
+  than conformance; likewise the remainingBudgetMs === undefined fallback branch in
+  effectiveTimeoutMsFor only exercises what ObserveConceptOptions already declares optional, so it
+  states no new domain fact beyond that existing, out-of-file contract.

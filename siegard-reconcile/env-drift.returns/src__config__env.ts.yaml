@@ -1,0 +1,31 @@
+read:
+  - node: constraints/the-connection-pool-is-bounded-by-configuration
+    held_at: >-
+      envSchema fields DATABASE_POOL_MAX_CONNECTIONS, DATABASE_POOL_IDLE_TIMEOUT_MS and
+      DATABASE_POOL_STATEMENT_TIMEOUT_MS in src/config/env.ts
+    evidence: >-
+      DATABASE_POOL_MAX_CONNECTIONS: z.coerce.number().int().positive().default(10),
+      DATABASE_POOL_IDLE_TIMEOUT_MS: z.coerce.number().int().positive().default(10_000),
+      DATABASE_POOL_STATEMENT_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
+  - node: constraints/the-pool-bounds-are-positive-integers
+    held_at: >-
+      the same three envSchema fields' .int().positive() validators, enforced by
+      envSchema.safeParse in loadEnv
+    evidence: >-
+      DATABASE_POOL_MAX_CONNECTIONS: z.coerce.number().int().positive().default(10),
+      DATABASE_POOL_IDLE_TIMEOUT_MS: z.coerce.number().int().positive().default(10_000),
+      DATABASE_POOL_STATEMENT_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
+      ---
+      const parsed = envSchema.safeParse(source);
+      if (!parsed.success) {
+        const issues = parsed.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`);
+        throw new InvalidEnvironmentError(issues);
+      }
+looked_past: >-
+  The file's other envSchema fields (PORT, EVALUATOR_MAX_TOKENS, CONSOLIDATOR_MAX_TOKENS,
+  POOL_SIZE, PAGINATION_DEFAULT_LIMIT, PAGINATION_MAX_LIMIT, MAX_REQUEST_BODY_BYTES and
+  others) declare their own defaults, optionality and positivity constraints, but none of
+  them concerns the relational store's connection pool that these two nodes govern, so
+  whether those facts are stated elsewhere in the specification is a different pass's
+  question, not this one's.
+candidates_opened: []

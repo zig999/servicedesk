@@ -1,0 +1,40 @@
+certified:
+  - node: constraints/the-pool-bounds-are-positive-integers
+    state: partial
+    tests:
+      - file: src/__tests__/unit/config/env.spec.ts
+        name: $description for $field
+      - file: src/__tests__/unit/config/env.spec.ts
+        name: throws InvalidEnvironmentError naming the field when a pool variable is set to a non-numeric value
+      - file: src/__tests__/unit/config/env.spec.ts
+        name: defaults each of the three pool variables to a positive integer when the existing required-variable fixture names none of them
+      - file: src/__tests__/unit/config/env.spec.ts
+        name: parses a configured value for each of the three pool variables as a number, distinct from their defaults
+    why: >-
+      The configuration loader's half of the fact is covered for every pairing.
+      The parameterised "$description for $field" test runs each of the three
+      bounds (maximum connections, idle timeout, statement timeout) against a
+      non-integer ('2.5'), a zero ('0'), a negative ('-5') and a positive
+      integer ('7'). For each refused value it asserts that loadEnv throws
+      InvalidEnvironmentError and that the error names the field. For the
+      admitted value it asserts that the value held is a positive integer. The
+      defaults test asserts the same shape on the three values used when the
+      environment names none. So if the loader stopped refusing any of the three
+      bounds, these tests would fail. What goes unexercised is the part of the
+      fact about the deployment: that a bad bound is "refused at startup instead
+      of starting" and that the deployment "serves no request". Every test in
+      the proof calls loadEnv directly with an environment it builds itself.
+      None of them starts a deployment. If startup stopped calling the loader,
+      or caught its error and carried on to serve requests, the fact would stop
+      holding and every one of these tests would still pass. A smaller gap: the
+      only non-numeric text tried is 'ten', and only on the maximum-connections
+      bound. For the two timeouts, non-integers are exercised only as '2.5'.
+    remainder: testable
+    remainder_why: >-
+      Input: start the deployment through its real startup path with a
+      configuration that sets one pool bound to a zero, a negative or a
+      non-integer value, for example DATABASE_POOL_STATEMENT_TIMEOUT_MS=0.
+      Expected result: startup fails with the configuration error naming that
+      bound, and no request is served. Repeating this for each of the three
+      bounds closes the startup half, which the loader-level cross product does
+      not reach.

@@ -1,0 +1,23 @@
+read:
+  - node: constraints/the-pool-bounds-are-positive-integers
+    held_at: >-
+      the envSchema fields for the three pool bounds, each constrained with `.int().positive()`,
+      combined with loadEnv's safeParse-and-throw on failure
+    evidence: |-
+      DATABASE_POOL_MAX_CONNECTIONS: z.coerce.number().int().positive().default(10),
+      DATABASE_POOL_IDLE_TIMEOUT_MS: z.coerce.number().int().positive().default(10_000),
+      DATABASE_POOL_STATEMENT_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
+      ...
+      const parsed = envSchema.safeParse(source);
+      if (!parsed.success) {
+        const issues = parsed.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`);
+        throw new InvalidEnvironmentError(issues);
+      }
+looked_past: >-
+  The specific default figures (10, 10_000, 30_000) baked into `.default(...)` for the three
+  bounds — the decision log entry for this node explicitly notes the constraint "fixes the shape
+  and leaves the values to the deployment, as listings-are-paged already does for its own
+  configured figures," so those numbers are not a fact this node (or any node found in
+  full-text.md) withholds; the file also carries several other env fields (PORT, POOL_SIZE,
+  PAGINATION_*, EVALUATOR_/CONSOLIDATOR_* tokens, MAX_REQUEST_BODY_BYTES) that are outside this
+  node's scope and not judged here.

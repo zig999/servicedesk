@@ -1,0 +1,323 @@
+findings:
+  - file: src/persistence/relational-case-store.repository.ts
+    where: hypothesesPageSelect
+    evidence: |-
+      function hypothesesPageSelect(slug: string, pagination: PaginationRequest): IStatement {
+        return {
+          text: `SELECT name FROM ${HYPOTHESES_TABLE} WHERE case_slug = $1 ORDER BY name LIMIT $2 OFFSET $3`,
+          params: [slug, pagination.limit, pagination.offset],
+        };
+      }
+    cost: >-
+      list-hypotheses answers name-ascending order and a curator paging it without a known name
+      relies on that order holding page to page, but no node anywhere in the specification commits
+      to it — unlike the three sibling listings (cases by slug, case-versions by version, hypothesis
+      revisions by revision number), each of which has its own invariant recording the order and the
+      reasoning for it. A reader auditing this behavior against domain/knowledge/hypothesis or
+      contracts/knowledge/case-query finds no ordering decision at all, so this file is the only place
+      the order is recorded, and it can change without anyone reading a violated node.
+    kind: unstated
+    correction: >-
+      record a listing-order rule for list-hypotheses (parallel to
+      rules/knowledge/a-case-listing-answers-cases-in-slug-order and
+      rules/knowledge/a-case-versions-listing-answers-highest-numbered-first), constraining
+      domain/knowledge/hypothesis and naming name-ascending order as the decided answer, or
+      whatever order the business actually intends.
+    node: domain/knowledge/hypothesis
+
+read:
+  - node: contracts/knowledge/case-lifecycle
+    held_at: >-
+      the RelationalCaseStore class's createDraft, insertHypothesisRevision,
+      overwriteHypothesisRevision, releaseHypothesisRevision, placeHypothesis, removeManifestEntry,
+      updateDraft, release and discard methods
+    evidence: |-
+      public async createDraft(input: CreateDraftInput): Promise<number> {
+      public async insertHypothesisRevision(input: HypothesisRevisionInput): Promise<number> {
+      public async overwriteHypothesisRevision(input: OverwriteHypothesisRevisionInput): Promise<void> {
+      public async placeHypothesis(input: PlaceHypothesisInput): Promise<void> {
+      public async removeManifestEntry(slug: string, version: number, hypothesisName: string): Promise<void> {
+      public async release(slug: string, version: number): Promise<void> {
+      public async discard(slug: string, version: number): Promise<void> {
+      public async updateDraft(slug: string, version: number, attributes: UpdateDraftInput): Promise<void> {
+      public async releaseHypothesisRevision(slug: string, hypothesisName: string, revision: number): Promise<void> {
+
+  - node: contracts/knowledge/case-query
+    held_at: the assembleVersion, listCases, listCaseVersions, listHypotheses and listHypothesisRevisions methods
+    evidence: |-
+      public async assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined> {
+      public async listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>> {
+      public async listCaseVersions(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<CaseVersionListItem>> {
+      public async listHypotheses(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<HypothesisIdentity>> {
+      public async listHypothesisRevisions(
+
+  - node: domain/knowledge/case
+    held_at: the cases table's slug and next_version columns, addressed by caseIdentityStatement and nextVersionUpdateStatement
+    evidence: |-
+      function nextVersionUpdateStatement(slug: string): IStatement {
+        return {
+          text: `UPDATE ${CASES_TABLE} SET next_version = next_version + 1
+                 WHERE slug = $1
+                 RETURNING next_version - 1 AS version`,
+          params: [slug],
+        };
+      }
+
+  - node: domain/knowledge/case-summary
+    held_at: caseCatalogEntryOf, assembling current_state, version_count, last_updated, title, when_to_use, released_version as optional fields
+    evidence: |-
+      return {
+        slug: row.slug,
+        ...(row.current_state !== null ? { current_state: caseVersionStateOf(row.current_state) } : {}),
+        version_count: Number(row.version_count),
+        ...(row.last_updated !== null ? { last_updated: row.last_updated.toISOString() } : {}),
+        ...(row.title !== null ? { title: row.title } : {}),
+        ...(row.when_to_use !== null ? { when_to_use: row.when_to_use } : {}),
+        ...(row.released_version !== null ? { released_version: row.released_version } : {}),
+      };
+
+  - node: domain/knowledge/case-version
+    held_at: assembledCaseVersionOf, composing version, title, when_to_use, authored_at, subject, fallback, consolidation_register, state, released_at, manifest
+    evidence: |-
+      return {
+        slug: key.slug,
+        version: key.version,
+        title: row.title,
+        when_to_use: row.when_to_use,
+        authored_at: row.authored_at.toISOString(),
+        subject: row.subject,
+        fallback: resolutionOf(row.fallback_outcome, row.fallback_action, row.fallback_recipient),
+        ...(consolidationRegister !== undefined ? { consolidation_register: consolidationRegister } : {}),
+        state: caseVersionStateOf(row.state),
+        ...(row.released_at !== null ? { released_at: row.released_at.toISOString() } : {}),
+        manifest,
+      };
+
+  - node: domain/knowledge/case-version-state
+    held_at: the DRAFT_STATE/RELEASED_STATE constants and isCaseVersionState guard
+    evidence: |-
+      const DRAFT_STATE: CaseVersionState = 'draft';
+      const RELEASED_STATE: CaseVersionState = 'released';
+      ...
+      function isCaseVersionState(value: string): value is CaseVersionState {
+        return CASE_VERSION_STATE_VALUES.has(value);
+      }
+
+  - node: domain/knowledge/hypothesis
+    held_at: hypothesisIdentityStatement and the HYPOTHESES_TABLE (case_slug, name) rows
+    evidence: |-
+      function hypothesisIdentityStatement(key: IHypothesisKey): IStatement {
+        return {
+          text: `INSERT INTO ${HYPOTHESES_TABLE} (case_slug, name) VALUES ($1, $2) ON CONFLICT (case_slug, name) DO NOTHING`,
+          params: [key.slug, key.hypothesis_name],
+        };
+      }
+
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: the HYPOTHESIS_REVISION_DRAFT_STATE/RELEASED_STATE constants and isHypothesisRevisionState guard
+    evidence: |-
+      const HYPOTHESIS_REVISION_DRAFT_STATE: HypothesisRevisionState = 'draft';
+      const HYPOTHESIS_REVISION_RELEASED_STATE: HypothesisRevisionState = 'released';
+      ...
+      function isHypothesisRevisionState(value: string): value is HypothesisRevisionState {
+        return HYPOTHESIS_REVISION_STATE_VALUES.has(value);
+      }
+
+  - node: domain/knowledge/manifest-entry
+    held_at: manifestEntryOf, pairing position with one hypothesis-revision
+    evidence: |-
+      function manifestEntryOf(row: IManifestRow, collects: readonly string[]): ManifestEntry {
+        const hypothesisRevision: HypothesisRevisionContent = { ... };
+        return { position: row.position, hypothesis_revision: hypothesisRevision };
+      }
+
+  - node: rules/knowledge/a-case-has-at-most-one-draft
+    held_at: raiseCreateDraftFailure, translating the ONE_DRAFT_PER_CASE_CONSTRAINT violation into CaseAlreadyHasDraftError(slug)
+    evidence: |-
+      function raiseCreateDraftFailure(slug: string): RaiseStoreError {
+        return (cause) => (isConstraintViolation(cause, ONE_DRAFT_PER_CASE_CONSTRAINT) ? new CaseAlreadyHasDraftError(slug) : raiseWriteFailure(cause));
+      }
+
+  - node: rules/knowledge/a-case-listing-answers-cases-in-slug-order
+    held_at: casesPageSelect's slug ordering
+    evidence: |-
+      FROM (SELECT slug FROM ${CASES_TABLE} ORDER BY slug LIMIT $1 OFFSET $2) c
+      ...
+      ORDER BY c.slug`,
+
+  - node: rules/knowledge/a-case-summary-is-derived-from-its-existing-versions
+    held_at: casesPageSelect's "latest" and "released" subqueries
+    evidence: |-
+      LEFT JOIN (
+        SELECT DISTINCT ON (slug) slug, state, authored_at,
+               COUNT(*) OVER (PARTITION BY slug) AS version_count
+        FROM ${CASE_VERSIONS_TABLE}
+        ORDER BY slug, version DESC
+      ) latest ON latest.slug = c.slug
+      LEFT JOIN (
+        SELECT DISTINCT ON (slug) slug, version, title, when_to_use
+        FROM ${CASE_VERSIONS_TABLE}
+        WHERE state = $3
+        ORDER BY slug, version DESC
+      ) released ON released.slug = c.slug
+
+  - node: rules/knowledge/a-case-version-is-written-once
+    held_at: refuseUnlessDraft, guarding insertManifestEntry, deleteManifestEntry and updateDraftVersion against a non-draft (released) version
+    evidence: |-
+      function refuseUnlessDraft(key: ICaseVersionKey, state: CaseVersionState): void {
+        if (state !== DRAFT_STATE) {
+          throw new CaseVersionNotDraftError(key.slug, key.version, state);
+        }
+      }
+
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: refuseUnlessDraft/refuseUnlessDraftAtRelease raising CaseVersionNotDraftError / CaseVersionNotDraftAtReleaseError with slug, version and state
+    evidence: |-
+      function refuseUnlessDraftAtRelease(key: ICaseVersionKey, state: CaseVersionState): void {
+        if (state !== DRAFT_STATE) {
+          throw new CaseVersionNotDraftAtReleaseError(key.slug, key.version, state);
+        }
+      }
+
+  - node: rules/knowledge/a-case-version-number-is-never-reused
+    held_at: nextVersionUpdateStatement's monotonically increasing next_version counter, never decremented by discardDraft
+    evidence: |-
+      text: `UPDATE ${CASES_TABLE} SET next_version = next_version + 1
+             WHERE slug = $1
+             RETURNING next_version - 1 AS version`,
+
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: requireCaseHoldsDraft, called from insertRevision before creating a hypothesis identity or revision
+    evidence: |-
+      async function insertRevision(tx: IQueryable, input: HypothesisRevisionInput): Promise<number> {
+        await requireCaseHoldsDraft(tx, input.slug);
+
+  - node: rules/knowledge/a-hypothesis-name-is-unique-within-its-case
+    held_at: hypothesisIdentityStatement's ON CONFLICT (case_slug, name) DO NOTHING
+    evidence: |-
+      text: `INSERT INTO ${HYPOTHESES_TABLE} (case_slug, name) VALUES ($1, $2) ON CONFLICT (case_slug, name) DO NOTHING`,
+
+  - node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+    held_at: raisePlaceHypothesisFailure, translating the POSITION_UNIQUE_CONSTRAINT violation into ManifestPositionOccupiedError(slug, version, position)
+    evidence: |-
+      function raisePlaceHypothesisFailure(input: PlaceHypothesisInput): RaiseStoreError {
+        return (cause) =>
+          isConstraintViolation(cause, POSITION_UNIQUE_CONSTRAINT)
+            ? new ManifestPositionOccupiedError(input.slug, input.version, input.position)
+            : raiseWriteFailure(cause);
+      }
+
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: revisionInsertStatement's COALESCE(MAX(revision), 0) + 1 and revisionOverwriteStatement's in-place UPDATE
+    evidence: |-
+      SELECT $1, $2, COALESCE(MAX(revision), 0) + 1, $3, $4, $5, $6, $7
+      FROM ${HYPOTHESIS_REVISIONS_TABLE}
+      WHERE case_slug = $1 AND hypothesis_name = $2
+
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: refuseUnlessHypothesisRevisionDraftAtRelease, raising HypothesisRevisionNotDraftAtReleaseError with no arguments
+    evidence: |-
+      function refuseUnlessHypothesisRevisionDraftAtRelease(state: HypothesisRevisionState | undefined): void {
+        if (state !== HYPOTHESIS_REVISION_DRAFT_STATE) {
+          throw new HypothesisRevisionNotDraftAtReleaseError();
+        }
+      }
+
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: revisionInsertStatement's COALESCE(MAX(revision), 0) + 1, scoped to case_slug and hypothesis_name
+    evidence: |-
+      SELECT $1, $2, COALESCE(MAX(revision), 0) + 1, $3, $4, $5, $6, $7
+      FROM ${HYPOTHESIS_REVISIONS_TABLE}
+      WHERE case_slug = $1 AND hypothesis_name = $2
+
+  - node: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+    held_at: hypothesisRevisionsPageSelect's descending order
+    evidence: |-
+      text: `SELECT revision, criterion, resolution_outcome, resolution_action, resolution_recipient, state
+             FROM ${HYPOTHESIS_REVISIONS_TABLE}
+             WHERE case_slug = $1 AND hypothesis_name = $2
+             ORDER BY revision DESC
+             LIMIT $3 OFFSET $4`,
+
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: hypothesisRevisionListItemOf, including state in every listed revision
+    evidence: |-
+      function hypothesisRevisionListItemOf(row: IHypothesisRevisionRow, collects: readonly string[]): HypothesisRevisionListItem {
+        return {
+          revision: row.revision,
+          criterion: row.criterion,
+          collects,
+          resolution: resolutionOf(row.resolution_outcome, row.resolution_action, row.resolution_recipient),
+          state: hypothesisRevisionStateOf(row.state),
+        };
+      }
+
+  - node: rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version
+    held_at: resolveSourceVersion (naming an explicit source, or falling back to the latest released version) and manifestCopyStatement
+    evidence: |-
+      async function resolveSourceVersion(tx: IQueryable, input: CreateDraftInput): Promise<number | undefined> {
+        if (input.source_version !== undefined) {
+          return input.source_version;
+        }
+        const row = await queryOneOrAbsent<{ version: number | null }>(tx, latestReleasedVersionSelect(input.slug), raiseWriteFailure);
+        return row?.version ?? undefined;
+      }
+
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: caseIdentityStatement's ON CONFLICT (slug) DO NOTHING
+    evidence: |-
+      text: `INSERT INTO ${CASES_TABLE} (slug) VALUES ($1) ON CONFLICT (slug) DO NOTHING`,
+
+  - node: rules/knowledge/every-case-version-remains-readable
+    held_at: caseVersionSelect reading any stored version by key, and discardDraft only ever removing a version still in draft state
+    evidence: |-
+      async function discardDraft(tx: IQueryable, key: ICaseVersionKey): Promise<void> {
+        refuseUnlessDraft(key, await requireVersionState(tx, key));
+        await runStatement(tx, deleteManifestEntriesStatement(key), raiseWriteFailure);
+        await runStatement(tx, deleteCaseVersionStatement(key), raiseWriteFailure);
+      }
+
+  - node: rules/knowledge/hypotheses-are-ordered-by-precedence
+    held_at: manifestSelect, ordering by the manifest entry's own declared position
+    evidence: |-
+      text: `SELECT cvh.position, cvh.hypothesis_name, cvh.revision,
+                    hr.criterion, hr.resolution_outcome, hr.resolution_action, hr.resolution_recipient
+             FROM ${CASE_VERSION_HYPOTHESES_TABLE} cvh
+             JOIN ${HYPOTHESIS_REVISIONS_TABLE} hr
+               ON hr.case_slug = cvh.case_slug AND hr.hypothesis_name = cvh.hypothesis_name AND hr.revision = cvh.revision
+             WHERE cvh.case_slug = $1 AND cvh.case_version = $2
+             ORDER BY cvh.position`,
+
+  - node: scenarios/knowledge/a-catalog-entry-follows-the-released-version
+    held_at: casesPageSelect, drawing title/when_to_use/released_version from the highest-numbered released version and current_state from the highest-numbered version overall
+    evidence: |-
+      ) released ON released.slug = c.slug
+      ...
+      released.title AS title,
+      released.when_to_use AS when_to_use,
+      released.version AS released_version
+
+  - node: scenarios/knowledge/a-hypothesis-revision-is-released-independently-of-any-manifest
+    held_at: releaseHypothesisRevisionRow, updating only the hypothesis_revisions table and touching no case-version or manifest table
+    evidence: |-
+      async function releaseHypothesisRevisionRow(tx: IQueryable, key: IRevisionKey): Promise<void> {
+        refuseUnlessHypothesisRevisionDraftAtRelease(await resolveHypothesisRevisionOwnState(tx, key));
+        await runStatement(tx, releaseHypothesisRevisionStatement(key), raiseWriteFailure);
+      }
+
+  - node: scenarios/knowledge/revising-a-released-revision-creates-the-next
+    held_at: revisionInsertStatement, always creating a new numbered row rather than touching an existing one
+    evidence: |-
+      SELECT $1, $2, COALESCE(MAX(revision), 0) + 1, $3, $4, $5, $6, $7
+      FROM ${HYPOTHESIS_REVISIONS_TABLE}
+      WHERE case_slug = $1 AND hypothesis_name = $2
+      RETURNING revision
+
+looked_past: >-
+  overwriteRevision (the in-place path of "revise") never calls requireCaseHoldsDraft the way
+  insertRevision does before writing a hypothesis-revision, and requireCaseIdentity/
+  requireHypothesisIdentity pass a synthetic NO_VERSION_NAMED (0) into CaseNotFoundError when no
+  version was actually named by the caller — both are implementation questions this pass cannot
+  settle without the application layer that chooses which store method to call and without the
+  CaseNotFoundError class itself, neither of which is in this file; they belong to a coverage
+  pass or a reading of those other files, not to this conformance judgment.

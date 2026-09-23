@@ -1,0 +1,148 @@
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: >-
+      nowhere — this node states the connector-configuration-registry's operations
+      (read-connector-configuration, list-connector-configurations, register-connector,
+      remove-connector); status-map.ts holds no operation, only a class-to-status lookup for the
+      errors those operations may raise
+    evidence: >-
+      [ConnectorConfigurationNotFoundError, 404],
+  - node: contracts/investigation/diagnosis
+    held_at: >-
+      nowhere — this node states the diagnose operation's own shape; status-map.ts holds no
+      operation, only the status for errors diagnose may raise
+    evidence: >-
+      [SubjectDoesNotCoverCaseInputsError, 422],
+  - node: contracts/knowledge/case-lifecycle
+    held_at: >-
+      nowhere — this node states the case-lifecycle operations (create-draft, revise-hypothesis,
+      release-hypothesis, place-hypothesis, remove-hypothesis, update-draft, release, discard);
+      status-map.ts holds no operation, only the status for errors those operations may raise
+    evidence: >-
+      [CaseVersionNotValidError, 409],
+  - node: rules/glossary/a-concept-declares-its-description
+    held_at: the map entry at line 84
+    evidence: "[ConceptDescriptionRequiredError, 422],"
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: the map entries at lines 50-51
+    evidence: |-
+      [ConceptNotHeldError, 404],
+      [VocabularyTermNotHeldError, 404],
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: the map entry at line 65
+    evidence: "[ConceptInUseError, 409],"
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: the map entry at line 89
+    evidence: "[DuplicateGlossaryNameError, 500],"
+  - node: rules/integration/a-capability-input-schema-holds-a-well-formed-object
+    held_at: the map entry at line 75
+    evidence: "[MalformedCapabilityInputSchemaError, 422],"
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: the map entries at lines 76-77
+    evidence: |-
+      [ConnectorConfigurationNotWellFormedError, 422],
+      [IncompleteConnectorConfigurationError, 422],
+  - node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+    held_at: the map entries at lines 53, 63 and 81
+    evidence: |-
+      [CapabilityNotRegisteredForTestError, 404],
+      [CapabilityConnectorMismatchError, 409],
+      [ConnectorCallAddressNotAbsoluteUrlError, 422],
+  - node: rules/integration/a-connector-configuration-names-its-connector
+    held_at: the map entry at line 77
+    evidence: "[IncompleteConnectorConfigurationError, 422],"
+  - node: rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
+    held_at: the map entry at line 52
+    evidence: "[ConnectorConfigurationNotFoundError, 404],"
+  - node: rules/integration/a-connector-placeholder-is-declared-by-its-capability
+    held_at: >-
+      nowhere — this node states when a placeholder/schema mismatch is refused, not a status or
+      error value; the status for the error this condition raises is a-connector-placeholder-refusal-reports-every-orphaned-placeholder's
+      own, and that node is outside this set
+    evidence: "[ConnectorPlaceholderOutsideInputSchemaError, 422],"
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: the map entries at lines 85-86
+    evidence: |-
+      [OpenApiDocumentNotFetchedError, 422],
+      [OpenApiDocumentNotReadableError, 422],
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: >-
+      nowhere — this node states when the draft is refused for an unreadable document, naming no
+      status or error value of its own; that is a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document's,
+      already read above
+    evidence: "[OpenApiDocumentNotReadableError, 422],"
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+    held_at: >-
+      nowhere — this node states when the operations read is refused for an unreadable document,
+      naming no status or error value of its own; that is
+      an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document's
+    evidence: "[OpenApiDocumentNotReadableError, 422],"
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: the map entry at line 64
+    evidence: "[CapabilityCitedByEvidenceError, 409],"
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: the map entry at line 87
+    evidence: "[OpenApiOperationNotFoundError, 422],"
+  - node: rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: the map entries at lines 85-86
+    evidence: |-
+      [OpenApiDocumentNotFetchedError, 422],
+      [OpenApiDocumentNotReadableError, 422],
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read
+    held_at: >-
+      nowhere — this node states the fetch-failure condition and the 60000ms timeout; status-map.ts
+      holds no timeout and states the fetch-failure's status through
+      an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document instead
+    evidence: "[OpenApiDocumentNotFetchedError, 422],"
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: the map entry at line 78
+    evidence: "[SubjectDoesNotCoverCaseInputsError, 422],"
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: the map entry at line 79
+    evidence: "[SubjectCarriesNoAttributeError, 422],"
+  - node: rules/investigation/no-stage-aborts-on-its-deadline
+    held_at: the map entry at line 88
+    evidence: "[InvestigationWriteDeadlineExceededError, 500],"
+  - node: rules/knowledge/a-case-has-at-least-one-hypothesis
+    held_at: the map entry at line 71
+    evidence: "[ManifestWouldHoldNoHypothesisError, 422],"
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: the map entry at line 61, distinct from CaseNotFoundError at line 48
+    evidence: |-
+      [CaseNotFoundError, 404],
+      [CaseVersionNotValidError, 409],
+  - node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+    held_at: the map entry at line 83
+    evidence: "[ConceptRefusesSubjectTypeError, 422],"
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: the map entry at line 82
+    evidence: "[HypothesisRevisionCollectsNoConceptError, 422],"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: the map entry at line 67
+    evidence: "[CaseHoldsNoDraftError, 409],"
+  - node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+    held_at: the map entry at line 58
+    evidence: "[ManifestPositionOccupiedError, 409],"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: the map entry at line 69
+    evidence: "[HypothesisRevisionNotDraftAtReleaseError, 409],"
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: the map entry at line 68
+    evidence: "[ReleasedHypothesisRevisionNotAlterableError, 409],"
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: the map entry at line 56
+    evidence: "[ConceptNotInGlossaryError, 404],"
+  - node: scenarios/glossary/a-concept-with-no-description-is-refused
+    held_at: the map entry at line 84
+    evidence: "[ConceptDescriptionRequiredError, 422],"
+  - node: scenarios/investigation/a-diagnose-refuses-a-subject-missing-a-required-attribute
+    held_at: the map entry at line 78
+    evidence: "[SubjectDoesNotCoverCaseInputsError, 422],"
+looked_past: >-
+  The map also carries entries this node set does not cover — CaseNotFoundError, ConceptNotAnsweredError,
+  CapabilityIdentityNotFoundError, HypothesisNotInManifestError, CaseAlreadyHasDraftError,
+  CaseVersionNotDraftError, CaseVersionNotDraftAtReleaseError, ConceptAlreadyAnsweredError,
+  CaseVersionNotReleasedError, CaseVersionNotReleasableError, IncompleteCapabilityContractError,
+  CapabilityNotReadOnlyError, CapabilitySchemaNotWellFormedError and DuplicateConceptAnswerError —
+  left unjudged here since the candidate index binds no node governing them to this file in this
+  batch, and they are another delegation's to reconcile.

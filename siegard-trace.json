@@ -19,7 +19,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         },
         {
           "path": "src/src/seed.ts",
@@ -33,7 +33,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:aea4fdb38b7e4bc15eee7397e295a3ec165720759afbdc8bf1aa93130347c87f"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/http/remove-capability.controller.ts",
@@ -339,7 +339,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+          "digest": "sha256:7f6e16ff4e5f606c24dbf3ea721e374d4631272ea385b76c7f8950e39f18b9a1"
         }
       ]
     },
@@ -495,7 +495,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/http/read-capability-by-identity.controller.ts",
@@ -509,7 +509,7 @@
       "files": [
         {
           "path": "src/src/config/env.ts",
-          "digest": "sha256:e4ac83c990594d9c2b2af42cf2ddc1221944d7ef012ad50e9654f626d7bd75fb"
+          "digest": "sha256:7953f28569c688b08ed57c8724edda064fd5c616600d0373e242295443c725d6"
         },
         {
           "path": "src/src/factories/diagnose-server.factory.ts",
@@ -549,7 +549,7 @@
       "files": [
         {
           "path": "src/src/config/env.ts",
-          "digest": "sha256:e4ac83c990594d9c2b2af42cf2ddc1221944d7ef012ad50e9654f626d7bd75fb"
+          "digest": "sha256:7953f28569c688b08ed57c8724edda064fd5c616600d0373e242295443c725d6"
         },
         {
           "path": "src/src/factories/diagnose-server.factory.ts",
@@ -735,7 +735,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+          "digest": "sha256:7f6e16ff4e5f606c24dbf3ea721e374d4631272ea385b76c7f8950e39f18b9a1"
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
@@ -833,7 +833,19 @@
       "files": [
         {
           "path": "src/src/config/env.ts",
-          "digest": "sha256:e4ac83c990594d9c2b2af42cf2ddc1221944d7ef012ad50e9654f626d7bd75fb"
+          "digest": "sha256:7953f28569c688b08ed57c8724edda064fd5c616600d0373e242295443c725d6"
+        }
+      ],
+      "decided_by": "test",
+      "step": "test-unit",
+      "proof": [
+        {
+          "path": "src/src/__tests__/unit/config/env.spec.ts",
+          "digest": "sha256:99666ddbcb08e8e2199e6c4c48aaf33e59cb125ffc213e393fb2243f6d1cd69d"
+        },
+        {
+          "path": "src/src/__tests__/unit/index.spec.ts",
+          "digest": "sha256:307c12aabbf30b52e36643f0042070af35029d1560fc2eac32791f9043c582ba"
         }
       ]
     },
@@ -1011,7 +1023,7 @@
         },
         {
           "path": "src/src/config/env.ts",
-          "digest": "sha256:0bd8b346a61ea9ffac741f2bee880b70bc7597e07daf5faf98b3a6e2c68d0c60"
+          "digest": "sha256:7953f28569c688b08ed57c8724edda064fd5c616600d0373e242295443c725d6"
         },
         {
           "path": "src/src/factories/capability-registry.factory.ts",
@@ -1329,7 +1341,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+          "digest": "sha256:7f6e16ff4e5f606c24dbf3ea721e374d4631272ea385b76c7f8950e39f18b9a1"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -1413,7 +1425,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
@@ -1517,7 +1529,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+          "digest": "sha256:7f6e16ff4e5f606c24dbf3ea721e374d4631272ea385b76c7f8950e39f18b9a1"
         }
       ]
     },
@@ -1697,7 +1709,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/factories/production-diagnose.factory.ts",
@@ -1757,7 +1769,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+          "digest": "sha256:7f6e16ff4e5f606c24dbf3ea721e374d4631272ea385b76c7f8950e39f18b9a1"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -1899,7 +1911,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
@@ -2011,7 +2023,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -2141,7 +2153,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -2211,7 +2223,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+          "digest": "sha256:7f6e16ff4e5f606c24dbf3ea721e374d4631272ea385b76c7f8950e39f18b9a1"
         }
       ]
     },
@@ -2773,7 +2785,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+          "digest": "sha256:7f6e16ff4e5f606c24dbf3ea721e374d4631272ea385b76c7f8950e39f18b9a1"
         },
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
@@ -4143,7 +4155,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+          "digest": "sha256:7f6e16ff4e5f606c24dbf3ea721e374d4631272ea385b76c7f8950e39f18b9a1"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -4711,7 +4723,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -4763,7 +4775,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -4981,7 +4993,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -5055,7 +5067,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -5235,7 +5247,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -5499,7 +5511,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         },
         {
           "path": "src/src/seed.ts",
@@ -5597,7 +5609,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -5787,7 +5799,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
@@ -5837,7 +5849,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
@@ -5859,7 +5871,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:9cddbe3139c4e1243f85b2ec5b9656e0275c76301bf74fb221c9f9f7dc03174e"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
@@ -5897,7 +5909,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
@@ -6059,7 +6071,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         }
       ]
     },
@@ -6447,7 +6459,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         }
       ]
     },
@@ -6489,7 +6501,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/http/test-connector.controller.ts",
@@ -6503,7 +6515,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         }
       ]
     },
@@ -6531,7 +6543,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
@@ -6737,7 +6749,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/http-connector/connector-request-resolver.ts",
@@ -6803,7 +6815,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         }
       ]
     },
@@ -6919,7 +6931,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         }
       ]
     },
@@ -6937,7 +6949,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/http/read-openapi-document-operations.controller.ts",
@@ -7125,7 +7137,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:9cddbe3139c4e1243f85b2ec5b9656e0275c76301bf74fb221c9f9f7dc03174e"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         }
       ]
     },
@@ -7447,7 +7459,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+          "digest": "sha256:7f6e16ff4e5f606c24dbf3ea721e374d4631272ea385b76c7f8950e39f18b9a1"
         }
       ]
     },
@@ -7475,7 +7487,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+          "digest": "sha256:7f6e16ff4e5f606c24dbf3ea721e374d4631272ea385b76c7f8950e39f18b9a1"
         }
       ]
     },
@@ -7493,7 +7505,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         }
       ]
     },
@@ -7537,7 +7549,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/http/error-handler.middleware.ts",
@@ -7571,7 +7583,7 @@
       "files": [
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+          "digest": "sha256:7f6e16ff4e5f606c24dbf3ea721e374d4631272ea385b76c7f8950e39f18b9a1"
         }
       ]
     },
@@ -7603,7 +7615,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/http/read-openapi-document-operations.controller.ts",
@@ -7621,7 +7633,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+          "digest": "sha256:7f6e16ff4e5f606c24dbf3ea721e374d4631272ea385b76c7f8950e39f18b9a1"
         }
       ]
     },
@@ -7635,7 +7647,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+          "digest": "sha256:7f6e16ff4e5f606c24dbf3ea721e374d4631272ea385b76c7f8950e39f18b9a1"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -7709,7 +7721,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+          "digest": "sha256:7f6e16ff4e5f606c24dbf3ea721e374d4631272ea385b76c7f8950e39f18b9a1"
         }
       ]
     },
@@ -7931,7 +7943,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/errors/subject-does-not-cover-case-inputs.error.ts",
@@ -8177,7 +8189,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/errors/subject-carries-no-attribute.error.ts",
@@ -8413,7 +8425,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+          "digest": "sha256:7f6e16ff4e5f606c24dbf3ea721e374d4631272ea385b76c7f8950e39f18b9a1"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -8435,7 +8447,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+          "digest": "sha256:7f6e16ff4e5f606c24dbf3ea721e374d4631272ea385b76c7f8950e39f18b9a1"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -8491,7 +8503,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
@@ -8499,7 +8511,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+          "digest": "sha256:7f6e16ff4e5f606c24dbf3ea721e374d4631272ea385b76c7f8950e39f18b9a1"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
@@ -8719,7 +8731,7 @@
     },
     {
       "node": "rules/knowledge/a-case-has-at-least-one-hypothesis",
-      "digest": "sha256:212910d8d3df417c47bd60bf73099c3802959b813d4d6d7a20228c145dcd03a2",
+      "digest": "sha256:a889a60c2211b10397260d58cf75b583413631c7af825dd0d9c16079ec2eab56",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
@@ -8761,7 +8773,7 @@
     },
     {
       "node": "rules/knowledge/a-case-has-at-most-one-draft",
-      "digest": "sha256:fd832d957ce9726d2926625b186acb72ad2c72f7dce50c362498d0f3cf99c1f1",
+      "digest": "sha256:48a5a9d2d134e2f620b7e89f08332788fdc16d6c0a2528af89ec485818ed190c",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
@@ -8785,7 +8797,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -8839,7 +8851,7 @@
       "files": [
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -8895,7 +8907,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -8917,7 +8929,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         }
       ]
     },
@@ -8991,7 +9003,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         },
         {
           "path": "src/src/seed.ts",
@@ -9037,7 +9049,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -9051,7 +9063,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -9141,7 +9153,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -9227,7 +9239,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -9329,11 +9341,11 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -9359,13 +9371,13 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
     {
       "node": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
-      "digest": "sha256:759b409d0d3a350cce7b6ca0bf6c1d2a7c9bace609effc6520d681b6b1e4dd2e",
+      "digest": "sha256:570fc67ffe17594eacc4422ff05dc42cb66e71cdc829b0080c18fbb791ef7468",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
@@ -9405,7 +9417,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -9441,7 +9453,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -9503,7 +9515,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/factories/case-lifecycle.factory.ts",
@@ -9519,7 +9531,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         },
         {
           "path": "src/src/seed.ts",
@@ -9545,7 +9557,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -9559,7 +9571,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -9577,7 +9589,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -9651,7 +9663,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -9845,7 +9857,7 @@
     },
     {
       "node": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
-      "digest": "sha256:259a6b741ea5b58d465eb49b495bd348669c1c92b9d175cd11c352eb3f39c4da",
+      "digest": "sha256:72453d6c64b2b6812a69c4b82cfa170ddd06d51c90c15dfa671609973b453cd4",
       "files": [
         {
           "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
@@ -9889,7 +9901,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         }
       ]
     },
@@ -9957,7 +9969,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -10101,7 +10113,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -10143,7 +10155,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -10217,7 +10229,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -10355,7 +10367,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
@@ -10453,7 +10465,7 @@
       "files": [
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+          "digest": "sha256:7f6e16ff4e5f606c24dbf3ea721e374d4631272ea385b76c7f8950e39f18b9a1"
         }
       ]
     },
@@ -10583,7 +10595,7 @@
       "files": [
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+          "digest": "sha256:7f6e16ff4e5f606c24dbf3ea721e374d4631272ea385b76c7f8950e39f18b9a1"
         }
       ]
     },
@@ -10653,7 +10665,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+          "digest": "sha256:7f6e16ff4e5f606c24dbf3ea721e374d4631272ea385b76c7f8950e39f18b9a1"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
@@ -10667,7 +10679,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:f67fb3782a59912daf7abe701d006553d351c81838a59b21b7f1c636f28ff391"
+          "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
         {
           "path": "src/src/errors/subject-does-not-cover-case-inputs.error.ts",
@@ -10909,7 +10921,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:44ab7d47f14d728fef01c5402e4b77c03dabf0dc244b0de8c4580e5f12d844a6"
+          "digest": "sha256:7f6e16ff4e5f606c24dbf3ea721e374d4631272ea385b76c7f8950e39f18b9a1"
         }
       ]
     },
@@ -10943,7 +10955,7 @@
       "files": [
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -10991,7 +11003,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
@@ -11085,7 +11097,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:5faf2261da79ccf7bc4349103a2bf332f61b861b2136a8974e654f4ae2729345"
+          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
         }
       ]
     },
