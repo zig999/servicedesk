@@ -179,3 +179,24 @@ it(
     expect(violations[0]).not.toMatch(/\bdraft\b/i);
   },
 );
+
+it(
+  'names the structural violation and the manifest-own-state violation together, refusing once, when a ' +
+    'release attempt fails a structural rule and separately manifests a still-draft hypothesis-revision',
+  async () => {
+    const assembled: AssembledCaseVersion = { ...assembledFixture(), title: '' };
+    const ownStates = new Map<string, HypothesisRevisionState>([['h1#1', 'draft']]);
+    const store = new FakeReleaseStore(assembled, ownStates);
+    const operation = new ReleaseOperation(store, new AlwaysCoherentGlossary(), new AlwaysCoherentCapabilities());
+
+    const refusal = await operation.release(SLUG, VERSION).catch((error: unknown) => error);
+
+    expect(refusal).toBeInstanceOf(CaseVersionNotReleasableError);
+    const violations = (refusal as CaseVersionNotReleasableError).context.violations;
+    expect(violations).toHaveLength(2);
+    expect(violations.some((violation) => violation.includes('o título') && violation.includes('em branco'))).toBe(
+      true,
+    );
+    expect(violations.some((violation) => violation.includes('h1') && /\bliberada\b/.test(violation))).toBe(true);
+  },
+);

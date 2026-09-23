@@ -5926,3 +5926,62 @@ entries:
   found: 'work/operator-error-messages-ptbr-case-hypothesis-backend/intake/scope.md, line 20:
     `case-version-not-releasable.error.ts` — "the case \"{slug}\" version {version} cannot be released:
     {violations}" — the case slug and the version are already named in the message this class raises today.'
+
+---
+- location: rules/knowledge/a-released-hypothesis-revision-is-never-altered.md
+  field: statement
+  unstated: The node states this refusal's condition and its HTTP status and nothing more -- never what
+    ReleasedHypothesisRevisionNotAlterableError's message discloses, what grounds the immutability it
+    reports, or what its context property carries; its two sibling lifecycle rules each settle exactly
+    that question for their own refusal, and settle it in opposite directions (a-case-version-moves-through-its-declared-lifecycle
+    carries slug, version number and the state the version stood in; a-hypothesis-revision-moves-through-its-declared-lifecycle
+    carries no value beyond the refusal's own condition and message), so neither one answers for this
+    one.
+  decided: The message names the hypothesis, the revision number and the case slug and grounds the refusal
+    in the revision's own released state rather than in any case version that references it; the context
+    carries exactly the case slug, the hypothesis name and the revision number, and nothing further.
+  why: 'A hypothesis-revision is addressed by exactly that triple -- the case it belongs to, the hypothesis
+    within it, and its own number -- so those three are what let a curator tell which revision refused
+    them, and the one further value a sibling refusal carries has nothing to say here: CaseVersionNotDraftAtReleaseError
+    must name the state because a version reaching it may stand in any non-draft state, whereas this refusal''s
+    own condition fixes the revision''s state to released, and that same released state is now the revision''s
+    own declared one, so grounding the message in a referencing case version would attribute the bar to
+    a fact this refusal never reads.'
+- location: rules/knowledge/a-case-has-at-most-one-draft.md
+  field: statement
+  unstated: This node settles only the HTTP status and the error name of a second create-draft, and the
+    decision log's earlier entries on it are narrower still; no node states what CaseAlreadyHasDraftError's
+    message names, nor what the refusal's details carry, though the refusal reaches the curator with both.
+  decided: The message names the case slug, and the details carry that slug and nothing else -- the error's
+    context property holding exactly the one value.
+  why: A curator meeting this refusal must learn which case already holds the draft in order to act on
+    it, and the slug is the whole of that case's identity to them, while the held draft's version number
+    is nothing the one act open to them depends on; the delivered, reviewed error class and its own unit
+    test already fix exactly this message and this single-valued context, so the decision names the caller-facing
+    shape that was built rather than choosing a second one.
+- location: rules/knowledge/a-hypothesis-position-is-unique-within-its-case.md
+  field: statement
+  unstated: What a ManifestPositionOccupiedError discloses beyond its HTTP status and its error name --
+    neither which values its message names nor what its details carry was stated by any node. The rule
+    settled the 409 and the error identity alone; the intake scope lists this class's current message
+    but says nothing of the payload the HTTP error envelope carries beside it.
+  decided: The message names the case slug, the version number and the position already occupied, and
+    the details carry exactly those three values and nothing else.
+  why: Those three are the whole of what a curator refused a placement needs in order to act on the refusal
+    -- which case version's manifest refused it, and which position is not free -- and they are the same
+    three the material already records this refusal's message as naming; nothing further is carried because
+    every other fact about that manifest is reachable by reading the version itself, and the hypothesis
+    whose entry occupies the position is a second aggregate's fact the refused placement never asked about.
+- location: rules/knowledge/a-case-has-at-least-one-hypothesis.md
+  field: statement
+  unstated: The node states the removal's refusal by HTTP status and error name alone, and no node states
+    what that refusal discloses -- which values its message names, nor which values its context carries
+    onward to the caller as the error envelope's details.
+  decided: The message names the case slug and the version number of the case version whose manifest the
+    removal would have emptied, and the error's context carries exactly those two values, the slug and
+    the version, and nothing else.
+  why: A case version's identity in this specification is the slug and the number together, and that pin
+    is the whole of what tells the curator which manifest refused the removal, so confining the context
+    to it makes the structured disclosure exactly the values the message already names and adds no second
+    disclosure -- neither the removed entry nor the manifest the refusal left standing -- that the message
+    itself does not make.

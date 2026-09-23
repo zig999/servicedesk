@@ -73,7 +73,10 @@ async function releaseViolations(
 ): Promise<readonly string[]> {
   const structural = structuralOutcome(assembled);
   if (structural.kind === 'invalid') {
-    return structural.problems;
+    return [
+      ...structural.problems,
+      ...(await manifestOwnStateViolations(assembled, sources.hypothesisRevisions)),
+    ];
   }
   return [
     ...(await caseCoherenceViolations(structural.theCase, sources.glossary, sources.capabilities)),

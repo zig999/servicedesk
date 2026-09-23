@@ -9,14 +9,7 @@ import { createCapabilityRegistry } from '../../../factories/capability-registry
 import { createCaseQuery } from '../../../factories/case-query.factory.js';
 import { createCaseStore } from '../../../factories/case-store.factory.js';
 import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js';
-
-function requireDatabaseUrl(): string {
-  const url = process.env.DATABASE_URL;
-  if (!url) {
-    throw new Error('DATABASE_URL must name a reachable PostgreSQL instance for this suite to run.');
-  }
-  return url;
-}
+import { deleteTolerantly, requireDatabaseUrl } from '../database-test-helpers.js';
 
 interface IVocabulary {
   readonly slug: string;
@@ -31,22 +24,8 @@ interface IVocabulary {
   readonly capabilityName: string;
 }
 
-const FOREIGN_KEY_VIOLATION = '23503';
-
 let pool: DatabaseConnection;
 let vocabulariesWrittenByThisTest: IVocabulary[] = [];
-
-function isForeignKeyViolation(error: unknown): boolean {
-  return error instanceof Error && 'code' in error && error.code === FOREIGN_KEY_VIOLATION;
-}
-
-async function deleteTolerantly(text: string, params: readonly unknown[]): Promise<void> {
-  try {
-    await pool.query(text, params);
-  } catch (error) {
-    if (!isForeignKeyViolation(error)) throw error;
-  }
-}
 
 beforeAll(() => {
   pool = createDatabaseConnection(requireDatabaseUrl(), { maxConnections: 10, idleTimeoutMs: 10_000, statementTimeoutMs: 30_000 });
@@ -128,19 +107,19 @@ async function registerCoherentCapability(vocabulary: IVocabulary): Promise<void
 }
 
 async function cleanupVocabulary(vocabulary: IVocabulary): Promise<void> {
-  await deleteTolerantly('DELETE FROM case_version_hypotheses WHERE case_slug = $1', [vocabulary.slug]);
-  await deleteTolerantly('DELETE FROM hypothesis_revision_collects WHERE case_slug = $1', [vocabulary.slug]);
-  await deleteTolerantly('DELETE FROM hypothesis_revisions WHERE case_slug = $1', [vocabulary.slug]);
-  await deleteTolerantly('DELETE FROM hypotheses WHERE case_slug = $1', [vocabulary.slug]);
-  await deleteTolerantly('DELETE FROM case_versions WHERE slug = $1', [vocabulary.slug]);
-  await deleteTolerantly('DELETE FROM cases WHERE slug = $1', [vocabulary.slug]);
-  await deleteTolerantly('DELETE FROM capabilities WHERE name = $1', [vocabulary.capabilityName]);
-  await deleteTolerantly('DELETE FROM concept_accepts WHERE concept_name = $1', [vocabulary.concept]);
-  await deleteTolerantly('DELETE FROM concepts WHERE name = $1', [vocabulary.concept]);
-  await deleteTolerantly('DELETE FROM subject_types WHERE name = $1', [vocabulary.subject]);
-  await deleteTolerantly('DELETE FROM outcomes WHERE name = ANY($1)', [[vocabulary.outcome, vocabulary.fallbackOutcome]]);
-  await deleteTolerantly('DELETE FROM actions WHERE name = ANY($1)', [[vocabulary.action, vocabulary.fallbackAction]]);
-  await deleteTolerantly('DELETE FROM recipients WHERE name = ANY($1)', [[vocabulary.recipient, vocabulary.fallbackRecipient]]);
+  await deleteTolerantly(pool, 'DELETE FROM case_version_hypotheses WHERE case_slug = $1', [vocabulary.slug]);
+  await deleteTolerantly(pool, 'DELETE FROM hypothesis_revision_collects WHERE case_slug = $1', [vocabulary.slug]);
+  await deleteTolerantly(pool, 'DELETE FROM hypothesis_revisions WHERE case_slug = $1', [vocabulary.slug]);
+  await deleteTolerantly(pool, 'DELETE FROM hypotheses WHERE case_slug = $1', [vocabulary.slug]);
+  await deleteTolerantly(pool, 'DELETE FROM case_versions WHERE slug = $1', [vocabulary.slug]);
+  await deleteTolerantly(pool, 'DELETE FROM cases WHERE slug = $1', [vocabulary.slug]);
+  await deleteTolerantly(pool, 'DELETE FROM capabilities WHERE name = $1', [vocabulary.capabilityName]);
+  await deleteTolerantly(pool, 'DELETE FROM concept_accepts WHERE concept_name = $1', [vocabulary.concept]);
+  await deleteTolerantly(pool, 'DELETE FROM concepts WHERE name = $1', [vocabulary.concept]);
+  await deleteTolerantly(pool, 'DELETE FROM subject_types WHERE name = $1', [vocabulary.subject]);
+  await deleteTolerantly(pool, 'DELETE FROM outcomes WHERE name = ANY($1)', [[vocabulary.outcome, vocabulary.fallbackOutcome]]);
+  await deleteTolerantly(pool, 'DELETE FROM actions WHERE name = ANY($1)', [[vocabulary.action, vocabulary.fallbackAction]]);
+  await deleteTolerantly(pool, 'DELETE FROM recipients WHERE name = ANY($1)', [[vocabulary.recipient, vocabulary.fallbackRecipient]]);
 }
 
 afterEach(async () => {

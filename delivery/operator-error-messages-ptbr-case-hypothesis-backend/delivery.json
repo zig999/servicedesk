@@ -26,6 +26,14 @@
       "task": "task/case-refusal-messages/case-version-state-messages"
     },
     {
+      "id": "implementation/case-version-state-token-leak-fix/translate-state-before-interpolation",
+      "kind": "implementation",
+      "file": "implementation/case-version-state-token-leak-fix/translate-state-before-interpolation.md",
+      "title": "Translate the case-version lifecycle state before interpolating it into a refusal message",
+      "summary": "CaseVersionNotDraftError, CaseVersionNotDraftAtReleaseError and CaseVersionNotReleasedError now interpolate the case version's fixed Portuguese word for its state (\"rascunho\"/\"liberada\") into their refusal message instead of the raw internal lifecycle token.",
+      "task": "task/case-version-state-token-leak-fix/translate-state-before-interpolation"
+    },
+    {
       "id": "implementation/hypothesis-refusal-messages/hypothesis-revision-concept-messages",
       "kind": "implementation",
       "file": "implementation/hypothesis-refusal-messages/hypothesis-revision-concept-messages.md",
@@ -48,6 +56,14 @@
       "title": "PT-br messages for the three refusals a case version's manifest raises",
       "summary": "HypothesisNotInManifestError, ManifestPositionOccupiedError and ManifestWouldHoldNoHypothesisError now build their message in Brazilian Portuguese, naming the case, the version and, where the English original did, the hypothesis or the position, with context, name and status-map untouched.",
       "task": "task/hypothesis-refusal-messages/manifest-composition-messages"
+    },
+    {
+      "id": "implementation/release-violation-aggregation-fix/merge-structural-and-manifest-own-state-violations",
+      "kind": "implementation",
+      "file": "implementation/release-violation-aggregation-fix/merge-structural-and-manifest-own-state-violations.md",
+      "title": "Merge structural and manifest-own-state violations on release",
+      "summary": "releaseViolations now computes manifest-own-state violations on the structurally-invalid branch too, so a release attempt failing both kinds of rule is refused once, naming both together.",
+      "task": "task/release-violation-aggregation-fix/merge-structural-and-manifest-own-state-violations"
     },
     {
       "id": "proof/case-refusal-messages/case-content-violation-messages",
@@ -74,6 +90,14 @@
       "task": "task/case-refusal-messages/case-version-state-messages"
     },
     {
+      "id": "proof/case-version-state-token-leak-fix/translate-state-before-interpolation",
+      "kind": "proof",
+      "file": "proof/case-version-state-token-leak-fix/translate-state-before-interpolation.md",
+      "title": "Proof for translating the case-version lifecycle state before interpolation",
+      "summary": "Tests proving CaseVersionNotDraftError, CaseVersionNotDraftAtReleaseError and CaseVersionNotReleasedError name the case-version state as \"rascunho\"/\"liberada\" and never the raw lifecycle token, for both declared states.",
+      "task": "task/case-version-state-token-leak-fix/translate-state-before-interpolation"
+    },
+    {
       "id": "proof/hypothesis-refusal-messages/hypothesis-revision-concept-messages",
       "kind": "proof",
       "file": "proof/hypothesis-refusal-messages/hypothesis-revision-concept-messages.md",
@@ -96,6 +120,14 @@
       "title": "PT-br message tests for the three manifest-composition refusals",
       "summary": "Unit tests over HypothesisNotInManifestError, ManifestPositionOccupiedError and ManifestWouldHoldNoHypothesisError proving each message's Brazilian-Portuguese content, fixed vocabulary, mutual distinguishability, shared case/version wording, unchanged name and unchanged context.",
       "task": "task/hypothesis-refusal-messages/manifest-composition-messages"
+    },
+    {
+      "id": "proof/release-violation-aggregation-fix/merge-structural-and-manifest-own-state-violations",
+      "kind": "proof",
+      "file": "proof/release-violation-aggregation-fix/merge-structural-and-manifest-own-state-violations.md",
+      "title": "Proof for merging structural and manifest-own-state violations on release",
+      "summary": "One new unit test proves that a release attempt failing both a structural rule and the manifest-own-state rule is refused once, through one CaseVersionNotReleasableError naming both violations together, rather than the structural one alone.",
+      "task": "task/release-violation-aggregation-fix/merge-structural-and-manifest-own-state-violations"
     }
   ],
   "edges": [
@@ -210,6 +242,30 @@
     {
       "from": "implementation/case-refusal-messages/case-version-state-messages",
       "to": "task/case-refusal-messages/case-version-state-messages",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-version-state-token-leak-fix/translate-state-before-interpolation",
+      "to": "constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-version-state-token-leak-fix/translate-state-before-interpolation",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-version-state-token-leak-fix/translate-state-before-interpolation",
+      "to": "rules/investigation/only-a-released-case-version-is-diagnosed",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-version-state-token-leak-fix/translate-state-before-interpolation",
+      "to": "task/case-version-state-token-leak-fix/translate-state-before-interpolation",
       "kind": "implements",
       "at": "the path"
     },
@@ -334,6 +390,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/release-violation-aggregation-fix/merge-structural-and-manifest-own-state-violations",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/release-violation-aggregation-fix/merge-structural-and-manifest-own-state-violations",
+      "to": "rules/knowledge/a-release-refusal-with-no-named-violation-says-so",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/release-violation-aggregation-fix/merge-structural-and-manifest-own-state-violations",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/release-violation-aggregation-fix/merge-structural-and-manifest-own-state-violations",
+      "to": "task/release-violation-aggregation-fix/merge-structural-and-manifest-own-state-violations",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-refusal-messages/case-content-violation-messages",
       "to": "implementation/case-refusal-messages/case-content-violation-messages",
       "kind": "proves",
@@ -352,6 +432,12 @@
       "at": "the path"
     },
     {
+      "from": "proof/case-version-state-token-leak-fix/translate-state-before-interpolation",
+      "to": "implementation/case-version-state-token-leak-fix/translate-state-before-interpolation",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
       "from": "proof/hypothesis-refusal-messages/hypothesis-revision-concept-messages",
       "to": "implementation/hypothesis-refusal-messages/hypothesis-revision-concept-messages",
       "kind": "proves",
@@ -366,6 +452,12 @@
     {
       "from": "proof/hypothesis-refusal-messages/manifest-composition-messages",
       "to": "implementation/hypothesis-refusal-messages/manifest-composition-messages",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/release-violation-aggregation-fix/merge-structural-and-manifest-own-state-violations",
+      "to": "implementation/release-violation-aggregation-fix/merge-structural-and-manifest-own-state-violations",
       "kind": "proves",
       "at": "the path"
     }

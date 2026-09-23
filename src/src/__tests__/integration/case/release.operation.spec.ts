@@ -8,14 +8,7 @@ import { createCapabilityQuery, createCapabilityRegistry } from '../../../factor
 import { createGlossaryQuery } from '../../../factories/glossary.factory.js';
 import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js';
 import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js';
-
-function requireDatabaseUrl(): string {
-  const url = process.env.DATABASE_URL;
-  if (!url) {
-    throw new Error('DATABASE_URL must name a reachable PostgreSQL instance for this suite to run.');
-  }
-  return url;
-}
+import { deleteTolerantly, requireDatabaseUrl } from '../database-test-helpers.js';
 
 interface IVocabulary {
   readonly subjectType: string;
@@ -27,8 +20,6 @@ interface IVocabulary {
   readonly capabilityName: string;
 }
 
-const FOREIGN_KEY_VIOLATION = '23503';
-
 let pool: DatabaseConnection;
 let slugsWrittenByThisTest: string[] = [];
 let subjectTypesWrittenByThisTest: string[] = [];
@@ -37,18 +28,6 @@ let actionsWrittenByThisTest: string[] = [];
 let recipientsWrittenByThisTest: string[] = [];
 let conceptsWrittenByThisTest: string[] = [];
 let capabilityNamesWrittenByThisTest: string[] = [];
-
-function isForeignKeyViolation(error: unknown): boolean {
-  return error instanceof Error && 'code' in error && error.code === FOREIGN_KEY_VIOLATION;
-}
-
-async function deleteTolerantly(text: string, params: readonly unknown[]): Promise<void> {
-  try {
-    await pool.query(text, params);
-  } catch (error) {
-    if (!isForeignKeyViolation(error)) throw error;
-  }
-}
 
 beforeAll(() => {
   pool = createDatabaseConnection(requireDatabaseUrl(), { maxConnections: 10, idleTimeoutMs: 10_000, statementTimeoutMs: 30_000 });
@@ -160,33 +139,33 @@ function wireRelease(store: RelationalCaseStore): ReleaseOperation {
 
 async function cleanupCaseRows(): Promise<void> {
   if (slugsWrittenByThisTest.length === 0) return;
-  await deleteTolerantly('DELETE FROM hypothesis_revision_collects WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM case_version_hypotheses WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM hypothesis_revisions WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM hypotheses WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM case_versions WHERE slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM cases WHERE slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly(pool, 'DELETE FROM hypothesis_revision_collects WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly(pool, 'DELETE FROM case_version_hypotheses WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly(pool, 'DELETE FROM hypothesis_revisions WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly(pool, 'DELETE FROM hypotheses WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly(pool, 'DELETE FROM case_versions WHERE slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly(pool, 'DELETE FROM cases WHERE slug = ANY($1)', [slugsWrittenByThisTest]);
 }
 
 async function cleanupGlossaryRows(): Promise<void> {
   if (capabilityNamesWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM capabilities WHERE name = ANY($1)', [capabilityNamesWrittenByThisTest]);
+    await deleteTolerantly(pool, 'DELETE FROM capabilities WHERE name = ANY($1)', [capabilityNamesWrittenByThisTest]);
   }
   if (conceptsWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM concept_accepts WHERE concept_name = ANY($1)', [conceptsWrittenByThisTest]);
-    await deleteTolerantly('DELETE FROM concepts WHERE name = ANY($1)', [conceptsWrittenByThisTest]);
+    await deleteTolerantly(pool, 'DELETE FROM concept_accepts WHERE concept_name = ANY($1)', [conceptsWrittenByThisTest]);
+    await deleteTolerantly(pool, 'DELETE FROM concepts WHERE name = ANY($1)', [conceptsWrittenByThisTest]);
   }
   if (subjectTypesWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM subject_types WHERE name = ANY($1)', [subjectTypesWrittenByThisTest]);
+    await deleteTolerantly(pool, 'DELETE FROM subject_types WHERE name = ANY($1)', [subjectTypesWrittenByThisTest]);
   }
   if (outcomesWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM outcomes WHERE name = ANY($1)', [outcomesWrittenByThisTest]);
+    await deleteTolerantly(pool, 'DELETE FROM outcomes WHERE name = ANY($1)', [outcomesWrittenByThisTest]);
   }
   if (actionsWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM actions WHERE name = ANY($1)', [actionsWrittenByThisTest]);
+    await deleteTolerantly(pool, 'DELETE FROM actions WHERE name = ANY($1)', [actionsWrittenByThisTest]);
   }
   if (recipientsWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM recipients WHERE name = ANY($1)', [recipientsWrittenByThisTest]);
+    await deleteTolerantly(pool, 'DELETE FROM recipients WHERE name = ANY($1)', [recipientsWrittenByThisTest]);
   }
 }
 
@@ -213,8 +192,8 @@ it(
     const store = new RelationalCaseStore(pool);
     const resolution = resolutionOf(vocabulary);
     const version = await createDraftVersion(store, { slug, title: 'A case', subjectType: vocabulary.subjectType, resolution });
-    await placeNewHypothesis(store, { slug, version }, { name: 'h1', criterion: 'first', collects: [], resolution, position: 1 });
-    await placeNewHypothesis(store, { slug, version }, { name: 'h2', criterion: 'second', collects: [], resolution, position: 2 });
+    await placeReleasedHypothesis(store, { slug, version }, { name: 'h1', criterion: 'first', collects: [], resolution, position: 1 });
+    await placeReleasedHypothesis(store, { slug, version }, { name: 'h2', criterion: 'second', collects: [], resolution, position: 2 });
     const releaseOperation = wireRelease(store);
 
     const refusal = await releaseOperation.release(slug, version).catch((error: unknown) => error);

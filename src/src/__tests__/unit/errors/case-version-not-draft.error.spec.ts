@@ -5,11 +5,11 @@ import { CaseVersionNotReleasedError } from '../../../errors/case-version-not-re
 
 it('names the case and its version before it states the state that refuses the act', () => {
   const slug = 'a-slug-naming-the-case';
-  const state = 'a-distinctive-state-value-this-test-recognizes';
+  const state = 'draft';
 
   const error = new CaseVersionNotDraftError(slug, 3, state);
 
-  expect(error.message.indexOf(slug)).toBeLessThan(error.message.indexOf(state));
+  expect(error.message.indexOf(slug)).toBeLessThan(error.message.indexOf('rascunho'));
 });
 
 it(
@@ -20,7 +20,7 @@ it(
 
     expect(error.message).toContain('cliente-sem-internet');
     expect(error.message).toContain('4');
-    expect(error.message).toContain('released');
+    expect(error.message).toContain('liberada');
     expect(error.message).toMatch(/\bcaso\b/);
     expect(error.message).toMatch(/\bversão\b/);
     expect(error.message).toMatch(/\brascunho\b/);
@@ -60,4 +60,12 @@ it('is distinguishable from CaseVersionNotDraftAtReleaseError and CaseVersionNot
   const notDraftAtReleaseMessage = new CaseVersionNotDraftAtReleaseError('a-slug', 3, 'released').message;
 
   expect(notReleasedMessage).not.toBe(notDraftAtReleaseMessage);
+});
+
+it('never leaks the raw lifecycle token into its message, for either state', () => {
+  const draftState = new CaseVersionNotDraftError('a-slug', 1, 'draft');
+  const releasedState = new CaseVersionNotDraftError('a-slug', 1, 'released');
+
+  expect(draftState.message).not.toContain('draft');
+  expect(releasedState.message).not.toContain('released');
 });

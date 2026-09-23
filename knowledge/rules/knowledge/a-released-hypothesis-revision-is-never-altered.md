@@ -1,9 +1,13 @@
 ---
 type: invariant
-statement: An attempt to alter a hypothesis-revision in released state's criterion, resolution or
+statement: >-
+  An attempt to alter a hypothesis-revision in released state's criterion, resolution or
   state is refused at the point of the attempt with an HTTP 409 response reporting a
-  ReleasedHypothesisRevisionNotAlterableError, rather than being accepted and left with no
-  effect.
+  ReleasedHypothesisRevisionNotAlterableError — whose message names the hypothesis, the
+  revision number and the case slug and grounds the refusal in the revision's own released
+  state rather than in any case version that references it, and whose context carries
+  exactly those three values, the case slug, the hypothesis name and the revision number,
+  and nothing further — rather than being accepted and left with no effect.
 constrains:
   - domain/knowledge/hypothesis-revision
 ---

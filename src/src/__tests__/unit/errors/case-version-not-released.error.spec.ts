@@ -3,11 +3,11 @@ import { CaseVersionNotReleasedError } from '../../../errors/case-version-not-re
 
 it('names the case and its version before it states the state that refuses the act', () => {
   const slug = 'a-slug-naming-the-case';
-  const state = 'a-distinctive-state-value-this-test-recognizes';
+  const state = 'draft';
 
   const error = new CaseVersionNotReleasedError(slug, 3, state);
 
-  expect(error.message.indexOf(slug)).toBeLessThan(error.message.indexOf(state));
+  expect(error.message.indexOf(slug)).toBeLessThan(error.message.indexOf('rascunho'));
 });
 
 it(
@@ -18,7 +18,7 @@ it(
 
     expect(error.message).toContain('cliente-sem-internet');
     expect(error.message).toContain('4');
-    expect(error.message).toContain('draft');
+    expect(error.message).toContain('rascunho');
     expect(error.message).toMatch(/\bcaso\b/);
     expect(error.message).toMatch(/\bversão\b/);
     expect(error.message).toMatch(/\bliberada\b/);
@@ -38,4 +38,10 @@ it('holds exactly the slug, version and state it was constructed with, in its co
   const error = new CaseVersionNotReleasedError('a-slug', 7, 'draft');
 
   expect(error.context).toEqual({ slug: 'a-slug', version: 7, state: 'draft' });
+});
+
+it('never leaks the raw lifecycle token into its message for the released state', () => {
+  const error = new CaseVersionNotReleasedError('a-slug', 1, 'released');
+
+  expect(error.message).not.toContain('released');
 });
