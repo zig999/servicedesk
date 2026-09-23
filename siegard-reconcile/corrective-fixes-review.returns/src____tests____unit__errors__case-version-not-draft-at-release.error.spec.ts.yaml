@@ -1,0 +1,36 @@
+findings:
+- file: src/__tests__/unit/errors/case-version-not-draft-at-release.error.spec.ts
+  where: the second it block, the two matchers checking for 'liberação' and 'gatilho'
+  evidence: 'expect(error.message).toMatch(/libera[çc][ãa]o/i);
+
+    expect(error.message).toMatch(/gatilho/i);'
+  cost: The vocabulary constraint fixes nine nouns and leaves the connecting sentence free to reword;
+    'gatilho'/'liberação' are not among the fixed nouns, and this test pins that free wording as if the
+    specification had fixed it.
+  kind: contradicts
+  correction: Drop these two assertions, or narrow to checking only the nine fixed nouns.
+  node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+read:
+- node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  held_at: the message-content test's fixed-noun assertions
+  evidence: the message-content test's fixed-noun assertions
+- node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  held_at: the same message-content test
+  evidence: the same message-content test
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: the ordering assertion and the context.toEqual assertion
+  evidence: the ordering assertion and the context.toEqual assertion
+- node: rules/investigation/only-a-released-case-version-is-diagnosed
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: contracts/knowledge/case-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+looked_past: The class-name assertion is a plain implementation check with no domain fact beyond the class
+  name the node already gives.

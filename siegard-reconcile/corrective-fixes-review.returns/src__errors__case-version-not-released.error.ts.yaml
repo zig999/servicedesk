@@ -1,0 +1,33 @@
+read:
+- node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  held_at: the message template's noun substitutions
+  evidence: the message template's noun substitutions
+- node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  held_at: the same message string passed to super(...)
+  evidence: the same message string passed to super(...)
+- node: domain/knowledge/case
+  held_at: the slug parameter and its interpolation into the message
+  evidence: the slug parameter and its interpolation into the message
+- node: domain/knowledge/case-version
+  held_at: the version and state parameters and the context property
+  evidence: the version and state parameters and the context property
+- node: rules/investigation/only-a-released-case-version-is-diagnosed
+  held_at: the error class itself and the message's closing clause
+  evidence: the error class itself and the message's closing clause
+- node: scenarios/investigation/a-draft-case-version-refuses-diagnosis
+  held_at: the same closing clause naming the version as not released
+  evidence: the same closing clause naming the version as not released
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: contracts/knowledge/case-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+looked_past: The ternary maps every non-draft state to liberada rather than switching exhaustively; a
+  code-shape observation left for the standard pass.

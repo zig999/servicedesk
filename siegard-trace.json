@@ -1007,7 +1007,7 @@
         },
         {
           "path": "src/src/case/release.operation.ts",
-          "digest": "sha256:ab98488760789365721a906091c3cc6b1e1805ff7a5da4b7bd53186a7bd7417b"
+          "digest": "sha256:1efc2bfd5adf2672ce4bff1320d2354c4c25b64df5fde141fa9c07df28d9b430"
         },
         {
           "path": "src/src/config/env.ts",
@@ -2173,7 +2173,7 @@
         },
         {
           "path": "src/src/case/release.operation.ts",
-          "digest": "sha256:81b1b0268670db96f9799c192c943dcbe802fc72563d128d72436b1f2e88d7a8"
+          "digest": "sha256:1efc2bfd5adf2672ce4bff1320d2354c4c25b64df5fde141fa9c07df28d9b430"
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
@@ -4647,15 +4647,15 @@
         },
         {
           "path": "src/src/errors/case-version-not-draft-at-release.error.ts",
-          "digest": "sha256:49cfe1b43e0239038faf4274c2071e7edcd747673811058ea80f45ef0de24e02"
+          "digest": "sha256:0ecf3d5e35be89bec34ec6389bf1ddf60daec31ff19e5e4cd28d16d173e5d420"
         },
         {
           "path": "src/src/errors/case-version-not-draft.error.ts",
-          "digest": "sha256:3d7340b34be1dbb01dff7dd2390c17d40f7a87d2adffea526f1b1c8059636368"
+          "digest": "sha256:ca6f6736c459eecd3e7e3dbe9b4afbb23edc4d63d9ac027824e13b8ec44c3371"
         },
         {
           "path": "src/src/errors/case-version-not-released.error.ts",
-          "digest": "sha256:f94c4650c5c57038158e5f590a0d9d68da604436803f27b31f60562fe4fc69f0"
+          "digest": "sha256:3e8f78a0ba8aaac4e4e1025496cab8039d57ebdb84893b952b42d3d538798107"
         },
         {
           "path": "src/src/errors/released-hypothesis-revision-not-alterable.error.ts",
@@ -4901,7 +4901,7 @@
         },
         {
           "path": "src/src/case/release.operation.ts",
-          "digest": "sha256:ab98488760789365721a906091c3cc6b1e1805ff7a5da4b7bd53186a7bd7417b"
+          "digest": "sha256:1efc2bfd5adf2672ce4bff1320d2354c4c25b64df5fde141fa9c07df28d9b430"
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
@@ -4921,15 +4921,15 @@
         },
         {
           "path": "src/src/errors/case-version-not-draft-at-release.error.ts",
-          "digest": "sha256:49cfe1b43e0239038faf4274c2071e7edcd747673811058ea80f45ef0de24e02"
+          "digest": "sha256:0ecf3d5e35be89bec34ec6389bf1ddf60daec31ff19e5e4cd28d16d173e5d420"
         },
         {
           "path": "src/src/errors/case-version-not-draft.error.ts",
-          "digest": "sha256:3d7340b34be1dbb01dff7dd2390c17d40f7a87d2adffea526f1b1c8059636368"
+          "digest": "sha256:ca6f6736c459eecd3e7e3dbe9b4afbb23edc4d63d9ac027824e13b8ec44c3371"
         },
         {
           "path": "src/src/errors/case-version-not-released.error.ts",
-          "digest": "sha256:f94c4650c5c57038158e5f590a0d9d68da604436803f27b31f60562fe4fc69f0"
+          "digest": "sha256:3e8f78a0ba8aaac4e4e1025496cab8039d57ebdb84893b952b42d3d538798107"
         },
         {
           "path": "src/src/http/discard.controller.ts",
@@ -5581,7 +5581,7 @@
         },
         {
           "path": "src/src/case/release.operation.ts",
-          "digest": "sha256:81b1b0268670db96f9799c192c943dcbe802fc72563d128d72436b1f2e88d7a8"
+          "digest": "sha256:1efc2bfd5adf2672ce4bff1320d2354c4c25b64df5fde141fa9c07df28d9b430"
         },
         {
           "path": "src/src/http/dto/place-hypothesis.dto.ts",
@@ -8967,7 +8967,7 @@
         },
         {
           "path": "src/src/errors/case-version-not-draft.error.ts",
-          "digest": "sha256:d7b2b127256eb30379192629898af08415864070ceda4379a6f3eb6291d82831"
+          "digest": "sha256:ca6f6736c459eecd3e7e3dbe9b4afbb23edc4d63d9ac027824e13b8ec44c3371"
         },
         {
           "path": "src/src/http/discard.routes.ts",
@@ -10253,7 +10253,7 @@
         },
         {
           "path": "src/src/errors/case-version-not-draft.error.ts",
-          "digest": "sha256:d7b2b127256eb30379192629898af08415864070ceda4379a6f3eb6291d82831"
+          "digest": "sha256:ca6f6736c459eecd3e7e3dbe9b4afbb23edc4d63d9ac027824e13b8ec44c3371"
         }
       ]
     },
@@ -10295,7 +10295,7 @@
         },
         {
           "path": "src/src/case/release.operation.ts",
-          "digest": "sha256:81b1b0268670db96f9799c192c943dcbe802fc72563d128d72436b1f2e88d7a8"
+          "digest": "sha256:1efc2bfd5adf2672ce4bff1320d2354c4c25b64df5fde141fa9c07df28d9b430"
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
@@ -10329,7 +10329,7 @@
         },
         {
           "path": "src/src/case/release.operation.ts",
-          "digest": "sha256:81b1b0268670db96f9799c192c943dcbe802fc72563d128d72436b1f2e88d7a8"
+          "digest": "sha256:1efc2bfd5adf2672ce4bff1320d2354c4c25b64df5fde141fa9c07df28d9b430"
         },
         {
           "path": "src/src/seed.ts",
@@ -10719,7 +10719,7 @@
       "files": [
         {
           "path": "src/src/errors/case-version-not-released.error.ts",
-          "digest": "sha256:f94c4650c5c57038158e5f590a0d9d68da604436803f27b31f60562fe4fc69f0"
+          "digest": "sha256:3e8f78a0ba8aaac4e4e1025496cab8039d57ebdb84893b952b42d3d538798107"
         },
         {
           "path": "src/src/http/diagnose.controller.ts",
@@ -11009,7 +11009,7 @@
         },
         {
           "path": "src/src/case/release.operation.ts",
-          "digest": "sha256:81b1b0268670db96f9799c192c943dcbe802fc72563d128d72436b1f2e88d7a8"
+          "digest": "sha256:1efc2bfd5adf2672ce4bff1320d2354c4c25b64df5fde141fa9c07df28d9b430"
         }
       ]
     },

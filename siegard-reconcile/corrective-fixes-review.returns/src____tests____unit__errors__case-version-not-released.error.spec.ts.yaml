@@ -1,0 +1,46 @@
+findings:
+- file: src/__tests__/unit/errors/case-version-not-released.error.spec.ts
+  where: the first it block (lines 4-11), 'names the case and its version before it states the state that
+    refuses the act'
+  evidence: expect(error.message.indexOf(slug)).toBeLessThan(error.message.indexOf('rascunho'));
+  cost: Freezes an ordering the specification explicitly leaves open. A future reword that puts the state
+    before the slug fails this test though nothing the constraint fixes changed.
+  kind: contradicts
+  correction: Drop the ordering assertion, or fold into the content test without constraining relative
+    position.
+  node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+- file: src/__tests__/unit/errors/case-version-not-released.error.spec.ts
+  where: the it block (lines 37-41), 'holds exactly the slug, version and state it was constructed with,
+    in its context'
+  evidence: 'expect(error.context).toEqual({ slug: ''a-slug'', version: 7, state: ''draft'' });'
+  cost: Fixes what CaseVersionNotReleasedError's context discloses as a test-enforced fact; the decision
+    log closes this question for CaseVersionNotDraftAtReleaseError but not for this class.
+  kind: unstated
+  correction: State, in rules/investigation/only-a-released-case-version-is-diagnosed (or via a decision-log
+    entry), what values this refusal's context carries.
+  node: rules/investigation/only-a-released-case-version-is-diagnosed
+read:
+- node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  held_at: the message-content test's noun assertions and the leak test
+  evidence: the message-content test's noun assertions and the leak test
+- node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  held_at: the same message-content test's Portuguese-word assertions
+  evidence: the same message-content test's Portuguese-word assertions
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere as its own fact -- this node governs sibling classes, not this one; 'draft'/'released'
+    are only fixture literals here
+  evidence: no reference to this node's fact appears in the file
+- node: rules/investigation/only-a-released-case-version-is-diagnosed
+  held_at: the class-name test and the message-content test's diagnosis wording
+  evidence: the class-name test and the message-content test's diagnosis wording
+- node: contracts/knowledge/case-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+looked_past: The fifth test constructs with state 'released' -- a combination that wouldn't occur in the
+  real flow -- purely to exercise the raw-token-leak guard; a test-design choice, not a domain fact.

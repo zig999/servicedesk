@@ -1,0 +1,49 @@
+read:
+- node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  held_at: the message manifestOwnStateViolations builds for each non-released entry
+  evidence: the message manifestOwnStateViolations builds for each non-released entry
+- node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  held_at: the same manifestOwnStateViolations message
+  evidence: the same manifestOwnStateViolations message
+- node: constraints/the-system-persists-to-one-relational-database
+  held_at: release()'s final call, delegating persistence to caseStore
+  evidence: release()'s final call, delegating persistence to caseStore
+- node: contracts/knowledge/case-lifecycle
+  held_at: ReleaseOperation.release, the operation's public surface
+  evidence: ReleaseOperation.release, the operation's public surface
+- node: contracts/system/case-authoring
+  held_at: release()'s gating of the store write on violations.length
+  evidence: release()'s gating of the store write on violations.length
+- node: domain/knowledge/case-version
+  held_at: assembledAsDocument, restating the version's own attributes
+  evidence: assembledAsDocument, restating the version's own attributes
+- node: domain/knowledge/manifest-entry
+  held_at: assembledAsDocument's manifest mapping and manifestOwnStateViolations' iteration
+  evidence: assembledAsDocument's manifest mapping and manifestOwnStateViolations' iteration
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: refuseNonDraft
+  evidence: refuseNonDraft
+- node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  held_at: the guard in release() -- never throws with an empty violations array
+  evidence: the guard in release() -- never throws with an empty violations array
+- node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+  held_at: manifestOwnStateViolations, merged into releaseViolations on both branches
+  evidence: manifestOwnStateViolations, merged into releaseViolations on both branches
+- node: rules/knowledge/a-slug-identifies-one-case
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/the-contract-check-reads-the-current-registration
+  held_at: releaseViolations passing sources.capabilities through fresh on every call
+  evidence: releaseViolations passing sources.capabilities through fresh on every call
+- node: rules/knowledge/validation-runs-at-every-read
+  held_at: releaseViolations, running structural then coherence checking on every attempt
+  evidence: releaseViolations, running structural then coherence checking on every attempt
+- node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+  held_at: manifestOwnStateViolations naming every non-released entry, merged into the throw
+  evidence: manifestOwnStateViolations naming every non-released entry, merged into the throw
+- node: rules/investigation/only-a-released-case-version-is-diagnosed
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+looked_past: manifestOwnStateViolations called separately on each branch rather than computed once up
+  front; RELEASED_STATE duplicates a literal the lifecycle rule already fixes -- both shape-of-code choices,
+  no domain fact riding on them.

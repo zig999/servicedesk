@@ -1,0 +1,46 @@
+findings:
+- file: src/__tests__/integration/case/release.operation.spec.ts
+  where: context.violations array asserted at lines 232-233, repeated at 443-444
+  evidence: '`the concept "${vocabulary.concept}" does not accept the subject type "${vocabulary.subjectType}"
+    the case declares`,
+
+    `no read-only capability currently answers the concept "${vocabulary.concept}"`,'
+  cost: In the same array as the Portuguese manifest-state violation, these two coherence strings are
+    in English -- one refusal's message reaching an operator in two languages at once.
+  kind: contradicts
+  correction: Coherence-violation strings need to be written in Brazilian Portuguese, matching the rest
+    of the array.
+  node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+- file: src/__tests__/integration/case/release.operation.spec.ts
+  where: same context.violations entries, lines 232-233 and 443-444
+  evidence: '`the concept "${vocabulary.concept}" does not accept the subject type "${vocabulary.subjectType}"
+    the case declares`,'
+  cost: Names concept/case in English rather than the fixed conceito/caso, inconsistent with the Portuguese
+    hipótese/caso entry beside it in the same array.
+  kind: contradicts
+  correction: Name the case and concept by their fixed Portuguese words.
+  node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+read:
+- node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  held_at: the violations array asserted at line 393
+  evidence: the violations array asserted at line 393
+- node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  held_at: the same violations array assertion, line 393
+  evidence: the same violations array assertion, line 393
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: the CaseVersionNotDraftAtReleaseError assertion at lines 283-284
+  evidence: the CaseVersionNotDraftAtReleaseError assertion at lines 283-284
+- node: rules/investigation/only-a-released-case-version-is-diagnosed
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: contracts/knowledge/case-lifecycle
+  held_at: every call to releaseOperation.release(slug, version)
+  evidence: every call to releaseOperation.release(slug, version)
+- node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+  held_at: the refusal test at lines 374-396 and the not-refused positive test at lines 351-372
+  evidence: the refusal test at lines 374-396 and the not-refused positive test at lines 351-372
+looked_past: The shared database-test-helpers module switch and the placeReleasedHypothesis fixture change
+  are test-infrastructure changes carrying no domain fact, not reported here.

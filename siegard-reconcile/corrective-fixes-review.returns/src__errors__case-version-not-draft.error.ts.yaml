@@ -1,0 +1,38 @@
+read:
+- node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  held_at: the message template literal, naming caso/versão/rascunho/liberada
+  evidence: 'o caso "${slug}" na versão ${version} está no estado "${state === ''draft'' ? ''rascunho''
+    : ''liberada''}", e não em rascunho'
+- node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  held_at: the same message literal, written throughout in Brazilian Portuguese
+  evidence: 'o caso "${slug}" na versão ${version} está no estado "${state === ''draft'' ? ''rascunho''
+    : ''liberada''}", e não em rascunho'
+- node: domain/knowledge/case
+  held_at: the slug carried through the constructor parameter and stored on context
+  evidence: this.context = { slug, version, state };
+- node: domain/knowledge/case-version
+  held_at: the version and state fields carried alongside slug
+  evidence: 'public readonly context: Readonly<{ slug: string; version: number; state: string }>;'
+- node: rules/knowledge/a-case-version-is-written-once
+  held_at: the class itself, per candidate index binding
+  evidence: export class CaseVersionNotDraftError extends Error {
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: the class name and its carried context, matching required payload
+  evidence: export class CaseVersionNotDraftError extends Error {
+- node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+  held_at: the same class, reused per candidate index binding
+  evidence: export class CaseVersionNotDraftError extends Error {
+- node: rules/investigation/only-a-released-case-version-is-diagnosed
+  held_at: nowhere
+  evidence: the file's only content carries nothing about diagnosis or investigation
+- node: contracts/knowledge/case-lifecycle
+  held_at: nowhere
+  evidence: the file declares no operation surface, only this one refusal's message and payload
+- node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  held_at: nowhere
+  evidence: the file names no rule-violation aggregation
+- node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+  held_at: nowhere
+  evidence: the file says nothing about a manifest entry's referenced hypothesis-revision state
+looked_past: context field types state as a bare string rather than a union -- typing precision, not a
+  domain-fact conformance issue.

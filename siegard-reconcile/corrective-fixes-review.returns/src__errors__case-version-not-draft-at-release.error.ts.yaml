@@ -1,0 +1,41 @@
+findings:
+- file: src/errors/case-version-not-draft-at-release.error.ts
+  where: line 6, the message template literal inside the constructor
+  evidence: e a liberação é o único gatilho que move uma versão para fora do rascunho
+  cost: The 'release is the only trigger out of draft' fact now lives both in the lifecycle node and hardcoded
+    as prose in this refusal's message; nothing ties the two, so a lifecycle change would leave this string
+    stale.
+  kind: contradicts
+  correction: State only the refusal's own facts (case, version, state); leave the 'why' to the lifecycle
+    node rather than re-deriving it as prose.
+  node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+read:
+- node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  held_at: line 6, the message template literal
+  evidence: line 6, the message template literal
+- node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  held_at: line 6, the whole message template literal
+  evidence: line 6, the whole message template literal
+- node: domain/knowledge/case
+  held_at: the slug parameter and its assignment into context
+  evidence: the slug parameter and its assignment into context
+- node: domain/knowledge/case-version
+  held_at: the version and state parameters and their assignment into context
+  evidence: the version and state parameters and their assignment into context
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: the class itself and the context it assembles
+  evidence: the class itself and the context it assembles
+- node: rules/investigation/only-a-released-case-version-is-diagnosed
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: contracts/knowledge/case-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+looked_past: The ternary treats any non-draft state as released rather than branching explicitly on 'released';
+  correct today given only two states, a code-review question rather than conformance.

@@ -1,0 +1,42 @@
+findings:
+- file: src/__tests__/unit/errors/case-version-not-draft.error.spec.ts
+  where: 'lines 6-13, the first test: ''names the case and its version before it states the state that
+    refuses the act'''
+  evidence: 'const slug = ''a-slug-naming-the-case'';
+
+    const state = ''draft'';
+
+    const error = new CaseVersionNotDraftError(slug, 3, state);
+
+    expect(error.message.indexOf(slug)).toBeLessThan(error.message.indexOf(''rascunho''));'
+  cost: Locks the message's word order into the suite as if it were specification-fixed, but the governing
+    node says wording around the fixed vocabulary 'stays free to be written and rewritten for clarity'.
+    A future reordering breaks this test though nothing in the spec changed.
+  kind: contradicts
+  correction: Drop the ordering assertion, or replace it with a vocabulary/absence check like the file's
+    other tests.
+  node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+read:
+- node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  held_at: the second test's vocabulary assertions
+  evidence: the second test's vocabulary assertions
+- node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  held_at: the second test's Portuguese-phrase assertion
+  evidence: the second test's Portuguese-phrase assertion
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: the constructor tests naming the class and asserting its context
+  evidence: the constructor tests naming the class and asserting its context
+- node: rules/investigation/only-a-released-case-version-is-diagnosed
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: contracts/knowledge/case-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+looked_past: Class-name and distinctness-between-error-classes tests assert structural identity/text inequality,
+  stating no domain fact either way.
