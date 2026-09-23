@@ -96,12 +96,15 @@ it('throws InvalidEnvironmentError naming DATABASE_URL when it is set to an empt
   expect(issues.some((issue) => issue.includes('DATABASE_URL'))).toBe(true);
 });
 
-it('yields a defaulted value for each of the three pool variables when the existing required-variable fixture names none of them', () => {
+it('defaults each of the three pool variables to a positive integer when the existing required-variable fixture names none of them', () => {
   const env = loadEnv(validEnvSource());
 
-  expect(Number.isFinite(env.DATABASE_POOL_MAX_CONNECTIONS)).toBe(true);
-  expect(Number.isFinite(env.DATABASE_POOL_IDLE_TIMEOUT_MS)).toBe(true);
-  expect(Number.isFinite(env.DATABASE_POOL_STATEMENT_TIMEOUT_MS)).toBe(true);
+  expect(Number.isInteger(env.DATABASE_POOL_MAX_CONNECTIONS)).toBe(true);
+  expect(env.DATABASE_POOL_MAX_CONNECTIONS).toBeGreaterThan(0);
+  expect(Number.isInteger(env.DATABASE_POOL_IDLE_TIMEOUT_MS)).toBe(true);
+  expect(env.DATABASE_POOL_IDLE_TIMEOUT_MS).toBeGreaterThan(0);
+  expect(Number.isInteger(env.DATABASE_POOL_STATEMENT_TIMEOUT_MS)).toBe(true);
+  expect(env.DATABASE_POOL_STATEMENT_TIMEOUT_MS).toBeGreaterThan(0);
 });
 
 it('parses a configured value for each of the three pool variables as a number, distinct from their defaults', () => {
@@ -145,22 +148,18 @@ interface IPoolBoundCase {
   valid: boolean;
 }
 
-const poolBoundCases: IPoolBoundCase[] = [
-  {
-    description: 'refuses a non-integer value',
-    field: 'DATABASE_POOL_STATEMENT_TIMEOUT_MS',
-    value: '2.5',
-    valid: false,
-  },
-  { description: 'refuses a zero value', field: 'DATABASE_POOL_IDLE_TIMEOUT_MS', value: '0', valid: false },
-  { description: 'refuses a negative value', field: 'DATABASE_POOL_MAX_CONNECTIONS', value: '-5', valid: false },
-  {
-    description: 'admits a positive integer value',
-    field: 'DATABASE_POOL_MAX_CONNECTIONS',
-    value: '7',
-    valid: true,
-  },
+const POOL_BOUND_FIELDS: PoolBoundField[] = [
+  'DATABASE_POOL_MAX_CONNECTIONS',
+  'DATABASE_POOL_IDLE_TIMEOUT_MS',
+  'DATABASE_POOL_STATEMENT_TIMEOUT_MS',
 ];
+
+const poolBoundCases: IPoolBoundCase[] = POOL_BOUND_FIELDS.flatMap((field) => [
+  { description: 'refuses a non-integer value', field, value: '2.5', valid: false },
+  { description: 'refuses a zero value', field, value: '0', valid: false },
+  { description: 'refuses a negative value', field, value: '-5', valid: false },
+  { description: 'admits a positive integer value', field, value: '7', valid: true },
+]);
 
 it.each(poolBoundCases)('$description for $field', ({ field, value, valid }) => {
   const source = validEnvSource({ [field]: value });
