@@ -1,0 +1,82 @@
+findings:
+- file: src/__tests__/unit/errors/concept-refuses-subject-type.error.spec.ts
+  where: the fourth test, "carries exactly the slug, hypothesis name, subject and concepts in context...",
+    lines 44-58 (paired with the message asserted in the first test, lines 4-15)
+  evidence: "expect(error.context).toEqual({\n    slug: 'a-slug',\n    hypothesis_name: 'a-hypothesis',\n\
+    \    subject: 'customer',\n    concepts: ['equipment-state'],\n  });"
+  cost: rules/knowledge/a-concept-accepts-the-declared-subject-type says only that the refusal is raised;
+    it carries no clause naming what the refusal discloses, unlike its siblings. This test fixes, as fact,
+    which values are disclosed -- a decision of what the curator is told, surviving only in this test
+    and the error class.
+  kind: unstated
+  correction: add a clause to rules/knowledge/a-concept-accepts-the-declared-subject-type (or a node it
+    points to) stating which identifying values the refusal's message/context carries.
+  node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+read:
+- node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  held_at: the first test's message assertion, lines 4-15
+  evidence: the first test's message assertion, lines 4-15
+- node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  held_at: the second test, lines 17-31
+  evidence: the second test, lines 17-31
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/case
+  held_at: the slug field of the context fixtures
+  evidence: the slug field of the context fixtures
+- node: domain/knowledge/case-version
+  held_at: the subject field of the context fixtures
+  evidence: the subject field of the context fixtures
+- node: rules/knowledge/a-case-has-at-most-one-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/investigation/only-a-released-case-version-is-diagnosed
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/case-terms-exist-in-the-glossary
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+  held_at: the whole file
+  evidence: the whole file
+- node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/hypothesis-revision
+  held_at: the concepts field of the context fixtures
+  evidence: the concepts field of the context fixtures
+- node: domain/knowledge/hypothesis
+  held_at: the hypothesis_name field of the context fixtures
+  evidence: the hypothesis_name field of the context fixtures
+- node: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-has-at-least-one-hypothesis
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+looked_past: The flat it()-block layout and repeated literal fixtures are style, not reported.

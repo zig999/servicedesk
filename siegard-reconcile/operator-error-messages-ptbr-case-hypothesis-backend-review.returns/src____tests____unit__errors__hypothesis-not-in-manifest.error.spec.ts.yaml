@@ -1,0 +1,70 @@
+read:
+- node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  held_at: the first it block, asserting the exact Portuguese message text
+  evidence: the first it block, asserting the exact Portuguese message text
+- node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  held_at: the second it block, asserting the fixed nouns and the absence of their English equivalents
+  evidence: the second it block, asserting the fixed nouns and the absence of their English equivalents
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/case
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/case-version
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-has-at-most-one-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/investigation/only-a-released-case-version-is-diagnosed
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/case-terms-exist-in-the-glossary
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/hypothesis-revision
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/hypothesis
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+  held_at: the third it block, asserting the error's own name
+  evidence: the third it block, asserting the error's own name
+- node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+  held_at: nowhere
+  evidence: ManifestPositionOccupiedError constructed only as a sibling for text-distinguishability comparisons.
+- node: rules/knowledge/a-case-has-at-least-one-hypothesis
+  held_at: nowhere
+  evidence: ManifestWouldHoldNoHypothesisError constructed only as a sibling for text-distinguishability
+    comparisons.
+looked_past: The exact literal wording pinned by toBe is a phrasing choice the vocabulary constraint leaves
+  free.

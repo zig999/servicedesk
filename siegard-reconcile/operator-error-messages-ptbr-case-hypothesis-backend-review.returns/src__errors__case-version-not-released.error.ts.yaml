@@ -1,0 +1,92 @@
+findings:
+- file: src/errors/case-version-not-released.error.ts
+  where: the message template literal in the constructor's super(...) call
+  evidence: o caso "${slug}" na versão ${version} está no estado "${state}", e o diagnóstico só é executado
+    contra uma versão liberada
+  cost: state carries the raw internal lifecycle token ('draft'/'released'); for the only state this error
+    is ever constructed for (draft), the refusal reads está no estado "draft" rather than the fixed word
+    rascunho.
+  kind: contradicts
+  correction: Map the state value to its fixed Portuguese word before interpolating it into the sentence.
+  node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+- file: src/errors/case-version-not-released.error.ts
+  where: the message template literal in the constructor's super(...) call
+  evidence: o caso "${slug}" na versão ${version} está no estado "${state}", e o diagnóstico só é executado
+    contra uma versão liberada
+  cost: The estado clause carries an untranslated English token rather than Portuguese prose, for the
+    one case this error is ever raised for.
+  kind: contradicts
+  correction: Translate the state to its Portuguese word before it is placed in the message.
+  node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+read:
+- node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  held_at: the constructor's message template
+  evidence: the constructor's message template
+- node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  held_at: the constructor's message template
+  evidence: the constructor's message template
+- node: domain/knowledge/case
+  held_at: the slug parameter and context.slug field
+  evidence: the slug parameter and context.slug field
+- node: domain/knowledge/case-version
+  held_at: the version and state parameters and context fields
+  evidence: the version and state parameters and context fields
+- node: rules/investigation/only-a-released-case-version-is-diagnosed
+  held_at: the class itself and its message
+  evidence: the class itself and its message
+- node: scenarios/investigation/a-draft-case-version-refuses-diagnosis
+  held_at: the error message, stating diagnosis runs only against a released version
+  evidence: the error message, stating diagnosis runs only against a released version
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-has-at-most-one-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/case-terms-exist-in-the-glossary
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/hypothesis-revision
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/hypothesis
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-has-at-least-one-hypothesis
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+looked_past: Sibling error classes show the same raw-state interpolation pattern but are outside this
+  file's own file set.

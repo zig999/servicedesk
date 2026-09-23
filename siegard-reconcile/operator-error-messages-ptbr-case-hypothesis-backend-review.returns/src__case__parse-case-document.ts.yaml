@@ -1,0 +1,107 @@
+read:
+- node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  held_at: the problem-message builders throughout the file, spelling each of the nine fixed nouns in
+    Brazilian Portuguese
+  evidence: the problem-message builders throughout the file, spelling each of the nine fixed nouns in
+    Brazilian Portuguese
+- node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  held_at: the same problem-message builders, every returned string in Portuguese
+  evidence: the same problem-message builders, every returned string in Portuguese
+- node: contracts/system/case-authoring
+  held_at: parseCaseDocument, the structural gate an authored case document is held against
+  evidence: parseCaseDocument, the structural gate an authored case document is held against
+- node: domain/knowledge/case
+  held_at: the slug field carried through CaseDocument and validated by documentProblems
+  evidence: the slug field carried through CaseDocument and validated by documentProblems
+- node: domain/knowledge/case-version
+  held_at: the CaseDocument type and heldCase, carrying every one of the node's attributes
+  evidence: the CaseDocument type and heldCase, carrying every one of the node's attributes
+- node: domain/knowledge/case-version-state
+  held_at: stateProblems and isCaseVersionState
+  evidence: stateProblems and isCaseVersionState
+- node: domain/knowledge/consolidation-register
+  held_at: consolidationRegisterProblems and isConsolidationRegister
+  evidence: consolidationRegisterProblems and isConsolidationRegister
+- node: domain/knowledge/hypothesis
+  held_at: flatHypothesisOf, carrying only name/criterion/collects/resolution
+  evidence: flatHypothesisOf, carrying only name/criterion/collects/resolution
+- node: domain/knowledge/hypothesis-revision
+  held_at: heldHypothesisRevision, carrying revision, criterion, collects and resolution
+  evidence: heldHypothesisRevision, carrying revision, criterion, collects and resolution
+- node: domain/knowledge/manifest-entry
+  held_at: heldManifestEntry, pairing a position with one hypothesis-revision
+  evidence: heldManifestEntry, pairing a position with one hypothesis-revision
+- node: domain/knowledge/referral
+  held_at: referralProblems and heldResolution's referral construction
+  evidence: referralProblems and heldResolution's referral construction
+- node: domain/knowledge/resolution
+  held_at: resolutionProblems and heldResolution, pairing outcome with referral
+  evidence: resolutionProblems and heldResolution, pairing outcome with referral
+- node: rules/knowledge/a-case-has-at-least-one-hypothesis
+  held_at: manifestProblems, refusing an absent or empty manifest
+  evidence: manifestProblems, refusing an absent or empty manifest
+- node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+  held_at: collectsProblems, refusing an absent or empty collects list
+  evidence: collectsProblems, refusing an absent or empty collects list
+- node: rules/knowledge/a-hypothesis-declares-a-criterion
+  held_at: manifestEntryProblems' criterion check
+  evidence: manifestEntryProblems' criterion check
+- node: rules/knowledge/a-hypothesis-name-is-unique-within-its-case
+  held_at: sharedHypothesisProblems
+  evidence: sharedHypothesisProblems
+- node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+  held_at: sharedPositionProblems
+  evidence: sharedPositionProblems
+- node: rules/knowledge/a-slug-identifies-one-case
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/every-position-declares-a-resolution
+  held_at: resolutionProblems, run over both the fallback and every manifest entry's resolution
+  evidence: resolutionProblems, run over both the fallback and every manifest entry's resolution
+- node: rules/knowledge/hypotheses-are-ordered-by-precedence
+  held_at: heldManifestEntry, carrying each entry's own declared position through unchanged
+  evidence: heldManifestEntry, carrying each entry's own declared position through unchanged
+- node: rules/knowledge/validation-runs-at-every-read
+  held_at: refuseStructuralViolations/documentProblems
+  evidence: refuseStructuralViolations/documentProblems
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-has-at-most-one-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/investigation/only-a-released-case-version-is-diagnosed
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/case-terms-exist-in-the-glossary
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+looked_past: Whether InvalidCaseDocumentError's downstream handling surfaces this as CaseVersionNotValidError,
+  and whether HypothesisRevision's state attribute is populated, turn on files outside this file set.

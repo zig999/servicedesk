@@ -1,0 +1,81 @@
+read:
+- node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  held_at: every problemsOf(...) assertion in the file
+  evidence: every problemsOf(...) assertion in the file
+- node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  held_at: the ENGLISH_DOMAIN_NOUN regex and the translationScenarios it.each block
+  evidence: the ENGLISH_DOMAIN_NOUN regex and the translationScenarios it.each block
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/case
+  held_at: the slug attribute's required/non-blank checks
+  evidence: the slug attribute's required/non-blank checks
+- node: domain/knowledge/case-version
+  held_at: completeDocument/expectedCase fixtures and per-attribute tests
+  evidence: completeDocument/expectedCase fixtures and per-attribute tests
+- node: rules/knowledge/a-case-has-at-most-one-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/investigation/only-a-released-case-version-is-diagnosed
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/case-terms-exist-in-the-glossary
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+  held_at: collects-empty/undefined manifest-entry tests
+  evidence: collects-empty/undefined manifest-entry tests
+- node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/hypothesis-revision
+  held_at: manifestEntrySpec/expectedManifestEntry
+  evidence: manifestEntrySpec/expectedManifestEntry
+- node: domain/knowledge/hypothesis
+  held_at: expectedHypothesis, hypothesis_name presence/blank tests
+  evidence: expectedHypothesis, hypothesis_name presence/blank tests
+- node: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+  held_at: the shared-position test
+  evidence: the shared-position test
+- node: rules/knowledge/a-case-has-at-least-one-hypothesis
+  held_at: empty-manifest / manifest-undeclared tests
+  evidence: empty-manifest / manifest-undeclared tests
+looked_past: The parseCaseDocument second-parameter signature choice is a code-review question, not a
+  domain fact.
+candidates_opened:
+- domain/knowledge/consolidation-register
+- rules/knowledge/a-hypothesis-name-is-unique-within-its-case
+- rules/knowledge/a-hypothesis-declares-a-criterion
+- rules/knowledge/every-position-declares-a-resolution
+- rules/knowledge/hypotheses-are-ordered-by-precedence
+- rules/knowledge/a-slug-identifies-one-case
+- contracts/system/case-authoring
+- domain/knowledge/case-version-state
+- domain/knowledge/manifest-entry
+- domain/knowledge/referral
+- domain/knowledge/resolution

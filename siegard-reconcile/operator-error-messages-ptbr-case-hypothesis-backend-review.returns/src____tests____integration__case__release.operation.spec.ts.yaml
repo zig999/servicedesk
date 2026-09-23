@@ -1,0 +1,93 @@
+findings:
+- file: src/__tests__/integration/case/release.operation.spec.ts
+  where: the context.violations expectation in the both-rules-violated tests, lines 252-255 and 463-466
+  evidence: "expect((refusal as CaseVersionNotReleasableError).context.violations).toEqual([\n      `the\
+    \ concept \"${vocabulary.concept}\" does not accept the subject type \"${vocabulary.subjectType}\"\
+    \ the case declares`,\n      `no read-only capability currently answers the concept \"${vocabulary.concept}\"\
+    `,\n    ]);"
+  cost: These two strings are joined into CaseVersionNotReleasableError's own message; asserting them
+    in English locks this refusal to part-Portuguese, part-English text.
+  kind: contradicts
+  correction: Assert these two violation strings in Brazilian Portuguese, once the coherence-violation
+    text they come from is translated.
+  node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+- file: src/__tests__/integration/case/release.operation.spec.ts
+  where: the same context.violations expectation
+  evidence: '`the concept "${vocabulary.concept}" does not accept the subject type "${vocabulary.subjectType}"
+    the case declares`,'
+  cost: The noun fixed as conceito is asserted by its English word concept instead, inside the same array
+    that elsewhere carries hipótese/liberada.
+  kind: contradicts
+  correction: Name the concept conceito in this violation text.
+  node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+read:
+- node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  held_at: the context.violations arrays asserted for CaseVersionNotReleasableError in the structural-violations
+    and manifest-own-state tests
+  evidence: the context.violations arrays asserted for CaseVersionNotReleasableError in the structural-violations
+    and manifest-own-state tests
+- node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  held_at: the manifest-own-state violation text, using hipótese/revisão/liberada
+  evidence: the manifest-own-state violation text, using hipótese/revisão/liberada
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  held_at: the CaseVersionNotReleasableError assertions naming every violated rule together
+  evidence: the CaseVersionNotReleasableError assertions naming every violated rule together
+- node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/case
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/case-version
+  held_at: the state/released_at assertions throughout
+  evidence: the state/released_at assertions throughout
+- node: rules/knowledge/a-case-has-at-most-one-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: lines 302-307
+  evidence: lines 302-307
+- node: rules/investigation/only-a-released-case-version-is-diagnosed
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/case-terms-exist-in-the-glossary
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+  held_at: lines 216-226
+  evidence: lines 216-226
+- node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+  held_at: lines 330-336
+  evidence: lines 330-336
+- node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/hypothesis-revision
+  held_at: lines 364-369
+  evidence: lines 364-369
+- node: domain/knowledge/hypothesis
+  held_at: lines 412-415, 439-442
+  evidence: lines 412-415, 439-442
+- node: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-has-at-least-one-hypothesis
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+looked_past: Raw-SQL cleanup helpers and vocabulary-generation functions are test infrastructure, not
+  domain facts.

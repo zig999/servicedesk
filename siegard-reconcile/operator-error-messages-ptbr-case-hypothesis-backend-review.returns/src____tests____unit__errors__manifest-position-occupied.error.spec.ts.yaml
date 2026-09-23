@@ -1,0 +1,89 @@
+findings:
+- file: src/__tests__/unit/errors/manifest-position-occupied.error.spec.ts
+  where: lines 4-10, the first it block
+  evidence: "const error = new ManifestPositionOccupiedError('orion-9', 4, 2);\nexpect(error.message).toBe(\n\
+    \  'o caso \"orion-9\" versão 4 já tem uma hipótese na posição 2, e uma posição do manifesto é única\
+    \ dentro da sua versão do caso',\n);"
+  cost: rules/knowledge/a-hypothesis-position-is-unique-within-its-case says only that the refusal reports
+    ManifestPositionOccupiedError -- it never states the message names the case slug, version number and
+    occupied position, unlike sibling rules that state their disclosure explicitly.
+  kind: unstated
+  correction: Add a clause to the node naming what the refusal's message carries, the way sibling rules
+    already do.
+  node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+- file: src/__tests__/unit/errors/manifest-position-occupied.error.spec.ts
+  where: lines 33-37, the fourth it block
+  evidence: 'expect(error.context).toEqual({ slug: ''orion-9'', version: 4, position: 2 });'
+  cost: No node governs this refusal's context payload shape at all.
+  kind: unstated
+  correction: State what the refusal discloses (message and/or structured detail) in the governing node.
+  node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+read:
+- node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  held_at: the first it block's exact-message assertion
+  evidence: the first it block's exact-message assertion
+- node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  held_at: the second it block
+  evidence: the second it block
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/case
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/case-version
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-has-at-most-one-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/investigation/only-a-released-case-version-is-diagnosed
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/case-terms-exist-in-the-glossary
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/hypothesis-revision
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/hypothesis
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+  held_at: the class-name assertion and the constructor calls throughout the file
+  evidence: the class-name assertion and the constructor calls throughout the file
+- node: rules/knowledge/a-case-has-at-least-one-hypothesis
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+looked_past: The exact-string message assertion pins wording the vocabulary constraint leaves free to
+  be rewritten -- a test-design choice, not a domain-fact departure.

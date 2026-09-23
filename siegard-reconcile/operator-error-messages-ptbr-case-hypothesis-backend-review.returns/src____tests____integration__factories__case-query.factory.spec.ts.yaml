@@ -1,0 +1,77 @@
+read:
+- node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  held_at: src/__tests__/integration/factories/case-query.factory.spec.ts:183 and :202, asserting the
+    Portuguese violation text carried by CaseVersionNotValidError.
+  evidence: expect((refusal as CaseVersionNotValidError).context.violations).toEqual(['o caso não declara
+    nenhuma hipótese']);
+- node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  held_at: Same two assertions, which name the case and hypothesis nouns only by "caso" and "hipótese".
+  evidence: expect((refusal as CaseVersionNotValidError).context.violations).toEqual(['o caso não declara
+    nenhuma hipótese']);
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: Lines 180-183, 200-202, 219-220 and 236, where readCase over a stored version is asserted to
+    reject with CaseVersionNotValidError.
+  evidence: const refusal = await query.readCase(vocabulary.slug, version).catch((error) => error); expect(refusal).toBeInstanceOf(CaseVersionNotValidError);
+- node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  held_at: nowhere
+  evidence: writeCase only calls await store.release(vocabulary.slug, version); as setup, with no assertion
+    made about a refusal from release.
+- node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+  held_at: Line 170, refusing a read naming a slug and version nothing was ever written for.
+  evidence: await expect(query.readCase(`case-query-absent-${randomUUID()}`, 1)).rejects.toBeInstanceOf(CaseNotFoundError);
+- node: rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/case
+  held_at: Line 164, matching the returned case's slug.
+  evidence: 'expect(result.case).toMatchObject({ slug: vocabulary.slug, subject: vocabulary.subject });'
+- node: domain/knowledge/case-version
+  held_at: Line 164 (the subject attribute) and lines 162-163, where the assembled version is checked
+    to exist.
+  evidence: Line 164 (the subject attribute) and lines 162-163, where the assembled version is checked
+    to exist.
+- node: rules/knowledge/a-case-has-at-most-one-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/investigation/only-a-released-case-version-is-diagnosed
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/case-terms-exist-in-the-glossary
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+  held_at: nowhere
+  evidence: Test at lines 206-222 deletes the concept_accepts row and asserts only CaseVersionNotValidError,
+    never ConceptRefusesSubjectTypeError.
+- node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/hypothesis-revision
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/hypothesis
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+  held_at: nowhere
+  evidence: writeCase always places each hypothesis at position 1; no test places two at one position.
+- node: rules/knowledge/a-case-has-at-least-one-hypothesis
+  held_at: Lines 173-183 and 186-202, where a version written with no hypotheses is read back and refused
+    naming that violation.
+  evidence: const version = await writeCase(vocabulary, []); ... expect((refusal as CaseVersionNotValidError).context.violations).toEqual(['o
+    caso não declara nenhuma hipótese']);

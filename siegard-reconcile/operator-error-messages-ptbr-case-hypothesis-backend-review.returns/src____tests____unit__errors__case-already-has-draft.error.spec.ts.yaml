@@ -1,0 +1,106 @@
+findings:
+- file: src/__tests__/unit/errors/case-already-has-draft.error.spec.ts
+  where: line 9, first it block
+  evidence: expect(error.message.indexOf(slug)).toBeLessThan(error.message.indexOf('rascunho'));
+  cost: Pins a specific word order the governing node's own Description leaves free.
+  kind: contradicts
+  correction: Drop the position assertion; assert only that both the slug and rascunho appear.
+  node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+- file: src/__tests__/unit/errors/case-already-has-draft.error.spec.ts
+  where: line 18, second it block
+  evidence: expect(error.message).toContain('cliente-sem-internet');
+  cost: 'rules/knowledge/a-case-has-at-most-one-draft states only the status and error name for this refusal;
+    nothing about message content. The decision log confirms the decided scope was narrower: status+name
+    only.'
+  kind: unstated
+  correction: State, in rules/knowledge/a-case-has-at-most-one-draft (or its decision log), whether CaseAlreadyHasDraftError's
+    message must name the case slug.
+  node: rules/knowledge/a-case-has-at-most-one-draft
+- file: src/__tests__/unit/errors/case-already-has-draft.error.spec.ts
+  where: lines 22-23, second it block
+  evidence: 'expect(error.message).toMatch(/j[áa] possui/i);
+
+    expect(error.message).toMatch(/no m[áa]ximo/i);'
+  cost: Fixes exact grammatical phrasing beyond the nine fixed nouns; the node's Description leaves such
+    phrasing free.
+  kind: contradicts
+  correction: Remove the exact-phrase assertions, leaving only fixed-vocabulary checks.
+  node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+- file: src/__tests__/unit/errors/case-already-has-draft.error.spec.ts
+  where: line 39, fourth it block
+  evidence: 'expect(error.context).toEqual({ slug: ''a-slug'' });'
+  cost: No node or decision-log entry settles what CaseAlreadyHasDraftError's context carries; decided
+    scope was status+name only.
+  kind: unstated
+  correction: State, in rules/knowledge/a-case-has-at-most-one-draft (or its decision log), what CaseAlreadyHasDraftError's
+    context/details carry.
+  node: rules/knowledge/a-case-has-at-most-one-draft
+read:
+- node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  held_at: the regex assertions checking the message for Portuguese words
+  evidence: the regex assertions checking the message for Portuguese words
+- node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  held_at: the three fixed-noun regex checks and three negative checks
+  evidence: the three fixed-noun regex checks and three negative checks
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/case
+  held_at: the slug passed to the constructor and echoed in the error's context
+  evidence: the slug passed to the constructor and echoed in the error's context
+- node: domain/knowledge/case-version
+  held_at: the draft-state noun (rascunho) the message is checked for
+  evidence: the draft-state noun (rascunho) the message is checked for
+- node: rules/knowledge/a-case-has-at-most-one-draft
+  held_at: the error-name assertion
+  evidence: the error-name assertion
+- node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/investigation/only-a-released-case-version-is-diagnosed
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/case-terms-exist-in-the-glossary
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/hypothesis-revision
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/hypothesis
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-has-at-least-one-hypothesis
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+looked_past: Node pack carries many unrelated nodes -- reported as held nowhere rather than pressed into
+  a finding.

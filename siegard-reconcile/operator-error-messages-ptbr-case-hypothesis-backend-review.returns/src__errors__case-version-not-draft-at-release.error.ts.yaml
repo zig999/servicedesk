@@ -1,0 +1,86 @@
+findings:
+- file: src/errors/case-version-not-draft-at-release.error.ts
+  where: the message template passed to super(), line 6
+  evidence: está no estado "${state}"
+  cost: The state reaches the operator as the raw internal lifecycle token ('draft'/'released') rather
+    than the fixed word (rascunho/liberada) the vocabulary constraint names.
+  kind: contradicts
+  correction: Translate the state to "rascunho" or "liberada" before interpolating it into the message.
+  node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+- file: src/errors/case-version-not-draft-at-release.error.ts
+  where: the message template passed to super(), line 6
+  evidence: está no estado "${state}"
+  cost: The assembled message embeds an English word (the raw lifecycle token) inside a sentence this
+    constraint requires wholly in Brazilian Portuguese.
+  kind: contradicts
+  correction: Interpolate a Portuguese rendering of the state rather than the raw token.
+  node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+read:
+- node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  held_at: the message template, line 6
+  evidence: the message template, line 6
+- node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  held_at: the message template, line 6
+  evidence: the message template, line 6
+- node: domain/knowledge/case
+  held_at: the slug constructor parameter and context.slug field
+  evidence: the slug constructor parameter and context.slug field
+- node: domain/knowledge/case-version
+  held_at: the version and state constructor parameters and context fields
+  evidence: the version and state constructor parameters and context fields
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: the whole class -- its name, message and context object
+  evidence: the whole class -- its name, message and context object
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-has-at-most-one-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/investigation/only-a-released-case-version-is-diagnosed
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/case-terms-exist-in-the-glossary
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/hypothesis-revision
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/hypothesis
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-has-at-least-one-hypothesis
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+looked_past: state typed as bare string, not a narrower union -- a type-safety choice, not a stated domain
+  fact.

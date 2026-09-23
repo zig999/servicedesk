@@ -1,0 +1,114 @@
+findings:
+- file: src/case/release.operation.ts
+  where: releaseViolations -- the if (structural.kind === 'invalid') branch that returns early
+  evidence: "const structural = structuralOutcome(assembled);\nif (structural.kind === 'invalid') {\n\
+    \  return structural.problems;\n}\nreturn [\n  ...(await caseCoherenceViolations(structural.theCase,\
+    \ sources.glossary, sources.capabilities)),\n  ...(await manifestOwnStateViolations(assembled, sources.hypothesisRevisions)),\n\
+    ];"
+  cost: When a draft fails a structural rule AND manifests an entry referencing a draft hypothesis-revision,
+    the release refusal names only the structural problems -- manifestOwnStateViolations never runs in
+    this branch even though it depends only on assembled. One refusal the spec says should be whole comes
+    back split into two successive ones.
+  kind: contradicts
+  correction: Compute manifestOwnStateViolations(assembled, sources.hypothesisRevisions) unconditionally
+    and merge it into the violations returned when structural.kind === 'invalid', so both kinds of failure
+    are always named together.
+  node: contracts/knowledge/case-lifecycle
+read:
+- node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  held_at: manifestOwnStateViolations -- the pushed violation string
+  evidence: manifestOwnStateViolations -- the pushed violation string
+- node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  held_at: manifestOwnStateViolations -- the pushed violation string
+  evidence: manifestOwnStateViolations -- the pushed violation string
+- node: constraints/the-system-persists-to-one-relational-database
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: contracts/knowledge/case-lifecycle
+  held_at: the release method and releaseViolations (aggregation gap reported above)
+  evidence: the release method and releaseViolations (aggregation gap reported above)
+- node: contracts/system/case-authoring
+  held_at: release()/releaseViolations() throwing once with accumulated violations
+  evidence: release()/releaseViolations() throwing once with accumulated violations
+- node: domain/knowledge/case-version
+  held_at: assembledAsDocument, mapping the case version's own declared attributes
+  evidence: assembledAsDocument, mapping the case version's own declared attributes
+- node: domain/knowledge/manifest-entry
+  held_at: manifestOwnStateViolations and assembledAsDocument's manifest mapping
+  evidence: manifestOwnStateViolations and assembledAsDocument's manifest mapping
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: refuseNonDraft
+  evidence: refuseNonDraft
+- node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  held_at: the throw of CaseVersionNotReleasableError with slug, version and violations
+  evidence: the throw of CaseVersionNotReleasableError with slug, version and violations
+- node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+  held_at: manifestOwnStateViolations
+  evidence: manifestOwnStateViolations
+- node: rules/knowledge/a-slug-identifies-one-case
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/the-contract-check-reads-the-current-registration
+  held_at: release() passing this.capabilities fresh into releaseViolations on every call
+  evidence: release() passing this.capabilities fresh into releaseViolations on every call
+- node: rules/knowledge/validation-runs-at-every-read
+  held_at: releaseViolations/structuralOutcome, invoked fresh at each release() call
+  evidence: releaseViolations/structuralOutcome, invoked fresh at each release() call
+- node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+  held_at: manifestOwnStateViolations naming the offending hypothesis
+  evidence: manifestOwnStateViolations naming the offending hypothesis
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+  held_at: heldAssembledVersion
+  evidence: heldAssembledVersion
+- node: rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/case
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-has-at-most-one-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/investigation/only-a-released-case-version-is-diagnosed
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/case-terms-exist-in-the-glossary
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/hypothesis-revision
+  held_at: assembledAsDocument mapping the revision's own fields, manifestOwnStateViolations reading its
+    state
+  evidence: assembledAsDocument mapping the revision's own fields, manifestOwnStateViolations reading
+    its state
+- node: domain/knowledge/hypothesis
+  held_at: manifestOwnStateViolations/assembledAsDocument reading hypothesis_name
+  evidence: manifestOwnStateViolations/assembledAsDocument reading hypothesis_name
+- node: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-has-at-least-one-hypothesis
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+looked_past: try/catch control flow and conditional object-spread are implementation style, not a domain
+  fact.

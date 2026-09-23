@@ -1,0 +1,89 @@
+findings:
+- file: src/__tests__/unit/case/case-query.service.spec.ts
+  where: context.violations assertions on CaseVersionNotValidError, lines 519-523, 536-539, 739-743
+  evidence: "expect((refusal as CaseVersionNotValidError).context).toEqual({\n  slug: SLUG,\n  version,\n\
+    \  violations: [`the concept \"${CONCEPT}\" does not exist in the glossary`],\n});"
+  cost: CaseVersionNotValidError joins violations into a fixed PT-br frame; this test fixes the expected
+    violations entries in English, locking in a refusal whose message mixes Portuguese framing with an
+    English clause.
+  kind: contradicts
+  correction: Update these three assertions to expect the coherence-violation strings in Brazilian Portuguese,
+    once validate-case-coherence.ts's text is translated.
+  node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+- file: src/__tests__/unit/case/case-query.service.spec.ts
+  where: the same context.violations assertions
+  evidence: 'violations: [`the concept "${CONCEPT}" does not exist in the glossary`],'
+  cost: Fixes 'concept' in English where the vocabulary rule reserves 'conceito' for this noun, producing
+    an inconsistency with sibling refusals (ConceptNotInGlossaryError etc.) that already say conceito.
+  kind: contradicts
+  correction: Update the expected violation text to name the concept as conceito.
+  node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+read:
+- node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  held_at: the structural-violation assertions, e.g. lines 488-492 and 826-843
+  evidence: the structural-violation assertions, e.g. lines 488-492 and 826-843
+- node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  held_at: line 491
+  evidence: line 491
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: lines 826-844
+  evidence: lines 826-844
+- node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+  held_at: lines 471-478, 625-628, 802-809
+  evidence: lines 471-478, 625-628, 802-809
+- node: rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/case
+  held_at: lines 426, 428
+  evidence: lines 426, 428
+- node: domain/knowledge/case-version
+  held_at: lines 428-447
+  evidence: lines 428-447
+- node: rules/knowledge/a-case-has-at-most-one-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/investigation/only-a-released-case-version-is-diagnosed
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/case-terms-exist-in-the-glossary
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/hypothesis-revision
+  held_at: lines 439-446, 659-666
+  evidence: lines 439-446, 659-666
+- node: domain/knowledge/hypothesis
+  held_at: lines 243, 441
+  evidence: lines 243, 441
+- node: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-has-at-least-one-hypothesis
+  held_at: lines 480-493
+  evidence: lines 480-493
+looked_past: readCaseInputRequirements tests exercise a capability/input-schema surface no node in this
+  set governs.

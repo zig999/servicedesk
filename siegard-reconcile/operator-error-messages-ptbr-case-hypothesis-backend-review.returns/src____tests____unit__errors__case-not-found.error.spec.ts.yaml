@@ -1,0 +1,74 @@
+read:
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: the message assertion in the first `it` block, line 7
+    evidence: expect(error.message).toBe('o caso "a-slug" não tem a versão 3 armazenada');
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: the vocabulary assertions in the second `it` block, lines 13-16
+    evidence: |-
+      expect(error.message).toContain('caso');
+        expect(error.message).toContain('versão');
+        expect(error.message).not.toMatch(/\bcase\b/i);
+        expect(error.message).not.toMatch(/\bversion\b/i);
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: nowhere
+    evidence: "import { CaseNotFoundError } from '../../../errors/case-not-found.error.js'; — the file's whole subject is CaseNotFoundError; nothing here exercises CaseVersionNotValidError or a failing-validation read."
+  - node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+    held_at: nowhere
+    evidence: "import { CaseNotFoundError } from '../../../errors/case-not-found.error.js'; — the file tests only CaseNotFoundError, never a release refusal or CaseVersionNotReleasableError."
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: the constructor calls and the context assertion, lines 5, 26 and 28
+    evidence: |-
+      const error = new CaseNotFoundError('a-slug', 3);
+      ...
+      expect(error.context).toEqual({ slug: 'a-slug', version: 3 });
+  - node: rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused
+    held_at: nowhere
+    evidence: "import { CaseNotFoundError } from '../../../errors/case-not-found.error.js'; — the file never constructs or asserts anything about CaseVersionAlreadyStoredError."
+  - node: domain/knowledge/case
+    held_at: nowhere
+    evidence: "const error = new CaseNotFoundError('a-slug', 3); — a slug value is passed to the error, but the file asserts nothing about the case aggregate's own attribute shape."
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "const error = new CaseNotFoundError('a-slug', 3); — a version number is passed to the error, but the file asserts nothing about the case-version aggregate's own attribute shape."
+  - node: rules/knowledge/a-case-has-at-most-one-draft
+    held_at: nowhere
+    evidence: "import { CaseNotFoundError } from '../../../errors/case-not-found.error.js'; — no CaseAlreadyHasDraftError appears anywhere in the file."
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "import { CaseNotFoundError } from '../../../errors/case-not-found.error.js'; — no CaseHoldsNoDraftError appears anywhere in the file."
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "import { CaseNotFoundError } from '../../../errors/case-not-found.error.js'; — no CaseVersionNotDraftError or CaseVersionNotDraftAtReleaseError appears anywhere in the file."
+  - node: rules/investigation/only-a-released-case-version-is-diagnosed
+    held_at: nowhere
+    evidence: "import { CaseNotFoundError } from '../../../errors/case-not-found.error.js'; — no CaseVersionNotReleasedError appears anywhere in the file."
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: nowhere
+    evidence: "import { CaseNotFoundError } from '../../../errors/case-not-found.error.js'; — no ConceptNotInGlossaryError appears anywhere in the file."
+  - node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+    held_at: nowhere
+    evidence: "import { CaseNotFoundError } from '../../../errors/case-not-found.error.js'; — no ConceptRefusesSubjectTypeError appears anywhere in the file."
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: nowhere
+    evidence: "import { CaseNotFoundError } from '../../../errors/case-not-found.error.js'; — no HypothesisRevisionCollectsNoConceptError appears anywhere in the file."
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: "import { CaseNotFoundError } from '../../../errors/case-not-found.error.js'; — no HypothesisRevisionNotDraftAtReleaseError appears anywhere in the file."
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: "import { CaseNotFoundError } from '../../../errors/case-not-found.error.js'; — no ReleasedHypothesisRevisionNotAlterableError appears anywhere in the file."
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "import { CaseNotFoundError } from '../../../errors/case-not-found.error.js'; — the file never names or exercises a hypothesis-revision."
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "import { CaseNotFoundError } from '../../../errors/case-not-found.error.js'; — the file never names or exercises a hypothesis."
+  - node: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+    held_at: nowhere
+    evidence: "import { CaseNotFoundError } from '../../../errors/case-not-found.error.js'; — no HypothesisNotInManifestError appears anywhere in the file."
+  - node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+    held_at: nowhere
+    evidence: "import { CaseNotFoundError } from '../../../errors/case-not-found.error.js'; — no ManifestPositionOccupiedError appears anywhere in the file."
+  - node: rules/knowledge/a-case-has-at-least-one-hypothesis
+    held_at: nowhere
+    evidence: "import { CaseNotFoundError } from '../../../errors/case-not-found.error.js'; — no ManifestWouldHoldNoHypothesisError appears anywhere in the file."

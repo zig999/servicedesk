@@ -1,0 +1,86 @@
+findings:
+- file: src/__tests__/unit/errors/manifest-would-hold-no-hypothesis.error.spec.ts
+  where: the first it block, lines 4-9
+  evidence: expect(error.message).toBe('remover esta entrada deixaria o manifesto do caso "orion-9" versão
+    4 sem nenhuma hipótese, e o manifesto de uma versão do caso declara ao menos uma entrada');
+  cost: rules/knowledge/a-case-has-at-least-one-hypothesis says only that removal is refused with 422
+    reporting ManifestWouldHoldNoHypothesisError; it says nothing about what the message discloses.
+  kind: unstated
+  correction: State, in rules/knowledge/a-case-has-at-least-one-hypothesis, that the refusal's message
+    names the case slug and version number, as sibling nodes already do.
+  node: rules/knowledge/a-case-has-at-least-one-hypothesis
+- file: src/__tests__/unit/errors/manifest-would-hold-no-hypothesis.error.spec.ts
+  where: the last it block, lines 31-35
+  evidence: 'expect(error.context).toEqual({ slug: ''orion-9'', version: 4 });'
+  cost: No node states the exact context shape for this refusal.
+  kind: unstated
+  node: rules/knowledge/a-case-has-at-least-one-hypothesis
+read:
+- node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  held_at: the first it block's toBe assertion
+  evidence: the first it block's toBe assertion
+- node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  held_at: the second it block
+  evidence: the second it block
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/case
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/case-version
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-has-at-most-one-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/investigation/only-a-released-case-version-is-diagnosed
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/case-terms-exist-in-the-glossary
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/hypothesis-revision
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/hypothesis
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-has-at-least-one-hypothesis
+  held_at: the third it block, class-name assertion
+  evidence: the third it block, class-name assertion
+looked_past: The exact-string message assertion pins current phrasing, which is not itself an assertion
+  that wording is fixed.

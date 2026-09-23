@@ -1,0 +1,93 @@
+findings:
+- file: src/__tests__/unit/errors/case-version-not-draft-at-release.error.spec.ts
+  where: the second test ("names the case slug, the version number and the state the version is in..."),
+    lines 17-21
+  evidence: 'const error = new CaseVersionNotDraftAtReleaseError(''cliente-sem-internet'', 4, ''released'');
+
+    expect(error.message).toContain(''cliente-sem-internet'');
+
+    expect(error.message).toContain(''4'');
+
+    expect(error.message).toContain(''released'');'
+  cost: The test locks in, as a passing requirement, that the operator-facing message contains the literal
+    English/internal state token "released" rather than the fixed Brazilian-Portuguese word the vocabulary
+    node names for that state. A future change to the error class that translates the state into "liberada"
+    would fail this test.
+  kind: contradicts
+  correction: The assertion should require the fixed Portuguese word for the released state ("liberada")
+    to appear, and should assert the raw state token/English word does not appear -- the same way the
+    file already asserts .not.toMatch(/\bcase\b/i) for the case noun.
+  node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+read:
+- node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  held_at: the regex assertions on error.message in the second test
+  evidence: the regex assertions on error.message in the second test
+- node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  held_at: the same regex assertions -- caso, versão and rascunho are asserted as the fixed words, but
+    the state assertion instead requires the raw token, per the finding above
+  evidence: the same regex assertions -- caso, versão and rascunho are asserted as the fixed words, but
+    the state assertion instead requires the raw token, per the finding above
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/case
+  held_at: the slug field of the context object asserted in the fourth test
+  evidence: the slug field of the context object asserted in the fourth test
+- node: domain/knowledge/case-version
+  held_at: the version and state fields of the context object asserted in the fourth test
+  evidence: the version and state fields of the context object asserted in the fourth test
+- node: rules/knowledge/a-case-has-at-most-one-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: the constructor calls and the ordering, message-content and context assertions across all four
+    tests
+  evidence: the constructor calls and the ordering, message-content and context assertions across all
+    four tests
+- node: rules/investigation/only-a-released-case-version-is-diagnosed
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/case-terms-exist-in-the-glossary
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/hypothesis-revision
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/hypothesis
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-has-at-least-one-hypothesis
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+looked_past: The assertions requiring the words liberação and gatilho pin down specific free-form phrasing
+  the vocabulary node leaves free -- not reported as a finding.

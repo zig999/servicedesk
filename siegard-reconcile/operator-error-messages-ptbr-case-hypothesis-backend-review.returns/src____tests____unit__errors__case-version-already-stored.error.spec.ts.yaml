@@ -1,0 +1,86 @@
+findings:
+- file: src/__tests__/unit/errors/case-version-already-stored.error.spec.ts
+  where: lines 48-60, cross-error wording-match it block
+  evidence: 'expect(alreadyStored.message).toContain(''o caso "a-slug"'');
+
+    expect(notFound.message).toContain(''o caso "a-slug"'');
+
+    expect(alreadyStored.message).toContain(''a versão 3 armazenada'');
+
+    expect(notFound.message).toContain(''a versão 3 armazenada'');'
+  cost: Pins CaseVersionAlreadyStoredError's message to share an exact phrase template with CaseNotFoundError's,
+    including the word armazenada, which is not one of the nine fixed words. The node's own Description
+    leaves phrasing free to be reworded.
+  kind: contradicts
+  correction: Drop the cross-error substring-equality assertions, or narrow them to the vocabulary-only
+    checks (presence of caso and versão) the specification actually fixes.
+  node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+read:
+- node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  held_at: the exact expected message string in the first test, lines 9-11
+  evidence: the exact expected message string in the first test, lines 9-11
+- node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  held_at: the vocabulary assertions in the third test, lines 23-26
+  evidence: the vocabulary assertions in the third test, lines 23-26
+- node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused
+  held_at: throughout the file, lines 6-11, 20-27, 35-39 and 62-66
+  evidence: throughout the file, lines 6-11, 20-27, 35-39 and 62-66
+- node: domain/knowledge/case
+  held_at: the slug argument and its assertions
+  evidence: the slug argument and its assertions
+- node: domain/knowledge/case-version
+  held_at: the version-number argument and its versão assertions
+  evidence: the version-number argument and its versão assertions
+- node: rules/knowledge/a-case-has-at-most-one-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/investigation/only-a-released-case-version-is-diagnosed
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/case-terms-exist-in-the-glossary
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/hypothesis-revision
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: domain/knowledge/hypothesis
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+- node: rules/knowledge/a-case-has-at-least-one-hypothesis
+  held_at: nowhere
+  evidence: no reference to this node's fact appears in the file
+looked_past: The second test, asserting the message must never match /alterad/i, locks a wording choice
+  not required by any node; it states no false domain fact.
