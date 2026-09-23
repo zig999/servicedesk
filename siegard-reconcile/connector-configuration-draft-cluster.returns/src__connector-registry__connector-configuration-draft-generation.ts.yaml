@@ -1,0 +1,60 @@
+read:
+  - node: rules/integration/a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs
+    held_at: >-
+      nowhere in this file — the operation's parameters (path-item merge and $ref resolution)
+      are consumed already resolved from the reading this file only calls into.
+    evidence: |-
+      const reading = readOpenApiOperation(documentText, path, method);
+      ...
+      parameters: reading.parameters,
+      ...
+      function displacedParameters(
+        parameters: readonly OpenApiOperationParameter[],
+        credentialPlacement: GeneratedCredentialPlacement,
+      ): readonly OpenApiOperationParameter[] {
+        return parameters.filter((parameter) => parameterDisplacedByCredential(parameter, credentialPlacement) !== undefined);
+      }
+  - node: rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope
+    held_at: >-
+      nowhere in this file — the envelope name is consumed as an already-computed field of
+      OpenApiSuccessResponseField and only forwarded, never derived here.
+    evidence: |-
+      function responseFieldOf(field: OpenApiSuccessResponseField): ConnectorConfigurationDraftResponseField {
+        const { name, path, status, declaredType, declaredRequired, envelope } = field;
+        return {
+          name,
+          path,
+          status,
+          ...(declaredType === undefined ? {} : { declared_type: declaredType }),
+          ...(declaredRequired === undefined ? {} : { declared_required: declaredRequired }),
+          ...(envelope === undefined ? {} : { envelope }),
+        };
+      }
+  - node: scenarios/integration/an-unconfigured-connector-leaves-every-parameter-unresolved
+    held_at: >-
+      the return statement of generateConnectorConfigurationDraft (no refusal branch anywhere
+      in the function) together with reconciledUnresolved, which folds subjectPlacement's
+      unresolved items into the final unresolved list.
+    evidence: |-
+      return {
+        connector,
+        configuration: draftedConfigurationText({ reading, subjectPlacement, credentialPlacement, displaced }),
+        unresolved: reconciledUnresolved(displaced, subjectPlacement.unresolved, credentialPlacement.unresolved),
+        generated_credentials: credentialPlacement.generatedCredentials,
+        status_readings: draftedStatusReadings(reading.responses),
+        response_fields: draftedResponseFields(reading.successResponseFields),
+        reading_notes: draftedReadingNotesOf(reading, path),
+        ...(methodMismatch === undefined ? {} : { method_mismatch: methodMismatch }),
+      };
+looked_past: >-
+  The repeated Object.keys(...).length > 0 ? {...} : {} pattern used for query, headers and
+  body inclusion, and the parallel shapes of draftedStatusMap/draftedResponseMap, are a style
+  duplication rather than a domain fact, so they are left for a code-quality pass rather than
+  this one.
+candidates_opened:
+  - rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses
+  - rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+  - rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+  - domain/integration/connector-configuration-draft-response-field
+  - domain/integration/connector-configuration-draft-unresolved-reason
+  - domain/integration/connector-configuration-draft-status-reading

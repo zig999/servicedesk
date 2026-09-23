@@ -1,0 +1,188 @@
+read:
+  - node: domain/integration/connector-configuration-draft
+    held_at: >-
+      Not assembled here — the file supplies the raw material (method, parameters, request-body
+      fields, servers, responses, success-response fields/readings, required security schemes)
+      that a later assembly step turns into the draft's declared attributes.
+    evidence: |-
+      return {
+        method: method.toUpperCase(),
+        parameters: parametersOf(parameterDetails),
+        parameterDetails,
+        requestBodyFieldNames: requestBodyFieldNamesOf(document, operation),
+        requestBodyFields: requestBodyFieldsOf(document, operation),
+        requiredSecuritySchemes: requiredSecuritySchemesOf(document, operation),
+        serversInEffect: serversInEffectOf(pathItem, operation, document),
+        responses: responsesOf(document, operation),
+        successResponseFields: successResponseFieldsOf(document, operation),
+        successResponseReadings: successResponseReadingsOf(document, operation),
+      };
+
+  - node: domain/integration/connector-configuration-draft-reading-note-kind
+    held_at: >-
+      Partially — successResponseReadingAt and responseKeyKind compute the raw conditions behind
+      non-json-success-content-not-read, envelope-read-through, variants-united,
+      success-schema-declares-no-properties, default-response-not-drafted and
+      status-range-not-drafted; the operation-wide kinds (no-responses-declared,
+      no-success-response-schema) and the cross-response kind
+      (repeated-field-name-path-not-taken) are not computed in this file.
+    evidence: |-
+      if (!isPlainObject(mediaType)) {
+        return { key, hasJsonContent: false, variantsUnited: false, declaresNoProperties: false };
+      }
+      const schema = resolveRef(document, mediaType.schema);
+      if (!isPlainObject(schema)) {
+        return { key, hasJsonContent: true, variantsUnited: false, declaresNoProperties: true };
+      }
+
+  - node: domain/integration/connector-configuration-draft-response-field
+    held_at: >-
+      responseField, which builds name/path/status/declaredType/declaredRequired/envelope per
+      field (plus an internal reducedType the sibling capability-schema-draft rule reads, not part
+      of this value object).
+    evidence: |-
+      const path = envelope === undefined ? name : `${envelope}.${name}`;
+      const declaredType = declaredTypeOf(propertySchema);
+      const reducedType = reducedTypeOf(document, propertySchema);
+      const declaredRequired = requiredNames === undefined ? undefined : requiredNames.includes(name);
+
+  - node: domain/integration/connector-configuration-draft-status-reading
+    held_at: responseReading, pairing a responses key with its kind and the document's own description.
+    evidence: |-
+      function responseReading(document: PlainObject, key: string, rawResponse: unknown): OpenApiOperationResponse {
+        const response = resolveRef(document, rawResponse);
+        const description = isPlainObject(response) && typeof response.description === 'string' ? response.description : undefined;
+        const kind = responseKeyKind(key);
+        return description === undefined ? { key, kind } : { key, kind, description };
+      }
+
+  - node: rules/integration/a-capability-schema-drafts-input-schema-is-read-from-the-chosen-operations-parameters-and-fields
+    held_at: parameterDetailOf/requestBodyField together with reducedTypeOf and agreeingBranchType.
+    evidence: |-
+      function agreeingBranchType(document: PlainObject, branches: unknown): string | undefined {
+        if (!Array.isArray(branches) || branches.length === 0) {
+          return undefined;
+        }
+        const branchTypes = branches.map((branch) => declaredTypeOf(resolveRef(document, branch)));
+        const firstType = branchTypes[0];
+        return firstType !== undefined && branchTypes.every((type) => type === firstType) ? firstType : undefined;
+      }
+
+  - node: rules/integration/a-capability-schema-drafts-output-schema-is-read-from-the-chosen-operations-success-responses
+    held_at: responseField's reducedType computation, reusing the same reducedTypeOf and the envelope reading schemaReadingAt already gives the response map.
+    evidence: |-
+      const declaredType = declaredTypeOf(propertySchema);
+      const reducedType = reducedTypeOf(document, propertySchema);
+
+  - node: rules/integration/a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits
+    held_at: >-
+      Partially — see the reading-note-kind entry above; this file exposes the per-response
+      signals but does not assemble the reading_notes list itself.
+    evidence: |-
+      return {
+        key,
+        hasJsonContent: true,
+        variantsUnited: reading.variantsUnited,
+        declaresNoProperties: reading.declaresNoProperties,
+        ...(reading.envelope === undefined ? {} : { envelope: reading.envelope }),
+      };
+
+  - node: rules/integration/a-connector-configuration-draft-places-each-part-where-the-call-carries-it
+    held_at: >-
+      Partially — serversInEffectOf gives the operation/path-item/document server precedence, and
+      each parameter detail carries its own location (path/query/header/cookie); the address,
+      query, headers and body placement itself is not built in this file.
+    evidence: |-
+      function serversInEffectOf(pathItem: unknown, operation: PlainObject, document: PlainObject): readonly string[] {
+        const ownServers = declaredServerUrls(operation.servers);
+        if (ownServers !== undefined) {
+          return ownServers;
+        }
+        const pathItemServers = isPlainObject(pathItem) ? declaredServerUrls(pathItem.servers) : undefined;
+        if (pathItemServers !== undefined) {
+          return pathItemServers;
+        }
+        return declaredServerUrls(document.servers) ?? [];
+      }
+
+  - node: rules/integration/a-connector-configuration-draft-states-a-response-map-from-the-operations-success-response-schemas
+    held_at: >-
+      Partially — successResponseFieldsAt/schemaReadingAt read each success response's fields
+      with their path, status, declared type and required listing; the one-entry-per-name
+      lowest-status responseMap dictionary is not assembled here.
+    evidence: |-
+      function successResponseFieldsAt(
+        document: PlainObject,
+        status: string,
+        rawResponse: unknown,
+      ): readonly OpenApiSuccessResponseField[] {
+        const response = resolveRef(document, rawResponse);
+        const content = isPlainObject(response) ? response.content : undefined;
+        const mediaType = isPlainObject(content) ? content['application/json'] : undefined;
+        const schema = isPlainObject(mediaType) ? resolveRef(document, mediaType.schema) : undefined;
+        return isPlainObject(schema) ? schemaReadingAt(document, schema, status).fields : [];
+      }
+
+  - node: rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses
+    held_at: >-
+      Partially — responseKeyKind/isSuccessStatusKey classify each responses key as a
+      three-digit status (100-599), a range/other key, or default; the ok/denied/unavailable
+      ending assignment and the statusMap dictionary are not built in this file.
+    evidence: |-
+      function responseKeyKind(key: string): OpenApiResponseKeyKind {
+        if (key === 'default') {
+          return 'default';
+        }
+        return /^[1-5][0-9]{2}$/.test(key) ? 'status' : 'range';
+      }
+
+  - node: rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+    held_at: "method: method.toUpperCase() in readOpenApiOperation's returned reading."
+    evidence: "method: method.toUpperCase(),"
+
+  - node: rules/integration/a-connector-configuration-drafts-parameters-are-read-through-its-path-item-and-its-refs
+    held_at: parameterDetailsOf, resolvedParameterDetailsList and resolveRef.
+    evidence: |-
+      function parameterDetailsOf(
+        document: PlainObject,
+        pathItem: unknown,
+        operation: PlainObject,
+      ): readonly OpenApiOperationParameterDetail[] {
+        const operationParams = resolvedParameterDetailsList(document, operation.parameters);
+        const pathItemParams = isPlainObject(pathItem) ? resolvedParameterDetailsList(document, pathItem.parameters) : [];
+        const isOwnConflict = (candidate: OpenApiOperationParameterDetail): boolean =>
+          operationParams.some((own) => own.name === candidate.name && own.location === candidate.location);
+        return [...operationParams, ...pathItemParams.filter((candidate) => !isOwnConflict(candidate))];
+      }
+
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "const document = readOpenApiDocument(documentText);"
+
+  - node: rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope
+    held_at: schemaReadingAt/envelopeSchemaOf/envelopedSchemaReading/directSchemaReading.
+    evidence: |-
+      function envelopeSchemaOf(document: PlainObject, propertySchema: unknown): PlainObject | undefined {
+        const resolved = resolveRef(document, propertySchema);
+        return isPlainObject(resolved) && Object.prototype.hasOwnProperty.call(resolved, 'properties') ? resolved : undefined;
+      }
+
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: operationEntry, throwing OpenApiOperationNotFoundError with the path and method.
+    evidence: |-
+      const rawOperation = isPlainObject(pathItem) ? pathItem[operationKey] : undefined;
+      if (!isPlainObject(rawOperation)) {
+        throw new OpenApiOperationNotFoundError(path, method);
+      }
+
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: nowhere
+    evidence: "const document = readOpenApiDocument(documentText);"
+
+looked_past: >-
+  requiredSecuritySchemesOf (first security requirement of the field in effect) and the
+  request-body field reading each match a rule found by searching the specification
+  (a-connector-configuration-draft-reads-an-operations-required-security-schemes and
+  a-connector-configuration-drafts-request-body-fields-are-its-json-schemas-top-level-properties)
+  that sits outside this node pack, so verifying them further is that rule's own review, not this
+  pass's.

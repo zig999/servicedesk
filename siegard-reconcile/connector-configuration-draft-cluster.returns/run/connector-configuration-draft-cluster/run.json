@@ -1,0 +1,29 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/connector-configuration-draft-cluster",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/src",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-09-23T15:27:16.658+00:00",
+      "ended_at": "2026-09-23T15:27:21.663+00:00"
+    },
+    {
+      "name": "test-unit",
+      "command": "node --env-file=.env.test node_modules/.bin/vitest run src/__tests__/unit",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "test-unit.log",
+      "started_at": "2026-09-23T15:27:21.663+00:00",
+      "ended_at": "2026-09-23T15:28:15.641+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

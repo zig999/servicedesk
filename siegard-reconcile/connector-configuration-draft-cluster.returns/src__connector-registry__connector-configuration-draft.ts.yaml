@@ -1,0 +1,30 @@
+read:
+  - node: domain/integration/connector-configuration-draft-unresolved-reason
+    held_at: >-
+      the CONNECTOR_CONFIGURATION_DRAFT_UNRESOLVED_REASONS array and the
+      ConnectorConfigurationDraftUnresolvedReason type derived from it, lines 1-8
+    evidence: |-
+      export const CONNECTOR_CONFIGURATION_DRAFT_UNRESOLVED_REASONS = [
+        'no-capability-registered',
+        'security-scheme-not-reducible-to-a-credential',
+        'drafted-key-occupied-by-another-security-scheme',
+      ] as const;
+
+      export type ConnectorConfigurationDraftUnresolvedReason =
+        (typeof CONNECTOR_CONFIGURATION_DRAFT_UNRESOLVED_REASONS)[number];
+looked_past: >-
+  This file also defines the full shapes for connector-configuration-draft-reading-note-kind,
+  -response-field, -status-reading, -generated-credential, -method-mismatch and
+  -unresolved-item, and the aggregate connector-configuration-draft type itself — all of them
+  trace-bound in this batch to openapi-operation-reader.ts and the draft-connector-configuration
+  DTO rather than to this file — but every field name, optionality and closed-set value here
+  matches what those nodes state (including the status-reading `ending` union, which matches
+  domain/investigation/evidence-result found by searching the specification root), so whether
+  centralizing the shared types here is sound organization is a code-review question, not a
+  conformance one.
+candidates_opened:
+  - domain/integration/connector-configuration-draft
+  - domain/integration/connector-configuration-draft-reading-note
+  - domain/integration/connector-configuration-draft-reading-note-kind
+  - domain/integration/connector-configuration-draft-response-field
+  - domain/integration/connector-configuration-draft-status-reading

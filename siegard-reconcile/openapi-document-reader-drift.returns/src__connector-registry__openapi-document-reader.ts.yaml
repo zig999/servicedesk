@@ -1,0 +1,52 @@
+read:
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: >-
+      Only the unreadable-document half of this rule; the file never fetches, so the fetch-failure
+      half (OpenApiDocumentNotFetchedError and the three fetch-failure kinds) is not present here.
+      The unreadable half is held in parsedOpenApiDocument, refuseUnsupportedVersion and
+      refuseMalformedPaths, each throwing OpenApiDocumentNotReadableError.
+    evidence: >-
+      throw notReadable('the fetched document text'); ... throw new
+      OpenApiDocumentNotReadableError({ kind: 'unsupported-version', declaredVersion:
+      document.openapi });
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: >-
+      parsedAsJsonOrYaml (JSON parsed first, YAML tried only on JSON failure, never by content
+      type) and refuseUnsupportedVersion (openapi vs swagger fields, each named distinctly, with
+      the no-version case given its own kind carrying no declaredVersion at all).
+    evidence: >-
+      function parsedAsJsonOrYaml(documentText: string): unknown {
+        try {
+          return JSON.parse(documentText);
+        } catch {
+          return parsedAsYaml(documentText);
+        }
+      }
+      ...
+      if (typeof document.openapi === 'string') {
+        if (!document.openapi.startsWith('3.')) {
+          throw new OpenApiDocumentNotReadableError({ kind: 'unsupported-version', declaredVersion: document.openapi });
+        }
+        return;
+      }
+      if (typeof document.swagger === 'string') {
+        throw new OpenApiDocumentNotReadableError({ kind: 'unsupported-version', declaredVersion: document.swagger });
+      }
+      throw new OpenApiDocumentNotReadableError({ kind: 'no-version-declared' });
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: >-
+      The swagger branch of refuseUnsupportedVersion, which fires for a document declaring
+      swagger: "2.0" and names the declared version in the thrown error.
+    evidence: >-
+      if (typeof document.swagger === 'string') {
+        throw new OpenApiDocumentNotReadableError({ kind: 'unsupported-version', declaredVersion: document.swagger });
+      }
+looked_past: >-
+  refuseMalformedPaths's check that a present `paths` member must be a plain object, and the use
+  of the native Error `cause` option to chain the underlying YAML-parse error without exposing its
+  message — both implementation details of parsing/well-formedness rather than domain facts the
+  node set (or a searched candidate) states separately.
+candidates_opened:
+  - rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+  - rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+  - scenarios/integration/a-swagger-2-document-refuses-the-draft
