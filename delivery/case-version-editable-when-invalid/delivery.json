@@ -26,6 +26,14 @@
       "task": "task/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation"
     },
     {
+      "id": "implementation/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor",
+      "kind": "implementation",
+      "file": "implementation/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor.md",
+      "title": "Route the manifest screen to the version's editor on every reading",
+      "summary": "version-manifest-screen.tsx now carries an unconditional link to that same version's editing surface on every one of its four phases, keyed to the version already in its own path.",
+      "task": "task/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor"
+    },
+    {
       "id": "proof/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
       "kind": "proof",
       "file": "proof/draft-correction-while-invalid/read-a-drafts-own-declared-attributes.md",
@@ -48,6 +56,14 @@
       "title": "Proof that discard accepts a draft failing validation",
       "summary": "Two new tests exercise the real discard route, controller and operation -- one against a real Postgres-backed store for a manifest-empty draft, one against a fake store standing in for the boundary a foreign key makes unreachable -- showing acceptance and a bodyless 204 for both a structural and a coherence validator failure, plus one pre-existing test cited for the no-content constraint it already fully decides.",
       "task": "task/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation"
+    },
+    {
+      "id": "proof/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor",
+      "kind": "proof",
+      "file": "proof/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor.md",
+      "title": "Proof that the manifest screen routes to the version's editor on every reading",
+      "summary": "One test walks the manifest screen through all five readings its four phases distinguish -- pending, failed-to-complete, refused with CaseVersionNotValidError, answered draft, answered released -- and asserts the Edit version link's href is /cases/$slug/versions/$version, keyed to the screen's own path params, on each.",
+      "task": "task/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor"
     }
   ],
   "edges": [
@@ -148,6 +164,18 @@
       "at": "the path"
     },
     {
+      "from": "implementation/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor",
+      "to": "rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-editing-surface-on-every-reading",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor",
+      "to": "task/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
       "to": "implementation/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
       "kind": "proves",
@@ -162,6 +190,12 @@
     {
       "from": "proof/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation",
       "to": "implementation/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor",
+      "to": "implementation/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor",
       "kind": "proves",
       "at": "the path"
     }

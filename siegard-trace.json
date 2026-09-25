@@ -9880,6 +9880,20 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-editing-surface-on-every-reading",
+      "digest": "sha256:7a677f46a95edb877eb50b3ba4469439edf5be1bc8908dfb1793a546668f17c6",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-version-editor-link.tsx",
+          "digest": "sha256:088b521effa01c66422699068179a8cf722e4bfc24ad3b6f1bd5d95f4141b63c"
+        },
+        {
+          "path": "frontend/app/src/routes/version-manifest-screen.tsx",
+          "digest": "sha256:7cb52ba3b78e4157a0260a200ec2eaeaa7ec83db2acbedea1b6c24bd27b67c30"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading",
       "digest": "sha256:18586f901ef5939bd765235d97dca6bd1db0e15d9154044fbbef93255b034bdd",
       "files": [

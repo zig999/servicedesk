@@ -24,6 +24,7 @@ import { ConflictBanner } from "../shared/components/conflict-banner";
 import { useManifestBuilder, type ManifestRow } from "../hooks/use-manifest-builder";
 import { useManifestRowRevisions } from "../hooks/use-manifest-row-revisions";
 import { PlaceExistingHypothesisControl } from "./place-existing-hypothesis-control";
+import { CaseVersionEditorLink } from "./case-version-editor-link";
 import {
   pinnedRevisionStateCell,
   usePinnedRevisionState,
@@ -265,6 +266,7 @@ export function VersionManifestScreen(): JSX.Element {
     return (
       <section>
         <p>Loading manifest…</p>
+        <CaseVersionEditorLink slug={slug} version={version} />
         <AddHypothesisLink slug={slug} version={version} />
         {placingControl}
       </section>
@@ -274,9 +276,8 @@ export function VersionManifestScreen(): JSX.Element {
     return (
       <section>
         <p>Unable to load this manifest right now.</p>
-        <Button type="button" onClick={state.retryLoad}>
-          Retry
-        </Button>
+        <Button type="button" onClick={state.retryLoad}>Retry</Button>
+        <CaseVersionEditorLink slug={slug} version={version} />
         <AddHypothesisLink slug={slug} version={version} />
         {placingControl}
       </section>
@@ -286,6 +287,7 @@ export function VersionManifestScreen(): JSX.Element {
     return (
       <section>
         <p>Version {version} of this case does not read back as a case.</p>
+        <CaseVersionEditorLink slug={slug} version={version} />
         <AddHypothesisLink slug={slug} version={version} />
         {placingControl}
       </section>
@@ -301,6 +303,7 @@ export function VersionManifestScreen(): JSX.Element {
           <h1>Manifest — v{version}</h1>
           {!state.isReleased && <AddHypothesisLink slug={slug} version={version} />}
         </div>
+        <CaseVersionEditorLink slug={slug} version={version} />
         {state.isBlocked && (
           <ConflictBanner
             title="This version was released by someone else"
