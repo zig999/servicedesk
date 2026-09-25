@@ -1,0 +1,5 @@
+Wrong behavior: frontend/app/src/routes/capability-form-fields.tsx had its Output schema explanatory paragraph removed by commit f3d4778a ("feat(frontend): theme sonner toasts, add error emphasis, remove output-schema help text", 2026-09-22). The pre-existing test frontend/app/src/routes/capability-form-fields-output-schema-guidance.spec.ts was never updated and still requires that paragraph, so it now fails with 8 failures (TypeError: .toMatch() expects to receive a string, but got undefined — no guidance paragraph exists in the mounted DOM).
+
+Reproduction: run `npm test` (or `npx vitest run src/routes/capability-form-fields-output-schema-guidance.spec.ts`) in frontend/app on a clean tree — it fails with these 8 failures. Confirmed by stashing an unrelated task's own changes and re-running the test in isolation: identical failure, so this is not a regression from that session's work, it is a pre-existing state on the worktree's HEAD.
+
+The file the wrong behavior lives in: frontend/app/src/routes/capability-form-fields.tsx

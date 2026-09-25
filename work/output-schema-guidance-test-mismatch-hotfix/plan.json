@@ -1,0 +1,48 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/output-schema-guidance-restoration",
+      "kind": "epic",
+      "file": "epic/output-schema-guidance-restoration.md",
+      "title": "Output schema entry restates what the system reads from it",
+      "summary": "The capability authoring surface's Output schema entry states again the five fixed claims about what is read from it, closing the gap a prior commit opened between the specification and the code."
+    },
+    {
+      "id": "task/output-schema-guidance-restoration/restore-the-output-schema-entrys-guidance-statement",
+      "kind": "task",
+      "file": "task/output-schema-guidance-restoration/restore-the-output-schema-entrys-guidance-statement.md",
+      "title": "Restore the Output schema entry's guidance statement",
+      "summary": "Capability form fields' Output schema entry states again what the system reads from it, matching what the pre-existing test already proves and a commit removed from the source.",
+      "epic": "output-schema-guidance-restoration"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/output-schema-guidance-restoration",
+      "to": "rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/output-schema-guidance-restoration",
+      "to": "rules/integration/an-output-schema-entrys-statement-carries-no-sixth-claim",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "task/output-schema-guidance-restoration/restore-the-output-schema-entrys-guidance-statement",
+      "to": "rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:75471f9af70020cc5d6aa28d92f966d4240148a04f34f14caa42f9e50ef40603"
+    },
+    {
+      "from": "task/output-schema-guidance-restoration/restore-the-output-schema-entrys-guidance-statement",
+      "to": "rules/integration/an-output-schema-entrys-statement-carries-no-sixth-claim",
+      "kind": "implements",
+      "at": "implements[1]",
+      "digest": "sha256:218971b5028c5bbb09ce99acfa4c3c2e3044df49a319a54cbd85d1101eee4480"
+    }
+  ]
+}
