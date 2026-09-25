@@ -27,6 +27,44 @@ fitness: An automated test raises an error the status map does not name from a r
 Stated once for the whole surface so no route decides the shape of this fallback on its own, mirroring constraints/a-malformed-request-is-refused-with-a-validation-error's own system-wide placement for the sibling case of a request the route's own shape already refuses.
 A domain error nothing named is exactly the case this system did not anticipate, so the refusal discloses nothing about it: not the error's own message, which may describe internal state, and not any context object a domain error happens to carry — both stay server-side, and the caller learns only that something failed.
 
+=== constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+---
+statement: >-
+  A domain refusal's message text names a case "caso", a case version "versão", a hypothesis
+  "hipótese", a hypothesis-revision "revisão", a concept "conceito", a case version's manifest
+  "manifesto", a manifest entry's position "posição", the draft state "rascunho" and the
+  released state "liberada", and names none of those nine by its English word nor a case
+  version's or hypothesis-revision's state by the raw lifecycle token that names it internally.
+scope: system
+fitness: >-
+  An automated test reads the message of every domain refusal the error envelope carries and
+  asserts that each of these nine nouns is named there by its Brazilian-Portuguese word alone,
+  with no occurrence of the English word for one of them and no occurrence of a raw lifecycle
+  token such as draft or released.
+---
+
+## Description
+
+Stated once for the whole surface so no error class picks its own name for a noun another error class already names, mirroring `constraints/a-domain-error-unmapped-by-status-is-refused-generically`'s own system-wide placement for the fixed text of the fallback refusal.
+The refusal reaches an operator reading Portuguese while this specification's own element names are English, and with no word fixed per noun the same record is a "versão" in one refusal and a "version" in the next, leaving an operator comparing two refusals unable to tell whether they speak of one thing or two.
+The lifecycle token a state carries is an internal name nobody outside the store is taught, so a refusal interpolating it would hand the operator a value they have no way of reading; the state reaches them as the word the rest of the sentence already uses.
+What is fixed here is the vocabulary and not the phrasing: how each message is built around these words stays free to be written and rewritten for clarity, as every other telling's copy stays with whoever renders it.
+
+=== constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+---
+statement: Every domain refusal whose own message reaches whoever reads it — an operator, a curator, an API caller — in the HTTP response that carries the refusal states that message in Brazilian Portuguese.
+scope: system
+fitness: An automated test raises each domain error the status map names from a route handler and asserts the message its response carries is written in Brazilian Portuguese.
+---
+
+## Description
+
+Stated once for the whole surface so no error class decides the language of its own message — the placement `constraints/a-malformed-request-is-refused-with-a-validation-error` and `constraints/a-domain-error-unmapped-by-status-is-refused-generically` already hold for the other two answers this surface gives.
+
+What someone is told at an outcome is what the business decided, and the people this system refuses read Brazilian Portuguese: a refusal written in a language its reader does not read names its condition to nobody, however exactly it names it. This binds what the response carries and nothing about how a screen renders it — which control carries a statement, and how a surface words copy of its own, stay the interface's, as they do everywhere else this specification states what a reader is told.
+
+It binds the message text alone. The error code beside it, the HTTP status carrying it and the error's own name are identifiers this specification states elsewhere, and no part of the prose this constraint holds.
+
 === constraints/a-malformed-request-is-refused-with-a-validation-error
 ---
 statement: Every route refuses a request whose path, query or body fails the route's declared shape with an HTTP 400 response whose error code is VALIDATION_ERROR, whose message names which of the three failed validation, and whose details list the issues found.
@@ -6448,6 +6486,23 @@ entries:
     withheld on this reading withholds the only content the correcting act has to place — while the revise
     that act issues is already accepted on exactly this reading, and never answered as a
     CaseVersionNotValidError, so the offer leads to a call that lands rather than to a refusal.
+- location: rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case.md
+  field: statement
+  unstated: The material asks that a curator be able to correct a draft case version's own declared attributes,
+    and to discard that draft, without first having to place a hypothesis to make the version read back as
+    a case -- but it says nothing about whether a draft may also be released while it still does not read
+    back as a case.
+  decided: Release stays excluded from this reading. A draft's own editing surface and its discard are answered
+    here and in a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case; a
+    draft's release stays gated exactly as a-case-has-at-least-one-hypothesis and the surface's own release
+    conditions already gate it, on every validator rule of validation-runs-at-every-read holding for that
+    version at that reading.
+  why: Releasing publishes a version for diagnosis, and a-case-has-at-least-one-hypothesis's own reasoning
+    already states that a case version with no manifested hypothesis investigates nothing -- publishing one
+    for diagnosis would let an investigation run against a case that investigates nothing, which is a stronger
+    claim than the material makes. The material's own request is scoped to a curator correcting or abandoning
+    a draft still short of what a case requires, never to publishing one; opening release the same way would
+    decide a fact the material never asked for.
 
 ---
 - location: rules/knowledge/a-hypothesis-revision-history-stands-on-a-reading-whose-cases-current-version-does-not-read-back-as-a-case.md
@@ -6636,6 +6691,117 @@ entries:
     configuration pointing somewhere its author never meant, while a refusal status carrying none of the
     call''s own text leaves those two indistinguishable and a 500 in particular discloses nothing whatever
     about the far end.'
+- location: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese.md
+  field: statement
+  unstated: Which language the message text of a domain refusal is written in. Every rule and constraint in the
+    specification states a refusal's HTTP status and the error it reports by name and never a word of the message
+    that error carries, so the text the nineteen backend case and hypothesis error classes put in front of an
+    operator, a curator or an API caller stood in English on no node's authority.
+  found: 'work/operator-error-messages-ptbr-case-hypothesis-backend/intake/scope.md: "Traduzir para PT-br as mensagens
+    de erro/recusa do domínio de case e hypothesis que o backend (target `backend`, `src/`) expõe ao operador via
+    envelope HTTP de erro" — translate into Brazilian Portuguese the case and hypothesis domain error/refusal
+    messages the backend exposes to the operator through the HTTP error envelope; the same section introduces the
+    nineteen error classes as "hoje em inglês" (in English today).'
+- location: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word.md
+  field: statement
+  unstated: No node stated which word a domain refusal's message uses for each domain noun it names — case,
+    case version, hypothesis, hypothesis-revision, concept, manifest, manifest position, the draft state and the
+    released state — nor whether a case version's or hypothesis-revision's state may reach the reader as the raw
+    lifecycle token that names it internally.
+  decided: One fixed Brazilian-Portuguese word per noun — caso, versão, hipótese, revisão, conceito, manifesto,
+    posição, rascunho, liberada — used to the exclusion of the English word, and the state never shown by its raw
+    lifecycle token.
+  why: The material asks for a translation that introduces no information, and a translation choosing its noun
+    per message introduces exactly that -- twenty error classes each naming the same record their own way, so an
+    operator reading two refusals about one case version cannot tell it is one record; the nine words are the
+    ordinary Brazilian-Portuguese terms for these nouns, and the lifecycle token is excluded because it is an
+    internal name no operator is ever taught to read.
+- location: rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused.md
+  field: statement
+  unstated: What answers a write that would create a case version under a case slug and version number some stored
+    case version already answers -- whether the stored version is replaced or recreated, whether the attempt is
+    answered as a case version nobody wrote or as a malformed request, and whether the refusal the curator reads
+    names the slug and the version number at issue.
+  found: 'work/operator-error-messages-ptbr-case-hypothesis-backend/intake/scope.md, in the list of refusal messages
+    the backend exposes to the operator through the HTTP error envelope: `case-version-already-stored.error.ts`
+    — "the case \"{slug}\" already has a stored version {version}, and a case version is written once and never
+    altered" — listed as a refusal class of its own beside `case-not-found.error.ts`.'
+- location: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name.md
+  field: statement
+  unstated: Whether the refusal answering a read that names a stored case version for which some validator
+    rule does not hold at that reading names, in its own message, the case's slug, the version number and
+    the validator rules that do not hold.
+  found: 'work/operator-error-messages-ptbr-case-hypothesis-backend/intake/scope.md, line 13:
+    `case-version-not-valid.error.ts` — "the case \"{slug}\" at version {version} violates its validator
+    rules: {violations}" — the case slug, the version and the violated rules are already named in the
+    message this class raises today.'
+- location: rules/knowledge/a-release-refusal-with-no-named-violation-says-so.md
+  field: statement
+  unstated: Whether the refusal answering a release blocked by violated rules names, in its own message,
+    the case slug and the version number of the draft whose release was refused, beside the violated rules
+    it names.
+  found: 'work/operator-error-messages-ptbr-case-hypothesis-backend/intake/scope.md, line 20:
+    `case-version-not-releasable.error.ts` — "the case \"{slug}\" version {version} cannot be released:
+    {violations}" — the case slug and the version are already named in the message this class raises today.'
+
+---
+- location: rules/knowledge/a-released-hypothesis-revision-is-never-altered.md
+  field: statement
+  unstated: The node states this refusal's condition and its HTTP status and nothing more -- never what
+    ReleasedHypothesisRevisionNotAlterableError's message discloses, what grounds the immutability it
+    reports, or what its context property carries; its two sibling lifecycle rules each settle exactly
+    that question for their own refusal, and settle it in opposite directions (a-case-version-moves-through-its-declared-lifecycle
+    carries slug, version number and the state the version stood in; a-hypothesis-revision-moves-through-its-declared-lifecycle
+    carries no value beyond the refusal's own condition and message), so neither one answers for this
+    one.
+  decided: The message names the hypothesis, the revision number and the case slug and grounds the refusal
+    in the revision's own released state rather than in any case version that references it; the context
+    carries exactly the case slug, the hypothesis name and the revision number, and nothing further.
+  why: 'A hypothesis-revision is addressed by exactly that triple -- the case it belongs to, the hypothesis
+    within it, and its own number -- so those three are what let a curator tell which revision refused
+    them, and the one further value a sibling refusal carries has nothing to say here: CaseVersionNotDraftAtReleaseError
+    must name the state because a version reaching it may stand in any non-draft state, whereas this refusal''s
+    own condition fixes the revision''s state to released, and that same released state is now the revision''s
+    own declared one, so grounding the message in a referencing case version would attribute the bar to
+    a fact this refusal never reads.'
+- location: rules/knowledge/a-case-has-at-most-one-draft.md
+  field: statement
+  unstated: This node settles only the HTTP status and the error name of a second create-draft, and the
+    decision log's earlier entries on it are narrower still; no node states what CaseAlreadyHasDraftError's
+    message names, nor what the refusal's details carry, though the refusal reaches the curator with both.
+  decided: The message names the case slug, and the details carry that slug and nothing else -- the error's
+    context property holding exactly the one value.
+  why: A curator meeting this refusal must learn which case already holds the draft in order to act on
+    it, and the slug is the whole of that case's identity to them, while the held draft's version number
+    is nothing the one act open to them depends on; the delivered, reviewed error class and its own unit
+    test already fix exactly this message and this single-valued context, so the decision names the caller-facing
+    shape that was built rather than choosing a second one.
+- location: rules/knowledge/a-hypothesis-position-is-unique-within-its-case.md
+  field: statement
+  unstated: What a ManifestPositionOccupiedError discloses beyond its HTTP status and its error name --
+    neither which values its message names nor what its details carry was stated by any node. The rule
+    settled the 409 and the error identity alone; the intake scope lists this class's current message
+    but says nothing of the payload the HTTP error envelope carries beside it.
+  decided: The message names the case slug, the version number and the position already occupied, and
+    the details carry exactly those three values and nothing else.
+  why: Those three are the whole of what a curator refused a placement needs in order to act on the refusal
+    -- which case version's manifest refused it, and which position is not free -- and they are the same
+    three the material already records this refusal's message as naming; nothing further is carried because
+    every other fact about that manifest is reachable by reading the version itself, and the hypothesis
+    whose entry occupies the position is a second aggregate's fact the refused placement never asked about.
+- location: rules/knowledge/a-case-has-at-least-one-hypothesis.md
+  field: statement
+  unstated: The node states the removal's refusal by HTTP status and error name alone, and no node states
+    what that refusal discloses -- which values its message names, nor which values its context carries
+    onward to the caller as the error envelope's details.
+  decided: The message names the case slug and the version number of the case version whose manifest the
+    removal would have emptied, and the error's context carries exactly those two values, the slug and
+    the version, and nothing else.
+  why: A case version's identity in this specification is the slug and the number together, and that pin
+    is the whole of what tells the curator which manifest refused the removal, so confining the context
+    to it makes the structured disclosure exactly the values the message already names and adds no second
+    disclosure -- neither the removed entry nor the manifest the refusal left standing -- that the message
+    itself does not make.
 
 === domain/glossary/_context
 ---
@@ -12505,7 +12671,7 @@ Reading anyway would cost the surface a call whose answer changes nothing it doe
 === rules/knowledge/a-case-has-at-least-one-hypothesis
 ---
 type: invariant
-statement: A case version's manifest declares at least one entry; remove-hypothesis that would leave the manifest holding none is refused with an HTTP 422 response reporting a ManifestWouldHoldNoHypothesisError.
+statement: A case version's manifest declares at least one entry; remove-hypothesis that would leave the manifest holding none is refused with an HTTP 422 response reporting a ManifestWouldHoldNoHypothesisError, whose message names the case slug and the version number of the case version whose manifest the removal would have emptied, and whose context carries exactly those two values and nothing else.
 constrains:
   - domain/knowledge/case-version
   - domain/knowledge/manifest-entry
@@ -12518,7 +12684,7 @@ A case version with no manifested hypothesis investigates nothing; the fallback 
 === rules/knowledge/a-case-has-at-most-one-draft
 ---
 type: policy
-statement: A case has at most one version in draft state at a time; create-draft asked of a case that already holds a draft is refused with an HTTP 409 response reporting a CaseAlreadyHasDraftError.
+statement: A case has at most one version in draft state at a time; create-draft asked of a case that already holds a draft is refused with an HTTP 409 response reporting a CaseAlreadyHasDraftError, whose message names the case slug and whose details carry that slug and nothing else.
 constrains:
   - domain/knowledge/case
   - domain/knowledge/case-version
@@ -12529,6 +12695,9 @@ consistency: eventual
 
 A case's next version number is assigned the moment its draft is created, not at release; two drafts open at once would have nothing to decide which claims that number.
 Revising a case is therefore always one working copy at a time, resolved to released or discarded before another draft may begin.
+
+What the refusal discloses stands here rather than in the code alone: a curator who meets it learns which case already holds a draft, and what this system tells whoever asked is a fact of the business rather than a detail nobody outside a file could otherwise find.
+The slug alone is that disclosure because it is the whole of the case's identity to the curator who named it; the draft's own version number is nothing they must know to act, since the act open to them is to resolve the draft that case already holds, whichever number it carries.
 
 === rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
 ---
@@ -12733,7 +12902,7 @@ A case that has never once released a version — its one and only version still
 === rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
 ---
 type: invariant
-statement: A read naming a stored case version for which some validator rule of validation-runs-at-every-read does not hold at that reading is refused with an HTTP 409 response reporting a CaseVersionNotValidError; it is never answered with the generic refusal a domain error the status map does not name receives, and never with the CaseNotFoundError that answers a slug or version no case version was ever written for.
+statement: A read naming a stored case version for which some validator rule of validation-runs-at-every-read does not hold at that reading is refused with an HTTP 409 response reporting a CaseVersionNotValidError, whose message names the case slug, the version number read and the validator rules that do not hold at that reading; it is never answered with the generic refusal a domain error the status map does not name receives, and never with the CaseNotFoundError that answers a slug or version no case version was ever written for.
 constrains:
   - domain/knowledge/case-version
 ---
@@ -12797,6 +12966,36 @@ consistency: eventual
 
 A discarded draft leaves no version behind to read, but its number is not returned to be issued again — reusing it would let two different draft attempts, at different times, ever have answered to the identical pin.
 Reverting to an earlier version's content is therefore always a new, higher version number composed with that earlier version's manifest, never the old number reactivated.
+
+=== rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused
+---
+type: policy
+statement: >-
+  A write creating a case version under a case slug and version number some stored case
+  version already answers stores no second version and alters the stored one in no way,
+  and is refused by a name of its own — a CaseVersionAlreadyStoredError, never the
+  CaseNotFoundError that answers a slug or version no case version was ever written for
+  and never the validation refusal a malformed request receives — whose message names
+  that slug and that version number.
+constrains:
+  - domain/knowledge/case
+  - domain/knowledge/case-version
+consistency: eventual
+---
+
+## Description
+
+The pin is the whole of a case version's identity — a slug and a number, with no digest over the content — so a creation arriving at a pin some stored version already answers can be absorbed in no way: keeping both would leave two contents having answered one pin, and letting the arriving one land would move content an investigation may already have pinned.
+
+Each of the answers it might otherwise meet states something untrue. The generic refusal a domain error the status map does not name receives tells the curator nothing at all about what happened. `a-case-read-by-an-unknown-slug-or-version-is-refused`'s CaseNotFoundError says the named pin answers no version, while here it is precisely a stored version that stood in the way. `constraints/a-malformed-request-is-refused-with-a-validation-error` reports a shape the route declared and the request broke, while such a request is well formed and the conflict is in the store. Only a refusal of its own leaves the curator able to tell a pin nothing occupies from one already taken.
+
+Correcting a draft is not this rule's business. update-draft writes into the version already standing at that pin rather than bringing a second one into existence — the freedom `domain/knowledge/case-version` keeps over a draft's own declared attributes for as long as draft state holds — and nothing here narrows it.
+
+Neither standing rule answers this arrival. `a-case-version-is-written-once` holds a released version and its manifest entries unaltered, and `a-case-version-number-is-never-reused` keeps a number the case has spent from being issued a second time; both say how pins are handed out, and neither says what a write that reaches one already occupied is told — which is what a create-draft racing another on one number arrives at, and what `contracts/knowledge/case-lifecycle` already reads as a release naming a slug and version that already exist being refused rather than merged.
+
+The slug and the number are in the message because they are the only things that tell the curator which write lost, and against which case — the same disclosure `a-case-read-by-an-unknown-slug-or-version-is-refused` and `a-case-version-moves-through-its-declared-lifecycle` already make of the pin their own refusals name.
+
+Consistency is eventual: the pin spans the case identity that holds the slug and the case version that holds the number, each read as an aggregate root of its own.
 
 === rules/knowledge/a-case-versions-authored-at-is-fixed-when-its-creating-write-settles
 ---
@@ -12944,6 +13143,38 @@ consistency: eventual
 ## Description
 
 A concept the collection plan reaches that no registered capability currently answers, or that more than one currently answers, is already a fact an observation of it degrades on its own (`an-unresolvable-observation-ends-unavailable`); this derivation reads the same absence the same way, contributing nothing rather than guessing.
+
+=== rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case
+---
+type: invariant
+statement: >-
+  A surface presenting a draft case version offers the curator the act of discarding it,
+  and a discard of it is accepted, whether or not every validator rule of
+  validation-runs-at-every-read holds for that version at that reading.
+expression: >-
+  For a draft case version v and a surface presenting v: the surface offers the curator an
+  act whose performance issues a discard of v, and a discard so issued is accepted,
+  regardless of whether every validator rule of validation-runs-at-every-read holds for v
+  at that reading — v's manifest holding no entry, or any other validator rule failing over
+  v, included. The offer and the acceptance turn on nothing but
+  only-a-draft-case-version-may-be-discarded's own condition, v's own state holding draft,
+  and on releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act's own
+  condition, the curator reproducing the case's own slug.
+constrains:
+  - domain/knowledge/case-version
+---
+
+## Description
+
+`only-a-draft-case-version-may-be-discarded` decides discard by v's own state alone — draft, never released — and needs no case assembled whole to decide it: v's state is one of v's own stored attributes, read without reading v's manifest, its title or any other attribute `validation-runs-at-every-read` might find failing. Nothing `constraints/a-case-is-read-whole` binds is a condition of discard, so a refusal that gate answers is not a condition discard was ever waiting on.
+
+`a-newly-created-draft-offers-no-act-before-its-own-record-arrives` already withholds discard for one interval and one reason — no answer for v's own record has arrived yet — and says of that withholding that it "turns on nothing else": not on which existing version the draft's manifest was copied from, not on the surface the creation was reached from. A version whose own record has arrived, and whose manifest simply holds no entry or whose declared attributes fail some other validator rule, is outside that interval; withholding discard there on the ground of a check discard was never conditioned on would be deciding the same question a second way.
+
+A version a curator cannot correct and cannot abandon is a version stuck exactly where `an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case` and `a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions` already refuse to leave the manifest and the declared attributes: this is the third door out of the same state, the one that ends the draft rather than repairing it, and it is `releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act`'s and `a-draft-case-versions-discard-reproduces-the-cases-own-slug`'s own further act, unchanged — the curator still reproduces the case's own slug to take it, whatever v's validation currently answers.
+
+Release is not this act and is not decided here. `a-case-has-at-least-one-hypothesis` and the release conditions still hold every validator rule of validation-runs-at-every-read before a draft may be released, because release publishes a version for diagnosis and a version diagnosis runs against is exactly what those conditions guard; discarding takes nothing to diagnosis and asks nothing of it.
+
+Which control carries the offer, its wording and where it sits are form and belong to the interface, not here.
 
 === rules/knowledge/a-draft-case-versions-discard-reproduces-the-cases-own-slug
 ---
@@ -13224,7 +13455,7 @@ Evaluations are indexed by hypothesis name; a colliding name would overwrite a v
 === rules/knowledge/a-hypothesis-position-is-unique-within-its-case
 ---
 type: invariant
-statement: No two manifest entries of one case version share a position; place-hypothesis at a position the manifest already places a different hypothesis at is refused with an HTTP 409 response reporting a ManifestPositionOccupiedError.
+statement: No two manifest entries of one case version share a position; place-hypothesis at a position the manifest already places a different hypothesis at is refused with an HTTP 409 response reporting a ManifestPositionOccupiedError, whose message names the case slug, the version number and the position already occupied, and whose details carry exactly those three values and nothing else.
 constrains:
   - domain/knowledge/case-version
   - domain/knowledge/manifest-entry
@@ -13750,6 +13981,40 @@ This states what the placing act carries and what is said where it carries nothi
 
 Consistency is eventual: the fact spans the case's own hypotheses and the manifest of one of its versions, each read separately.
 
+=== rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-editing-surface-on-every-reading
+---
+type: invariant
+statement: >-
+  A surface presenting one case version a reader named — by that case's own slug together
+  with that version's own number — offers the curator a route to that same version's own
+  editing surface on every reading of that surface, its presence turning on nothing
+  further: not on that version's state, and not on whether the read of that version read
+  back as a case at that reading, including a reading where that read has not yet
+  answered, a reading where it failed, and a reading where it was refused because some
+  validator rule does not hold for that version.
+expression: >-
+  For a case c, a version v of c, and a surface presenting v to a reader who named c's slug
+  together with v's own version number: that surface carries a route to v's own editing
+  surface. The route's presence turns on nothing further — not on which of draft or
+  released v's state holds, not on whether every validator rule of
+  validation-runs-at-every-read holds for v at that reading, and not on what that surface's
+  own read of v answered: it stands alike while no answer for v has arrived, where that
+  read failed, and where that read was refused because v does not currently read back as a
+  case.
+constrains:
+  - domain/knowledge/case-version
+---
+
+## Description
+
+`a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading` already carries a curator from this same surface to v's manifest on every reading, whatever that reading answered; this states the same route to v's other correcting surface, the one on which the version's own declared attributes are composed rather than its manifest.
+
+The route is no attribute of v: it carries the case's slug and the version's number, which the reader themself supplied, and discloses nothing the read answered. Offering it is therefore untouched by `a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case`, which forbids presenting any attribute of a version that does not validate as the content standing at that identity — a route is not that content, on the same ground its manifest-route sibling already gives.
+
+What the editing surface itself then presents, and what it accepts there, is not this rule's: `an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case` decides it. This states only that the route to reach it stands on every reading of the version, refused readings included — a version whose manifest holds no entry, or whose declared attributes themselves carry the failing value, is a version a curator can reach no correction of at all if the one door to it is the very validity the correction exists to repair.
+
+Which control carries the route, its wording and where it sits are form and belong to the interface, not here.
+
 === rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
 ---
 type: invariant
@@ -13955,7 +14220,7 @@ The rule adds no attribute, moves no pin and refuses no call. Which control carr
 === rules/knowledge/a-release-refusal-with-no-named-violation-says-so
 ---
 type: invariant
-statement: A release whose draft fails any structural or coherence rule is refused once, with an HTTP 422 response reporting a CaseVersionNotReleasableError that names every violated rule together; where release finds no rule specifically violated, the refusal says so explicitly rather than leaving the curator with an unexplained, empty refusal.
+statement: A release whose draft fails any structural or coherence rule is refused once, with an HTTP 422 response reporting a CaseVersionNotReleasableError that names the case slug, the version number of the refused draft and every violated rule together; where release finds no rule specifically violated, the refusal says so explicitly rather than leaving the curator with an unexplained, empty refusal.
 constrains:
   - domain/knowledge/case-version
 ---
@@ -13993,10 +14258,14 @@ This is a policy rather than an invariant because it reads a fact of a third agg
 === rules/knowledge/a-released-hypothesis-revision-is-never-altered
 ---
 type: invariant
-statement: An attempt to alter a hypothesis-revision in released state's criterion, resolution or
+statement: >-
+  An attempt to alter a hypothesis-revision in released state's criterion, resolution or
   state is refused at the point of the attempt with an HTTP 409 response reporting a
-  ReleasedHypothesisRevisionNotAlterableError, rather than being accepted and left with no
-  effect.
+  ReleasedHypothesisRevisionNotAlterableError — whose message names the hypothesis, the
+  revision number and the case slug and grounds the refusal in the revision's own released
+  state rather than in any case version that references it, and whose context carries
+  exactly those three values, the case slug, the hypothesis name and the revision number,
+  and nothing further — rather than being accepted and left with no effect.
 constrains:
   - domain/knowledge/hypothesis-revision
 ---
@@ -14382,6 +14651,46 @@ Returning to the screen the composition was opened from is part of the fact rath
 Which control carries the abandonment, its wording and where it sits are form and belong to the interface, not here.
 
 Consistency is eventual because the fact spans two aggregates read separately: the hypothesis whose revisions are unchanged, and the case version whose draft is unchanged.
+
+=== rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+---
+type: invariant
+statement: >-
+  A draft case version's own editing surface presents that version's title, when_to_use,
+  subject, fallback and consolidation_register exactly as its own stored record carries
+  them, and accepts an update-draft over them, on a reading whose read of that version was
+  refused because some validator rule of validation-runs-at-every-read does not hold for it
+  at that reading.
+expression: >-
+  For a draft case version v and v's own editing surface, on a reading where some validator
+  rule of validation-runs-at-every-read does not hold for v: the surface presents v's
+  title, when_to_use, subject, fallback (its outcome and its referral) and
+  consolidation_register exactly as v's own stored record carries them — stating explicitly
+  that v declares none where v's consolidation_register is absent — reading none of them
+  from any other version of v's case and reading none of them through
+  contracts/knowledge/case-query's whole-case assembly. The surface accepts an update-draft
+  over these attributes on this same reading, whichever validator rule is the one failing,
+  v's own declared attributes themselves included. Nothing here presents v's manifest or
+  any entry of it, and nothing here decides what v's manifest surface presents or accepts:
+  a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions
+  already answers that.
+constrains:
+  - domain/knowledge/case-version
+---
+
+## Description
+
+`a-presented-case-version-states-its-own-declared-attributes` already fixes what a curator reading v's title, when_to_use, subject, fallback and consolidation_register is shown, and its own Description sets the refused reading aside on purpose: "`validation-runs-at-every-read` still decides whether a stored version reads back as a case at all; this says what a reading states, never that a version failing that validation is presented anyway." This is the node that answers what that other node left open, for the one surface where the answer cannot be silence without also closing the correction.
+
+The editing surface is not the surface `a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case` and `a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case` govern. Those two state what a reading presents as the case's current content, standing behind `constraints/a-case-is-read-whole`'s whole-or-nothing assembly; what they forbid is a title, a fallback or a manifest entry shown *as that content* while validation has declined to read it back as a case. This surface presents the same title and the same fallback for a different purpose — not as the case's current, validated content, but as the draft's own stored record, open for the curator to correct — exactly the distinction `a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case` already draws for a single attribute read toward a different act: that policy reads v's declared subject type "exactly as the draft's own stored record carries it," never as the case's read-whole content, and accepts the call the whole-case gate would otherwise have blocked. This states the same reading over the remaining declared attributes, and states it toward update-draft rather than toward a concept-acceptance check.
+
+Gating update-draft on v's own validity would make the correcting act require the correction, the same reasoning `a-revise-reads-its-drafts-declared-subject-type-even-when-that-draft-does-not-read-back-as-a-case`'s own Description already gives for revise: a draft whose title or subject is itself the failing attribute is a draft update-draft exists to fix, and a version whose manifest holds no entry is corrected by a hypothesis placed into it, never by a title left uneditable beside it. `a-presented-case-version-offers-a-route-to-its-own-editing-surface-on-every-reading` already keeps the route to this surface open on exactly this reading; a route ending in a surface with nothing to present would open onto nothing.
+
+The manifest stays outside what this states. `a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions` already answers what v's manifest surface presents and accepts on this same refused reading, and nothing here narrows or restates it — a curator's route from this surface to that one is `a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading`'s own.
+
+Release is untouched. `a-case-has-at-least-one-hypothesis` and the release conditions `a-surface-offering-release-states-which-release-conditions-the-draft-meets` discloses still hold every validator rule of validation-runs-at-every-read to release, and nothing here reads as a case what that gate still refuses to publish for diagnosis; only the correction and the discard of a draft that has not yet met those conditions are settled here and in `a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case`.
+
+Which control carries each field, its wording and where it sits are form and belong to the interface, not here.
 
 === rules/knowledge/case-terms-exist-in-the-glossary
 ---
@@ -15439,6 +15748,47 @@ involves:
 ## Description
 
 only-a-draft-case-version-may-be-discarded lets a case's one and only draft be discarded, and a-case-version-number-is-never-reused confirms the case survives that with its slug and its next_version counter intact — so the case a curator names still exists while list-case-versions has nothing left to return for it. An empty listing reads the same whether the case never held a version, held one now discarded, or the curator named a slug list-case-versions cannot resolve at all; only an explicit statement that this case currently holds no version tells the difference, instead of leaving the curator to guess whether the read is still pending or something failed unannounced.
+
+=== scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable
+---
+subject: rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case
+given:
+  - a case's only draft version's manifest holds no hypothesis
+when:
+  - the curator discards that draft version, reproducing the case's own slug
+then:
+  - the discard is accepted
+  - the draft version and its own manifest entries are removed
+  - the case's version number spent on the discarded draft is never reused
+involves:
+  - rules/knowledge/only-a-draft-case-version-may-be-discarded
+  - rules/knowledge/a-draft-case-versions-discard-reproduces-the-cases-own-slug
+---
+
+## Description
+
+The curator who decided the case was not worth correcting is not left holding a version they can neither read, edit nor abandon: discard answers the same manifest-holds-no-entry condition `a-case-with-no-hypothesis-is-still-open-for-editing` answers by correction, this time by ending the draft instead.
+
+=== scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing
+---
+subject: rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+given:
+  - a case was just created and its only draft version's manifest holds no hypothesis
+  - the curator returns to the case listing and opens that case
+when:
+  - the curator reaches the draft version's own editing surface
+then:
+  - the surface states that the version does not read back as a case
+  - the surface also presents the version's title, when_to_use, subject, fallback and consolidation_register exactly as its own stored record carries them
+  - the curator submits an update-draft correcting the title and it is accepted
+involves:
+  - rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-editing-surface-on-every-reading
+  - rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+---
+
+## Description
+
+This is the reading `an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case` decides: a case's first draft, whose manifest is empty from `a-new-drafts-manifest-is-copied-from-an-existing-version`'s own first-version reading, fails `a-case-has-at-least-one-hypothesis` at every read until a hypothesis is placed. The curator did nothing wrong composing the case's own attributes; what is missing is the manifest, and correcting a title or a when_to_use never depended on the manifest holding an entry.
 
 === scenarios/knowledge/a-catalog-entry-follows-the-released-version
 ---
