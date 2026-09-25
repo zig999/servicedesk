@@ -34,6 +34,14 @@
       "task": "task/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation"
     },
     {
+      "id": "implementation/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "kind": "implementation",
+      "file": "implementation/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state.md",
+      "title": "Fill the editor's not-valid state from the draft's own record",
+      "summary": "use-edit-draft-version-form.ts now delegates the refused-draft resolution to a new use-not-valid-draft-version-state.ts hook, which determines draft-vs-released via useCaseVersions and, for a draft refused by read-case with CaseVersionNotValidError, loads that draft's own record through read-case-version into an editable form carried on the \"not-valid\" phase.",
+      "task": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state"
+    },
+    {
       "id": "implementation/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor",
       "kind": "implementation",
       "file": "implementation/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor.md",
@@ -72,6 +80,14 @@
       "title": "Proof that discard accepts a draft failing validation",
       "summary": "Two new tests exercise the real discard route, controller and operation -- one against a real Postgres-backed store for a manifest-empty draft, one against a fake store standing in for the boundary a foreign key makes unreachable -- showing acceptance and a bodyless 204 for both a structural and a coherence validator failure, plus one pre-existing test cited for the no-content constraint it already fully decides.",
       "task": "task/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation"
+    },
+    {
+      "id": "proof/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "kind": "proof",
+      "file": "proof/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state.md",
+      "title": "Proof for loading a refused draft's own record into the editor state",
+      "summary": "Hook-level tests against the public useEditDraftVersionForm, exercised directly via renderHook with a minimal router context provider, covering all 19 criteria and the specification nodes a finite test can decide whole within this task's own implemented scope.",
+      "task": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state"
     },
     {
       "id": "proof/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor",
@@ -210,6 +226,84 @@
       "at": "the path"
     },
     {
+      "from": "implementation/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "constraints/a-successful-case-version-own-record-read-answers-with-http-200",
+      "kind": "encodes",
+      "at": "nodes[11]"
+    },
+    {
+      "from": "implementation/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "rules/knowledge/an-abandoned-case-version-edit-writes-nothing",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor",
       "to": "rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-editing-surface-on-every-reading",
       "kind": "encodes",
@@ -242,6 +336,12 @@
     {
       "from": "proof/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation",
       "to": "implementation/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "implementation/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
       "kind": "proves",
       "at": "the path"
     },

@@ -1,0 +1,21 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/case-version-editor-not-valid-fix/frontend/app/src/hooks/use-edit-draft-version-form-not-valid-actions.spec.ts
+  100:13  error  `draft` is not a recommended name for `render` returned value. Instead, you should destructure it, or name it using one of: `view`, or `utils`     testing-library/render-result-naming-convention
+  113:13  error  `released` is not a recommended name for `render` returned value. Instead, you should destructure it, or name it using one of: `view`, or `utils`  testing-library/render-result-naming-convention
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/case-version-editor-not-valid-fix/frontend/app/src/hooks/use-edit-draft-version-form-not-valid-marking.spec.ts
+   49:13  error  `refused` is not a recommended name for `render` returned value. Instead, you should destructure it, or name it using one of: `view`, or `utils`             testing-library/render-result-naming-convention
+   62:13  error  `ready` is not a recommended name for `render` returned value. Instead, you should destructure it, or name it using one of: `view`, or `utils`               testing-library/render-result-naming-convention
+  129:13  error  `released` is not a recommended name for `render` returned value. Instead, you should destructure it, or name it using one of: `view`, or `utils`            testing-library/render-result-naming-convention
+  142:13  error  `failedPrerequisite` is not a recommended name for `render` returned value. Instead, you should destructure it, or name it using one of: `view`, or `utils`  testing-library/render-result-naming-convention
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/case-version-editor-not-valid-fix/frontend/app/src/hooks/use-edit-draft-version-form-not-valid.test-support.ts
+   84:8  error  Missing return type on function                                                                   @typescript-eslint/explicit-module-boundary-types
+  102:7  error  Do not pass children as props. Instead, pass them as additional arguments to React.createElement  react/no-children-prop
+
+✖ 8 problems (8 errors, 0 warnings)
+

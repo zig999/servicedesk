@@ -1,0 +1,17 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/hooks/use-edit-draft-version-form-not-valid.test-support.ts(106,44): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Argument of type '{ router: RouterCore<Route<Register, any, "/", "/", string, "__root__", undefined, {}, {}, AnyContext, AnyContext, {}, undefined, readonly [Route<unknown, RootRoute<Register, ... 10 more ..., undefined>, ... 15 more ..., undefined>], unknown, unknown, unknown, undefined>, "never", false, RouterHistory, Record<...>>; }' is not assignable to parameter of type 'Attributes & Omit<RouterOptions<any, any, any, any, Record<string, any>>, "context"> & { router: AnyRouter; context?: Partial<...>; } & { ...; }'.
+      Property 'children' is missing in type '{ router: RouterCore<Route<Register, any, "/", "/", string, "__root__", undefined, {}, {}, AnyContext, AnyContext, {}, undefined, readonly [Route<unknown, RootRoute<Register, ... 10 more ..., undefined>, ... 15 more ..., undefined>], unknown, unknown, unknown, undefined>, "never", false, RouterHistory, Record<...>>; }' but required in type '{ children: ReactNode; }'.
+src/hooks/use-edit-draft-version-form-not-valid.test-support.ts(108,21): error TS2322: Type 'RouterCore<Route<Register, any, "/", "/", string, "__root__", undefined, {}, {}, AnyContext, AnyContext, {}, undefined, readonly [Route<unknown, RootRoute<Register, ... 10 more ..., undefined>, ... 15 more ..., undefined>], unknown, unknown, unknown, undefined>, "never", false, RouterHistory, Record<...>>' is not assignable to type 'RouterCore<AnyRoute, TrailingSlashOption, boolean, RouterHistory, Record<string, any>>'.
+  Types of property 'update' are incompatible.
+    Type 'UpdateFn<Route<Register, any, "/", "/", string, "__root__", undefined, {}, {}, AnyContext, AnyContext, {}, undefined, readonly [Route<unknown, RootRoute<Register, ... 10 more ..., undefined>, ... 15 more ..., undefined>], unknown, unknown, unknown, undefined>, "never", false, RouterHistory, Record<...>>' is not assignable to type 'UpdateFn<AnyRoute, TrailingSlashOption, boolean, RouterHistory, Record<string, any>>'.
+      Types of parameters 'newOptions' and 'newOptions' are incompatible.
+        Type 'RouterConstructorOptions<AnyRoute, TrailingSlashOption, boolean, RouterHistory, Record<string, any>>' is not assignable to type 'RouterConstructorOptions<Route<Register, any, "/", "/", string, "__root__", undefined, {}, {}, AnyContext, AnyContext, {}, undefined, readonly [Route<unknown, RootRoute<Register, ... 10 more ..., undefined>, ... 15 more ..., undefined>], unknown, unknown, unknown, undefined>, "never", false, RouterHistory, Record<.....'.
+          Type 'RouterConstructorOptions<AnyRoute, TrailingSlashOption, boolean, RouterHistory, Record<string, any>>' is not assignable to type 'Omit<RouterOptions<Route<Register, any, "/", "/", string, "__root__", undefined, {}, {}, AnyContext, AnyContext, {}, undefined, readonly [Route<unknown, RootRoute<Register, ... 10 more ..., undefined>, ... 15 more ..., undefined>], unknown, unknown, unknown, undefined>, "never", false, RouterHistory, Record<...>>, "...'.
+            Types of property 'trailingSlash' are incompatible.
+              Type 'TrailingSlashOption | undefined' is not assignable to type '"never" | undefined'.
+                Type '"always"' is not assignable to type '"never"'.

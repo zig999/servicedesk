@@ -71,6 +71,8 @@ export function baseHandlers(
 ): Record<string, FetchResponder> {
   return {
     [`GET ${VERSION_PATH}`]: () => jsonResponse(LOADED_RECORD),
+    [`GET /v1/cases/${SLUG}/versions`]: () =>
+      jsonResponse({ data: [{ version: 3, state: "released" }] }),
     "GET /v1/glossary/outcome": () => jsonResponse(OUTCOME_TERMS),
     "GET /v1/glossary/action": () => jsonResponse(ACTION_TERMS),
     "GET /v1/glossary/recipient": () => jsonResponse(RECIPIENT_TERMS),

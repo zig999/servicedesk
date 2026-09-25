@@ -285,6 +285,10 @@
       "digest": "sha256:1b11b7e01386dea252b6146834b3ec74f8e3dbae6c8ef8a80f4a1bdd1320c9dd",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
+          "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
+        },
+        {
           "path": "src/src/http/read-case-version.controller.ts",
           "digest": "sha256:5be0f0211ebc860f16ad35ff56f17bc5342b3e82535fe4a1254bae8cfd60a1c6"
         },
@@ -2100,7 +2104,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:9c5e239f7b89d23eed3d8f02be0f9be50d055e0c9293b0a3324d8e46503cf34a"
+          "digest": "sha256:5045edde52dbd794fcfeb11a724d8dd17a9e01d207ea90501256d0d32b0cd2b9"
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -2121,6 +2125,10 @@
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
           "digest": "sha256:818a42d8c5fcb346ccc25c7c774491c927e02f224aaf284c61628f92d7074ea3"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
+          "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
@@ -4896,6 +4904,10 @@
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
           "digest": "sha256:818a42d8c5fcb346ccc25c7c774491c927e02f224aaf284c61628f92d7074ea3"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
+          "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
         },
         {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
@@ -9066,6 +9078,10 @@
       "digest": "sha256:5f021f1109a9313879c17c86894f2e542b954859a94f16fde358e5a676d89745",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:5045edde52dbd794fcfeb11a724d8dd17a9e01d207ea90501256d0d32b0cd2b9"
+        },
+        {
           "path": "frontend/app/src/services/error-ui-state.ts",
           "digest": "sha256:5634e1c53bd031f50fcb98b59fd56427776e522837959df8fc21d75fc67e7834"
         },
@@ -9345,6 +9361,10 @@
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
           "digest": "sha256:818a42d8c5fcb346ccc25c7c774491c927e02f224aaf284c61628f92d7074ea3"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
+          "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
@@ -9850,6 +9870,10 @@
           "digest": "sha256:818a42d8c5fcb346ccc25c7c774491c927e02f224aaf284c61628f92d7074ea3"
         },
         {
+          "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
+          "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
+        },
+        {
           "path": "frontend/app/src/routes/new-case-draft-screen.tsx",
           "digest": "sha256:ca8472187e50d44598fbc17e9afa23fbb7419730a2c1a3d701bc8bf51478cdf4"
         }
@@ -9956,6 +9980,10 @@
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
           "digest": "sha256:b16d547b0d20048663785ef08f9409b7faa2fc1d6aad1809bc970454f8c6872d"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
+          "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
@@ -10189,6 +10217,10 @@
           "digest": "sha256:9c5e239f7b89d23eed3d8f02be0f9be50d055e0c9293b0a3324d8e46503cf34a"
         },
         {
+          "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
+          "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
+        },
+        {
           "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
           "digest": "sha256:2e9975e09a18ad98a216b7e5a228e4e97e6cb41ca599e698d20e675ca2c66401"
         },
@@ -10204,11 +10236,15 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:9c5e239f7b89d23eed3d8f02be0f9be50d055e0c9293b0a3324d8e46503cf34a"
+          "digest": "sha256:5045edde52dbd794fcfeb11a724d8dd17a9e01d207ea90501256d0d32b0cd2b9"
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
           "digest": "sha256:6bb1d825577a97aef18f9a53a2ae4a7cc502abd73cb64dc7f09bd5ea42afc165"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
+          "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-screen.tsx",
@@ -10226,11 +10262,15 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:9c5e239f7b89d23eed3d8f02be0f9be50d055e0c9293b0a3324d8e46503cf34a"
+          "digest": "sha256:5045edde52dbd794fcfeb11a724d8dd17a9e01d207ea90501256d0d32b0cd2b9"
         },
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
           "digest": "sha256:818a42d8c5fcb346ccc25c7c774491c927e02f224aaf284c61628f92d7074ea3"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
+          "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
@@ -10270,6 +10310,14 @@
       "node": "rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case",
       "digest": "sha256:ca85f0e9dc89b48783b0c4e3990bf1ced3bc305cafef0b677b45c78234d66d6d",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:5045edde52dbd794fcfeb11a724d8dd17a9e01d207ea90501256d0d32b0cd2b9"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
+          "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
+        },
         {
           "path": "src/src/case/case-query.port.ts",
           "digest": "sha256:1fd484d96b36abb37eb5da6863b3562c8e1dfa8983574533889bdaa8ce2e62d2"
@@ -11195,6 +11243,10 @@
       "node": "scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing",
       "digest": "sha256:8a74245e82a8092472c37087a0056e3fc78148b6239d88b0c01bf520823e834c",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
+          "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
+        },
         {
           "path": "src/src/http/update-draft.controller.ts",
           "digest": "sha256:e4e2c23abea3210f6b026d94c289509468763d4cc01eec7d5848ae04b11905e2"

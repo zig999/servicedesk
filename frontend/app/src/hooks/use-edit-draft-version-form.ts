@@ -22,6 +22,7 @@ import {
   type ReleaseControlState,
 } from "../services/release-checklist";
 import { useManifestPinnedRevisionStates } from "./use-manifest-pinned-revision-states";
+import { useNotValidDraftVersionState } from "./use-not-valid-draft-version-state";
 
 import { buildDiscardControlState, buildDiscardMutationOptions, type DiscardControlState } from "../services/discard-confirmation";
 
@@ -32,7 +33,17 @@ export type SaveStatus = "clean" | "dirty" | "saving" | "conflict";
 export type EditDraftVersionFormState =
   | { readonly phase: "loading" }
   | { readonly phase: "load-error"; readonly retryLoad: () => void }
-  | { readonly phase: "not-valid" }
+  | {
+      readonly phase: "not-valid";
+
+      readonly form?: UseFormReturn<CaseVersionFormValues>;
+      readonly status?: SaveStatus;
+      readonly isBlocked?: boolean;
+      readonly outcomeOptions?: GlossaryVocabularyOptions;
+      readonly actionOptions?: GlossaryVocabularyOptions;
+      readonly recipientOptions?: GlossaryVocabularyOptions;
+      readonly onCancel?: () => void;
+    }
   | {
       readonly phase: "ready";
       readonly form: UseFormReturn<CaseVersionFormValues>;
@@ -97,24 +108,25 @@ export function useEditDraftVersionForm(
 
   const [isDiscardDialogOpen, setIsDiscardDialogOpen] = useState(false); const [discardSlugConfirmation, setDiscardSlugConfirmation] = useState(""); const [discardErrorText, setDiscardErrorText] = useState<string | null>(null);
 
+  const cancelEditing = (): void => { router.history.back(); };
+
   const versionQuery = useQuery({
     queryKey: ["case-version", slug, version],
-    queryFn: () =>
-      apiFetch<CaseVersionRecord>(
-        `/v1/cases/${encodeURIComponent(slug)}/versions/${version}`,
-      ),
+    queryFn: () => apiFetch<CaseVersionRecord>(`/v1/cases/${encodeURIComponent(slug)}/versions/${version}`),
     enabled: version !== null,
   });
+  const versionErrorKind = errorStateKind(versionQuery.error);
+
   const outcomeOptions = useGlossaryVocabularyOptions("outcome"); const actionOptions = useGlossaryVocabularyOptions("action"); const recipientOptions = useGlossaryVocabularyOptions("recipient");
 
-  const manifestPinnedStates = useManifestPinnedRevisionStates(
-    slug,
-    versionQuery.data?.manifest ?? [],
-  );
+  const manifestPinnedStates = useManifestPinnedRevisionStates(slug, versionQuery.data?.manifest ?? []);
 
-  const form = useForm<CaseVersionFormValues>({
-    resolver: zodResolver(caseVersionFormSchema),
-  });
+  const form = useForm<CaseVersionFormValues>({ resolver: zodResolver(caseVersionFormSchema) });
+
+  const notValidDraftState = useNotValidDraftVersionState(
+    slug, version, versionQuery.isError && versionErrorKind === "case-not-valid",
+    form, status, setStatus, cancelEditing, () => void versionQuery.refetch(),
+  );
 
   useEffect(() => {
     if (versionQuery.data) {
@@ -144,14 +156,11 @@ export function useEditDraftVersionForm(
       if (version === null) {
         throw new Error("cannot save a draft version that has not been created yet");
       }
-      return apiFetch<CaseVersionRecord>(
-        `/v1/cases/${encodeURIComponent(slug)}/versions/${version}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(values),
-        },
-      );
+      return apiFetch<CaseVersionRecord>(`/v1/cases/${encodeURIComponent(slug)}/versions/${version}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
     },
     onSuccess: (data) => {
 
@@ -192,10 +201,7 @@ export function useEditDraftVersionForm(
       if (version === null) {
         throw new Error("cannot release a draft version that has not been created yet");
       }
-      return apiFetch<CaseVersionRecord>(
-        `/v1/cases/${encodeURIComponent(slug)}/versions/${version}/release`,
-        { method: "POST" },
-      );
+      return apiFetch<CaseVersionRecord>(`/v1/cases/${encodeURIComponent(slug)}/versions/${version}/release`, { method: "POST" });
     },
     onSuccess: (data) => {
 
@@ -243,15 +249,15 @@ export function useEditDraftVersionForm(
   const isGlossaryError =
     outcomeOptions.isError || actionOptions.isError || recipientOptions.isError;
 
-  const versionErrorKind = errorStateKind(versionQuery.error);
-
   if (versionErrorKind === "case-not-found") {
 
     return { phase: "loading" };
   }
-  if (versionQuery.isError && versionErrorKind === "case-not-valid") {
-    return { phase: "not-valid" };
+
+  if (notValidDraftState) {
+    return notValidDraftState;
   }
+
   if (versionQuery.isError || isGlossaryError) {
     return {
       phase: "load-error",
@@ -287,10 +293,6 @@ export function useEditDraftVersionForm(
     setStatus("saving");
     patchMutation.mutate(values);
   });
-
-  const cancelEditing = (): void => {
-    router.history.back();
-  };
 
   return {
     phase: "ready",
