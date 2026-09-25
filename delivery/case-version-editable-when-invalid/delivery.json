@@ -10,12 +10,28 @@
       "task": "task/draft-correction-while-invalid/read-a-drafts-own-declared-attributes"
     },
     {
+      "id": "implementation/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http",
+      "kind": "implementation",
+      "file": "implementation/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http.md",
+      "title": "HTTP route serving a case version's own declared attributes",
+      "summary": "Adds a GET /v1/cases/:slug/versions/:version/declared-attributes route that exposes CaseQueryService.readCaseVersion over HTTP, separate from read-case's own route, reusing the same read-case dependency wiring.",
+      "task": "task/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http"
+    },
+    {
       "id": "proof/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
       "kind": "proof",
       "file": "proof/draft-correction-while-invalid/read-a-drafts-own-declared-attributes.md",
       "title": "Proof for reading a draft case version's own declared attributes",
       "summary": "Seven tests against CaseQueryService.readCaseVersion prove all thirteen criteria of draft-correction-while-invalid/read-a-drafts-own-declared-attributes, plus one test resolving the task's own UNDERDETERMINED entry about released versions; the four implemented nodes are left in untested because none of their whole facts is decided within this task's scope.",
       "task": "task/draft-correction-while-invalid/read-a-drafts-own-declared-attributes"
+    },
+    {
+      "id": "proof/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http",
+      "kind": "proof",
+      "file": "proof/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http.md",
+      "title": "HTTP route serving a case version's own declared attributes -- proof",
+      "summary": "Six tests over GET /v1/cases/:slug/versions/:version/declared-attributes, each an obligation this task states -- its six criteria and the four UNDERDETERMINED entries the binder named -- with the http-200 constraint node demonstrated whole by the test covering both representative calls its own fitness names.",
+      "task": "task/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http"
     }
   ],
   "edges": [
@@ -50,8 +66,56 @@
       "at": "the path"
     },
     {
+      "from": "implementation/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http",
+      "to": "constraints/a-successful-case-version-own-record-read-answers-with-http-200",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http",
+      "to": "rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http",
+      "to": "rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http",
+      "to": "task/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
       "to": "implementation/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http",
+      "to": "implementation/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http",
       "kind": "proves",
       "at": "the path"
     }

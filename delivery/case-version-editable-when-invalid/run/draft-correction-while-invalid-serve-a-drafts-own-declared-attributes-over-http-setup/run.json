@@ -1,0 +1,20 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/draft-correction-while-invalid-serve-a-drafts-own-declared-attributes-over-http-setup",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/case-version-editor-not-valid-fix/src",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-25T14:58:08.271+00:00",
+      "ended_at": "2026-09-25T14:58:22.032+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

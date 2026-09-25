@@ -231,6 +231,10 @@
           "digest": "sha256:38a13e6b23c6da46a6e47337666458283064f14c5daabeb6df8a25224855e7d6"
         },
         {
+          "path": "src/src/http/read-case-version.routes.ts",
+          "digest": "sha256:b3224cbd8b7e3c7823c4a192eca55dd4aa10f3cca9ca6f50a55a19f5307db614"
+        },
+        {
           "path": "src/src/http/read-openapi-document-operations.routes.ts",
           "digest": "sha256:f8e2a172f8c6575447e5ad35af2e63f8b4ccfccdbfea4a67045a43046acb863c"
         },
@@ -259,6 +263,20 @@
         {
           "path": "src/src/http/remove-capability.routes.ts",
           "digest": "sha256:ea23e0350bb8b15e4a417167cf27cf7993fcadd62e0270eaacb081f83cfdc87d"
+        }
+      ]
+    },
+    {
+      "node": "constraints/a-successful-case-version-own-record-read-answers-with-http-200",
+      "digest": "sha256:1b11b7e01386dea252b6146834b3ec74f8e3dbae6c8ef8a80f4a1bdd1320c9dd",
+      "files": [
+        {
+          "path": "src/src/http/read-case-version.controller.ts",
+          "digest": "sha256:5be0f0211ebc860f16ad35ff56f17bc5342b3e82535fe4a1254bae8cfd60a1c6"
+        },
+        {
+          "path": "src/src/http/read-case-version.routes.ts",
+          "digest": "sha256:b3224cbd8b7e3c7823c4a192eca55dd4aa10f3cca9ca6f50a55a19f5307db614"
         }
       ]
     },
@@ -2170,6 +2188,14 @@
         {
           "path": "src/src/http/list-hypothesis-revisions.routes.ts",
           "digest": "sha256:35789a0a2afe07c2d6ba9f29d04a0440dbd7f09002d9b97663a6a3a55fe3628d"
+        },
+        {
+          "path": "src/src/http/read-case-version.controller.ts",
+          "digest": "sha256:5be0f0211ebc860f16ad35ff56f17bc5342b3e82535fe4a1254bae8cfd60a1c6"
+        },
+        {
+          "path": "src/src/http/read-case-version.routes.ts",
+          "digest": "sha256:b3224cbd8b7e3c7823c4a192eca55dd4aa10f3cca9ca6f50a55a19f5307db614"
         },
         {
           "path": "src/src/http/read-case.controller.ts",
@@ -5007,6 +5033,10 @@
           "path": "src/src/http/dto/create-draft.dto.ts",
           "digest": "sha256:6c78916d2b6f285620a35309e247a83c3a2790bea84e2c2f43c743325977b0db",
           "judged": true
+        },
+        {
+          "path": "src/src/http/dto/read-case-version.dto.ts",
+          "digest": "sha256:a2b12e53630d59c8df8277e611c55c94fe2af32004a0e5ec4eb827c8d8728569"
         },
         {
           "path": "src/src/http/dto/read-case.dto.ts",
@@ -8992,6 +9022,10 @@
         {
           "path": "src/src/errors/case-not-found.error.ts",
           "digest": "sha256:e7aad6edc919e1e87f076678f476cccbb054a4a8a0be950c35df50c9134097ea"
+        },
+        {
+          "path": "src/src/http/read-case-version.routes.ts",
+          "digest": "sha256:b3224cbd8b7e3c7823c4a192eca55dd4aa10f3cca9ca6f50a55a19f5307db614"
         }
       ]
     },
@@ -10187,6 +10221,14 @@
         {
           "path": "src/src/case/case-query.service.ts",
           "digest": "sha256:6aa1bc1111eec71b238e6040e01efecf2f87f371227f052785424bbb07fed930"
+        },
+        {
+          "path": "src/src/http/read-case-version.controller.ts",
+          "digest": "sha256:5be0f0211ebc860f16ad35ff56f17bc5342b3e82535fe4a1254bae8cfd60a1c6"
+        },
+        {
+          "path": "src/src/http/read-case-version.routes.ts",
+          "digest": "sha256:b3224cbd8b7e3c7823c4a192eca55dd4aa10f3cca9ca6f50a55a19f5307db614"
         }
       ]
     },

@@ -39,6 +39,7 @@ import type { ReadCapabilityByIdentityControllerDependencies } from './read-capa
 import { createReadCapabilityByIdentityRoutesPlugin } from './read-capability-by-identity.routes.js';
 import type { ReadCaseControllerDependencies } from './read-case.controller.js';
 import { createReadCaseRoutesPlugin } from './read-case.routes.js';
+import { createReadCaseVersionRoutesPlugin } from './read-case-version.routes.js';
 import type { ReadOpenApiDocumentOperationsControllerDependencies } from './read-openapi-document-operations.controller.js';
 import { createReadOpenApiDocumentOperationsRoutesPlugin } from './read-openapi-document-operations.routes.js';
 import type { ReadConnectorConfigurationControllerDependencies } from './read-connector-configuration.controller.js';
@@ -136,6 +137,7 @@ const routePluginFactories: ReadonlyArray<
   (dependencies) => createPlaceHypothesisRoutesPlugin(dependencies.placeHypothesis),
   (dependencies) => createRemoveHypothesisRoutesPlugin(dependencies.removeHypothesis),
   (dependencies) => createReadCaseRoutesPlugin(dependencies.readCase),
+  (dependencies) => createReadCaseVersionRoutesPlugin(dependencies.readCase),
   (dependencies) => createCaseInputRequirementsRoutesPlugin(dependencies.readCaseInputRequirements),
   (dependencies) => createListCasesRoutesPlugin(dependencies.listCases),
   (dependencies) => createListCaseVersionsRoutesPlugin(dependencies.listCaseVersions),
