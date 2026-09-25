@@ -33,6 +33,18 @@
       "digest": "sha256:d86861c14df4ef89fe00ab5effa8316e7b0ee387c26deed970632b818e50e74b",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-capability-detail.ts",
+          "digest": "sha256:e03f9ba0c9ecd5b5ef7168787638cbaf3034db0a9e16e331469bb47f7ee6ef3c"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
+          "digest": "sha256:25bd2e9763856c8c883eb5c60b93c864d4ec105174862ce09b3d2e179a87d980"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-glossary-concepts.ts",
+          "digest": "sha256:fdab8c6f56d356bdd2fc4e5d18bbb561c9bb6b2707e9687a682b7ee25545b0c4"
+        },
+        {
           "path": "src/src/errors/status-map.ts",
           "digest": "sha256:1fad01a700d6eb467b7fbffacc14183d419bc44bc3bb05da3b829332a547edc0"
         },
@@ -215,6 +227,18 @@
       "digest": "sha256:684d6f2f9eb53d8d64a6303c243f4789ec08c1145a369829bbb2dda83fa4c05a",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-capability-detail.ts",
+          "digest": "sha256:e03f9ba0c9ecd5b5ef7168787638cbaf3034db0a9e16e331469bb47f7ee6ef3c"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
+          "digest": "sha256:25bd2e9763856c8c883eb5c60b93c864d4ec105174862ce09b3d2e179a87d980"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-glossary-concepts.ts",
+          "digest": "sha256:fdab8c6f56d356bdd2fc4e5d18bbb561c9bb6b2707e9687a682b7ee25545b0c4"
+        },
+        {
           "path": "src/src/http/draft-capability-schema-from-openapi.routes.ts",
           "digest": "sha256:538d019e9505b38c1e5b10f880ab0a011f1ffe8f2ef4dbe70e47f1d09e4055cc"
         },
@@ -257,6 +281,10 @@
       "digest": "sha256:b6096e0b5208d67397fae54613a754b9e2de23299d55860eed833190c316201a",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-capability-detail.ts",
+          "digest": "sha256:e03f9ba0c9ecd5b5ef7168787638cbaf3034db0a9e16e331469bb47f7ee6ef3c"
+        },
+        {
           "path": "src/src/http/remove-capability.routes.ts",
           "digest": "sha256:ea23e0350bb8b15e4a417167cf27cf7993fcadd62e0270eaacb081f83cfdc87d"
         }
@@ -266,6 +294,10 @@
       "node": "constraints/a-successful-concept-removal-answers-with-no-content",
       "digest": "sha256:1984fe0e225843f530ec0e99ccfed89ae2508bed581e785c6db35c604b61883e",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-glossary-concepts.ts",
+          "digest": "sha256:fdab8c6f56d356bdd2fc4e5d18bbb561c9bb6b2707e9687a682b7ee25545b0c4"
+        },
         {
           "path": "src/src/http/remove-concept.routes.ts",
           "digest": "sha256:0a318a4e6b52de5d5e60c3cce6e984b259d5b3ee254bc0faf55a8e19bda3722d"
@@ -284,6 +316,10 @@
       "node": "constraints/a-successful-connector-configuration-removal-answers-with-no-content",
       "digest": "sha256:56a9a5afda6471b5ea6e131be0b05293c2d175d393a04b6e741b42c9d91b6dd1",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
+          "digest": "sha256:25bd2e9763856c8c883eb5c60b93c864d4ec105174862ce09b3d2e179a87d980"
+        },
         {
           "path": "src/src/http/remove-connector.routes.ts",
           "digest": "sha256:77c968ac9080bbc48507fe6222c11ae788ba43a8d259d5a4c15e046f66883908"
@@ -492,6 +528,10 @@
       "node": "constraints/the-capability-identity-read-refuses-an-unregistered-identity",
       "digest": "sha256:420332183825ece65d96e027961e42943f7f82327c29b36340051ac939ee5d28",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-capability-detail.ts",
+          "digest": "sha256:e03f9ba0c9ecd5b5ef7168787638cbaf3034db0a9e16e331469bb47f7ee6ef3c"
+        },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
           "digest": "sha256:8065724fa9851bcd8756b89e7049156b697695b337949fad0bceb62bbf9090d3"
@@ -2359,7 +2399,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-glossary-concepts.ts",
-          "digest": "sha256:d7d99c25c81bd043fe5163584a32d0187ceb8bbab029331715100f26d6c89479"
+          "digest": "sha256:fdab8c6f56d356bdd2fc4e5d18bbb561c9bb6b2707e9687a682b7ee25545b0c4"
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -2682,7 +2722,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-capability-detail.ts",
-          "digest": "sha256:5cae5b078ad4024b00bce90c241af5417720a21aa23e8655c955e7f4e016589a"
+          "digest": "sha256:e03f9ba0c9ecd5b5ef7168787638cbaf3034db0a9e16e331469bb47f7ee6ef3c"
         },
         {
           "path": "frontend/app/src/hooks/use-capability-form.ts",
@@ -3016,7 +3056,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
-          "digest": "sha256:5095fe74fa1fb817b7b9dc3a6aff755d1986d2b682cc1d8ec81d69cae9cefa6d"
+          "digest": "sha256:25bd2e9763856c8c883eb5c60b93c864d4ec105174862ce09b3d2e179a87d980"
         },
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-form.ts",
@@ -5930,8 +5970,12 @@
     },
     {
       "node": "rules/glossary/a-registered-concept-is-never-removed",
-      "digest": "sha256:df0d3b4117b4b7dd3cb6e3072950bbd3f26bbc637e5fe8ee7881e48edb732f95",
+      "digest": "sha256:091ca19540ec1a66521d63462a8bcc84b8bdca7d8985a078ea3fb409779f1735",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-glossary-concepts.ts",
+          "digest": "sha256:fdab8c6f56d356bdd2fc4e5d18bbb561c9bb6b2707e9687a682b7ee25545b0c4"
+        },
         {
           "path": "src/src/errors/concept-in-use.error.ts",
           "digest": "sha256:c892aef163e3fc89b120e9a20b2fa153ae8b61a607fc1ca3c02a2243d60221ee"
@@ -7206,6 +7250,10 @@
       "digest": "sha256:8195034158d28a4e3c3b39c3b7506a739d6f0aad4f54c7ff289c26b278056a08",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-capability-detail.ts",
+          "digest": "sha256:e03f9ba0c9ecd5b5ef7168787638cbaf3034db0a9e16e331469bb47f7ee6ef3c"
+        },
+        {
           "path": "src/src/capability-registry/capability-registry.service.ts",
           "digest": "sha256:8065724fa9851bcd8756b89e7049156b697695b337949fad0bceb62bbf9090d3"
         },
@@ -7376,6 +7424,24 @@
       ]
     },
     {
+      "node": "rules/integration/a-submitted-removal-states-its-outcome-to-the-operator",
+      "digest": "sha256:59a5439312d27a35e4ea6cc1a84dfea3b4986ae88cf6ca2ce0844bf3e8577a87",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-capability-detail.ts",
+          "digest": "sha256:e03f9ba0c9ecd5b5ef7168787638cbaf3034db0a9e16e331469bb47f7ee6ef3c"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
+          "digest": "sha256:25bd2e9763856c8c883eb5c60b93c864d4ec105174862ce09b3d2e179a87d980"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-glossary-concepts.ts",
+          "digest": "sha256:fdab8c6f56d356bdd2fc4e5d18bbb561c9bb6b2707e9687a682b7ee25545b0c4"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope",
       "digest": "sha256:21b6023c1a583b988f6ed7962041e045f5452bacb9ed212e9a80d95b9d8f0d50",
       "files": [
@@ -7404,6 +7470,24 @@
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-screen.tsx",
           "digest": "sha256:0c6b47166b871c2bdf097f899bdeeb9985e33110ff410dc61c330ef77bf85d64"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing",
+      "digest": "sha256:9c5e05e96b38950e393e149707fe94bba3e544cb8c7bc5b02414859a7f7f8e48",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-capability-detail.ts",
+          "digest": "sha256:e03f9ba0c9ecd5b5ef7168787638cbaf3034db0a9e16e331469bb47f7ee6ef3c"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
+          "digest": "sha256:25bd2e9763856c8c883eb5c60b93c864d4ec105174862ce09b3d2e179a87d980"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-glossary-concepts.ts",
+          "digest": "sha256:fdab8c6f56d356bdd2fc4e5d18bbb561c9bb6b2707e9687a682b7ee25545b0c4"
         }
       ]
     },

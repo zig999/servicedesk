@@ -1,0 +1,531 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/capability-removal/capability-cited-by-evidence-refusal-recognition",
+      "kind": "implementation",
+      "file": "implementation/capability-removal/capability-cited-by-evidence-refusal-recognition.md",
+      "title": "Recognise CapabilityCitedByEvidenceError in the shared error-code map",
+      "summary": "uiStateForApiError now answers a dedicated capability-cited-by-evidence state kind for ApiError code CapabilityCitedByEvidenceError, distinct from every other code the map names, with all prior mappings unchanged.",
+      "task": "task/capability-removal/capability-cited-by-evidence-refusal-recognition"
+    },
+    {
+      "id": "implementation/capability-removal/capability-removal-control",
+      "kind": "implementation",
+      "file": "implementation/capability-removal/capability-removal-control.md",
+      "title": "Capability removal control behind a further explicit act",
+      "summary": "Adds a destructive-variant removal control to the capability detail screen's ButtonFooter, gated by a confirmation dialog, whose confirm act alone issues the DELETE to the capability's own resource path.",
+      "task": "task/capability-removal/capability-removal-control"
+    },
+    {
+      "id": "implementation/capability-removal/capability-removal-landing",
+      "kind": "implementation",
+      "file": "implementation/capability-removal/capability-removal-landing.md",
+      "title": "Land the operator on the capabilities listing after a successful capability removal",
+      "summary": "The capability-detail delete mutation now invalidates the capabilities listing cache and navigates unconditionally to /capabilities on a 204 answer, never falling back through navigation history the way onCancel does.",
+      "task": "task/capability-removal/capability-removal-landing"
+    },
+    {
+      "id": "implementation/capability-removal/capability-removal-outcome-disclosure",
+      "kind": "implementation",
+      "file": "implementation/capability-removal/capability-removal-outcome-disclosure.md",
+      "title": "Disclose the answered outcome of a capability removal",
+      "summary": "use-capability-detail.ts's delete mutation now tells the operator, through toast, the outcome remove-capability answered — success naming the capability, or a refusal distinguishing CapabilityCitedByEvidenceError from every other and unrecognised code — and stays silent while the DELETE is pending.",
+      "task": "task/capability-removal/capability-removal-outcome-disclosure"
+    },
+    {
+      "id": "implementation/concept-removal/concept-in-use-refusal-recognition",
+      "kind": "implementation",
+      "file": "implementation/concept-removal/concept-in-use-refusal-recognition.md",
+      "title": "Recognise ConceptInUseError as its own refusal state",
+      "summary": "error-ui-state.ts now maps the ConceptInUseError code to its own concept-in-use UiErrorStateKind, leaving every other mapping and the generic-error fallback untouched.",
+      "task": "task/concept-removal/concept-in-use-refusal-recognition"
+    },
+    {
+      "id": "implementation/concept-removal/concept-removal-landing",
+      "kind": "implementation",
+      "file": "implementation/concept-removal/concept-removal-landing.md",
+      "title": "Invalidate the concepts cache on a successful concept removal",
+      "summary": "useRemoveGlossaryConcept now invalidates the [\"glossary\",\"concepts-with-ttl\"] query on HTTP 204, so the concepts listing drops the removed row while the operator stays on the glossary's concepts tab.",
+      "task": "task/concept-removal/concept-removal-landing"
+    },
+    {
+      "id": "implementation/concept-removal/concept-removal-outcome-disclosure",
+      "kind": "implementation",
+      "file": "implementation/concept-removal/concept-removal-outcome-disclosure.md",
+      "title": "Disclose remove-concept's answered outcome on the concepts listing",
+      "summary": "useRemoveGlossaryConcept now tells the operator, via toast, what the DELETE answered — success naming the removed concept, or a refusal distinguishing ConceptInUseError from every other refused or unrecognised condition — and says nothing while the request is still pending.",
+      "task": "task/concept-removal/concept-removal-outcome-disclosure"
+    },
+    {
+      "id": "implementation/concept-removal/concept-row-removal-control",
+      "kind": "implementation",
+      "file": "implementation/concept-removal/concept-row-removal-control.md",
+      "title": "Per-row removal control for glossary concepts, gated by a further explicit confirmation",
+      "summary": "Adds a per-row Remove control to the glossary concepts listing that opens a no-typing confirmation dialog and issues the DELETE only when the operator confirms.",
+      "task": "task/concept-removal/concept-row-removal-control"
+    },
+    {
+      "id": "implementation/connector-configuration-removal/connector-configuration-removal-control",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-removal/connector-configuration-removal-control.md",
+      "title": "Connector configuration removal control behind a further explicit act",
+      "summary": "Adds a Remove connector configuration control to the detail screen's footer that asks for confirmation and issues one DELETE to /v1/connectors/:connector only when the operator confirms.",
+      "task": "task/connector-configuration-removal/connector-configuration-removal-control"
+    },
+    {
+      "id": "implementation/connector-configuration-removal/connector-configuration-removal-landing",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-removal/connector-configuration-removal-landing.md",
+      "title": "Land connector configuration removal on the connectors listing",
+      "summary": "Wires a successful (HTTP 204) connector configuration DELETE to navigate the operator to /connectors unconditionally, never leaving them on the removed configuration's own surface.",
+      "task": "task/connector-configuration-removal/connector-configuration-removal-landing"
+    },
+    {
+      "id": "implementation/connector-configuration-removal/connector-configuration-removal-outcome-disclosure",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-removal/connector-configuration-removal-outcome-disclosure.md",
+      "title": "Connector configuration removal states its answered outcome",
+      "summary": "use-connector-configuration-detail.ts now discloses remove-connector's answered outcome through a success toast naming the connector and a generic failure toast for every refusal.",
+      "task": "task/connector-configuration-removal/connector-configuration-removal-outcome-disclosure"
+    },
+    {
+      "id": "proof/capability-removal/capability-cited-by-evidence-refusal-recognition",
+      "kind": "proof",
+      "file": "proof/capability-removal/capability-cited-by-evidence-refusal-recognition.md",
+      "title": "CapabilityCitedByEvidenceError recognised as its own UI-state kind",
+      "summary": "uiStateForApiError's shared error-code map is proven to answer CapabilityCitedByEvidenceError with a state kind distinct from generic-error and from every other named code, while every code the map named before this change keeps resolving to the kind it resolved to before.",
+      "task": "task/capability-removal/capability-cited-by-evidence-refusal-recognition"
+    },
+    {
+      "id": "proof/capability-removal/capability-removal-control",
+      "kind": "proof",
+      "file": "proof/capability-removal/capability-removal-control.md",
+      "title": "Capability removal control behind a further explicit act — proof",
+      "summary": "Screen-level tests over CapabilityDetailScreen establish that the capability detail surface offers a removal control gated by a Cancel/confirm dialog that asks before anything happens, issues no DELETE on opening or on decline, issues exactly one DELETE to the capability's own resource path only on confirm, leaves the capability's presented identity unchanged after a decline, and asks for no typed name or version.",
+      "task": "task/capability-removal/capability-removal-control"
+    },
+    {
+      "id": "proof/capability-removal/capability-removal-landing",
+      "kind": "proof",
+      "file": "proof/capability-removal/capability-removal-landing.md",
+      "title": "Landing on the capabilities listing after a successful capability removal",
+      "summary": "Proves that a capability removal answered with HTTP 204 takes the operator to /capabilities unconditionally (never back through navigation history), that the listing then carries no row for the removed name and version, that the removed identity's own refusal is never shown, and that no reading which navigates on issue or on a refusal instead of on 204 passes.",
+      "task": "task/capability-removal/capability-removal-landing"
+    },
+    {
+      "id": "proof/capability-removal/capability-removal-outcome-disclosure",
+      "kind": "proof",
+      "file": "proof/capability-removal/capability-removal-outcome-disclosure.md",
+      "title": "Capability removal outcome disclosure states success, distinguishes the cited-by-evidence refusal, and stays silent while pending",
+      "summary": "Hook-level tests over useCapabilityDetail establish that a removal answered with HTTP 204 states success naming the removed capability's name and version and that the identity is no longer registered, that a CapabilityCitedByEvidenceError refusal states both that nothing was removed and that collected evidence names the capability, that HTTP 400 VALIDATION_ERROR, HTTP 500 INTERNAL_ERROR and an unrecognised error code each state that nothing was removed through the identical generic message -- distinct only from the CapabilityCitedByEvidenceError statement, never from one another -- and that neither toast fires before the DELETE settles.",
+      "task": "task/capability-removal/capability-removal-outcome-disclosure"
+    },
+    {
+      "id": "proof/concept-removal/concept-in-use-refusal-recognition",
+      "kind": "proof",
+      "file": "proof/concept-removal/concept-in-use-refusal-recognition.md",
+      "title": "ConceptInUseError recognised as its own refusal state in the shared error-code map",
+      "summary": "The three stated criteria and both underdetermined-candidate readings are each backed by one existing, non-redundant test in error-ui-state.spec.ts.",
+      "task": "task/concept-removal/concept-in-use-refusal-recognition"
+    },
+    {
+      "id": "proof/concept-removal/concept-removal-landing",
+      "kind": "proof",
+      "file": "proof/concept-removal/concept-removal-landing.md",
+      "title": "Landing on the concepts listing after a successful concept removal",
+      "summary": "Tests that a removal answered with HTTP 204 leaves the concepts tab shown with the removed row gone and a surviving row intact, and that no leftover surface still names the removed concept.",
+      "task": "task/concept-removal/concept-removal-landing"
+    },
+    {
+      "id": "proof/concept-removal/concept-removal-outcome-disclosure",
+      "kind": "proof",
+      "file": "proof/concept-removal/concept-removal-outcome-disclosure.md",
+      "title": "Concept removal's answered outcome, stated to the operator via toast",
+      "summary": "Every stated criterion for useRemoveGlossaryConcept's outcome disclosure is backed by an existing test in use-glossary-concepts.spec.ts. Both UNDERDETERMINED notes are now proven against the implementation's own disclosed reading -- the merged, generic message for VALIDATION_ERROR/INTERNAL_ERROR/unrecognised codes, and the ConceptInUseError message that names the concept but never the reported reference -- rather than against a counterexample reading the implementation never took.",
+      "task": "task/concept-removal/concept-removal-outcome-disclosure"
+    },
+    {
+      "id": "proof/concept-removal/concept-row-removal-control",
+      "kind": "proof",
+      "file": "proof/concept-removal/concept-row-removal-control.md",
+      "title": "Proof for the glossary concept row's removal control, gated by a further explicit act",
+      "summary": "Tests that every concept row offers a Remove control that only asks on the first act, issues the DELETE to /v1/glossary/concepts/:name for the acted-upon row's own name only on confirmation, issues none on decline or on a no-choice dismissal, leaves the row unchanged on decline, and never asks the operator to type the concept's name.",
+      "task": "task/concept-removal/concept-row-removal-control"
+    },
+    {
+      "id": "proof/connector-configuration-removal/connector-configuration-removal-control",
+      "kind": "proof",
+      "file": "proof/connector-configuration-removal/connector-configuration-removal-control.md",
+      "title": "Connector configuration removal control proof",
+      "summary": "Tests that the connector configuration detail screen offers a removal control gated by an explicit-confirm dialog, issuing the DELETE only on confirm, never on open or decline, never withheld for a capability naming the connector, and never triggered by an unchosen dismissal.",
+      "task": "task/connector-configuration-removal/connector-configuration-removal-control"
+    },
+    {
+      "id": "proof/connector-configuration-removal/connector-configuration-removal-landing",
+      "kind": "proof",
+      "file": "proof/connector-configuration-removal/connector-configuration-removal-landing.md",
+      "title": "Connector configuration removal landing proof",
+      "summary": "Tests that a connector configuration removal answered with HTTP 204 lands the operator unconditionally on /connectors, with the removed row gone from the listing, no read refusal shown, and the success statement not lost to the move.",
+      "task": "task/connector-configuration-removal/connector-configuration-removal-landing"
+    },
+    {
+      "id": "proof/connector-configuration-removal/connector-configuration-removal-outcome-disclosure",
+      "kind": "proof",
+      "file": "proof/connector-configuration-removal/connector-configuration-removal-outcome-disclosure.md",
+      "title": "Connector configuration removal outcome disclosure proof",
+      "summary": "Tests that use-connector-configuration-detail states a removal's answered outcome to the operator -- success naming the removed connector, a generic refusal for every refused condition, and silence while the removal is unanswered.",
+      "task": "task/connector-configuration-removal/connector-configuration-removal-outcome-disclosure"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/capability-removal/capability-cited-by-evidence-refusal-recognition",
+      "to": "rules/integration/a-registered-capability-cited-by-evidence-is-never-removed",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-removal/capability-cited-by-evidence-refusal-recognition",
+      "to": "task/capability-removal/capability-cited-by-evidence-refusal-recognition",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/capability-removal/capability-removal-control",
+      "to": "rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-removal/capability-removal-control",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/capability-removal/capability-removal-control",
+      "to": "task/capability-removal/capability-removal-control",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/capability-removal/capability-removal-landing",
+      "to": "rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-removal/capability-removal-landing",
+      "to": "constraints/a-successful-capability-removal-answers-with-no-content",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/capability-removal/capability-removal-landing",
+      "to": "constraints/the-capability-identity-read-refuses-an-unregistered-identity",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/capability-removal/capability-removal-landing",
+      "to": "task/capability-removal/capability-removal-landing",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/capability-removal/capability-removal-outcome-disclosure",
+      "to": "rules/integration/a-submitted-removal-states-its-outcome-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-removal/capability-removal-outcome-disclosure",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/capability-removal/capability-removal-outcome-disclosure",
+      "to": "rules/integration/a-registered-capability-cited-by-evidence-is-never-removed",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/capability-removal/capability-removal-outcome-disclosure",
+      "to": "constraints/a-successful-capability-removal-answers-with-no-content",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/capability-removal/capability-removal-outcome-disclosure",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/capability-removal/capability-removal-outcome-disclosure",
+      "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/capability-removal/capability-removal-outcome-disclosure",
+      "to": "task/capability-removal/capability-removal-outcome-disclosure",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/concept-removal/concept-in-use-refusal-recognition",
+      "to": "rules/glossary/a-registered-concept-is-never-removed",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/concept-removal/concept-in-use-refusal-recognition",
+      "to": "rules/integration/a-submitted-removal-states-its-outcome-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/concept-removal/concept-in-use-refusal-recognition",
+      "to": "task/concept-removal/concept-in-use-refusal-recognition",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/concept-removal/concept-removal-landing",
+      "to": "rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/concept-removal/concept-removal-landing",
+      "to": "constraints/a-successful-concept-removal-answers-with-no-content",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/concept-removal/concept-removal-landing",
+      "to": "domain/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/concept-removal/concept-removal-landing",
+      "to": "task/concept-removal/concept-removal-landing",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/concept-removal/concept-removal-outcome-disclosure",
+      "to": "domain/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/concept-removal/concept-removal-outcome-disclosure",
+      "to": "rules/integration/a-submitted-removal-states-its-outcome-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/concept-removal/concept-removal-outcome-disclosure",
+      "to": "rules/glossary/a-registered-concept-is-never-removed",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/concept-removal/concept-removal-outcome-disclosure",
+      "to": "constraints/a-successful-concept-removal-answers-with-no-content",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/concept-removal/concept-removal-outcome-disclosure",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/concept-removal/concept-removal-outcome-disclosure",
+      "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/concept-removal/concept-removal-outcome-disclosure",
+      "to": "task/concept-removal/concept-removal-outcome-disclosure",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/concept-removal/concept-row-removal-control",
+      "to": "rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/concept-removal/concept-row-removal-control",
+      "to": "domain/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/concept-removal/concept-row-removal-control",
+      "to": "task/concept-removal/concept-row-removal-control",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/connector-configuration-removal-control",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/connector-configuration-removal-control",
+      "to": "rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/connector-configuration-removal-control",
+      "to": "rules/integration/removing-a-connector-configuration-is-unconditional",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/connector-configuration-removal-control",
+      "to": "task/connector-configuration-removal/connector-configuration-removal-control",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/connector-configuration-removal-landing",
+      "to": "rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/connector-configuration-removal-landing",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/connector-configuration-removal-landing",
+      "to": "constraints/a-successful-connector-configuration-removal-answers-with-no-content",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/connector-configuration-removal-landing",
+      "to": "task/connector-configuration-removal/connector-configuration-removal-landing",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/connector-configuration-removal-outcome-disclosure",
+      "to": "rules/integration/a-submitted-removal-states-its-outcome-to-the-operator",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/connector-configuration-removal-outcome-disclosure",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/connector-configuration-removal-outcome-disclosure",
+      "to": "constraints/a-successful-connector-configuration-removal-answers-with-no-content",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/connector-configuration-removal-outcome-disclosure",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/connector-configuration-removal-outcome-disclosure",
+      "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-removal/connector-configuration-removal-outcome-disclosure",
+      "to": "task/connector-configuration-removal/connector-configuration-removal-outcome-disclosure",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-removal/capability-cited-by-evidence-refusal-recognition",
+      "to": "implementation/capability-removal/capability-cited-by-evidence-refusal-recognition",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-removal/capability-removal-control",
+      "to": "implementation/capability-removal/capability-removal-control",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-removal/capability-removal-landing",
+      "to": "implementation/capability-removal/capability-removal-landing",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-removal/capability-removal-outcome-disclosure",
+      "to": "implementation/capability-removal/capability-removal-outcome-disclosure",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/concept-removal/concept-in-use-refusal-recognition",
+      "to": "implementation/concept-removal/concept-in-use-refusal-recognition",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/concept-removal/concept-removal-landing",
+      "to": "implementation/concept-removal/concept-removal-landing",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/concept-removal/concept-removal-outcome-disclosure",
+      "to": "implementation/concept-removal/concept-removal-outcome-disclosure",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/concept-removal/concept-row-removal-control",
+      "to": "implementation/concept-removal/concept-row-removal-control",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-removal/connector-configuration-removal-control",
+      "to": "implementation/connector-configuration-removal/connector-configuration-removal-control",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-removal/connector-configuration-removal-landing",
+      "to": "implementation/connector-configuration-removal/connector-configuration-removal-landing",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-removal/connector-configuration-removal-outcome-disclosure",
+      "to": "implementation/connector-configuration-removal/connector-configuration-removal-outcome-disclosure",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
