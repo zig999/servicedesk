@@ -42,6 +42,14 @@
       "task": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state"
     },
     {
+      "id": "implementation/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
+      "kind": "implementation",
+      "file": "implementation/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen.md",
+      "title": "Render the form over the not-valid state on the case version editor",
+      "summary": "The editor screen now branches the \"not-valid\" phase on whether the hook's state carries an editable form, rendering the draft's own form, Save changes, Cancel and a manifest route with a non-blocking statement when it does, and leaving the existing bare dead-end untouched when it does not.",
+      "task": "task/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen"
+    },
+    {
       "id": "implementation/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor",
       "kind": "implementation",
       "file": "implementation/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor.md",
@@ -88,6 +96,14 @@
       "title": "Proof for loading a refused draft's own record into the editor state",
       "summary": "Hook-level tests against the public useEditDraftVersionForm, exercised directly via renderHook with a minimal router context provider, covering all 19 criteria and the specification nodes a finite test can decide whole within this task's own implemented scope.",
       "task": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state"
+    },
+    {
+      "id": "proof/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
+      "kind": "proof",
+      "file": "proof/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen.md",
+      "title": "Present the refused draft on the editor screen -- proof",
+      "summary": "New route-level tests mount CaseVersionEditorScreen for a draft version whose read is refused with CaseVersionNotValidError and that useCaseVersions reports as \"draft\", proving the enriched not-valid rendering's title, statement, distinctness, enabled fields, Save changes and Cancel presence, manifest route and absent-register statement, its silence in the ordinary ready reading, and its own no-leftover-attribute guard.",
+      "task": "task/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen"
     },
     {
       "id": "proof/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor",
@@ -304,6 +320,42 @@
       "at": "the path"
     },
     {
+      "from": "implementation/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
+      "to": "rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
+      "to": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
+      "to": "rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
+      "to": "rules/knowledge/an-abandoned-case-version-edit-writes-nothing",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
+      "to": "scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
+      "to": "task/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor",
       "to": "rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-editing-surface-on-every-reading",
       "kind": "encodes",
@@ -342,6 +394,12 @@
     {
       "from": "proof/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
       "to": "implementation/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
+      "to": "implementation/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
       "kind": "proves",
       "at": "the path"
     },

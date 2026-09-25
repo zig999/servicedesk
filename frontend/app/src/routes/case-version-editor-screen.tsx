@@ -3,6 +3,10 @@ import { Link, useParams } from "@tanstack/react-router";
 import { Button } from "@tui/ui/button";
 import { useEditDraftVersionForm } from "../hooks/use-edit-draft-version-form";
 import { CaseVersionEditorReadyView } from "./case-version-editor-ready-view";
+import {
+  CaseVersionEditorNotValidView,
+  isEnrichedNotValidState,
+} from "./case-version-editor-not-valid-view";
 
 export function CaseVersionEditorScreen(): JSX.Element {
   const { slug, version } = useParams({
@@ -36,6 +40,17 @@ export function CaseVersionEditorScreen(): JSX.Element {
   }
 
   if (state.phase === "not-valid") {
+    if (isEnrichedNotValidState(state)) {
+      return (
+        <section className="flex flex-col gap-4">
+          <Link to="/cases/$slug/versions/$version/manifest" params={{ slug, version }}>
+            Manifest
+          </Link>
+          <CaseVersionEditorNotValidView state={state} />
+        </section>
+      );
+    }
+
     return (
       <section>
         <p>This case&apos;s current version does not read back as a case.</p>

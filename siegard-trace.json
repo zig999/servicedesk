@@ -9927,7 +9927,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/case-version-editor-screen.tsx",
-          "digest": "sha256:5fc4f96c1bf350e1a9462a626c8212003adb0245419960b8d87ae6ccd0f1920c"
+          "digest": "sha256:ab1912ed5f848f2dac8252570dfdc0db78de95b87c521a2b8b30fc4612fcd9f6"
         }
       ]
     },
@@ -10247,8 +10247,12 @@
           "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
         },
         {
+          "path": "frontend/app/src/routes/case-version-editor-not-valid-view.tsx",
+          "digest": "sha256:f9fb34d14b9dcba8705c2765ac5594d173ae9b6f99f6391c1927f7fe92a07353"
+        },
+        {
           "path": "frontend/app/src/routes/case-version-editor-screen.tsx",
-          "digest": "sha256:5fc4f96c1bf350e1a9462a626c8212003adb0245419960b8d87ae6ccd0f1920c"
+          "digest": "sha256:ab1912ed5f848f2dac8252570dfdc0db78de95b87c521a2b8b30fc4612fcd9f6"
         },
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
@@ -10271,6 +10275,10 @@
         {
           "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
           "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
+        },
+        {
+          "path": "frontend/app/src/routes/case-version-editor-not-valid-view.tsx",
+          "digest": "sha256:f9fb34d14b9dcba8705c2765ac5594d173ae9b6f99f6391c1927f7fe92a07353"
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
@@ -10317,6 +10325,10 @@
         {
           "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
           "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
+        },
+        {
+          "path": "frontend/app/src/routes/case-version-editor-not-valid-view.tsx",
+          "digest": "sha256:f9fb34d14b9dcba8705c2765ac5594d173ae9b6f99f6391c1927f7fe92a07353"
         },
         {
           "path": "src/src/case/case-query.port.ts",
@@ -11246,6 +11258,10 @@
         {
           "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
           "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
+        },
+        {
+          "path": "frontend/app/src/routes/case-version-editor-not-valid-view.tsx",
+          "digest": "sha256:f9fb34d14b9dcba8705c2765ac5594d173ae9b6f99f6391c1927f7fe92a07353"
         },
         {
           "path": "src/src/http/update-draft.controller.ts",
