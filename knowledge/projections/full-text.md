@@ -6827,6 +6827,28 @@ entries:
     refusal name which condition was found, so each condition needs its own token. Evidence and citation get
     separate tokens because the statement lists them as separate referents with separate attributes of their
     own. Any other scheme would give this one error two naming conventions.
+- location: rules/glossary/a-registered-concept-is-never-removed.md
+  field: statement
+  unstated: The prior entry in this log decided capability-concept, evidence-concept and citation-concept
+    as the ConceptInUseError reference values for three of its four conditions, reasoned from a naming
+    pattern alone, without reading the already-delivered backend. That backend
+    (src/src/glossary/concept-usage-reader.port.ts's ConceptUsageReference type, constructed by
+    ConceptInUseError and covered by src/src/__tests__/unit/glossary/glossary.service.spec.ts and
+    src/src/__tests__/unit/http/remove-concept.routes.spec.ts) already fixes those three values as
+    capability, evidence and citation -- one word each, not the element-slug-plus-attribute pattern the
+    prior entry invented -- alongside the fourth, hypothesis-revision-collects, which the prior entry
+    left unchanged because it already matched.
+  decided: capability where a registered capability answers the concept, evidence where a collected
+    evidence item names it, and citation where a citation names it -- correcting the prior entry's
+    capability-concept, evidence-concept and citation-concept to the values the delivered code already
+    uses.
+  why: The specification states a fact about an HTTP response the backend already sends over a route this
+    plan does not touch; the frontend that reads it must match what is actually sent, not a pattern
+    invented before that code was read. The delivered backend is covered by its own tests asserting these
+    three literal values, so it is the one side of this mismatch a plan-work invocation can correct
+    without reopening delivered work -- correcting the specification is the smaller, reversible edit, and
+    the alternative (renaming the backend's already-tested values to match the specification's invented
+    pattern) would be a corrective increment against working, specified code for no behavioral reason.
 
 === domain/glossary/_context
 ---
@@ -8315,7 +8337,7 @@ Recipients are real operational queues; binding a referral to an individual woul
 === rules/glossary/a-registered-concept-is-never-removed
 ---
 type: policy
-statement: Registering concepts adds a concept at a new name or replaces the concept already held at that name, and removes no concept already held; removing a concept by name succeeds unless a registered capability answers it, a collected evidence item or its citation names it, or a hypothesis-revision's own collects lists it, in which case the removal is refused with an HTTP 409 response reporting a ConceptInUseError that reports, for the concept found still named, a reference identifying what names it — capability-concept where a registered capability answers it, evidence-concept where a collected evidence item names it, citation-concept where a citation names it, and hypothesis-revision-collects where a hypothesis-revision's own collects lists it — and the concept is never removed from the glossary any other way; a concept's removal takes that concept's own declaration of the subject types it accepts with it and removes no term of the subject-type vocabulary, whose terms are held independently of the concepts that accept them.
+statement: Registering concepts adds a concept at a new name or replaces the concept already held at that name, and removes no concept already held; removing a concept by name succeeds unless a registered capability answers it, a collected evidence item or its citation names it, or a hypothesis-revision's own collects lists it, in which case the removal is refused with an HTTP 409 response reporting a ConceptInUseError that reports, for the concept found still named, a reference identifying what names it — capability where a registered capability answers it, evidence where a collected evidence item names it, citation where a citation names it, and hypothesis-revision-collects where a hypothesis-revision's own collects lists it — and the concept is never removed from the glossary any other way; a concept's removal takes that concept's own declaration of the subject types it accepts with it and removes no term of the subject-type vocabulary, whose terms are held independently of the concepts that accept them.
 constrains:
   - domain/glossary/concept
   - domain/glossary/subject-type
