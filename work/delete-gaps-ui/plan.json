@@ -428,17 +428,17 @@
     },
     {
       "from": "task/concept-removal/concept-in-use-refusal-recognition",
-      "to": "rules/integration/a-submitted-removal-states-its-outcome-to-the-operator",
+      "to": "rules/glossary/a-registered-concept-is-never-removed",
       "kind": "implements",
       "at": "implements[0]",
-      "digest": "sha256:59a5439312d27a35e4ea6cc1a84dfea3b4986ae88cf6ca2ce0844bf3e8577a87"
+      "digest": "sha256:091ca19540ec1a66521d63462a8bcc84b8bdca7d8985a078ea3fb409779f1735"
     },
     {
       "from": "task/concept-removal/concept-in-use-refusal-recognition",
-      "to": "rules/glossary/a-registered-concept-is-never-removed",
+      "to": "rules/integration/a-submitted-removal-states-its-outcome-to-the-operator",
       "kind": "implements",
       "at": "implements[1]",
-      "digest": "sha256:c22fc49bba8d364c9d727542c8f6e64a0542d7cab57c820c868f2789e2cd0b79"
+      "digest": "sha256:59a5439312d27a35e4ea6cc1a84dfea3b4986ae88cf6ca2ce0844bf3e8577a87"
     },
     {
       "from": "task/concept-removal/concept-removal-landing",
@@ -481,24 +481,24 @@
     },
     {
       "from": "task/concept-removal/concept-removal-outcome-disclosure",
-      "to": "rules/integration/a-submitted-removal-states-its-outcome-to-the-operator",
+      "to": "domain/glossary/concept",
       "kind": "implements",
       "at": "implements[0]",
+      "digest": "sha256:3d67d2df55f4442a50e5ff3740b7229e0b34059033d27903dff72c5de61a5dd1"
+    },
+    {
+      "from": "task/concept-removal/concept-removal-outcome-disclosure",
+      "to": "rules/integration/a-submitted-removal-states-its-outcome-to-the-operator",
+      "kind": "implements",
+      "at": "implements[1]",
       "digest": "sha256:59a5439312d27a35e4ea6cc1a84dfea3b4986ae88cf6ca2ce0844bf3e8577a87"
     },
     {
       "from": "task/concept-removal/concept-removal-outcome-disclosure",
       "to": "rules/glossary/a-registered-concept-is-never-removed",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:c22fc49bba8d364c9d727542c8f6e64a0542d7cab57c820c868f2789e2cd0b79"
-    },
-    {
-      "from": "task/concept-removal/concept-removal-outcome-disclosure",
-      "to": "domain/glossary/concept",
-      "kind": "implements",
       "at": "implements[2]",
-      "digest": "sha256:3d67d2df55f4442a50e5ff3740b7229e0b34059033d27903dff72c5de61a5dd1"
+      "digest": "sha256:091ca19540ec1a66521d63462a8bcc84b8bdca7d8985a078ea3fb409779f1735"
     },
     {
       "from": "task/concept-removal/concept-removal-outcome-disclosure",
