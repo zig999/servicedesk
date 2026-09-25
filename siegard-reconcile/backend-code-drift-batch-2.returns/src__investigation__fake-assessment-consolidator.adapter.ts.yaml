@@ -1,0 +1,28 @@
+read:
+  - node: domain/investigation/evaluation
+    held_at: >-
+      the `evaluations` field of the `ConsolidateCall` type and the `evaluations` parameter of
+      `consolidate()`, used only as an opaque typed value for fixture-key comparison — the file
+      never reads or restates any of the node's own attributes (hypothesis, verdict, reason,
+      citations, usage, elapsed_ms, prompt)
+    evidence: |-
+      readonly evaluations: readonly Evaluation[];
+      ...
+      evaluations: readonly Evaluation[],
+  - node: domain/investigation/evidence
+    held_at: >-
+      the `evidence` field of the `ConsolidateCall` type and the `evidence` parameter of
+      `consolidate()`, used only as an opaque typed value for fixture-key comparison — the file
+      never reads or restates any of the node's own attributes (concept, inputs, observation,
+      observed_at, ttl, origin, result, fields, concept_description, capability_payload_notes)
+    evidence: |-
+      readonly evidence: readonly Evidence[];
+      ...
+      evidence: readonly Evidence[],
+looked_past: >-
+  The zeroed usage/elapsed_ms/empty-prompt constants and the returned { text, register, usage,
+  elapsed_ms, prompt } shape belong to domain/investigation/assessment-consolidator and
+  rules/investigation/the-consolidation-answer-states-its-register — both outside this node pack
+  — and that shape matches what those nodes hold (including domain/investigation/assessment's
+  cross-reference confirming a consolidation call's usage/elapsed_ms/prompt are the same
+  call-level record shape evaluation's own attributes carry), so it is not reported here.

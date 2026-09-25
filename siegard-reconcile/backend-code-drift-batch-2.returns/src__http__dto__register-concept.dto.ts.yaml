@@ -1,0 +1,23 @@
+read:
+  - node: rules/glossary/a-concept-declares-its-description
+    held_at: >-
+      nowhere — the file leaves `description` unvalidated by the schema rather than enforcing
+      or refusing its absence itself; the HTTP 422 response and the ConceptDescriptionRequiredError
+      the node names are not stated anywhere in this file.
+    evidence: |-
+      export const registerConceptBodySchema = z.object({
+        accepts: z.array(z.string().min(1)),
+        ttl: z.number().int().positive().optional(),
+        description: z.string().optional(),
+      });
+
+      export type RegisterConceptBodyDto = Omit<z.infer<typeof registerConceptBodySchema>, 'description'> & {
+        description: string;
+      };
+looked_past: >-
+  The zod schema marks `description` optional while the exported type overrides it to a required
+  `string`, a type/runtime mismatch that is a type-safety construct rather than a stated domain
+  fact, so it is left for a code review rather than reported as a conformance finding.
+candidates_opened:
+  - domain/glossary/concept
+  - rules/knowledge/a-collected-concept-declares-a-ttl

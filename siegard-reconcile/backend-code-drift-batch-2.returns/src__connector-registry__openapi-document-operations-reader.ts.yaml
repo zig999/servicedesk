@@ -1,0 +1,48 @@
+read:
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: >-
+      the fetch call inside readOpenApiDocumentOperations, line 25 — the only place this
+      module (a backend source file, injected with an IOpenApiDocumentFetcher port) reaches
+      the operator-named link
+    evidence: |-
+      const documentText = await documentFetcher.fetchOpenApiDocument(link);
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+    held_at: >-
+      the parse call at line 26, reached only after the fetch and before any path or method
+      is read out of the document
+    evidence: |-
+      const document = readOpenApiDocument(documentText);
+      return { operations: operationsDeclaredBy(document) };
+  - node: rules/integration/an-openapi-operations-method-is-upper-cased
+    held_at: the method mapping inside operationsAt, line 44
+    evidence: |-
+      .map((method) => ({ path, method: method.toUpperCase() }));
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read
+    held_at: >-
+      the fetch call at line 25, which the parse at line 26 only runs after — the fetch is
+      awaited and its own failure is never caught or reinterpreted here, so a fetch refusal
+      from documentFetcher propagates before any parsing is attempted
+    evidence: |-
+      const documentText = await documentFetcher.fetchOpenApiDocument(link);
+      const document = readOpenApiDocument(documentText);
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-operations-read
+    held_at: >-
+      the same parse call at line 26 that a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+      is held at — reached before operationsDeclaredBy chooses any path or method
+    evidence: |-
+      const document = readOpenApiDocument(documentText);
+looked_past: >-
+  documentValueAtPointer resolves any well-formed #/ JSON pointer generically rather than
+  checking specifically that the target is a path item before returning it, which is an
+  implementation-robustness nuance rather than a domain-fact departure — both
+  rules/integration/a-paths-ref-is-read-through-before-a-documents-operations-are-listed and
+  rules/integration/an-unresolvable-path-ref-lists-no-operation-and-refuses-no-read, opened to
+  attribute the file's $ref-resolution logic outside this file's own node set, are held
+  correctly: the reference is read through before operations are read (pathItemReferencedBy
+  called ahead of Object.keys in operationsAt), and an unresolved or non-object target yields
+  no operations for that path without refusing the read (operationsAt returns [] when
+  resolvedPathItem is not a plain object, while operationsDeclaredBy's flatMap still answers
+  every other path).
+candidates_opened:
+  - rules/integration/a-paths-ref-is-read-through-before-a-documents-operations-are-listed
+  - rules/integration/an-unresolvable-path-ref-lists-no-operation-and-refuses-no-read

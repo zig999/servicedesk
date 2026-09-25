@@ -1,0 +1,8 @@
+read:
+  - node: contracts/system/case-authoring
+    held_at: nowhere
+    evidence: "export { CaseVersionNotValidError } from './case-version-not-valid.error.js';"
+looked_past: >-
+  The file's name (case-not-valid.error.ts) does not match the class it re-exports
+  (CaseVersionNotValidError), but this is a code-organization detail, not a domain fact, so it is
+  outside this pass's judgment.

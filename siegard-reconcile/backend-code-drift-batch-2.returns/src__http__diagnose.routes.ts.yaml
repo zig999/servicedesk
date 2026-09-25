@@ -1,0 +1,32 @@
+read:
+  - node: constraints/the-diagnosis-and-simulation-routes-are-rate-limited
+    held_at: >-
+      the RATE_LIMIT_MAX_REQUESTS_PER_MINUTE and RATE_LIMIT_WINDOW_MS constants passed into
+      createRateLimitHook and registered as an onRequest hook on the diagnose plugin
+    evidence: |-
+      const RATE_LIMIT_MAX_REQUESTS_PER_MINUTE = 10;
+      const RATE_LIMIT_WINDOW_MS = 60_000;
+      ...
+      app.addHook(
+        'onRequest',
+        createRateLimitHook({
+          maxRequestsPerWindow: RATE_LIMIT_MAX_REQUESTS_PER_MINUTE,
+          windowMs: RATE_LIMIT_WINDOW_MS,
+        }),
+      );
+  - node: contracts/system/guided-diagnosis
+    held_at: >-
+      the POST /v1/diagnose handler, which validates the request body and delegates to
+      handleDiagnoseRequest before returning its result
+    evidence: |-
+      app.post(`${API_PREFIX}/diagnose`, (request, reply) => diagnoseHandler(dependencies, request, reply));
+      ...
+      const assessment = await handleDiagnoseRequest(dependencies, parsed.data);
+      return reply.code(200).send(assessment);
+looked_past: >-
+  The 400 VALIDATION_ERROR response on schema-parse failure (code, message naming "the request
+  body", and details listing the issues) is a fact this file states but neither pack node holds;
+  it is governed instead by
+  knowledge/constraints/a-malformed-request-is-refused-with-a-validation-error.md, found by
+  searching the specification root, and the file's statement of it conforms to that node, so it
+  is not reported as a finding here.

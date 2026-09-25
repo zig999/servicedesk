@@ -1,0 +1,39 @@
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: >-
+      the three public methods of RelationalConnectorConfigurationStore —
+      readConnectorConfigurations (read/list), writeConnectorConfigurations (register,
+      upsert-as-replace) and deleteConnectorConfiguration (unconditional remove)
+    evidence: |-
+      const rows = await runStatement<IConnectorConfigurationRow>(
+        this.connection,
+        { text: `SELECT connector, configuration FROM ${CONNECTOR_CONFIGURATIONS_TABLE}` },
+        raiseReadFailure,
+      );
+      ...
+      text: `INSERT INTO ${CONNECTOR_CONFIGURATIONS_TABLE} (connector, configuration)
+             VALUES ($1, $2)
+             ON CONFLICT (connector) DO UPDATE SET configuration = EXCLUDED.configuration`,
+      ...
+      text: `DELETE FROM ${CONNECTOR_CONFIGURATIONS_TABLE} WHERE connector = $1`,
+  - node: domain/integration/connector-configuration
+    held_at: >-
+      the IConnectorConfigurationRow shape (connector, configuration), the
+      toConnectorConfiguration mapper, and the ON CONFLICT clause of upsertStatementFor
+    evidence: |-
+      interface IConnectorConfigurationRow {
+        readonly connector: string;
+        readonly configuration: Record<string, unknown>;
+      }
+      ...
+      function toConnectorConfiguration(row: IConnectorConfigurationRow): ConnectorConfiguration {
+        return { connector: row.connector, configuration: JSON.stringify(row.configuration) };
+      }
+      ...
+      ON CONFLICT (connector) DO UPDATE SET configuration = EXCLUDED.configuration
+looked_past: >-
+  readConnectorConfigurations takes no page/offset parameters and issues an unbounded SELECT of
+  every row, which bears on the "in pages" wording of
+  contracts/integration/connector-configuration-registry; whether pagination is applied by one of
+  the other files this node binds to (the service or port) is outside this single-file review's
+  scope, so it is left unreported here.

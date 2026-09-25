@@ -1,0 +1,31 @@
+read:
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: >-
+      nowhere — the enforcement (refusing a hypothesis-revision that would collect no concept,
+      with an HTTP 422 HypothesisRevisionCollectsNoConceptError) is not performed in this file.
+      seed.ts only forwards each fixture manifest entry's `collects` array unchanged into
+      `lifecycle.reviseHypothesis`, trusting the fixture data and the operation it calls (defined
+      elsewhere, in the case-lifecycle factory/operation, outside this file) to hold the invariant.
+    evidence: >-
+      const revised = await lifecycle.reviseHypothesis({
+        slug: fixture.slug,
+        hypothesis_name: entry.hypothesis_name,
+        criterion: entry.criterion,
+        collects: entry.collects,
+        resolution: entry.resolution,
+        subject: fixture.subject,
+      });
+looked_past: >-
+  seedOutcomes' ordering (inserting NON_CONCLUSION_OUTCOMES before seedCase runs) and
+  seedConcepts' raw upsert SQL touch the glossary vocabulary-precedence and concept-registration
+  policies, but both only orchestrate calls into the glossary store/registry that own those
+  rules, so any judgment of that enforcement belongs to those files' own pass rather than this
+  one.
+candidates_opened:
+  - rules/glossary/the-non-conclusion-outcomes-precede-the-first-case
+  - domain/glossary/outcome
+  - domain/glossary/concept
+  - rules/glossary/a-registered-concept-is-never-removed
+  - rules/glossary/a-vocabulary-holds-each-name-once
+  - rules/glossary/a-concept-declares-its-description
+  - rules/knowledge/a-collected-concept-declares-a-ttl

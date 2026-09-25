@@ -1,0 +1,17 @@
+read:
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: >-
+      the test "refuses releaseHypothesisRevisionOwnState's own second call against a
+      hypothesis-revision it already released, with HypothesisRevisionNotDraftAtReleaseError,
+      rather than silently rewriting its already-released state" (lines 336-356)
+    evidence: >-
+      const refusal = await releaseHypothesisRevisionOwnState(fixture, 'the-hypothesis', initial.revision).catch(
+        (error: unknown) => error,
+      );
+
+      expect(refusal).toBeInstanceOf(HypothesisRevisionNotDraftAtReleaseError);
+looked_past: >-
+  The file also exercises revise-hypothesis behaviors outside this node's own lifecycle claim —
+  revision numbering, concept-collection and subject-type refusals, manifest referencing, and the
+  case-holds-no-draft gate — which the trace binds to other nodes not in this delegation's node
+  pack, so they are left for the judgments those bindings belong to.

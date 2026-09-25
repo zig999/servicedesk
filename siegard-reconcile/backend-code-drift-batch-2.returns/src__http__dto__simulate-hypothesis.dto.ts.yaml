@@ -1,0 +1,96 @@
+read:
+  - node: contracts/investigation/case-simulation
+    held_at: >-
+      simulateHypothesisRequestSchema (lines 21-26) and simulateHypothesisResponseSchema
+      (lines 76-80): the request carries only case, subject, requester and hypothesis — no
+      narrative or ticket reference — and the response carries evidence, a single evaluation
+      and durations, never a resolved outcome, assessment or cost.
+    evidence: |-
+      export const simulateHypothesisRequestSchema = z.object({
+        case: caseRefSchema,
+        subject: subjectSchema,
+        requester: z.string().min(1),
+        hypothesis: z.string().min(1),
+      });
+      ...
+      export const simulateHypothesisResponseSchema = z.object({
+        evidence: z.array(evidenceSchema).readonly(),
+        evaluation: evaluationSchema,
+        durations: durationsSchema,
+      });
+  - node: domain/investigation/citation
+    held_at: "citationSchema, lines 30-33"
+    evidence: |-
+      const citationSchema = z.object({
+        concept: z.string().min(1),
+        field: z.string().min(1).optional(),
+      });
+  - node: domain/investigation/durations
+    held_at: "durationsSchema, lines 70-74, composed into simulateHypothesisResponseSchema's durations field"
+    evidence: |-
+      const durationsSchema = z.object({
+        collection: z.int(),
+        judgment: z.int(),
+        total: z.int(),
+      });
+  - node: domain/investigation/evaluation
+    held_at: >-
+      evaluationSchema, lines 42-68 (a discriminated union on verdict), composed into
+      simulateHypothesisResponseSchema's evaluation field
+    evidence: |-
+      z.object({
+          hypothesis: z.string().min(1),
+          verdict: z.literal(CONFIRMED_VERDICT),
+          citations: z.array(citationSchema).min(1).readonly(),
+          usage: usageSchema.optional(),
+          elapsed_ms: z.int().optional(),
+          prompt: z.string().optional(),
+        }),
+  - node: domain/investigation/evaluation-reason
+    held_at: "the inconclusive branch of evaluationSchema, line 62"
+    evidence: "reason: z.enum(EVALUATION_REASONS),"
+  - node: domain/investigation/evidence
+    held_at: >-
+      the evidence field of simulateHypothesisResponseSchema, line 77 — composed by reference to
+      the shared evidenceSchema rather than restated in this file
+    evidence: "evidence: z.array(evidenceSchema).readonly(),"
+  - node: domain/investigation/evidence-result
+    held_at: nowhere
+    evidence: >-
+      "import { evidenceSchema } from './evidence.dto.js';" — this file never names
+      evidence-result or its values; the enum lives entirely inside the imported evidenceSchema,
+      defined in evidence.dto.ts.
+  - node: domain/investigation/subject
+    held_at: "subjectSchema, lines 11-14, composed into simulateHypothesisRequestSchema's subject field"
+    evidence: |-
+      const subjectSchema = z.object({
+        type: z.string().min(1),
+        attributes: z.array(subjectAttributeValueSchema),
+      });
+  - node: domain/investigation/subject-attribute-value
+    held_at: "subjectAttributeValueSchema, lines 6-9"
+    evidence: |-
+      const subjectAttributeValueSchema = z.object({
+        attribute: z.string().min(1),
+        value: z.string().min(1),
+      });
+  - node: domain/investigation/usage
+    held_at: "usageSchema, lines 35-38"
+    evidence: |-
+      const usageSchema = z.object({
+        input_tokens: z.int(),
+        output_tokens: z.int(),
+      });
+  - node: domain/investigation/verdict
+    held_at: >-
+      the VERDICTS destructuring (line 40) and evaluationSchema's discriminated union on
+      'verdict' (lines 42-68)
+    evidence: |-
+      const [CONFIRMED_VERDICT, REFUTED_VERDICT, INCONCLUSIVE_VERDICT] = VERDICTS;
+      ...
+      const evaluationSchema = z.discriminatedUnion('verdict', [
+looked_past: >-
+  The evidenceSchema import composes the full evidence and evidence-result shapes from
+  evidence.dto.ts, which is outside this file's own set and was not opened for judgment here; and
+  the caseRefSchema (slug + version, lines 16-19) is a case-reference shape that no node in this
+  pack governs and was left unflagged since nothing in it contradicts a held fact.

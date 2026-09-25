@@ -1,0 +1,31 @@
+read:
+  - node: domain/integration/capability
+    held_at: >-
+      resolvedBaseOf() (mapping the capability's declared attributes onto the evidence base) and
+      effectiveBoundMsFor() (bounding a call by the capability's own timeout inside the stage
+      ceiling)
+    evidence: |
+      origin: capability.connector,
+          capabilityName: capability.name,
+          capabilityVersion: capability.version,
+          fields: fieldSemanticsOf(capability.output_schema),
+          conceptDescription,
+          capabilityPayloadNotes: capability.payload_notes ?? '',
+      ...
+      function effectiveBoundMsFor(capability: Capability, stageCeilingMs: number): number {
+        return Math.max(0, Math.min(capability.timeout, stageCeilingMs));
+      }
+  - node: rules/integration/an-http-connector-configuration-declares-its-call
+    held_at: nowhere
+    evidence: >-
+      const outcome = await raceObservation(
+        observationSource.observeConcept({ concept, subject, requester, remainingBudgetMs: stageCeilingMs }),
+        effectiveBoundMs,
+      );
+looked_past: >-
+  The file also states evidence-result vocabulary and elapsed_ms/defaults behavior (e.g. `fields:
+  []`, `capabilityPayloadNotes: ''` on an unresolved capability, `elapsedMs:
+  elapsedSince(attemptStartedAt)`) that trace back to domain/investigation/evidence and
+  domain/investigation/evidence-result, both outside this delegation's node set — checked against
+  those nodes' own text for attribution and found consistent, but judging them is not this
+  delegation's to make.

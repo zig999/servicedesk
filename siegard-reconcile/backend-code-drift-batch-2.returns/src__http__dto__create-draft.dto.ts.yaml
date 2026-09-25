@@ -1,0 +1,31 @@
+read:
+  - node: contracts/knowledge/case-lifecycle
+    held_at: >-
+      the exported createDraftBodySchema, which is the request-body schema implementing the
+      contract's published create-draft operation
+    evidence: 'export const createDraftBodySchema = z.object({'
+  - node: domain/knowledge/case-version
+    held_at: >-
+      the title, when_to_use, subject, fallback and consolidation_register fields of
+      createDraftBodySchema, matching the version attributes create-draft supplies at
+      authoring time
+    evidence: |-
+      title: z.string().min(1),
+        when_to_use: z.string().min(1),
+        subject: z.string().min(1),
+        fallback: resolutionSchema,
+        consolidation_register: z.enum(CONSOLIDATION_REGISTERS).optional(),
+looked_past: >-
+  a-case-authoring-surface-offers-no-submission-while-required-content-is-absent's
+  whitespace-only-content gating names a surface's own submit-withholding, not this backend
+  schema's shape, so create-draft.dto.ts's z.string().min(1) checks were not measured against
+  it; the source_version field's positive-integer shape was checked against
+  rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version, found by search
+  rather than opened from the candidate index, and conforms, so it is not reported.
+candidates_opened:
+  - domain/glossary/subject-type
+  - domain/knowledge/resolution
+  - domain/knowledge/referral
+  - domain/glossary/outcome
+  - domain/glossary/action
+  - domain/glossary/recipient

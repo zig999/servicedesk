@@ -1,0 +1,113 @@
+read:
+  - node: constraints/the-deadline-is-an-absolute-propagated-instant
+    held_at: >-
+      persistenceStageBoundMs (called from writeWithinDeadline), which takes the minimum of the
+      persistence stage's nominal budget and the time left of the propagated deadline
+    evidence: >-
+      return Math.min(PERSISTENCE_STAGE_BUDGET_MS, Math.max(0, deadline - now -
+      elapsedBeforePersistenceMs));
+  - node: contracts/investigation/case-source
+    held_at: nowhere
+    evidence: >-
+      case: options.case, — the case is forwarded unchanged into the factory input; the file
+      states nothing about it being pinned by slug and version, that is established upstream of
+      this file
+  - node: contracts/investigation/diagnosis
+    held_at: the runDiagnosis function
+    evidence: >-
+      export async function runDiagnosis(options: RunDiagnosisOptions): Promise<Assessment> { ...
+      return investigation.assessment; }
+  - node: domain/investigation/cost
+    held_at: "buildInvestigationOptions, the cost field threaded through to the factory input"
+    evidence: |-
+      readonly cost: Cost;
+      ...
+      cost,
+  - node: domain/investigation/durations
+    held_at: nowhere
+    evidence: >-
+      const { evidence, evaluations, assessment, cost, durations } = await
+      runInvestigationPipeline(options); — durations arrives already computed and is only
+      forwarded, its total is never computed or asserted in this file
+  - node: domain/investigation/investigation
+    held_at: >-
+      buildInvestigationOptions, the object assembled for the factory — every required attribute
+      except written_at
+    evidence: |-
+      return {
+          id: options.id,
+          requester: options.requester,
+          ticket_ref: options.ticket_ref,
+          narrative: options.narrative,
+          subjectType: options.subjectType,
+          subjectAttributes: options.subjectAttributes,
+          case: options.case,
+          prompt_version: options.prompt_version,
+          model: options.model,
+          evidence,
+          evaluations,
+          assessment,
+          cost,
+          durations,
+        };
+  - node: rules/investigation/an-answer-arrives-within-the-declared-deadline
+    held_at: the PERSISTENCE_STAGE_BUDGET_MS constant
+    evidence: 'const PERSISTENCE_STAGE_BUDGET_MS = 2_000;'
+  - node: rules/investigation/an-investigation-is-written-once
+    held_at: raceWriteAttempt
+    evidence: >-
+      (error: unknown): WriteAttemptOutcome => (error instanceof InvestigationAlreadyStoredError ?
+      'settled' : 'failed'),
+  - node: rules/investigation/replay-is-pinned
+    held_at: "buildInvestigationOptions, the pins forwarded into the factory input"
+    evidence: |-
+      case: options.case,
+      prompt_version: options.prompt_version,
+      model: options.model,
+      evidence,
+  - node: rules/investigation/the-response-follows-the-record
+    held_at: "runDiagnosis: the write is awaited before the return"
+    evidence: |-
+      await writeWithinDeadline({
+          store: options.store,
+          investigation,
+          now: options.now,
+          deadline: options.deadline,
+          elapsedBeforePersistenceMs,
+        });
+        return investigation.assessment;
+  - node: rules/investigation/written-at-records-when-the-write-settled
+    held_at: >-
+      buildInvestigationOptions, the return object — written_at is absent from what this file
+      assembles and hands to the factory ahead of the settling write
+    evidence: |-
+      return {
+          id: options.id,
+          requester: options.requester,
+          ticket_ref: options.ticket_ref,
+          narrative: options.narrative,
+          subjectType: options.subjectType,
+          subjectAttributes: options.subjectAttributes,
+          case: options.case,
+          prompt_version: options.prompt_version,
+          model: options.model,
+          evidence,
+          evaluations,
+          assessment,
+          cost,
+          durations,
+        };
+  - node: scenarios/investigation/no-response-without-a-record
+    held_at: "writeWithinDeadline, the throw branch"
+    evidence: |-
+      if (!settled) {
+          throw new InvestigationWriteDeadlineExceededError(investigation.id, Math.max(0, deadline - readClockMs()));
+        }
+looked_past: >-
+  The file's own helper decomposition (Symbol-based timeout sentinel, the small private
+  persistenceStageBoundMs/persistWithinBound/raceWriteAttempt/stageTimeout functions) is a
+  code-shape choice rather than a domain fact, so it is not reported here; the
+  retry-on-failure-not-on-timeout mechanics it implements are examined below under the opened
+  candidate rather than as a style concern.
+candidates_opened:
+  - rules/investigation/no-stage-aborts-on-its-deadline

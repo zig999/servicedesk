@@ -1,0 +1,81 @@
+read:
+  - node: domain/investigation/evidence
+    held_at: |-
+      function citesADeclaredField(context: HypothesisCitationContext, citation: Citation): boolean {
+        const citedEvidence = context.evidence.find((item) => item.concept === citation.concept);
+        ...
+        return citedEvidence.fields.some((field) => field.name === citation.field);
+      }
+    evidence: |-
+      const citedEvidence = context.evidence.find((item) => item.concept === citation.concept);
+      ...
+      return citedEvidence.fields.some((field) => field.name === citation.field);
+  - node: domain/knowledge/hypothesis-revision
+    held_at: |-
+      export type HypothesisCitationContext = {
+        readonly collects: readonly string[];
+        readonly evidence: readonly Evidence[];
+      };
+      function citesACollectedConcept(collects: readonly string[], citation: Citation): boolean {
+        return collects.includes(citation.concept);
+      }
+    evidence: |-
+      readonly collects: readonly string[];
+      ...
+      return collects.includes(citation.concept);
+  - node: rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+    held_at: |-
+      export function declaredFieldsOf(outputSchema: string | undefined): readonly string[] {
+        if (outputSchema === undefined) {
+          return [];
+        }
+        const parsed = parseJsonOrUndefined(outputSchema);
+        if (!isPlainObject(parsed) || !isPlainObject(parsed.properties)) {
+          return [];
+        }
+        return Object.keys(parsed.properties);
+      }
+    evidence: 'return Object.keys(parsed.properties);'
+  - node: rules/investigation/a-citation-stays-within-the-hypothesis-collects
+    held_at: |-
+      export function isCitationValid(context: HypothesisCitationContext, citation: Citation): boolean {
+        return citesACollectedConcept(context.collects, citation) && citesADeclaredField(context, citation);
+      }
+      function citesACollectedConcept(collects: readonly string[], citation: Citation): boolean {
+        return collects.includes(citation.concept);
+      }
+    evidence: 'return citesACollectedConcept(context.collects, citation) && citesADeclaredField(context, citation);'
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: |-
+      function citesADeclaredField(context: HypothesisCitationContext, citation: Citation): boolean {
+        const citedEvidence = context.evidence.find((item) => item.concept === citation.concept);
+        ...
+        return citedEvidence.fields.some((field) => field.name === citation.field);
+      }
+    evidence: |-
+      const citedEvidence = context.evidence.find((item) => item.concept === citation.concept);
+      ...
+      return citedEvidence.fields.some((field) => field.name === citation.field);
+  - node: scenarios/investigation/a-citation-names-a-nested-output-schema-field
+    held_at: 'return citedEvidence.fields.some((field) => field.name === citation.field);'
+    evidence: 'return citedEvidence.fields.some((field) => field.name === citation.field);'
+  - node: scenarios/investigation/a-re-registered-capability-does-not-change-a-past-judgment
+    held_at: |-
+      function citesADeclaredField(context: HypothesisCitationContext, citation: Citation): boolean {
+        const citedEvidence = context.evidence.find((item) => item.concept === citation.concept);
+        ...
+        return citedEvidence.fields.some((field) => field.name === citation.field);
+      }
+    evidence: |-
+      const citedEvidence = context.evidence.find((item) => item.concept === citation.concept);
+      ...
+      return citedEvidence.fields.some((field) => field.name === citation.field);
+looked_past: >-
+  declaredFieldsOf only extracts an output schema's own top-level property keys and never takes a
+  responseMap or resolves a path in a response body, so the full three-way condition
+  rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+  states is not assembled anywhere in this file; nothing here states that condition differently or
+  claims it as settled, so whether the rest of the rule is implemented elsewhere is a completeness
+  question for a different pass, not a stated-fact conflict.
+candidates_opened:
+  - domain/investigation/citation

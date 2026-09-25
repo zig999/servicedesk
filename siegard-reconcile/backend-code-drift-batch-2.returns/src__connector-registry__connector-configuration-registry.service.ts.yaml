@@ -1,0 +1,27 @@
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: >-
+      the four public methods of ConnectorConfigurationRegistryService — registerConnector
+      (lines 31-40), removeConnector (lines 42-44), readConnectorConfiguration /
+      readConnectorConfigurationOrThrow (lines 46-58), and listConnectorConfigurations
+      (lines 60-73)
+    evidence: |-
+      const kept = held.filter((candidate) => candidate.connector !== configuration.connector);
+      await this.store.writeConnectorConfigurations([...kept, configuration]);
+  - node: rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
+    held_at: readConnectorConfigurationOrThrow, lines 52-58
+    evidence: |-
+      const resolution = await this.readConnectorConfiguration(connector);
+      if (!resolution.held) {
+        throw new ConnectorConfigurationNotFoundError(resolution.connector);
+      }
+looked_past: >-
+  The file also implements orphaned-placeholder refusal (refuseOrphanedPlaceholders /
+  orphanedAcrossEveryCapability) and configuration well-formedness / completeness checks
+  (heldConfiguration, wellFormedConfiguration, textConfigurationOrThrow,
+  registrationProblems) and an unconditional removeConnector, which read consistently
+  with rules/integration/a-connector-configuration-holds-a-well-formed-object,
+  rules/integration/a-connector-configuration-names-its-connector, and
+  rules/integration/removing-a-connector-configuration-is-unconditional under
+  knowledge/rules/integration/ — none of those nodes are in this delegation's own set, so
+  their conformance is another judgment's to report.

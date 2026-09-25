@@ -1,0 +1,175 @@
+findings:
+  - file: src/http/dto/simulate-case.dto.ts
+    where: "citationSchema (lines 29-32), reused unchanged across every verdict branch of evaluationSchema (lines 39-65)"
+    evidence: |-
+      const citationSchema = z.object({
+        concept: z.string().min(1),
+        field: z.string().min(1).optional(),
+      });
+    cost: >-
+      A citation attached to a confirmed or refuted evaluation can validate with no `field` at
+      all, even though the specification requires that field be present whenever a citation
+      grounds a confirmed or refuted verdict. The schema uses one shape for every verdict branch
+      — the same shape the inconclusive/no-data branch uses — so nothing here can ever catch a
+      decided citation that fails to point at the one place in the evidence it is supposed to
+      name.
+    kind: contradicts
+    correction: >-
+      Give confirmed and refuted citations their own shape with `field` required, and keep the
+      current optional/absent shape only for the inconclusive branch, so the discriminated union
+      enforces field-presence by verdict the way it already enforces `citations.min(1)` and
+      `reason` by verdict.
+    node: domain/investigation/citation
+  - file: src/http/dto/simulate-case.dto.ts
+    where: "costSchema (lines 89-93)"
+    evidence: |-
+      const costSchema = z.object({
+        calls: z.number(),
+        input_tokens: z.number(),
+        output_tokens: z.number(),
+      });
+    cost: >-
+      A cost payload with a fractional `calls` or token count (e.g. 3.5 calls) validates cleanly,
+      even though the specification declares calls, input_tokens and output_tokens as integers.
+      The same file holds durationsSchema and usageSchema to `z.int()` for their own
+      integer-typed attributes, so a reader has no reason to expect cost's counts are looser than
+      every other integer-typed field around them.
+    kind: contradicts
+    correction: >-
+      Use z.int() for calls, input_tokens and output_tokens, matching domain/investigation/cost's
+      declared type and the int discipline durationsSchema/usageSchema already apply in this same
+      file.
+    node: domain/investigation/cost
+read:
+  - node: contracts/investigation/case-simulation
+    held_at: "simulateCaseRequestSchema (lines 21-25) and simulateCaseResponseSchema (lines 102-109)"
+    evidence: |-
+      export const simulateCaseRequestSchema = z.object({
+        case: caseRefSchema,
+        subject: subjectSchema,
+        requester: z.string().min(1),
+      });
+      ...
+      export const simulateCaseResponseSchema = z.object({
+        evidence: z.array(evidenceSchema).readonly(),
+        evaluations: z.array(evaluationSchema).readonly(),
+        resolved: resolvedOutcomeSchema,
+        assessment: assessmentSchema,
+        cost: costSchema,
+        durations: durationsSchema,
+      });
+  - node: domain/investigation/assessment
+    held_at: "assessmentSchema (lines 78-87)"
+    evidence: |-
+      const assessmentSchema = z.object({
+        outcome: z.string().min(1),
+        referral: referralSchema,
+        determining_hypothesis: z.string().min(1).optional(),
+        text: z.string().min(1),
+        register: z.enum(CONSOLIDATION_REGISTERS),
+        usage: usageSchema,
+        elapsed_ms: z.int(),
+        prompt: z.string(),
+      });
+  - node: domain/investigation/citation
+    held_at: "citationSchema (lines 29-32), used identically in every verdict branch of evaluationSchema"
+    evidence: |-
+      const citationSchema = z.object({
+        concept: z.string().min(1),
+        field: z.string().min(1).optional(),
+      });
+  - node: domain/investigation/cost
+    held_at: "costSchema (lines 89-93)"
+    evidence: |-
+      const costSchema = z.object({
+        calls: z.number(),
+        input_tokens: z.number(),
+        output_tokens: z.number(),
+      });
+  - node: domain/investigation/durations
+    held_at: "durationsSchema (lines 95-100)"
+    evidence: |-
+      const durationsSchema = z.object({
+        collection: z.int(),
+        judgment: z.int(),
+        writing: z.int().optional(),
+        total: z.int(),
+      });
+  - node: domain/investigation/evaluation
+    held_at: "evaluationSchema (lines 39-65)"
+    evidence: |-
+      const evaluationSchema = z.discriminatedUnion('verdict', [
+        z.object({
+          hypothesis: z.string().min(1),
+          verdict: z.literal('confirmed'),
+          citations: z.array(citationSchema).min(1).readonly(),
+          usage: usageSchema.optional(),
+          elapsed_ms: z.int().optional(),
+          prompt: z.string().optional(),
+        }),
+        ...
+      ]);
+  - node: domain/investigation/evaluation-reason
+    held_at: "the inconclusive branch of evaluationSchema (line 59)"
+    evidence: "reason: z.enum(EVALUATION_REASONS),"
+  - node: domain/investigation/evidence
+    held_at: "simulateCaseResponseSchema's evidence field (line 103); the item shape itself is imported from evidence.dto.ts, outside this file"
+    evidence: "evidence: z.array(evidenceSchema).readonly(),"
+  - node: domain/investigation/evidence-result
+    held_at: nowhere
+    evidence: "import { evidenceSchema } from './evidence.dto.js';"
+  - node: domain/investigation/subject
+    held_at: "subjectSchema (lines 11-14)"
+    evidence: |-
+      const subjectSchema = z.object({
+        type: z.string().min(1),
+        attributes: z.array(subjectAttributeValueSchema),
+      });
+  - node: domain/investigation/subject-attribute-value
+    held_at: "subjectAttributeValueSchema (lines 6-9)"
+    evidence: |-
+      const subjectAttributeValueSchema = z.object({
+        attribute: z.string().min(1),
+        value: z.string().min(1),
+      });
+  - node: domain/investigation/usage
+    held_at: "usageSchema (lines 34-37)"
+    evidence: |-
+      const usageSchema = z.object({
+        input_tokens: z.int(),
+        output_tokens: z.int(),
+      });
+  - node: domain/investigation/verdict
+    held_at: "the discriminated union literals in evaluationSchema (lines 42, 50, 58)"
+    evidence: |-
+      verdict: z.literal('confirmed'),
+      ...
+      verdict: z.literal('refuted'),
+      ...
+      verdict: z.literal('inconclusive'),
+  - node: domain/knowledge/referral
+    held_at: "referralSchema (lines 67-70)"
+    evidence: |-
+      const referralSchema = z.object({
+        action: z.string().min(1),
+        recipient: z.string().min(1),
+      });
+  - node: domain/knowledge/resolution
+    held_at: "resolvedOutcomeSchema (lines 72-76)"
+    evidence: |-
+      const resolvedOutcomeSchema = z.object({
+        outcome: z.string().min(1),
+        referral: referralSchema,
+        determining: z.string().min(1).optional(),
+      });
+looked_past: >-
+  caseRefSchema's slug/version pair (lines 16-19) and simulateCaseRequestSchema's requester field
+  are plain identifier/actor plumbing with no node in this pack or the wider specification
+  stating a conflicting shape for them, so they were not carried into a finding;
+  resolvedOutcomeSchema's extra `determining` field beyond domain/knowledge/resolution's two
+  attributes was checked against domain/knowledge/case-version (a candidate, opened) and matches
+  that node's own account of what resolve-outcome returns, so it is not reported as drift
+  against domain/knowledge/resolution.
+candidates_opened:
+  - domain/knowledge/case-version
+  - domain/investigation/investigation

@@ -1,0 +1,19 @@
+read:
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: >-
+      the file's only test touching hypothesis_revisions mutability covers solely the
+      draft-state case — `it("changes an already-stored hypothesis revision's own columns
+      on an ordinary UPDATE while the revision's own state is still draft", ...)` — and
+      performs `UPDATE hypothesis_revisions SET criterion = 'A revised criterion.' WHERE
+      case_slug = $1 AND hypothesis_name = $2 AND revision = 1` expecting it to succeed;
+      no test in this file ever inserts or transitions a hypothesis_revisions row into
+      released state and attempts to alter it, so the refusal, its HTTP 409 status and its
+      ReleasedHypothesisRevisionNotAlterableError name are not observed here.
+looked_past: >-
+  the file does test released-state immutability, but only for case_versions rows
+  ("leaves a released case_versions row's own columns unchanged...") and for
+  case_version_hypotheses manifest entries ("refuses to alter/delete a manifest entry
+  belonging to a released case version") — both a different invariant than this node,
+  which grounds the refusal in the hypothesis_revisions row's own state rather than any
+  case version or manifest reference to it, and neither is part of this pack.

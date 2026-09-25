@@ -1,0 +1,47 @@
+read:
+  - node: domain/investigation/evidence
+    held_at: >-
+      the payload_notes mapping in toCapability, which represents a capability's payload_notes
+      as absent (the property entirely omitted from the returned object) whenever the stored
+      value is null or the empty string — the representation the capability_payload_notes
+      snapshot rule relies on to tell "a capability registered with none" apart from one that
+      declared notes
+    evidence: >-
+      ...(row.payload_notes !== null && row.payload_notes !== '' ? { payload_notes: row.payload_notes } : {}),
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: >-
+      the ICapabilityRow interface, which types input_schema, output_schema and timeout as
+      required, non-nullable columns carried straight through toCapability into the Capability it
+      returns
+    evidence: |-
+      readonly input_schema: string;
+      readonly output_schema: string;
+      readonly timeout: number;
+findings:
+  - file: src/persistence/relational-capability-store.repository.ts
+    where: "toCapability, the isCapabilityNature guard"
+    evidence: >-
+      throw raiseReadFailure(
+        new Error(`capabilities holds an unrecognized nature "${row.nature}" for "${row.name}" version "${row.version}"`),
+      );
+    cost: >-
+      The repository decides, on its own, that a persisted row whose nature falls outside the
+      capability-nature vocabulary is a capability-store read failure rather than some other
+      outcome (a skip, a distinct refusal, a distinct error identity). No node states what a
+      stored row with an unrecognized nature means or how the store should answer it, so a
+      reader who wants to know what happens to such a row has nowhere in the specification to
+      look — only this file says so, and it says so as a plain read failure indistinguishable
+      from a connection error.
+    kind: unstated
+    correction: >-
+      A node over domain/integration/capability or domain/integration/capability-nature would
+      need to state what a persisted row with a nature outside the enumeration means for the
+      store, and what the store's answer to reading it should be.
+looked_past: >-
+  The write path loops over capabilities issuing one upsert statement per record inside a single
+  transaction, and the store's read/write failures are both folded through the same generic
+  CapabilityStoreError shape — neither is a domain-fact question, so I left both alone.
+candidates_opened:
+  - domain/integration/capability
+  - domain/integration/capability-nature
+  - constraints/the-register-capability-route-defers-the-nature-vocabulary-to-the-registry

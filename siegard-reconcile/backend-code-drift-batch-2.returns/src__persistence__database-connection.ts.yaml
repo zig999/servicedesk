@@ -1,0 +1,20 @@
+read:
+  - node: constraints/the-connection-pool-is-bounded-by-configuration
+    held_at: >-
+      createDatabaseConnection, which takes maxConnections, idleTimeoutMs and
+      statementTimeoutMs as the pool's three bounds and forwards each directly to pg's Pool
+      constructor as max, idleTimeoutMillis and statement_timeout, with no bound taken from the
+      driver's own default.
+    evidence: |-
+      return new Pool({
+        connectionString: connectionUrl,
+        max: poolOptions.maxConnections,
+        idleTimeoutMillis: poolOptions.idleTimeoutMs,
+        statement_timeout: poolOptions.statementTimeoutMs,
+      });
+looked_past: >-
+  IDatabaseConnectionPoolOptions declares all three bounds as required fields rather than
+  optional-with-default, so the node's "falling back to a declared default where the deployment
+  states none" is not implemented in this file; this file only receives and forwards
+  already-resolved values, and where that defaulting lives is outside this file set, so it is
+  not this file's finding.

@@ -1,0 +1,42 @@
+read:
+  - node: domain/investigation/evaluation
+    held_at: |-
+      function onlyEvaluationOf(evaluations: readonly Evaluation[]): Evaluation {
+        const [evaluation] = evaluations;
+        if (evaluation === undefined || evaluations.length !== 1) {
+          throw new Error(`expected exactly one evaluation for one named hypothesis, got ${evaluations.length}`);
+        }
+        return evaluation;
+      }
+
+      function durationsOf(evidence: readonly Evidence[], evaluation: Evaluation, totalElapsedMs: number): SimulateHypothesisDurations {
+        const collection = maxElapsedMs(evidence.map((item) => item.elapsed_ms));
+        const judgment = maxElapsedMs(evaluation.elapsed_ms === undefined ? [] : [evaluation.elapsed_ms]);
+        return { collection, judgment, total: totalElapsedMs };
+      }
+    evidence: |-
+      const entry = manifestEntryNamed(options.case, options.hypothesis);
+      const narrowedCase: Case = { ...options.case, manifest: [entry] };
+      ...
+      const evaluations = await judgeHypotheses({
+        case: narrowedCase,
+        evidenceByHypothesis: new Map([[options.hypothesis, evidence]]),
+        evaluator: options.evaluator,
+        poolSize: options.poolSize,
+        now: judgmentBeginsAtMs,
+        deadline: Math.min(options.deadline, judgmentBeginsAtMs + JUDGMENT_STAGE_BUDGET_MS),
+      });
+      const evaluation = onlyEvaluationOf(evaluations);
+looked_past: >-
+  onlyEvaluationOf throws a plain Error rather than a typed domain error for an
+  already-contract-guaranteed invariant (simulate-hypothesis judges exactly one named
+  hypothesis) — that choice of error shape is a code-quality matter, not a domain-fact judgment,
+  so it is not reported here.
+candidates_opened:
+  - domain/investigation/durations
+  - domain/investigation/cost
+  - contracts/investigation/case-simulation
+  - constraints/the-deadline-is-an-absolute-propagated-instant
+  - rules/knowledge/requires-evaluation-of-names-exactly-the-manifested-hypotheses
+  - rules/investigation/one-evaluation-per-required-hypothesis
+  - rules/investigation/a-simulated-hypothesis-returns-the-runs-cost-and-durations

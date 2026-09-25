@@ -1,0 +1,14 @@
+read:
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: >-
+      import type { Concept, ConceptRegistration, GlossaryTerm, TermVocabulary } from './terms.js';
+      readConcepts(): Promise<readonly ConceptRegistration[]>;
+      writeConcepts(concepts: readonly Concept[]): Promise<void>;
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: 'deleteConcept(name: string): Promise<void>;'
+looked_past: >-
+  The Concept and ConceptRegistration types' own attributes, and the refusal logic (409
+  ConceptInUseError, the conditions that block a removal) belong to terms.ts and the concrete
+  glossary service/repository, not to this port's bare method signatures.

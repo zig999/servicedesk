@@ -1,0 +1,15 @@
+read:
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: >-
+      the call `buildSubject(subjectType, subjectAttributes)` inside `buildInvestigation`; the
+      invariant's own check and throw (SubjectCarriesNoAttributeError when attributes.length ===
+      0) live in subject.ts's buildSubject, which this file calls before assembling the
+      Investigation rather than restating the check itself
+    evidence: |-
+      const { case: theCase, evidence, evaluations, subjectType, subjectAttributes } = options;
+      const subject = buildSubject(subjectType, subjectAttributes);
+looked_past: >-
+  `written_at: options.written_at!` forces an optional value with a non-null assertion rather
+  than a narrower type distinguishing the pre-settle and settled shapes; this is a type-safety
+  style choice, not a domain fact, and the file's own test suite (investigation-factory.spec.ts)
+  already exercises both the present- and absent-written_at paths this line covers.

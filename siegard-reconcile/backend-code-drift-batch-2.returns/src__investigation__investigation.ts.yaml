@@ -1,0 +1,38 @@
+read:
+  - node: rules/investigation/written-at-records-when-the-write-settled
+    held_at: >-
+      the `Investigation` type declaration (the file's only type describing a persisted
+      investigation) — `readonly written_at: string;` is declared as one field of that single
+      type, and no second, partial or "unsettled" variant of Investigation is declared anywhere
+      in the file.
+    evidence: |-
+      export type Investigation = {
+        readonly id: string;
+        readonly requester: string;
+
+        readonly ticket_ref?: string;
+        readonly narrative: string;
+        readonly subject: Subject;
+        readonly pinned_case: PinnedCase;
+        readonly prompt_version: string;
+        readonly model: string;
+        readonly evidence: readonly Evidence[];
+        readonly evaluations: readonly Evaluation[];
+        readonly assessment: Assessment;
+        readonly cost: Cost;
+        readonly durations: Durations;
+
+        readonly written_at: string;
+      };
+looked_past: >-
+  Checked the full attribute shape (id, requester, ticket_ref, narrative, subject, pinned_case,
+  prompt_version, model, evidence, evaluations, assessment, cost, durations, written_at) against
+  candidate domain/investigation/investigation, whose declared attributes and pinned-case
+  relationship (pinned by slug and version) match this file's Investigation and PinnedCase types;
+  a minor representational difference — the node types written_at as datetime while the file
+  types it as TS `string` — is a wire-format convention rather than a fact this pack's node
+  speaks to, so it is left to whichever pass reviews that candidate directly.
+candidates_opened:
+  - domain/investigation/investigation
+  - domain/knowledge/case
+  - domain/knowledge/case-version

@@ -1,0 +1,66 @@
+findings:
+  - file: src/glossary/glossary.service.ts
+    where: "the `concepts()` mapping, line 43"
+    evidence: "description: registration.description ?? '',"
+    cost: >-
+      domain/glossary/concept declares description a required string attribute of the Concept
+      value-object, and registerConcept() enforces exactly that by refusing a missing description
+      before any write reaches the store. concepts() reads the same store back and silently turns
+      an absent description into an empty string instead of surfacing the gap, so a stored
+      concept that should never lack a description — per the node — is presented to every caller
+      (terms lookups, listConcepts, readConcept) as if an empty description were a normal,
+      always-allowed value. A reader who later meets an empty-description concept has no way to
+      tell "explicitly documented as blank" from "the read path quietly patched over missing
+      data," and the required-ness the node states is not what the running read path actually
+      holds.
+    kind: contradicts
+    correction: >-
+      Either stop defaulting the missing description in concepts() and let a record without one
+      surface as a data-integrity failure (consistent with how a-vocabulary-holds-each-name-once
+      treats a corrupted holding), or add to domain/glossary/concept an explicit statement that a
+      concept read with no stored description is treated as having an empty one.
+    node: domain/glossary/concept
+read:
+  - node: domain/glossary/concept
+    held_at: >-
+      the `Concept` object literals built in `concepts()` (lines 39-44) and in `registerConcept()`
+      (lines 51-56)
+    evidence: |-
+      return registrations.map((registration) => ({
+        name: registration.name,
+        accepts: registration.accepts,
+        ttl: registration.ttl ?? DEFAULT_CONCEPT_TTL_SECONDS,
+        description: registration.description ?? '',
+      }));
+      ...
+      const concept: Concept = {
+        name: registration.name,
+        accepts: registration.accepts,
+        ttl: registration.ttl ?? DEFAULT_CONCEPT_TTL_SECONDS,
+        description: registration.description,
+      };
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: "the `assertUniqueNames` function, called from `terms()` (line 29) and `concepts()` (line 38)"
+    evidence: |-
+      function assertUniqueNames(vocabulary: string, records: readonly { readonly name: string }[]): void {
+        const seen = new Set<string>();
+        for (const record of records) {
+          if (seen.has(record.name)) {
+            throw new DuplicateGlossaryNameError(vocabulary, record.name);
+          }
+          seen.add(record.name);
+        }
+      }
+looked_past: >-
+  The read-time ttl fallback `registration.ttl ?? DEFAULT_CONCEPT_TTL_SECONDS` in concepts()
+  duplicates the same default registerConcept() already resolves before writing, and
+  removeConcept()'s usage-check and withNonConclusionOutcomes() correctly implement the
+  candidates a-registered-concept-is-never-removed and
+  the-non-conclusion-outcomes-precede-the-first-case (bound elsewhere in this batch) — none of
+  that is a domain-fact conflict, so it is left to whichever pass owns code shape or those files'
+  own bindings.
+candidates_opened:
+  - rules/glossary/a-concept-declares-its-description
+  - rules/glossary/a-registered-concept-is-never-removed
+  - rules/glossary/the-non-conclusion-outcomes-precede-the-first-case
+  - rules/knowledge/a-collected-concept-declares-a-ttl

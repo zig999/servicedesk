@@ -1,0 +1,25 @@
+read:
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: >-
+      the readOpenApiDocument(documentText) call at the top of readOpenApiOperation, which parses
+      the fetched text and enforces the version/serialization refusal before any operation is
+      resolved from the document — the actual parsing, serialization-detection and version-refusal
+      logic lives in the imported openapi-document-reader.ts, and this file only consumes it by
+      delegation, propagating whatever it throws before producing any reading.
+    evidence: 'const document = readOpenApiDocument(documentText);'
+  - node: scenarios/integration/a-swagger-2-document-refuses-the-draft
+    held_at: >-
+      the same readOpenApiDocument(documentText) call: when the fetched document declares swagger
+      2.0, that call throws before operationEntry, parameterDetailsOf or any other reading in this
+      file runs, so no draft-relevant reading is produced for a swagger 2.0 document.
+    evidence: 'const document = readOpenApiDocument(documentText);'
+looked_past: >-
+  readOpenApiOperation independently upper-cases the chosen operation's method
+  (`method: method.toUpperCase()`) to build OpenApiOperationReading.method; this coincides with
+  the domain fact rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method
+  holds for the drafted configuration's method, but that node is outside this pack and the
+  computation here reads as a normalization consistent with it rather than a contradiction, so it
+  is left to whichever pass owns that node's binding.
+candidates_opened:
+  - rules/integration/an-openapi-operations-method-is-upper-cased
+  - rules/integration/a-connector-configuration-draft-states-the-chosen-operations-method

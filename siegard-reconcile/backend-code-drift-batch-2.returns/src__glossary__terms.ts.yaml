@@ -1,0 +1,45 @@
+read:
+  - node: domain/glossary/action
+    held_at: "the Action type alias, line 9"
+    evidence: 'export type Action = GlossaryTerm;'
+  - node: domain/glossary/concept
+    held_at: "the Concept type, lines 17-25"
+    evidence: |-
+      export type Concept = {
+        readonly name: string;
+
+        readonly accepts: readonly string[];
+
+        readonly ttl: number;
+
+        readonly description: string;
+      };
+  - node: domain/glossary/outcome
+    held_at: "the Outcome type alias, line 7"
+    evidence: 'export type Outcome = GlossaryTerm;'
+  - node: domain/glossary/recipient
+    held_at: "the Recipient type alias, line 11"
+    evidence: 'export type Recipient = GlossaryTerm;'
+  - node: domain/glossary/subject-type
+    held_at: "the SubjectType type alias, line 5"
+    evidence: 'export type SubjectType = GlossaryTerm;'
+  - node: rules/glossary/the-non-conclusion-outcomes-precede-the-first-case
+    held_at: "the NON_CONCLUSION_OUTCOMES constant, lines 36-39"
+    evidence: |-
+      export const NON_CONCLUSION_OUTCOMES: readonly Outcome[] = [
+        { name: 'inconclusive-no-data' },
+        { name: 'inconclusive-hypotheses-exhausted' },
+      ];
+  - node: rules/knowledge/a-collected-concept-declares-a-ttl
+    held_at: >-
+      the DEFAULT_CONCEPT_TTL_SECONDS constant (line 34) and the optional ttl field of
+      ConceptRegistration (line 30)
+    evidence: 'export const DEFAULT_CONCEPT_TTL_SECONDS = 60;'
+looked_past: >-
+  ConceptRegistration's optional description field (line 31) states no fact on its own about
+  whether a missing description is refused — that refusal is
+  rules/glossary/a-concept-declares-its-description, which I opened as a candidate and confirmed
+  is bound to src/http/dto/register-concept.dto.ts, not to this file, so its enforcement belongs
+  to that DTO's own review rather than this one.
+candidates_opened:
+  - rules/glossary/a-concept-declares-its-description

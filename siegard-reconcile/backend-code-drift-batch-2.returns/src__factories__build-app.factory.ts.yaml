@@ -1,0 +1,33 @@
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: >-
+      the buildAppDependencies composition, which spreads readDependencies, listDependencies,
+      registrationDependencies and removeConnectorDependencies to wire all four published
+      operations
+    evidence: |-
+      readConnectorConfiguration: { readConnectorConfiguration: resources.readConnectorConfigurationOrThrow },
+      listConnectorConfigurations: { listConnectorConfigurations: resources.listConnectorConfigurations, ...pagination },
+      registerConnector: { registerConnector: resources.registerConnector },
+      removeConnector: { removeConnector: resources.removeConnector },
+  - node: domain/integration/connector-configuration-registry
+    held_at: >-
+      composeResources' delegation of registerConnector and removeConnector to
+      connectorConfigurationRegistry
+    evidence: |-
+      registerConnector: (registration) => connectorConfigurationRegistry.registerConnector(registration),
+      removeConnector: (connector) => connectorConfigurationRegistry.removeConnector(connector),
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: composeResources' delegation of registerConcept and removeConcept to glossary
+    evidence: >-
+      registerConcept: (registration) => glossary.registerConcept(registration), removeConcept: (name) => glossary.removeConcept(name),
+  - node: rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
+    held_at: >-
+      readDependencies' selection of readConnectorConfigurationOrThrow — the throwing variant —
+      for the read-connector-configuration dependency
+    evidence: >-
+      readConnectorConfiguration: { readConnectorConfiguration: resources.readConnectorConfigurationOrThrow },
+looked_past: >-
+  testConnectorDependencies and draftConnectorConfigurationFromOpenApiDependencies wire the
+  non-throwing readConnectorConfiguration (resources.readConnectorConfiguration, not the OrThrow
+  variant) for the test-connector and draft-connector-configuration-from-openapi operations,
+  which are governed by nodes outside this file's set and outside this pass's scope.

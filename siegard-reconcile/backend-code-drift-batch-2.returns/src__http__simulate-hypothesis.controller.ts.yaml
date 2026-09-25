@@ -1,0 +1,56 @@
+findings:
+  - file: src/http/simulate-hypothesis.controller.ts
+    where: "the return statement of handleSimulateHypothesisRequest, line 30"
+    evidence: 'return { evidence, evaluation, durations };'
+    cost: >-
+      a curator dispatching simulate-hypothesis to see one hypothesis's own run has no way to
+      read that run's cost (calls, input tokens, output tokens) from the response at all, even
+      though the same endpoint's sibling simulate-case discloses cost for the whole run, and
+      rules/investigation/a-simulation-session-retains-its-runs-and-shows-one presents cost from
+      exactly this returned record — a hypothesis run's own record leaves that surface nothing to
+      show.
+    correction: >-
+      the object this function returns (and SimulateHypothesisResponseDto, and
+      SimulateHypothesisPipelineResult feeding it) would need to carry a cost field totaling the
+      one judgment call the narrowed run provoked, alongside durations.
+    kind: contradicts
+    node: rules/investigation/a-simulated-hypothesis-returns-the-runs-cost-and-durations
+read:
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: |-
+      const { evidence, evaluation, durations } = await dependencies.runSimulateHypothesis({
+          subjectType: body.subject.type,
+          subjectAttributes: body.subject.attributes,
+          case: pinnedCase,
+          requester: body.requester,
+          hypothesis: body.hypothesis,
+          now,
+          deadline: now + TOTAL_DEADLINE_BUDGET_MS,
+        });
+      This is the whole of what the controller states about the run; it names no concept and
+      reads no glossary itself — the read-concept operation this contract describes is not stated
+      here at all, only delegated whole to the injected pipeline function.
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: "the unconditional path from buildSubject straight into dependencies.runSimulateHypothesis, lines 19-29"
+    evidence: |-
+      buildSubject(body.subject.type, body.subject.attributes);
+      const now = Date.now();
+      const { evidence, evaluation, durations } = await dependencies.runSimulateHypothesis({
+      No requirement-completeness check sits between those two calls, and no branch here refuses
+      the call for an attribute a case-input-requirement names required; the call proceeds
+      regardless of which attributes the subject carries.
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: "the call to buildSubject(body.subject.type, body.subject.attributes), line 19"
+    evidence: |-
+      buildSubject(body.subject.type, body.subject.attributes);
+      The controller states no attribute-count check of its own; it delegates the invariant's
+      enforcement to buildSubject, imported from '../investigation/subject.js', calling it before
+      the run proceeds.
+looked_past: >-
+  the file's TOTAL_DEADLINE_BUDGET_MS = 20_000 constant is a domain figure the controller states
+  on its own account, but knowledge/decision-log.md (the
+  constraints/the-diagnosis-and-simulation-routes-are-rate-limited entry) discloses that this
+  same twenty-second deadline the diagnosis route holds is decided to extend across
+  simulate-case and simulate-hypothesis too, so it is not an unstated value here and not this
+  pass's finding.

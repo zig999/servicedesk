@@ -1,0 +1,24 @@
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: >-
+      the routePluginFactories array entries wiring each of the four published operations to its
+      controller dependencies
+    evidence: |-
+      (dependencies) => createReadConnectorConfigurationRoutesPlugin(dependencies.readConnectorConfiguration),
+      (dependencies) => createListConnectorConfigurationsRoutesPlugin(dependencies.listConnectorConfigurations),
+      (dependencies) => createRegisterConnectorRoutesPlugin(dependencies.registerConnector),
+      (dependencies) => createRemoveConnectorRoutesPlugin(dependencies.removeConnector),
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: >-
+      build-app.ts only imports the controller-dependency types
+      (RegisterConnectorControllerDependencies, RemoveConnectorControllerDependencies,
+      ReadConnectorConfigurationControllerDependencies, ListConnectorConfigurationsControllerDependencies)
+      and wires their route plugins into the Fastify app; it contains no refusal logic, no
+      replace-on-register behavior and no unconditional-removal behavior — those responsibilities
+      are not stated here.
+looked_past: >-
+  The file wires roughly forty other route plugins (capabilities, concepts, cases, hypotheses,
+  glossary terms, OpenAPI drafting) that correspond to specification nodes outside this pack; that
+  breadth of composition and any structural repetition in the routePluginFactories array is a
+  code-review concern, not a domain-fact conformance question, so it is not reported here.

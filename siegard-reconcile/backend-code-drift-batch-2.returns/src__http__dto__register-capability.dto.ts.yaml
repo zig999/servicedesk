@@ -1,0 +1,34 @@
+read:
+  - node: constraints/the-register-capability-route-defers-completeness-to-the-registry
+    held_at: >-
+      registerCapabilityParamsSchema's name and version fields, and every field of
+      registerCapabilityBodySchema
+    evidence: |-
+      export const registerCapabilityParamsSchema = z.object({
+        name: z.string(),
+        version: z.string(),
+      });
+      export const registerCapabilityBodySchema = z.object({
+        nature: z.string().optional(),
+        input_schema: z.string().optional(),
+        output_schema: z.string().optional(),
+        timeout: z.number().int().positive().optional(),
+        connector: z.string().optional(),
+        concept: z.string().optional(),
+        payload_notes: z.string().optional(),
+      });
+  - node: contracts/integration/capability-registry
+    held_at: >-
+      the whole file, which declares the request shape (params and body) for the
+      register-capability operation this contract publishes
+    evidence: |-
+      export const registerCapabilityParamsSchema = z.object({
+      export const registerCapabilityBodySchema = z.object({
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: registerCapabilityBodySchema's input_schema, output_schema and timeout fields
+    evidence: |-
+      input_schema: z.string().optional(),
+        output_schema: z.string().optional(),
+        timeout: z.number().int().positive().optional(),
+candidates_opened:
+  - domain/integration/capability

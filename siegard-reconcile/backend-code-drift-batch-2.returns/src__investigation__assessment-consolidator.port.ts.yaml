@@ -1,0 +1,26 @@
+read:
+  - node: domain/investigation/evaluation
+    held_at: >-
+      the `evaluations` parameter of `consolidate` in `IAssessmentConsolidator`, which takes the
+      type as declared elsewhere rather than restating its attributes
+    evidence: |-
+      consolidate(
+        evaluations: readonly Evaluation[],
+  - node: domain/investigation/evidence
+    held_at: >-
+      the `evidence` parameter of `consolidate` in `IAssessmentConsolidator`, which takes the type
+      as declared elsewhere rather than restating its attributes
+    evidence: |-
+      evidence: readonly Evidence[],
+looked_past: >-
+  The `ConsolidationOutcome` type (text, register, usage, elapsed_ms, prompt) and the
+  `consolidate` signature's overall shape match
+  `rules/investigation/the-consolidation-answer-states-its-register` and
+  `domain/investigation/assessment-consolidator` — nodes outside this pack's set — correctly, so
+  no unstated or contradicting finding follows from them; this file's own node set (evaluation,
+  evidence) is used here only as opaque input types, never restated.
+candidates_opened:
+  - domain/investigation/assessment-consolidator
+  - domain/knowledge/consolidation-register
+  - rules/investigation/the-consolidation-answer-states-its-register
+  - constraints/consolidation-runs-behind-a-port

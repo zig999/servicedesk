@@ -1,0 +1,22 @@
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: >-
+      the three port methods that back the registry's synchronous surface — a bulk read standing
+      in for read/list, a bulk write standing in for register, and delete standing in for remove
+    evidence: |-
+      readConnectorConfigurations(): Promise<readonly ConnectorConfiguration[]>;
+      writeConnectorConfigurations(configurations: readonly ConnectorConfiguration[]): Promise<void>;
+      deleteConnectorConfiguration(connector: string): Promise<void>;
+  - node: domain/integration/connector-configuration-registry
+    held_at: >-
+      readConnectorConfigurations/writeConnectorConfigurations for holding the current
+      configuration set, and deleteConnectorConfiguration for removing one by name; the file
+      states no refusal logic (malformed JSON, undeclared placeholder) — that responsibility is
+      not claimed here
+    evidence: |-
+      writeConnectorConfigurations(configurations: readonly ConnectorConfiguration[]): Promise<void>;
+      deleteConnectorConfiguration(connector: string): Promise<void>;
+looked_past: >-
+  writeConnectorConfigurations takes the whole configuration array rather than a single named
+  entry, a persistence-shape choice with no stated domain claim attached, so it is left to
+  whichever judgment weighs implementation shape rather than treated as a domain-fact departure.

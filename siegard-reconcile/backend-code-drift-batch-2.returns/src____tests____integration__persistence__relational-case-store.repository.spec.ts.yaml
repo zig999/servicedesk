@@ -1,0 +1,40 @@
+read:
+  - node: domain/knowledge/hypothesis-revision
+    held_at: >-
+      throughout the spec — every insertHypothesisRevision/overwriteHypothesisRevision/
+      listHypothesisRevisions assertion carries revision, criterion, collects, resolution and
+      state together (e.g. lines 490-493), and the test at lines 1722-1744 exercises the fact
+      that a revision's own state moves only by its own release, never by the case version that
+      references it.
+    evidence: |-
+      expect(page.data).toEqual([
+        { revision: secondRevision, criterion: 'second criterion', collects: [conceptB], resolution: aResolution(glossary), state: 'draft' },
+        { revision: firstRevision, criterion: 'first criterion', collects: [conceptA], resolution: aResolution(glossary), state: 'draft' },
+      ]);
+      ... and: await store.placeHypothesis({ slug, version, hypothesis_name: 'a-hypothesis', revision, position: 1 }); await store.release(slug, version); const state = await store.readHighestRevisionReleaseState(slug, 'a-hypothesis'); expect(state).toEqual({ revision, state: 'draft' });
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: >-
+      every assertion on a revision's state field, restricted to exactly 'draft' and 'released'
+      (e.g. lines 617-638, 640-657, 591-615).
+    evidence: |-
+      await pool.query("UPDATE hypothesis_revisions SET state = 'released' WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3", [slug, 'a-hypothesis', revision]);
+      const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
+      expect(page.data).toEqual([{ revision, criterion: 'a criterion', collects: [], resolution: aResolution(glossary), state: 'released' }]);
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: >-
+      the test at lines 2118-2152, refusing overwriteHypothesisRevision against a revision whose
+      own state is released, with no case version ever referencing it.
+    evidence: |-
+      const rejection = store.overwriteHypothesisRevision({ slug, hypothesis_name: 'a-hypothesis', revision, criterion: "a criterion the revision's own released state should have refused", collects: [], resolution: aResolution(glossary) });
+      await expect(rejection).rejects.toBeInstanceOf(ReleasedHypothesisRevisionNotAlterableError);
+      const caught = await rejection.catch((error: unknown) => error);
+      expect(statusForError(caught)).toBe(409);
+looked_past: >-
+  The file also exercises facts belonging to nodes outside this pack — case, case-version,
+  case-summary/catalog shape, manifest-entry, listing order
+  (rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first), and revision
+  numbering (rules/knowledge/a-hypothesis-revision-number-is-never-reused, confirmed in
+  knowledge/projections/full-text.md) — none of which are this delegation's nodes to judge; and
+  the overwrite-released test (lines 2118-2152) checks only the error's instance and its 409
+  status, not the message or context contents the rule's statement details, which is a
+  test-completeness matter rather than a stated-fact contradiction.

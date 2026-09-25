@@ -1,0 +1,35 @@
+read:
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: the template literal built in the constructor, line 6
+    evidence: >-
+      `o caso "${slug}" na versão ${version} está no estado "${state === 'draft' ? 'rascunho' : 'liberada'}", e a liberação é o único gatilho que move uma versão para fora do rascunho`
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: the `super(...)` call's message argument, line 5-7
+    evidence: >-
+      `o caso "${slug}" na versão ${version} está no estado "${state === 'draft' ? 'rascunho' : 'liberada'}", e a liberação é o único gatilho que move uma versão para fora do rascunho`
+findings:
+  - file: src/errors/case-version-not-draft-at-release.error.ts
+    where: the trailing clause of the message built in the constructor, line 6
+    evidence: >-
+      `e a liberação é o único gatilho que move uma versão para fora do rascunho`
+    cost: >-
+      The rule that release is the only trigger leaving draft is stated by
+      rules/knowledge/a-case-version-moves-through-its-declared-lifecycle ("release is the one
+      trigger that ever leaves it"); this message re-derives it as explanatory prose independent
+      of that node. If the lifecycle node's transitions are ever revised — another way out of
+      draft added, or release itself changed — this clause has to be updated separately and in
+      step, and nothing ties the two together: a reader who trusts this refusal's wording after
+      such a change would be told a rule the specification no longer states, and correcting the
+      node's transitions would not correct this sentence.
+    kind: contradicts
+    correction: >-
+      Drop the explanatory clause and keep the message to the refusal's own facts (case, version,
+      state) that rules/knowledge/a-case-version-moves-through-its-declared-lifecycle already
+      requires the refusal to carry, leaving the transition rule itself stated only by that node.
+    node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+looked_past: >-
+  The class's shape — a named Error subclass, a readonly `context` object, the constructor
+  signature — mirrors sibling error classes' conventions; that consistency is a code-review
+  concern, not a domain fact, so it is not reported here.
+candidates_opened:
+  - rules/knowledge/a-case-version-moves-through-its-declared-lifecycle

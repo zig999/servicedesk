@@ -1,0 +1,42 @@
+read:
+  - node: domain/investigation/evaluation
+    held_at: >-
+      costOf and durationsOf, where evaluation.usage and evaluation.elapsed_ms are each read as
+      optional — present only when a judgment call actually happened, absent otherwise —
+      matching the node's rule that usage, elapsed_ms and prompt are "present exactly when a call
+      happened, absent when reason `no-data` means judgment was never called at all."
+    evidence: >-
+      const judgmentUsages = evaluations.flatMap((evaluation): Usage[] => (evaluation.usage ===
+      undefined ? [] : [evaluation.usage]));
+
+      const judgment = maxElapsedMs(evaluations.flatMap((evaluation) => (evaluation.elapsed_ms
+      === undefined ? [] : [evaluation.elapsed_ms])));
+  - node: domain/investigation/evidence
+    held_at: >-
+      durationsOf's collection computation and evidenceByHypothesisOf, where item.elapsed_ms is
+      read unconditionally (never guarded for undefined, unlike Evaluation's elapsed_ms) and
+      item.concept is read directly — consistent with elapsed_ms and concept both being required
+      attributes on this value-object.
+    evidence: >-
+      const collection = maxElapsedMs(evidence.map((item) => item.elapsed_ms));
+
+      byHypothesis.set(hypothesis.name, evidence.filter((item) =>
+      hypothesis.collects.includes(item.concept)));
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: nowhere
+    evidence: >-
+      const subject = buildSubject(options.subjectType, options.subjectAttributes);
+
+
+      The refusal itself (attributes.length === 0 throwing SubjectCarriesNoAttributeError) is
+      implemented in ./subject.ts's buildSubject, not in this file —
+      investigation-pipeline.ts only calls it and propagates whatever buildSubject decides.
+looked_past: >-
+  JUDGMENT_STAGE_BUDGET_MS = 5_000 and the Math.min(options.deadline, options.now +
+  JUDGMENT_STAGE_BUDGET_MS) clamp were checked against the specification: the figure and the
+  clamp-to-remaining-time pattern match
+  rules/investigation/an-answer-arrives-within-the-declared-deadline ("five of judgment") and the
+  deadline-propagation constraint, both outside this file's node set, so no finding was raised
+  over them.
+candidates_opened:
+  - rules/investigation/an-answer-arrives-within-the-declared-deadline

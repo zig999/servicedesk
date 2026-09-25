@@ -1,0 +1,29 @@
+read:
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: the violation string built in manifestOwnStateViolations()
+    evidence: 'violations.push(`a hipótese "${hypothesisName}" está manifestada em uma revisão que não está liberada`);'
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: the violation string built in manifestOwnStateViolations()
+    evidence: 'violations.push(`a hipótese "${hypothesisName}" está manifestada em uma revisão que não está liberada`);'
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: refuseNonDraft()
+    evidence: |-
+      if (assembled.state !== 'draft') {
+        throw new CaseVersionNotDraftAtReleaseError(assembled.slug, assembled.version, assembled.state);
+      }
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: >-
+      public async release(slug: string, version: number): Promise<void> { ... } — slug is used
+      throughout only as an identifier passed to the store and to error constructors; nothing in
+      this file states or enforces that no two cases share a slug
+candidates_opened:
+  - rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+looked_past: >-
+  manifestOwnStateViolations() implements the requirement that every manifested
+  hypothesis-revision be in released state before a case version may release, which is held (and
+  conformed to, naming only the hypothesis per entry) by candidate node
+  rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions rather than
+  by any node in this file's own set, so it produced no finding; the delegation of
+  structural/coherence checks to parseCaseDocument() and caseCoherenceViolations() in other files
+  is likewise those files' own judgment.

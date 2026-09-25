@@ -1,0 +1,44 @@
+read:
+  - node: domain/investigation/durations
+    held_at: >-
+      the IInvestigationRow interface, lines 270-279, and the persisted-durations assertions in
+      the cost/durations test, lines 414-419
+    evidence: |-
+      readonly durations_collection: number;
+      readonly durations_judgment: number;
+      readonly durations_writing: number | null;
+      readonly durations_total: number;
+      ---
+      expect(written?.durations_judgment).toBeGreaterThanOrEqual(MOCK_RESPONSE_DELAY_MS);
+      expect(written?.durations_writing).toBeGreaterThanOrEqual(MOCK_RESPONSE_DELAY_MS);
+      expect(written?.durations_collection).toBeGreaterThan(0);
+      expect(written?.durations_total).toBeGreaterThanOrEqual(
+        (written?.durations_collection ?? 0) + (written?.durations_judgment ?? 0) + (written?.durations_writing ?? 0),
+      );
+  - node: domain/knowledge/hypothesis-revision
+    held_at: >-
+      placeFixtureHypotheses (lines 155-180) and releaseManifestedRevisions (lines 182-190),
+      which drive a revision through revise then release
+    evidence: 'await lifecycle.releaseHypothesisRevision(slug, revision.hypothesis_name, revision.revision);'
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: the assertion at line 372
+    evidence: "expect(states).toEqual(manifestEntries.map(() => 'released'));"
+  - node: rules/investigation/a-measured-duration-below-one-millisecond-is-zero
+    held_at: nowhere
+    evidence: 'expect(written?.durations_collection).toBeGreaterThan(0);'
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: >-
+      releaseManifestedRevisions, lines 182-190, which performs the one forward release
+      transition against each placed revision
+    evidence: 'await lifecycle.releaseHypothesisRevision(slug, revision.hypothesis_name, revision.revision);'
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: >-
+      the test 'seeds every hypothesis-revision the fixture case version's manifest references as
+      released, once beforeAll has run', lines 360-373
+    evidence: |-
+      expect(manifestEntries.length).toBeGreaterThan(0);
+      expect(states).toEqual(manifestEntries.map(() => 'released'));
+looked_past: >-
+  The cost assertions (TOTAL_PROVIDER_CALLS, MOCK_INPUT_TOKENS_PER_CALL, MOCK_OUTPUT_TOKENS_PER_CALL
+  against cost_calls/cost_input_tokens/cost_output_tokens) belong to domain/investigation/cost,
+  which is not in this file's node pack.

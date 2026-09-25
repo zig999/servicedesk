@@ -1,0 +1,54 @@
+read:
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: >-
+      the problem-message string literals built throughout documentProblems,
+      manifestEntryProblems, stateProblems, sharedHypothesisProblems and sharedPositionProblems
+    evidence: |-
+      const NO_HYPOTHESIS_PROBLEM = 'o caso não declara nenhuma hipótese';
+      return isCaseVersionState(value) ? [] : ['o estado não é um dos valores rascunho, liberada'];
+      ...stringProblems(value['hypothesis_name'], `a hipótese da ${locator}`),
+      ...integerProblems(value['revision'], `a revisão da ${locator}`),
+      ...integerProblems(value['position'], `a posição da ${locator}`),
+      ['o manifesto não é uma lista de entradas']
+      .map(([name, at]) => `as entradas ${at.join(', ')} do manifesto compartilham a hipótese "${name}"`);
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: >-
+      the same problem-message string literals returned by documentProblems, stringProblems,
+      resolutionProblems and referralProblems, all composed entirely in Brazilian Portuguese
+    evidence: |-
+      return ['o documento não é um objeto JSON'];
+      return value === '' ? [`${subject} está em branco`] : [];
+      ...stringProblems(value['outcome'], `o desfecho ${genitive}`),
+  - node: domain/knowledge/case-version
+    held_at: >-
+      the CaseDocument type declaration (lines 27-39) and its field-by-field validation in
+      documentProblems (lines 57-69), matched by heldCase() (lines 251-269) which assembles
+      exactly that attribute set
+    evidence: |-
+      readonly title: string;
+      readonly when_to_use: string;
+      readonly version: number;
+      readonly authored_at: string;
+      readonly subject: string;
+      readonly fallback: Resolution;
+      readonly consolidation_register?: ConsolidationRegister;
+      readonly state: CaseVersionState;
+      readonly released_at?: string;
+      readonly manifest: readonly ManifestEntryDocument[];
+      ...
+      state: document.state,
+      ...(document.released_at !== undefined ? { released_at: document.released_at } : {}),
+      manifest,
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: |-
+      export function parseCaseDocument(document: unknown, slug: string): Case {
+      ...
+      ...stringProblems(document['slug'], 'o slug'),
+candidates_opened:
+  - rules/knowledge/a-case-has-at-least-one-hypothesis
+  - rules/knowledge/validation-runs-at-every-read
+  - rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  - rules/knowledge/a-hypothesis-is-manifested-at-most-once-in-a-case-version
+  - rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+  - rules/knowledge/a-hypothesis-collects-at-least-one-concept

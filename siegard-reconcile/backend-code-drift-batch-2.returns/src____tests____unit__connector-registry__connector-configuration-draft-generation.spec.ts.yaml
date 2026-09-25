@@ -1,0 +1,22 @@
+read:
+  - node: rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses
+    held_at: >-
+      the statusMap/status_readings assertions in the `it` blocks spanning lines 247-314 of the
+      spec, e.g. the always-empty-statusMap test and the ok/denied/unavailable-ending tests
+    evidence: |-
+      expect(configuration.statusMap).toEqual({});
+      expect(draft.status_readings).toEqual([]);
+      ...
+      expect(configurationOf(draft).statusMap).toEqual({ '200': 'ok', '299': 'ok' });
+      ...
+      expect(configurationOf(draft).statusMap).toEqual({ '401': 'denied', '403': 'denied', '407': 'denied' });
+      ...
+      expect(configurationOf(draft).statusMap).toEqual({ '199': 'unavailable', '300': 'unavailable' });
+      ...
+      expect(configurationOf(draft).statusMap).toEqual({ '408': 'unavailable', '504': 'unavailable' });
+looked_past: >-
+  The tests around lines 875-909 (`status-range-not-drafted` notes for '4XX', '5XX', '2xx' and the
+  out-of-bound numeric key '600') state a fact the node itself disclaims -- its own text assigns
+  which non-numeric-status keys the operator is told about, and under what condition, to
+  a-connector-configuration-draft-notes-every-reading-condition-the-operation-exhibits, a node
+  outside this pack and not offered as a candidate.

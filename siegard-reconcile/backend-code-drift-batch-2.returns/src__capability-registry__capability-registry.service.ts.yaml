@@ -1,0 +1,43 @@
+read:
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: >-
+      heldCapability() (lines 149-167), together with refuseContractDepartures/contractProblems/isUndeclared
+      (lines 169-186): the undeclared-attribute check and the default-timeout assignment
+    evidence: |-
+      function heldCapability(registration: CapabilityRegistration): Capability {
+        refuseContractDepartures(registration);
+        refuseMalformedSchemas(registration);
+        refuseMalformedInputSchemaShape(registration);
+        if (registration.nature !== READ_ONLY_NATURE) {
+          throw new CapabilityNotReadOnlyError(registration.nature);
+        }
+        return {
+          name: registration.name,
+          version: registration.version,
+          nature: registration.nature,
+          input_schema: registration.input_schema,
+          output_schema: registration.output_schema,
+          timeout: registration.timeout ?? DEFAULT_CAPABILITY_TIMEOUT_MS,
+          connector: registration.connector,
+          concept: registration.concept,
+          ...(isUndeclared(registration.payload_notes) ? {} : { payload_notes: registration.payload_notes }),
+        };
+      }
+looked_past: >-
+  The value of DEFAULT_CAPABILITY_TIMEOUT_MS and the membership of REQUIRED_REGISTRATION_ATTRIBUTES /
+  SCHEMA_ATTRIBUTES live in capability.ts, outside this file set, so their correctness against the node's
+  sixty-second default and required-attribute list is not this file's to answer for; likewise the HTTP-422
+  mapping of the thrown errors, the nature-read-only refusal, the schema-well-formedness refusals, the
+  orphaned-placeholder refusal, the evidence-citation removal guard and the one-capability-per-concept
+  refusal are all domain facts this file states correctly but that are governed by other specification
+  nodes (a-capability-is-read-only, a-capability-declares-well-formed-schemas,
+  a-capability-input-schema-holds-a-well-formed-object, a-connector-placeholder-refusal-reports-every-orphaned-placeholder,
+  a-registered-capability-cited-by-evidence-is-never-removed, one-capability-answers-one-concept), not the
+  one node in this pack, so judging them in depth is outside this delegation's node set.
+candidates_opened:
+  - rules/integration/a-capability-is-read-only
+  - rules/integration/a-capability-declares-well-formed-schemas
+  - rules/integration/a-capability-input-schema-holds-a-well-formed-object
+  - rules/integration/a-connector-placeholder-refusal-reports-every-orphaned-placeholder
+  - rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+  - rules/integration/one-capability-answers-one-concept

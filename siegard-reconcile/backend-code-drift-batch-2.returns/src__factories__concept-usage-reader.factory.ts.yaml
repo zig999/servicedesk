@@ -1,0 +1,36 @@
+read:
+  - node: domain/integration/capability
+    held_at: "the first branch of resolveConceptUsage, lines 26-29"
+    evidence: |-
+      const capability = await sources.capabilityQuery.readCapability(concept);
+        if (capability.held) {
+          return { named: true, reference: 'capability' };
+        }
+  - node: domain/investigation/citation
+    held_at: "the third branch of resolveConceptUsage, lines 33-35"
+    evidence: |-
+      if (await sources.investigationStore.isConceptNamedByCitation(concept)) {
+      return { named: true, reference: 'citation' }; }
+  - node: domain/investigation/evidence
+    held_at: "the second branch of resolveConceptUsage, lines 30-32"
+    evidence: |-
+      if (await sources.investigationStore.isConceptNamedByEvidence(concept)) {
+      return { named: true, reference: 'evidence' }; }
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the fourth branch of resolveConceptUsage, lines 36-38"
+    evidence: |-
+      if (await sources.caseStore.isConceptCollectedByHypothesisRevision(concept)) {
+      return { named: true, reference: 'hypothesis-revision-collects' }; }
+looked_past: >-
+  The composite behavior this file implements — checking capability, evidence, citation and
+  hypothesis-revision-collects in that order, with those exact reference literals, to decide
+  whether a concept is still named by anything — is not itself stated by any of this file's four
+  nodes (each of which only defines one referencing entity's shape); it is stated by
+  rules/glossary/a-registered-concept-is-never-removed, a candidate bound in this batch to the
+  glossary store and build-app files rather than to this factory, so I attribute it there instead
+  of reporting it unstated. That candidate's own conformance — in particular whether splitting
+  its "collected evidence item or its citation" condition into two distinct reference literals
+  ('evidence' vs 'citation') is faithful to its statement — is that candidate's own binding to
+  judge, not this file's.
+candidates_opened:
+  - rules/glossary/a-registered-concept-is-never-removed

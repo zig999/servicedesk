@@ -1,0 +1,18 @@
+read:
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: "lines 5-7, the template literal passed to `super(...)`"
+    evidence: >-
+      `o caso "${slug}" na versão ${version} está no estado "${state === 'draft' ? 'rascunho' : 'liberada'}", e o diagnóstico só é executado contra uma versão liberada`
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: "lines 5-7, the template literal passed to `super(...)`"
+    evidence: >-
+      `o caso "${slug}" na versão ${version} está no estado "${state === 'draft' ? 'rascunho' : 'liberada'}", e o diagnóstico só é executado contra uma versão liberada`
+looked_past: >-
+  The `context` field stores the raw `state` token verbatim (`this.context = { slug, version,
+  state }`) for programmatic consumers rather than for the message text, so it sits outside what
+  either node in this pack binds — neither node reaches structured error data, only the
+  response's message prose — and is not evaluated here; a check that the ternary's binary
+  draft/released mapping still matches the case-version-state enumeration is likewise a fact
+  settled by domain/knowledge/case-version-state, not by either node in this pack.
+candidates_opened:
+  - domain/knowledge/case-version-state

@@ -1,0 +1,33 @@
+read:
+  - node: domain/knowledge/hypothesis-revision
+    held_at: >-
+      backfillRepairedCollects, whose insert is scoped to an existing hypothesis-revision
+      (matched by case_slug, hypothesis_name and revision) and adds a row to its collects
+      relationship
+    evidence: |-
+      INSERT INTO hypothesis_revision_collects (case_slug, hypothesis_name, revision, concept_name)
+             SELECT $1, $2, $3, $4
+             WHERE EXISTS (
+               SELECT 1 FROM hypothesis_revisions
+               WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3
+             )
+             AND NOT EXISTS (
+               SELECT 1 FROM hypothesis_revision_collects
+               WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3 AND concept_name = $4
+             )
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: >-
+      repairFixtureManifestCollects, which backfills a concept for each of REPAIRED_COLLECTS's
+      two named hypothesis-revisions before the suite runs, so neither is left collecting none
+    evidence: |-
+      async function repairFixtureManifestCollects(connection: DatabaseConnection): Promise<void> {
+        await ensureRepairedConceptsExist(connection);
+        await backfillRepairedCollects(connection);
+      }
+looked_past: >-
+  seedNonConclusionOutcomes, the DATABASE_URL/MigrationStepError guard, applyPendingMigrations and
+  HARNESS_POOL_OPTIONS touch glossary-outcome seeding, migration execution and connection-pool
+  configuration, none of which this pack's two nodes govern.
+candidates_opened:
+  - constraints/the-connection-pool-is-bounded-by-configuration
+  - rules/knowledge/a-collected-concept-declares-a-ttl

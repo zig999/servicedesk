@@ -1,0 +1,13 @@
+read:
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: the template literal in the CaseVersionNotDraftError constructor
+    evidence: >-
+      `o caso "${slug}" na versão ${version} está no estado "${state === 'draft' ? 'rascunho' : 'liberada'}", e não em rascunho`
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: the template literal in the CaseVersionNotDraftError constructor
+    evidence: >-
+      `o caso "${slug}" na versão ${version} está no estado "${state === 'draft' ? 'rascunho' : 'liberada'}", e não em rascunho`
+looked_past: >-
+  The ternary's redundant closing clause "e não em rascunho" and the always-Portuguese-vs-else binary
+  mapping read a little awkwardly when state happens to already be 'draft', but that is phrasing the
+  vocabulary node leaves free and a code-quality concern outside this pass, not a domain-fact departure.

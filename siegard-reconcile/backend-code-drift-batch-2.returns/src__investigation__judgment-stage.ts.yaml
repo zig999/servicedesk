@@ -1,0 +1,52 @@
+read:
+  - node: domain/investigation/evaluation
+    held_at: >-
+      the evaluation-construction functions — noDataEvaluation, deadlineExceededEvaluation,
+      judgmentFailureEvaluation and asEvaluation — which build the { hypothesis, verdict, reason?,
+      citations, usage?, elapsed_ms?, prompt? } shape, identify the hypothesis by its string name
+      throughout, and include the call record only where a call actually resolved
+    evidence: >-
+      function noDataEvaluation(name: string, nonOkEvidence: readonly Evidence[]): Evaluation {
+        return {
+          hypothesis: name,
+          verdict: 'inconclusive',
+          reason: 'no-data',
+          citations: nonOkEvidence.map((item): Citation => ({ concept: item.concept })),
+        };
+      }
+      ...
+      function asEvaluation(name: string, outcome: EvaluationOutcome): Evaluation {
+        const callRecord = callRecordOf(outcome);
+        if (outcome.verdict === 'confirmed') {
+          return { hypothesis: name, verdict: 'confirmed', citations: outcome.citations, ...callRecord };
+        }
+  - node: rules/knowledge/requires-evaluation-of-names-exactly-the-manifested-hypotheses
+    held_at: >-
+      judgeHypotheses, which derives the required set from requiresEvaluationOf(theCase) and maps
+      it one-for-one into evaluations rather than deriving or restating the manifest rule itself
+    evidence: >-
+      const requiredNames = requiresEvaluationOf(theCase);
+      const caseContext: CaseContext = { title: theCase.title, whenToUse: theCase.when_to_use };
+      return Promise.all(
+        requiredNames.map((name) =>
+          judgeOneHypothesis({
+            name,
+            hypothesis: hypothesisNamed(theCase, name),
+            evidence: evidenceFor(name, evidenceByHypothesis),
+            evaluator,
+            pool,
+            deadlineGuard,
+            caseContext,
+          }),
+        ),
+      );
+looked_past: >-
+  The reason-value literals the file uses ('no-data', 'deadline-exceeded', 'judgment-failure')
+  and the call-record rules applied to judgmentFailureEvaluation/deadlineExceededEvaluation were
+  traced to domain/investigation/evaluation-reason.md,
+  rules/investigation/an-inconclusive-evaluation-declares-its-reason.md,
+  rules/investigation/no-stage-aborts-on-its-deadline.md,
+  rules/investigation/a-judgment-failure-records-the-last-call-made.md and the scenario files
+  a-foreign-citation-is-refused.md, a-queued-judgment-is-deadline-exceeded.md and
+  a-collection-timeout-degrades-to-no-data.md — none of which are in this file's own pack or the
+  offered candidate index — and the file matches each of them, so none is reported as a finding.

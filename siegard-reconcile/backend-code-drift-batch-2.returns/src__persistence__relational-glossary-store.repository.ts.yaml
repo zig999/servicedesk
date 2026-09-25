@@ -1,0 +1,40 @@
+read:
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: >-
+      writeConcepts (lines 61-71), whose per-concept loop only upserts and never issues a
+      table-wide delete, and deleteConcept (lines 73-78), which removes only the concept's own
+      concept_accepts declaration and its concepts row.
+    evidence: |
+      function upsertConceptStatement(concept: Concept): IStatement {
+        return {
+          text: `INSERT INTO ${CONCEPTS_TABLE} (name, ttl, description) VALUES ($1, $2, $3) ON CONFLICT (name) DO UPDATE SET ttl = EXCLUDED.ttl, description = EXCLUDED.description`,
+          params: [concept.name, concept.ttl, concept.description],
+        };
+      }
+      public async deleteConcept(name: string): Promise<void> {
+        await runInTransaction(this.connection, raiseWriteFailure, async (tx) => {
+          await runStatement(tx, deleteConceptAcceptsStatement(name), raiseWriteFailure);
+          await runStatement(tx, deleteConceptStatement(name), raiseWriteFailure);
+        });
+      }
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: nowhere
+    evidence: |
+      public async readTerms(vocabulary: TermVocabulary): Promise<readonly GlossaryTerm[]> {
+        return runStatement<GlossaryTerm>(
+          this.connection,
+          { text: `SELECT name FROM ${VOCABULARY_TABLES[vocabulary]}` },
+          raiseReadFailure,
+        );
+      }
+      async function readWholeConcepts(tx: IQueryable): Promise<readonly ConceptRegistration[]> {
+        const rows = await runStatement<IConceptRow>(
+          tx,
+          { text: `SELECT name, ttl, description FROM ${CONCEPTS_TABLE}` },
+          raiseReadFailure,
+        );
+looked_past: >-
+  The repository interpolates table names directly into SQL text (`` `SELECT name FROM
+  ${VOCABULARY_TABLES[vocabulary]}` ``, `` `DELETE FROM ${table}` ``) rather than through any
+  parameterization; that is a construction concern the code carries, not a domain fact any node
+  states, so it is left for whichever pass judges code quality.

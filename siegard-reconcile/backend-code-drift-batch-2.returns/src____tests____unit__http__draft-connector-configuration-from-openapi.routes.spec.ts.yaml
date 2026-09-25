@@ -1,0 +1,15 @@
+read:
+  - node: rules/integration/a-connector-configuration-draft-states-a-status-map-from-the-operations-declared-responses
+    held_at: >-
+      the response assertions of the two 200-status it blocks (the 'answers 200 with exactly...'
+      test and the 'adds method_mismatch...' test), both of which assert on the drafted
+      configuration string
+    evidence: >-
+      configuration: JSON.stringify({ method: 'GET', address: '/widgets', statusMap: {}, responseMap: {} }),
+looked_past: >-
+  The file also states facts about method_mismatch, generated_credentials, status_readings,
+  response_fields, reading_notes, unresolved parameters, and the
+  VALIDATION_ERROR/OpenApiDocumentNotFetchedError/OpenApiDocumentNotReadableError/OpenApiOperationNotFoundError
+  response shapes; these terms are documented at length in knowledge/projections/full-text.md
+  under nodes outside this delegation's pack and the candidate index binds no other node to this
+  file, so judging them is another delegation's pass.

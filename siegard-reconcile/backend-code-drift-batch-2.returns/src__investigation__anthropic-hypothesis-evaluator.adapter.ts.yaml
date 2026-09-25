@@ -1,0 +1,49 @@
+read:
+  - node: domain/investigation/evaluation
+    held_at: >-
+      the outcome-construction functions noDataOutcome, judgmentFailureOutcome, notGroundedOutcome
+      and the confirmed/refuted branches of outcomeFromModelText (lines 91-126), which build the
+      hypothesis-less evaluation shape (verdict, reason, citations, usage, elapsed_ms, prompt) with
+      the conditional presence the node describes.
+    evidence: >-
+      return {
+        verdict: 'inconclusive',
+        reason: 'no-data',
+        citations: nonOkEvidence.map((item): Citation => ({ concept: item.concept })),
+      }; (no usage/elapsed_ms/prompt, matching "absent when reason `no-data`") versus
+      return { verdict: 'confirmed', citations: parsed.citations, ...callRecord }; where callRecord
+      is { usage: message.usage, elapsed_ms: elapsedMs, prompt } (present exactly when a call
+      happened).
+findings:
+  - file: src/investigation/anthropic-hypothesis-evaluator.adapter.ts
+    where: "the module-level constant on line 32 and its use in the constructor on line 48"
+    evidence: |-
+      const DEFAULT_MAX_TOKENS = 1024;
+      ...
+      this.maxTokens = options.maxTokens ?? DEFAULT_MAX_TOKENS;
+    cost: >-
+      A caller that omits maxTokens gets a hard 1024-token cap on the judgment call's response
+      with nothing in the specification saying a cap exists or why 1024 was picked; a well-formed
+      confirmed/refuted answer whose citations run long enough to exceed it is truncated mid-JSON
+      and silently reclassified as judgment-failure rather than as a documented ceiling, so the
+      next reader who wants to tune, audit or explain that failure mode has nowhere in the
+      specification to look — only this file carries the number.
+    kind: unstated
+    correction: >-
+      state the default token ceiling for a judgment call (or the rule for deriving it) in a node
+      — e.g. domain/investigation/hypothesis-evaluator or a dedicated constraint — so 1024 is a
+      decided value rather than one only this adapter holds.
+looked_past: >-
+  The adapter makes exactly one Anthropic call per evaluate() and swallows any request failure
+  straight into judgment-failure with no retry, while
+  scenarios/investigation/a-foreign-citation-is-refused and
+  rules/investigation/a-judgment-failure-records-the-last-call-made describe a
+  refuse-then-retry-once step keyed on the response's own citations (which this file never
+  validates for containment — that check lives in citation-validation.ts, outside this file);
+  whether that retry is missing altogether or correctly orchestrated by a caller that invokes
+  evaluate() a second time is not decidable from this file alone and belongs to whichever file
+  actually owns that orchestration.
+candidates_opened:
+  - domain/investigation/evaluation-reason
+  - domain/investigation/verdict
+  - domain/investigation/citation

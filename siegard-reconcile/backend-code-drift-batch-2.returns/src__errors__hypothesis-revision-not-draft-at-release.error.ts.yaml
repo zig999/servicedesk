@@ -1,0 +1,20 @@
+read:
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: the message string passed to super() in the constructor
+    evidence: >-
+      'esta revisão não está em estado de rascunho, e a liberação é o único gatilho que move uma
+      revisão para fora do rascunho'
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: the message string passed to super() in the constructor
+    evidence: >-
+      'esta revisão não está em estado de rascunho, e a liberação é o único gatilho que move uma
+      revisão para fora do rascunho'
+  - node: contracts/knowledge/case-lifecycle
+    held_at: the class name and its fixed message, refusing the release-hypothesis operation
+    evidence: >-
+      export class HypothesisRevisionNotDraftAtReleaseError extends Error { public constructor()
+      { super('esta revisão não está em estado de rascunho, e a liberação é o único gatilho que
+      move uma revisão para fora do rascunho',); this.name =
+      'HypothesisRevisionNotDraftAtReleaseError'; } }
+candidates_opened:
+  - rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle

@@ -1,0 +1,44 @@
+read:
+  - node: domain/knowledge/hypothesis-revision
+    held_at: >-
+      the insertHypothesisRevision call in placeNewHypothesis (lines 138-144) and the direct,
+      case-version-independent release in releaseRevisionDirectly (line 158)
+    evidence: |-
+      const revision = await store.insertHypothesisRevision({
+        slug: key.slug,
+        hypothesis_name: hypothesis.name,
+        criterion: `a criterion for ${hypothesis.name}`,
+        collects: hypothesis.collects,
+        resolution: hypothesis.resolution,
+      });
+      ...
+      await wireLifecycle().releaseHypothesisRevision(slug, hypothesisName, revision);
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: >-
+      the draft-then-release sequence each `it` block drives: createDraftVersion followed by
+      releaseRevisionDirectly
+    evidence: |-
+      const version = await createDraftVersion(store, { slug, subjectType: vocabulary.subjectType, resolution });
+      ...
+      await releaseRevisionDirectly(slug, 'h1', revisionA);
+      await releaseRevisionDirectly(slug, 'h2', revisionB);
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: the third `it` block, lines 268-287
+    evidence: |-
+      await releaseRevisionDirectly(slug, 'h', revision);
+
+      const refusal = await releaseRevisionDirectly(slug, 'h', revision).catch((error: unknown) => error);
+
+      expect(refusal).toBeInstanceOf(HypothesisRevisionNotDraftAtReleaseError);
+looked_past: >-
+  The DELETE-tolerant read-back asserted in the first two `it` blocks (deleteCollectsDirectly
+  followed by an unchanged collects read, and a release that does not hit the 'collects no
+  concept' refusal) matches rules/knowledge/a-released-revisions-collect-removal-is-accepted-with-no-effect
+  and rules/knowledge/a-hypothesis-collects-at-least-one-concept, neither of which is in this
+  file's node set, so it is not reported here; the connection-pool sizing, FK-violation-tolerant
+  cleanup helpers and randomized vocabulary generation are test scaffolding with no node of their
+  own in the pack.
+candidates_opened:
+  - rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  - rules/knowledge/a-released-revisions-collect-removal-is-accepted-with-no-effect
+  - rules/knowledge/a-hypothesis-collects-at-least-one-concept

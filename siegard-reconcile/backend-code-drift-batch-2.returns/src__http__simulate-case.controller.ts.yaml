@@ -1,0 +1,28 @@
+read:
+  - node: contracts/investigation/glossary-source
+    held_at: nowhere
+    evidence: |-
+      const { evidence, evaluations, resolved, assessment, cost, durations } = await dependencies.runSimulate({
+          subjectType: body.subject.type,
+          subjectAttributes: body.subject.attributes,
+          case: pinnedCase,
+          requester: body.requester,
+        });
+  - node: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses
+    held_at: nowhere
+    evidence: |-
+      buildSubject(body.subject.type, body.subject.attributes);
+      const { evidence, evaluations, resolved, assessment, cost, durations } = await dependencies.runSimulate({
+          subjectType: body.subject.type,
+          subjectAttributes: body.subject.attributes,
+          case: pinnedCase,
+          requester: body.requester,
+        });
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: "the call to buildSubject, line 17"
+    evidence: 'buildSubject(body.subject.type, body.subject.attributes);'
+looked_past: >-
+  The concrete enforcement of a-subject-carries-at-least-one-attribute — the
+  SubjectCarriesNoAttributeError throw and its mapping to an HTTP 422 response — sits in
+  subject.ts and an error-handling layer outside this file, so this controller's role in that
+  invariant is only the call site that reaches them.

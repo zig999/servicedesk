@@ -1,0 +1,54 @@
+findings:
+  - file: src/case/validate-case-coherence.ts
+    where: >-
+      the violation-message templates built in vocabularyViolations (line 61), conceptViolations
+      (lines 90 and 92-94), and capabilityViolations/answerGaps (lines 113, 118, 121, 124, 129-131)
+    evidence: >-
+      `the ${VOCABULARY_ROLES[vocabulary]} "${name}" does not exist in the glossary"` (line 61);
+      `the concept "${name}" does not exist in the glossary` (line 90); `no read-only capability
+      currently answers the concept "${concept}"` (line 113)
+    cost: >-
+      these strings are returned from caseCoherenceViolations()/conceptViolations()/vocabularyViolations()
+      and reach production only through CaseQueryService.refuseIncoherence and ReleaseOperation.release,
+      which join them into CaseVersionNotValidError's and CaseVersionNotReleasableError's messages —
+      both mapped to a status in status-map.ts and sent verbatim as `message: error.message` by
+      error-handler.middleware.ts's domainEnvelope(). An operator reading Brazilian Portuguese
+      receives a refusal sentence in Portuguese with the actual violated-rule clause left in English,
+      unreadable exactly where the reason for the refusal sits.
+    correction: state each violation message this file builds in Brazilian Portuguese.
+    kind: contradicts
+    node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  - file: src/case/validate-case-coherence.ts
+    where: >-
+      the word "concept" in conceptViolations (line 90, lines 92-94) and in capabilityViolations/
+      answerGaps/answeringGap (lines 113, 129-131)
+    evidence: >-
+      `the concept "${name}" does not exist in the glossary` (line 90); `no read-only capability
+      currently answers the concept "${concept}"` (line 113); `the capability answering the
+      concept "${concept}" ${lacks}` (line 130, via answeringGap)
+    cost: >-
+      the same violation strings end up inside CaseVersionNotValidError's and
+      CaseVersionNotReleasableError's response message (see error-handler.middleware.ts's
+      domainEnvelope), naming the referent by the English word "concept" instead of the fixed word
+      "conceito" every other domain refusal in this system is held to use; an operator comparing
+      this refusal to any other cannot tell whether the two speak of the same kind of thing.
+    correction: name the referent "conceito" rather than "concept" in every violation message this file builds.
+    kind: contradicts
+    node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+read:
+  - node: rules/knowledge/a-case-versions-input-requirements-are-derived
+    held_at: nowhere
+    evidence: >-
+      answerGaps() only checks `capability.nature !== READ_ONLY_NATURE`,
+      `!declaresText(capability.output_schema)` and `!declaresTimeout(capability.timeout)` —
+      nothing in this file reads a capability's input schema, names a subject attribute from its
+      `properties`, sets a `required` flag from its `required`, or assembles a case-input-requirement
+      or its `capabilities` list.
+looked_past: >-
+  case-query.service.ts derives case input requirements through a separate module,
+  `deriveCaseInputRequirements`/`everyRegisteredCapability` from ./case-input-requirements.js,
+  outside this file set — whether the trace's binding of this node to validate-case-coherence.ts
+  rather than that module is stale is a trace-drift question for /reconcile, not this pass.
+candidates_opened:
+  - constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  - constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word

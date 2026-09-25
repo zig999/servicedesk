@@ -1,0 +1,22 @@
+read:
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: >-
+      the assertion in the "reads every manifest entry's revision back collecting at least one
+      concept" test, and repeated in the final regression test
+    evidence: >-
+      expect(result.case.hypotheses.every((hypothesis) => hypothesis.collects.length >= 1)).toBe(true);
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: >-
+      the file's only test touching a released revision's own content after release is "leaves a
+      released hypothesis-revision's own collects in place after an ordinary DELETE against those
+      exact rows is attempted" — which states the collects fact governed by
+      rules/knowledge/a-released-revisions-collect-removal-is-accepted-with-no-effect, the node
+      this pack's own description names as the one collect removal meets instead; no test in this
+      file attempts to alter a released revision's criterion, resolution or state and observes the
+      HTTP 409 ReleasedHypothesisRevisionNotAlterableError refusal this node holds
+looked_past: >-
+  the file's handling of FOREIGN_KEY_VIOLATION cleanup, consolidation_register fixture data and
+  the non-conclusion-outcomes filtering touch no node in this set and are left unreported.
+candidates_opened:
+  - rules/knowledge/a-released-revisions-collect-removal-is-accepted-with-no-effect

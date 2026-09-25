@@ -1,0 +1,28 @@
+read:
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: >-
+      the DEFAULT_CAPABILITY_TIMEOUT_MS constant (line 37) for the no-timeout-stated default, and
+      the REQUIRED_REGISTRATION_ATTRIBUTES list (lines 39-47) for which attributes a registration
+      must declare
+    evidence: |-
+      export const DEFAULT_CAPABILITY_TIMEOUT_MS = 60_000;
+
+      export const REQUIRED_REGISTRATION_ATTRIBUTES = [
+        'name',
+        'version',
+        'nature',
+        'input_schema',
+        'output_schema',
+        'connector',
+        'concept',
+      ] as const;
+looked_past: >-
+  CAPABILITY_NATURES/CapabilityNature/READ_ONLY_NATURE and the Capability type's full field list
+  match domain/integration/capability-nature and domain/integration/capability exactly (both
+  outside this file's node set), so they are not reported — attribution, not a gap — and no
+  enforcement logic (positive-integer timeout check, empty-string-as-undeclared check, the 422
+  IncompleteCapabilityContractError refusal itself) is expected in this types-and-constants file,
+  since the rule is bound across this file plus capability-registry.service.ts,
+  register-capability.dto.ts and relational-capability-store.repository.ts.
+candidates_opened:
+  - domain/integration/capability
