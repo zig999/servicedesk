@@ -16,6 +16,27 @@
       "summary": "The backend accepts a discard of a draft version whichever validator rule fails over it, with draft state as the only condition."
     },
     {
+      "id": "epic/draft-editor-correction-while-invalid",
+      "kind": "epic",
+      "file": "epic/draft-editor-correction-while-invalid.md",
+      "title": "Correcting a draft on the editor while it does not read back as a case",
+      "summary": "The frontend editor presents a refused draft's own stored declared attributes and accepts an update-draft over them, and every surface for one named version routes to that editor on every reading."
+    },
+    {
+      "id": "epic/draft-editor-discard-while-invalid",
+      "kind": "epic",
+      "file": "epic/draft-editor-discard-while-invalid.md",
+      "title": "Discarding a draft on the editor while it does not read back as a case",
+      "summary": "The frontend editor offers, and completes, the discard of a draft version whatever validator rule fails over it."
+    },
+    {
+      "id": "inventory/case-version-editor-not-valid",
+      "kind": "inventory",
+      "file": "inventory/case-version-editor-not-valid.md",
+      "title": "Case version editor screen, its form hook, and the not-valid phase",
+      "summary": "The editor screen renders a dead-end \"not-valid\" phase computed in use-edit-draft-version-form.ts from a case-not-valid error mapped in error-ui-state.ts, while case-version-editor-ready-view.tsx already holds the full form, save, cancel and discard controls this phase needs to reach."
+    },
+    {
       "id": "inventory/case-version-read-and-edit-and-discard-path",
       "kind": "inventory",
       "file": "inventory/case-version-read-and-edit-and-discard-path.md",
@@ -53,6 +74,54 @@
       "title": "Prove discard accepts a draft failing validation",
       "summary": "Tests showing a discard of a draft is accepted while its manifest holds no entry or its declared subject fails glossary coherence.",
       "epic": "draft-discard-while-invalid"
+    },
+    {
+      "id": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "kind": "task",
+      "file": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state.md",
+      "title": "Load a refused draft's own record into the editor state",
+      "summary": "The editor's form hook answers an editable state filled from read-case-version when read-case refuses the named version as not valid.",
+      "epic": "draft-editor-correction-while-invalid"
+    },
+    {
+      "id": "task/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
+      "kind": "task",
+      "file": "task/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen.md",
+      "title": "Present the refused draft on the editor screen",
+      "summary": "The editor screen renders the ready view over the not-valid state, with a non-blocking statement that the version does not read back as a case.",
+      "epic": "draft-editor-correction-while-invalid"
+    },
+    {
+      "id": "task/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor",
+      "kind": "task",
+      "file": "task/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor.md",
+      "title": "Route the manifest screen to the version's editor on every reading",
+      "summary": "The version manifest screen carries a route to the same version's editing surface in its loading, load-error, not-valid and ready readings.",
+      "epic": "draft-editor-correction-while-invalid"
+    },
+    {
+      "id": "task/draft-editor-correction-while-invalid/route-the-simulation-screen-to-the-version-editor",
+      "kind": "task",
+      "file": "task/draft-editor-correction-while-invalid/route-the-simulation-screen-to-the-version-editor.md",
+      "title": "Route the simulation screen to the version's editor on every reading",
+      "summary": "The version simulation screen carries a route to the same version's editing surface in its loading, load-error and ready readings, for a draft and for a released version.",
+      "epic": "draft-editor-correction-while-invalid"
+    },
+    {
+      "id": "task/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
+      "kind": "task",
+      "file": "task/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading.md",
+      "title": "Save a correction on the refused reading",
+      "summary": "An update-draft submitted from the editor on the not-valid reading is issued, and its accepted answer refills the form.",
+      "epic": "draft-editor-correction-while-invalid"
+    },
+    {
+      "id": "task/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
+      "kind": "task",
+      "file": "task/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading.md",
+      "title": "Offer discard on the refused reading",
+      "summary": "The editor offers the discard of a draft on the reading where it does not read back as a case, still behind the slug-reproducing confirmation.",
+      "epic": "draft-editor-discard-while-invalid"
     }
   ],
   "edges": [
@@ -315,6 +384,186 @@
       "at": "covers[6]"
     },
     {
+      "from": "epic/draft-editor-correction-while-invalid",
+      "to": "rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/draft-editor-correction-while-invalid",
+      "to": "rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/draft-editor-correction-while-invalid",
+      "to": "rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/draft-editor-correction-while-invalid",
+      "to": "rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/draft-editor-correction-while-invalid",
+      "to": "rules/knowledge/an-abandoned-case-version-edit-writes-nothing",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/draft-editor-correction-while-invalid",
+      "to": "rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/draft-editor-correction-while-invalid",
+      "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/draft-editor-correction-while-invalid",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/draft-editor-correction-while-invalid",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/draft-editor-correction-while-invalid",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/draft-editor-correction-while-invalid",
+      "to": "rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/draft-editor-correction-while-invalid",
+      "to": "rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-editing-surface-on-every-reading",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/draft-editor-correction-while-invalid",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/draft-editor-correction-while-invalid",
+      "to": "rules/knowledge/a-manifest-surface-offers-placing-a-hypothesis-on-every-reading-but-a-released-versions",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/draft-editor-correction-while-invalid",
+      "to": "rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/draft-editor-correction-while-invalid",
+      "to": "scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/draft-editor-correction-while-invalid",
+      "to": "rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/draft-editor-correction-while-invalid",
+      "to": "contracts/knowledge/case-query",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/draft-editor-correction-while-invalid",
+      "to": "constraints/a-successful-case-version-own-record-read-answers-with-http-200",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/draft-editor-correction-while-invalid",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/draft-editor-correction-while-invalid",
+      "to": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/draft-editor-correction-while-invalid",
+      "to": "rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/draft-editor-correction-while-invalid",
+      "to": "rules/knowledge/a-presented-case-version-states-its-own-declared-attributes",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/draft-editor-discard-while-invalid",
+      "to": "rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/draft-editor-discard-while-invalid",
+      "to": "scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/draft-editor-discard-while-invalid",
+      "to": "rules/knowledge/only-a-draft-case-version-may-be-discarded",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/draft-editor-discard-while-invalid",
+      "to": "rules/knowledge/a-draft-case-versions-discard-reproduces-the-cases-own-slug",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/draft-editor-discard-while-invalid",
+      "to": "rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/draft-editor-discard-while-invalid",
+      "to": "constraints/a-successful-case-version-discard-answers-with-no-content",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/draft-editor-discard-while-invalid",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
       "from": "task/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
       "to": "task/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
       "kind": "depends_on",
@@ -450,6 +699,266 @@
       "kind": "implements",
       "at": "implements[2]",
       "digest": "sha256:7a9f0725834649367a3debd2d91be12a4d6ed7d06e17921ce99ddfc3131d8fd5"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "task/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:ca85f0e9dc89b48783b0c4e3990bf1ced3bc305cafef0b677b45c78234d66d6d"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[10]",
+      "digest": "sha256:ecc240f94dd4b0877e9d8870288c8167c5d54df3b4464c30d2c67c28fa4c31b6"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "constraints/a-successful-case-version-own-record-read-answers-with-http-200",
+      "kind": "implements",
+      "at": "implements[11]",
+      "digest": "sha256:1b11b7e01386dea252b6146834b3ec74f8e3dbae6c8ef8a80f4a1bdd1320c9dd"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing",
+      "kind": "implements",
+      "at": "implements[1]",
+      "digest": "sha256:8a74245e82a8092472c37087a0056e3fc78148b6239d88b0c01bf520823e834c"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
+      "kind": "implements",
+      "at": "implements[2]",
+      "digest": "sha256:e35889fe6ef7110e3bcc8463b798dd1f99751445fd45e12e4dd61fe2a9705d53"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name",
+      "kind": "implements",
+      "at": "implements[3]",
+      "digest": "sha256:5f021f1109a9313879c17c86894f2e542b954859a94f16fde358e5a676d89745"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record",
+      "kind": "implements",
+      "at": "implements[4]",
+      "digest": "sha256:432dc3c3f910a4a2e281a0e5db7a7082bcfa24b7b2ec5702215aec412d858d92"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives",
+      "kind": "implements",
+      "at": "implements[5]",
+      "digest": "sha256:85aaa93d602749c76f64ef597d97fdfc9c3c8fb5d3c2ff9b44cc60ea2469a4a9"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
+      "kind": "implements",
+      "at": "implements[6]",
+      "digest": "sha256:9155b079b2f0837c579fd28c755d3703b078114fbb7a80c74ab57a6cbe53497d"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets",
+      "kind": "implements",
+      "at": "implements[7]",
+      "digest": "sha256:bb837a0f834e02e6c2d91c0934e83bfe289dff0175dbe750cee1f88e1360d0f8"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "rules/knowledge/an-abandoned-case-version-edit-writes-nothing",
+      "kind": "implements",
+      "at": "implements[8]",
+      "digest": "sha256:a05b04357caf0678d56a28190fbdc076131b3f290bb05902e1111effbbc33896"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[9]",
+      "digest": "sha256:97874bda7c1b2ec6518b299bd669e3bac93b3628f2eddbd4bac95a86fe7eec26"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
+      "to": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
+      "to": "rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:ca85f0e9dc89b48783b0c4e3990bf1ced3bc305cafef0b677b45c78234d66d6d"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
+      "to": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
+      "kind": "implements",
+      "at": "implements[1]",
+      "digest": "sha256:e35889fe6ef7110e3bcc8463b798dd1f99751445fd45e12e4dd61fe2a9705d53"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
+      "to": "rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading",
+      "kind": "implements",
+      "at": "implements[2]",
+      "digest": "sha256:18586f901ef5939bd765235d97dca6bd1db0e15d9154044fbbef93255b034bdd"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
+      "to": "rules/knowledge/an-abandoned-case-version-edit-writes-nothing",
+      "kind": "implements",
+      "at": "implements[3]",
+      "digest": "sha256:a05b04357caf0678d56a28190fbdc076131b3f290bb05902e1111effbbc33896"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
+      "to": "scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing",
+      "kind": "implements",
+      "at": "implements[4]",
+      "digest": "sha256:8a74245e82a8092472c37087a0056e3fc78148b6239d88b0c01bf520823e834c"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor",
+      "to": "rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-editing-surface-on-every-reading",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:7a677f46a95edb877eb50b3ba4469439edf5be1bc8908dfb1793a546668f17c6"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor",
+      "to": "rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name",
+      "kind": "implements",
+      "at": "implements[1]",
+      "digest": "sha256:5f021f1109a9313879c17c86894f2e542b954859a94f16fde358e5a676d89745"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/route-the-simulation-screen-to-the-version-editor",
+      "to": "rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-editing-surface-on-every-reading",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:7a677f46a95edb877eb50b3ba4469439edf5be1bc8908dfb1793a546668f17c6"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
+      "to": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
+      "to": "task/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
+      "to": "rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:cb57b01dd94872e07474f7afda749073820a7c2064218422edd627b09ea1cb07"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
+      "to": "rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case",
+      "kind": "implements",
+      "at": "implements[1]",
+      "digest": "sha256:ca85f0e9dc89b48783b0c4e3990bf1ced3bc305cafef0b677b45c78234d66d6d"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
+      "to": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
+      "kind": "implements",
+      "at": "implements[2]",
+      "digest": "sha256:e35889fe6ef7110e3bcc8463b798dd1f99751445fd45e12e4dd61fe2a9705d53"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
+      "to": "scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing",
+      "kind": "implements",
+      "at": "implements[3]",
+      "digest": "sha256:8a74245e82a8092472c37087a0056e3fc78148b6239d88b0c01bf520823e834c"
+    },
+    {
+      "from": "task/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[4]",
+      "digest": "sha256:ecc240f94dd4b0877e9d8870288c8167c5d54df3b4464c30d2c67c28fa4c31b6"
+    },
+    {
+      "from": "task/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
+      "to": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
+      "to": "task/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
+      "to": "rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:9b36b5c3332ce180313d4225436d76ff48b88bd7f9faf5ba005d53b73b705e7f"
+    },
+    {
+      "from": "task/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
+      "to": "rules/knowledge/only-a-draft-case-version-may-be-discarded",
+      "kind": "implements",
+      "at": "implements[1]",
+      "digest": "sha256:cae0bb16856d7598c4886764d902941b63927569a64b9acbd25fc96d61b07a06"
+    },
+    {
+      "from": "task/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
+      "to": "rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act",
+      "kind": "implements",
+      "at": "implements[2]",
+      "digest": "sha256:c724d2a5cb5f714762512d9062165abf565a47ea37fcd02a2cbadf9bbb27ca86"
+    },
+    {
+      "from": "task/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
+      "to": "rules/knowledge/a-draft-case-versions-discard-reproduces-the-cases-own-slug",
+      "kind": "implements",
+      "at": "implements[3]",
+      "digest": "sha256:6511a21cb6fa88d2a51bda0b3fcbddb8e53d5bf7fb8be94a3a5e2e23ac6073a9"
+    },
+    {
+      "from": "task/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
+      "to": "scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable",
+      "kind": "implements",
+      "at": "implements[4]",
+      "digest": "sha256:4be0102591208989f3d5fe190fd0427e137266f8290229aec646d040d8935bb6"
+    },
+    {
+      "from": "task/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
+      "to": "constraints/a-successful-case-version-discard-answers-with-no-content",
+      "kind": "implements",
+      "at": "implements[5]",
+      "digest": "sha256:7a9f0725834649367a3debd2d91be12a4d6ed7d06e17921ce99ddfc3131d8fd5"
+    },
+    {
+      "from": "task/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[6]",
+      "digest": "sha256:ecc240f94dd4b0877e9d8870288c8167c5d54df3b4464c30d2c67c28fa4c31b6"
     }
   ]
 }
