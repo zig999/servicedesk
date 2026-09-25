@@ -1,0 +1,21 @@
+Scope: backend target (src) — implement three specification nodes that let a curator correct and discard a case version draft that currently fails validation.
+
+1. rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-editing-surface-on-every-reading — a surface presenting one case version (by slug + number) offers the curator a route to that same version's own editing surface on every reading of that surface, including one refused by CaseVersionNotValidError.
+
+2. rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case — a draft case version's own editing surface presents that version's title, when_to_use, subject, fallback and consolidation_register exactly as its own stored record carries them (not through the whole-case-read assembly), and accepts an update-draft over them, on a reading whose read of that version was refused because some validator rule of validation-runs-at-every-read does not hold for it — any rule failing, including the declared attributes themselves.
+
+3. rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case — a surface presenting a draft case version offers the curator the act of discarding it, and a discard is accepted, whether or not every validator rule of validation-runs-at-every-read holds for that version at that reading. Discard stays decided only by only-a-draft-case-version-may-be-discarded (draft state) and releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act (curator reproduces the case's own slug) — nothing here changes those two rules.
+
+Implementation context already investigated this session by reading the backend source (src/src/):
+
+- src/src/case/parse-case-document.ts: parseCaseDocument() (lines ~41-51) calls refuseStructuralViolations() -> documentProblems() (lines ~53-70) BEFORE heldCase() (line ~43); if documentProblems() returns any problem — including NO_HYPOTHESIS_PROBLEM (line ~16), computed inside manifestProblems() (lines ~131-147) alongside genuine structural-corruption checks — heldCase() never runs and no Case object is ever constructed.
+- src/src/case/case.ts:66 types manifest as `readonly ManifestEntry[]` — a plain array, empty allowed; nothing at the type level stops heldCase() from constructing a Case with an empty manifest.
+- src/src/case/case-query.service.ts: structuralCase() (lines ~149-158) catches InvalidCaseDocumentError and rethrows as CaseVersionNotValidError; refuseIncoherence()/refuseGlossaryIncoherence() (lines ~75-83), via refuseViolations() (lines ~86-90), throw the same CaseVersionNotValidError for post-parse coherence violations. readCase() (lines ~34-38) today throws instead of returning whenever any violation exists — there is no path today to get the constructed Case together with the violation list.
+- src/src/errors/status-map.ts:61 maps CaseVersionNotValidError -> HTTP 409.
+- src/src/http/read-case.controller.ts:9-31 (toReadCaseResponse()) builds today's read DTO only from a fully valid Case.
+
+What the backend work the three rules require comes down to: readCase() (or whatever path read-case.controller uses) needs, when the document IS structurally parseable (heldCase() can build a Case, even with an empty manifest or other values that fail coherence/business rules) but fails some validation-runs-at-every-read rule, to return that constructed Case together with the violation list — instead of throwing CaseVersionNotValidError — so the editing surface (rule 2) and the route (rule 1) have what they need. Discard (rule 3) does not depend on a validated read already — check whether the discard endpoint today already accepts a call over a version that fails validation, or whether it is also incorrectly blocked by some path that tries to read the Case first.
+
+Genuine structural corruption (manifest absent, not a list, wrong types for slug/title/version/resolution/state) must stay blocking (CaseVersionNotValidError/409) — only the distinction between "document not parseable" and "document parseable but violating a validation rule" changes.
+
+Do not decide the exact shape of the HTTP response/DTO — that is an implementation decision for this plan or for /implement-task, as long as it satisfies the three specification rules.

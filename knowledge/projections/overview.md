@@ -9,7 +9,7 @@ Derived by spec.py from the specification files; never edited.
 | glossary | supporting | 5 | 11 | 2 | 1 |
 | integration | generic | 19 | 136 | 9 | 23 |
 | investigation | supporting | 16 | 50 | 7 | 19 |
-| knowledge | core | 12 | 83 | 5 | 14 |
+| knowledge | core | 12 | 84 | 5 | 14 |
 
 ## Aggregates
 
@@ -34,6 +34,8 @@ Derived by spec.py from the specification files; never edited.
 - a-domain-refusals-message-is-written-in-brazilian-portuguese (system)
 - a-malformed-request-is-refused-with-a-validation-error (system)
 - a-successful-capability-removal-answers-with-no-content (integration)
+- a-successful-case-version-discard-answers-with-no-content (knowledge)
+- a-successful-case-version-own-record-read-answers-with-http-200 (knowledge)
 - a-successful-concept-removal-answers-with-no-content (glossary)
 - a-successful-connector-configuration-removal-answers-with-no-content (integration)
 - consolidation-runs-behind-a-port (investigation)
@@ -63,4 +65,4 @@ Derived by spec.py from the specification files; never edited.
 - the-stored-schema-mirrors-the-declared-model (system)
 - the-system-persists-to-one-relational-database (system)
 
-373 decision(s) disclosed, 12 fact(s) recorded as read in the decision log.
+377 decision(s) disclosed, 12 fact(s) recorded as read in the decision log.

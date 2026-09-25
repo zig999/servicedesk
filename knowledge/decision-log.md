@@ -5703,6 +5703,72 @@ entries:
     claim than the material makes. The material's own request is scoped to a curator correcting or abandoning
     a draft still short of what a case requires, never to publishing one; opening release the same way would
     decide a fact the material never asked for.
+- location: contracts/knowledge/case-query.md
+  field: operations
+  unstated: an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+    says a draft's editing surface presents the version's title, when_to_use, subject, fallback and consolidation_register
+    exactly as its own stored record carries them, and never through case-query's whole-case assembly, on a reading
+    where the version fails validation. No node names a published operation that returns that stored record by case
+    slug and version number without validating the version or assembling it whole. read-case is the only per-version
+    read published, and it answers only a validated, whole case.
+  decided: read-case-version, added to case-query's own operations beside read-case. It returns one case version's
+    own stored title, when_to_use, subject, fallback and consolidation_register by case slug and version number,
+    without validating that version at this reading and without assembling it as a whole case.
+  why: The operation is a synchronous read keyed exactly like read-case, and case-query is where the knowledge context
+    publishes its synchronous reads. It needs a name separate from read-case because constraints/a-case-is-read-whole's
+    fitness requires read-case to return a complete, validated case version or nothing, so read-case cannot answer
+    an unvalidated partial record without that constraint being broken.
+- location: constraints/a-successful-case-version-discard-answers-with-no-content.md
+  field: statement
+  unstated: No node states the HTTP status or the response body with which an accepted discard of a draft case version
+    is answered. contracts/knowledge/case-lifecycle declares discard and the api contract class declares no responses.
+    rules/knowledge/only-a-draft-case-version-may-be-discarded states only the discard's effect. Every HTTP status
+    the specification states for discard belongs to a refusal (HTTP 409 CaseVersionNotDraftError in a-case-version-moves-through-its-declared-lifecycle,
+    HTTP 404 CaseNotFoundError in a-case-read-by-an-unknown-slug-or-version-is-refused). The intake for this work
+    (work/case-version-editable-when-invalid/intake/scope.md) leaves the shape of the HTTP response to planning.
+  decided: HTTP 204 with no body, stated as a knowledge-scoped constraint over discard's accepted branch alone.
+  why: The specification already answers this question the same way for each of its three other removal operations
+    (a-successful-concept-removal-answers-with-no-content, a-successful-connector-configuration-removal-answers-with-no-content,
+    a-successful-capability-removal-answers-with-no-content). The intake those three were read from, work/delete-routes-connector-capability-concept/intake/scope.md,
+    recorded in this log, based that answer on "the same shape the existing discard (case version) and remove-hypothesis
+    routes already establish in this codebase -- an HTTP DELETE, 204 on success". So 204 is the answer the delivered
+    discard route already gives and the one its sibling removals were aligned to, while no node held it for discard
+    itself. An accepted discard leaves no version to answer with, and the curator asked for nothing further, so no
+    body is owed. The accepted-over-an-invalid-version case in a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case
+    is covered by the same statement rather than given a separate answer.
+- location: rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes.md
+  field: statement
+  unstated: No node states what an accepted update-draft over a draft case version answers. contracts/knowledge/case-lifecycle
+    publishes the operation, and the api contract class declares no responses. domain/knowledge/case-version names
+    the correction it makes. an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+    states only that the call is accepted. Four things were left open. The HTTP status. Whether the answer carries
+    the version's title, when_to_use, subject, fallback and consolidation_register as its stored record holds them
+    after the write. Whether it carries any manifest entry. Whether it is read through the whole-case read that refuses
+    a version failing a validator rule of validation-runs-at-every-read.
+  decided: The answer is HTTP 200. It carries the version's title, when_to_use, subject, fallback (outcome and referral)
+    and consolidation_register exactly as its own stored record holds them once the write has settled, and carries
+    no manifest entry. It is read from that record and never through contracts/knowledge/case-query's whole-case
+    read, so an accepted update-draft is never answered with a CaseVersionNotValidError. Recorded as a new invariant
+    over domain/knowledge/case-version.
+  why: The whole-case read refuses exactly the draft this call must stay open to correct, so the answer is the only
+    place the curator can learn what the write left standing. Reading that answer through the refusing read would
+    make an accepted correction look refused. 200 fits because the call corrects a version that already exists -- it
+    creates nothing, which rules out 201, and the answer has attributes to carry, which rules out 204. Manifest entries
+    are left out because update-draft writes none of them and the editing surface presents none of them.
+- location: constraints/a-successful-case-version-own-record-read-answers-with-http-200.md
+  field: statement
+  unstated: No node states the HTTP status of a successful read-case-version call. contracts/knowledge/case-query
+    declares the operation, and its prose says what it returns. The api contract class declares no responses. Every
+    HTTP status the specification states for this call is a refusal (HTTP 404 CaseNotFoundError in a-case-read-by-an-unknown-slug-or-version-is-refused,
+    and HTTP 400 VALIDATION_ERROR in a-malformed-request-is-refused-with-a-validation-error). The intake for this
+    work (work/case-version-editable-when-invalid/intake/scope.md) leaves the shape of the HTTP response to planning.
+  decided: HTTP 200 for every read-case-version call that answers the named version's stored record rather than refusing
+    it, including a call over a version that fails a validator rule of validation-runs-at-every-read. Never 201,
+    202 or 204. Stated as a knowledge-scoped constraint.
+  why: The call reads a version that already exists and has that version's stored attributes to carry. It creates
+    nothing, which rules out 201. It defers nothing, which rules out 202. It has a body, which rules out 204. The
+    operation does not validate the version, so a version that fails validation is still a successful read under
+    this call and gets no status of its own.
 
 ---
 - location: rules/knowledge/a-hypothesis-revision-history-stands-on-a-reading-whose-cases-current-version-does-not-read-back-as-a-case.md
