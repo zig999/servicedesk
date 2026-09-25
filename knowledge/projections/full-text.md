@@ -6809,6 +6809,24 @@ entries:
     constraints/the-capability-identity-read-refuses-an-unregistered-identity,
     rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused), so landing the
     operator there would show a refusal for the very act that just succeeded.
+- location: rules/glossary/a-registered-concept-is-never-removed.md
+  field: statement
+  unstated: What reference a ConceptInUseError reports when a remove-concept is refused because a registered
+    capability answers the concept, because a collected evidence item names it, or because a citation names
+    it. The statement gives a reference value only for the fourth condition (hypothesis-revision-collects,
+    where a hypothesis-revision's own collects lists the concept). No node and no intake material gives one
+    for the other three.
+  decided: capability-concept where a registered capability answers the concept, evidence-concept where a
+    collected evidence item names it, and citation-concept where a citation names it.
+  why: The one value this specification already holds follows a pattern -- hypothesis-revision-collects is
+    the slug of the element that names the concept, followed by the name of that element's attribute typed
+    domain/glossary/concept (domain/knowledge/hypothesis-revision's collects). The same pattern applied to
+    the other three elements that name a concept gives capability-concept from domain/integration/capability's
+    concept attribute, evidence-concept from domain/investigation/evidence's concept attribute, and
+    citation-concept from domain/investigation/citation's concept attribute. This rule's Description has the
+    refusal name which condition was found, so each condition needs its own token. Evidence and citation get
+    separate tokens because the statement lists them as separate referents with separate attributes of their
+    own. Any other scheme would give this one error two naming conventions.
 
 === domain/glossary/_context
 ---
@@ -8297,7 +8315,7 @@ Recipients are real operational queues; binding a referral to an individual woul
 === rules/glossary/a-registered-concept-is-never-removed
 ---
 type: policy
-statement: Registering concepts adds a concept at a new name or replaces the concept already held at that name, and removes no concept already held; removing a concept by name succeeds unless a registered capability answers it, a collected evidence item or its citation names it, or a hypothesis-revision's own collects lists it, in which case the removal is refused with an HTTP 409 response reporting a ConceptInUseError that reports, for the concept found still named, a reference identifying what names it — hypothesis-revision-collects where a hypothesis-revision's own collects lists it — and the concept is never removed from the glossary any other way; a concept's removal takes that concept's own declaration of the subject types it accepts with it and removes no term of the subject-type vocabulary, whose terms are held independently of the concepts that accept them.
+statement: Registering concepts adds a concept at a new name or replaces the concept already held at that name, and removes no concept already held; removing a concept by name succeeds unless a registered capability answers it, a collected evidence item or its citation names it, or a hypothesis-revision's own collects lists it, in which case the removal is refused with an HTTP 409 response reporting a ConceptInUseError that reports, for the concept found still named, a reference identifying what names it — capability-concept where a registered capability answers it, evidence-concept where a collected evidence item names it, citation-concept where a citation names it, and hypothesis-revision-collects where a hypothesis-revision's own collects lists it — and the concept is never removed from the glossary any other way; a concept's removal takes that concept's own declaration of the subject types it accepts with it and removes no term of the subject-type vocabulary, whose terms are held independently of the concepts that accept them.
 constrains:
   - domain/glossary/concept
   - domain/glossary/subject-type

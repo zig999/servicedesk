@@ -6009,3 +6009,21 @@ entries:
     constraints/the-capability-identity-read-refuses-an-unregistered-identity,
     rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused), so landing the
     operator there would show a refusal for the very act that just succeeded.
+- location: rules/glossary/a-registered-concept-is-never-removed.md
+  field: statement
+  unstated: What reference a ConceptInUseError reports when a remove-concept is refused because a registered
+    capability answers the concept, because a collected evidence item names it, or because a citation names
+    it. The statement gives a reference value only for the fourth condition (hypothesis-revision-collects,
+    where a hypothesis-revision's own collects lists the concept). No node and no intake material gives one
+    for the other three.
+  decided: capability-concept where a registered capability answers the concept, evidence-concept where a
+    collected evidence item names it, and citation-concept where a citation names it.
+  why: The one value this specification already holds follows a pattern -- hypothesis-revision-collects is
+    the slug of the element that names the concept, followed by the name of that element's attribute typed
+    domain/glossary/concept (domain/knowledge/hypothesis-revision's collects). The same pattern applied to
+    the other three elements that name a concept gives capability-concept from domain/integration/capability's
+    concept attribute, evidence-concept from domain/investigation/evidence's concept attribute, and
+    citation-concept from domain/investigation/citation's concept attribute. This rule's Description has the
+    refusal name which condition was found, so each condition needs its own token. Evidence and citation get
+    separate tokens because the statement lists them as separate referents with separate attributes of their
+    own. Any other scheme would give this one error two naming conventions.

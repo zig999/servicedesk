@@ -1,0 +1,628 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/capability-removal",
+      "kind": "epic",
+      "file": "epic/capability-removal.md",
+      "title": "Capability removal from the capability's own surface",
+      "summary": "A removal on the capability detail screen, gated behind a further explicit act, with the outcome the api answered disclosed and a successful removal landing on the capabilities listing."
+    },
+    {
+      "id": "epic/concept-removal",
+      "kind": "epic",
+      "file": "epic/concept-removal.md",
+      "title": "Concept removal from the glossary's concepts listing",
+      "summary": "A removal on each concept row of the glossary, gated behind a further explicit act, with the outcome the api answered disclosed and the listing left without the removed concept."
+    },
+    {
+      "id": "epic/connector-configuration-removal",
+      "kind": "epic",
+      "file": "epic/connector-configuration-removal.md",
+      "title": "Connector configuration removal from the configuration's own surface",
+      "summary": "A removal on the connector configuration detail screen, gated behind a further explicit act, with the outcome the api answered disclosed and a successful removal landing on the connectors listing."
+    },
+    {
+      "id": "inventory/frontend-delete-controls",
+      "kind": "inventory",
+      "file": "inventory/frontend-delete-controls.md",
+      "title": "Frontend surfaces for concept, capability and connector-configuration deletion",
+      "summary": "The three detail/listing surfaces (glossary concepts panel, capability-detail-screen, connector-configuration-detail-screen), their supporting hooks and services, where a delete control, a second-act confirmation and an outcome disclosure must be added."
+    },
+    {
+      "id": "task/capability-removal/capability-cited-by-evidence-refusal-recognition",
+      "kind": "task",
+      "file": "task/capability-removal/capability-cited-by-evidence-refusal-recognition.md",
+      "title": "Recognise CapabilityCitedByEvidenceError as its own refusal",
+      "summary": "The shared error-code map answering a state of its own for the refusal remove-capability raises when collected evidence names the capability.",
+      "epic": "capability-removal"
+    },
+    {
+      "id": "task/capability-removal/capability-removal-control",
+      "kind": "task",
+      "file": "task/capability-removal/capability-removal-control.md",
+      "title": "Capability removal control behind a further explicit act",
+      "summary": "A removal control on the capability detail screen that asks for confirmation and issues remove-capability only when the operator confirms.",
+      "epic": "capability-removal"
+    },
+    {
+      "id": "task/capability-removal/capability-removal-landing",
+      "kind": "task",
+      "file": "task/capability-removal/capability-removal-landing.md",
+      "title": "Land on the capabilities listing after a successful removal",
+      "summary": "Where the operator is taken once a capability removal succeeds: the capabilities listing, never the removed identity's surface.",
+      "epic": "capability-removal"
+    },
+    {
+      "id": "task/capability-removal/capability-removal-outcome-disclosure",
+      "kind": "task",
+      "file": "task/capability-removal/capability-removal-outcome-disclosure.md",
+      "title": "Disclose the answered outcome of a capability removal",
+      "summary": "What the capability's surface tells the operator once remove-capability has answered a removal it issued, and what it withholds while the answer is pending.",
+      "epic": "capability-removal"
+    },
+    {
+      "id": "task/concept-removal/concept-in-use-refusal-recognition",
+      "kind": "task",
+      "file": "task/concept-removal/concept-in-use-refusal-recognition.md",
+      "title": "Recognise ConceptInUseError as its own refusal",
+      "summary": "The shared error-code map answering a state of its own for the refusal remove-concept raises when the concept is still named.",
+      "epic": "concept-removal"
+    },
+    {
+      "id": "task/concept-removal/concept-removal-landing",
+      "kind": "task",
+      "file": "task/concept-removal/concept-removal-landing.md",
+      "title": "Leave the operator on the concepts listing after a successful removal",
+      "summary": "Where the operator stands once a concept removal succeeds: the glossary's concepts tab, with the removed concept no longer listed.",
+      "epic": "concept-removal"
+    },
+    {
+      "id": "task/concept-removal/concept-removal-outcome-disclosure",
+      "kind": "task",
+      "file": "task/concept-removal/concept-removal-outcome-disclosure.md",
+      "title": "Disclose the answered outcome of a concept removal",
+      "summary": "What the concepts listing tells the operator once remove-concept has answered a removal it issued, and what it withholds while the answer is pending.",
+      "epic": "concept-removal"
+    },
+    {
+      "id": "task/concept-removal/concept-row-removal-control",
+      "kind": "task",
+      "file": "task/concept-removal/concept-row-removal-control.md",
+      "title": "Concept row removal control behind a further explicit act",
+      "summary": "A removal control on each concept row that asks for confirmation and issues remove-concept only when the operator confirms.",
+      "epic": "concept-removal"
+    },
+    {
+      "id": "task/connector-configuration-removal/connector-configuration-removal-control",
+      "kind": "task",
+      "file": "task/connector-configuration-removal/connector-configuration-removal-control.md",
+      "title": "Connector configuration removal control behind a further explicit act",
+      "summary": "A removal control on the connector configuration detail screen that asks for confirmation and issues remove-connector only when the operator confirms.",
+      "epic": "connector-configuration-removal"
+    },
+    {
+      "id": "task/connector-configuration-removal/connector-configuration-removal-landing",
+      "kind": "task",
+      "file": "task/connector-configuration-removal/connector-configuration-removal-landing.md",
+      "title": "Land on the connectors listing after a successful removal",
+      "summary": "Where the operator is taken once a connector configuration removal succeeds: the connectors listing, never the removed name's surface.",
+      "epic": "connector-configuration-removal"
+    },
+    {
+      "id": "task/connector-configuration-removal/connector-configuration-removal-outcome-disclosure",
+      "kind": "task",
+      "file": "task/connector-configuration-removal/connector-configuration-removal-outcome-disclosure.md",
+      "title": "Disclose the answered outcome of a connector configuration removal",
+      "summary": "What the connector configuration's surface tells the operator once remove-connector has answered a removal it issued, and what it withholds while the answer is pending.",
+      "epic": "connector-configuration-removal"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/capability-removal",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "constraints/listings-are-paged",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "rules/integration/a-submitted-removal-states-its-outcome-to-the-operator",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "rules/integration/a-registered-capability-cited-by-evidence-is-never-removed",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "constraints/a-successful-capability-removal-answers-with-no-content",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "constraints/the-capability-identity-read-refuses-an-unregistered-identity",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/capability-removal",
+      "to": "constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "rules/integration/a-submitted-removal-states-its-outcome-to-the-operator",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "rules/glossary/a-registered-concept-is-never-removed",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "constraints/a-successful-concept-removal-answers-with-no-content",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "rules/glossary/a-glossary-read-by-an-unheld-name-is-refused",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/concept-removal",
+      "to": "constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "domain/integration/connector-configuration",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "rules/integration/a-submitted-removal-states-its-outcome-to-the-operator",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "rules/integration/removing-a-connector-configuration-is-unconditional",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "constraints/a-successful-connector-configuration-removal-answers-with-no-content",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/connector-configuration-removal",
+      "to": "constraints/listings-are-paged",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/capability-removal/capability-cited-by-evidence-refusal-recognition",
+      "to": "rules/integration/a-submitted-removal-states-its-outcome-to-the-operator",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:59a5439312d27a35e4ea6cc1a84dfea3b4986ae88cf6ca2ce0844bf3e8577a87"
+    },
+    {
+      "from": "task/capability-removal/capability-cited-by-evidence-refusal-recognition",
+      "to": "rules/integration/a-registered-capability-cited-by-evidence-is-never-removed",
+      "kind": "implements",
+      "at": "implements[1]",
+      "digest": "sha256:8195034158d28a4e3c3b39c3b7506a739d6f0aad4f54c7ff289c26b278056a08"
+    },
+    {
+      "from": "task/capability-removal/capability-removal-control",
+      "to": "rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:f3c95d9cbbdc291af55026a852d27ecf1bcc7e6a74b3d3daf15bbca070d7e482"
+    },
+    {
+      "from": "task/capability-removal/capability-removal-control",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[1]",
+      "digest": "sha256:91a8e47dde1bb38dea81d4e464723f23b227e2b9788696ab0f899bbebe2b5148"
+    },
+    {
+      "from": "task/capability-removal/capability-removal-landing",
+      "to": "task/capability-removal/capability-removal-control",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/capability-removal/capability-removal-landing",
+      "to": "rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:9c5e05e96b38950e393e149707fe94bba3e544cb8c7bc5b02414859a7f7f8e48"
+    },
+    {
+      "from": "task/capability-removal/capability-removal-landing",
+      "to": "constraints/a-successful-capability-removal-answers-with-no-content",
+      "kind": "implements",
+      "at": "implements[1]",
+      "digest": "sha256:b6096e0b5208d67397fae54613a754b9e2de23299d55860eed833190c316201a"
+    },
+    {
+      "from": "task/capability-removal/capability-removal-landing",
+      "to": "constraints/the-capability-identity-read-refuses-an-unregistered-identity",
+      "kind": "implements",
+      "at": "implements[2]",
+      "digest": "sha256:420332183825ece65d96e027961e42943f7f82327c29b36340051ac939ee5d28"
+    },
+    {
+      "from": "task/capability-removal/capability-removal-outcome-disclosure",
+      "to": "task/capability-removal/capability-removal-control",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/capability-removal/capability-removal-outcome-disclosure",
+      "to": "task/capability-removal/capability-cited-by-evidence-refusal-recognition",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/capability-removal/capability-removal-outcome-disclosure",
+      "to": "rules/integration/a-submitted-removal-states-its-outcome-to-the-operator",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:59a5439312d27a35e4ea6cc1a84dfea3b4986ae88cf6ca2ce0844bf3e8577a87"
+    },
+    {
+      "from": "task/capability-removal/capability-removal-outcome-disclosure",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[1]",
+      "digest": "sha256:91a8e47dde1bb38dea81d4e464723f23b227e2b9788696ab0f899bbebe2b5148"
+    },
+    {
+      "from": "task/capability-removal/capability-removal-outcome-disclosure",
+      "to": "rules/integration/a-registered-capability-cited-by-evidence-is-never-removed",
+      "kind": "implements",
+      "at": "implements[2]",
+      "digest": "sha256:8195034158d28a4e3c3b39c3b7506a739d6f0aad4f54c7ff289c26b278056a08"
+    },
+    {
+      "from": "task/capability-removal/capability-removal-outcome-disclosure",
+      "to": "constraints/a-successful-capability-removal-answers-with-no-content",
+      "kind": "implements",
+      "at": "implements[3]",
+      "digest": "sha256:b6096e0b5208d67397fae54613a754b9e2de23299d55860eed833190c316201a"
+    },
+    {
+      "from": "task/capability-removal/capability-removal-outcome-disclosure",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "implements",
+      "at": "implements[4]",
+      "digest": "sha256:684d6f2f9eb53d8d64a6303c243f4789ec08c1145a369829bbb2dda83fa4c05a"
+    },
+    {
+      "from": "task/capability-removal/capability-removal-outcome-disclosure",
+      "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
+      "kind": "implements",
+      "at": "implements[5]",
+      "digest": "sha256:d86861c14df4ef89fe00ab5effa8316e7b0ee387c26deed970632b818e50e74b"
+    },
+    {
+      "from": "task/concept-removal/concept-in-use-refusal-recognition",
+      "to": "rules/integration/a-submitted-removal-states-its-outcome-to-the-operator",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:59a5439312d27a35e4ea6cc1a84dfea3b4986ae88cf6ca2ce0844bf3e8577a87"
+    },
+    {
+      "from": "task/concept-removal/concept-in-use-refusal-recognition",
+      "to": "rules/glossary/a-registered-concept-is-never-removed",
+      "kind": "implements",
+      "at": "implements[1]",
+      "digest": "sha256:c22fc49bba8d364c9d727542c8f6e64a0542d7cab57c820c868f2789e2cd0b79"
+    },
+    {
+      "from": "task/concept-removal/concept-removal-landing",
+      "to": "task/concept-removal/concept-row-removal-control",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/concept-removal/concept-removal-landing",
+      "to": "rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:9c5e05e96b38950e393e149707fe94bba3e544cb8c7bc5b02414859a7f7f8e48"
+    },
+    {
+      "from": "task/concept-removal/concept-removal-landing",
+      "to": "constraints/a-successful-concept-removal-answers-with-no-content",
+      "kind": "implements",
+      "at": "implements[1]",
+      "digest": "sha256:1984fe0e225843f530ec0e99ccfed89ae2508bed581e785c6db35c604b61883e"
+    },
+    {
+      "from": "task/concept-removal/concept-removal-landing",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[2]",
+      "digest": "sha256:3d67d2df55f4442a50e5ff3740b7229e0b34059033d27903dff72c5de61a5dd1"
+    },
+    {
+      "from": "task/concept-removal/concept-removal-outcome-disclosure",
+      "to": "task/concept-removal/concept-row-removal-control",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/concept-removal/concept-removal-outcome-disclosure",
+      "to": "task/concept-removal/concept-in-use-refusal-recognition",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/concept-removal/concept-removal-outcome-disclosure",
+      "to": "rules/integration/a-submitted-removal-states-its-outcome-to-the-operator",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:59a5439312d27a35e4ea6cc1a84dfea3b4986ae88cf6ca2ce0844bf3e8577a87"
+    },
+    {
+      "from": "task/concept-removal/concept-removal-outcome-disclosure",
+      "to": "rules/glossary/a-registered-concept-is-never-removed",
+      "kind": "implements",
+      "at": "implements[1]",
+      "digest": "sha256:c22fc49bba8d364c9d727542c8f6e64a0542d7cab57c820c868f2789e2cd0b79"
+    },
+    {
+      "from": "task/concept-removal/concept-removal-outcome-disclosure",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[2]",
+      "digest": "sha256:3d67d2df55f4442a50e5ff3740b7229e0b34059033d27903dff72c5de61a5dd1"
+    },
+    {
+      "from": "task/concept-removal/concept-removal-outcome-disclosure",
+      "to": "constraints/a-successful-concept-removal-answers-with-no-content",
+      "kind": "implements",
+      "at": "implements[3]",
+      "digest": "sha256:1984fe0e225843f530ec0e99ccfed89ae2508bed581e785c6db35c604b61883e"
+    },
+    {
+      "from": "task/concept-removal/concept-removal-outcome-disclosure",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "implements",
+      "at": "implements[4]",
+      "digest": "sha256:684d6f2f9eb53d8d64a6303c243f4789ec08c1145a369829bbb2dda83fa4c05a"
+    },
+    {
+      "from": "task/concept-removal/concept-removal-outcome-disclosure",
+      "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
+      "kind": "implements",
+      "at": "implements[5]",
+      "digest": "sha256:d86861c14df4ef89fe00ab5effa8316e7b0ee387c26deed970632b818e50e74b"
+    },
+    {
+      "from": "task/concept-removal/concept-row-removal-control",
+      "to": "rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:f3c95d9cbbdc291af55026a852d27ecf1bcc7e6a74b3d3daf15bbca070d7e482"
+    },
+    {
+      "from": "task/concept-removal/concept-row-removal-control",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[1]",
+      "digest": "sha256:3d67d2df55f4442a50e5ff3740b7229e0b34059033d27903dff72c5de61a5dd1"
+    },
+    {
+      "from": "task/connector-configuration-removal/connector-configuration-removal-control",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:345272c25d8ad14d2f0b0619f462e4534ae2c7c8ee3115b819e6c1d3a09b380b"
+    },
+    {
+      "from": "task/connector-configuration-removal/connector-configuration-removal-control",
+      "to": "rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act",
+      "kind": "implements",
+      "at": "implements[1]",
+      "digest": "sha256:f3c95d9cbbdc291af55026a852d27ecf1bcc7e6a74b3d3daf15bbca070d7e482"
+    },
+    {
+      "from": "task/connector-configuration-removal/connector-configuration-removal-control",
+      "to": "rules/integration/removing-a-connector-configuration-is-unconditional",
+      "kind": "implements",
+      "at": "implements[2]",
+      "digest": "sha256:f06d983ab60c78fc1c0acca181d2489ecb9679fd8a596be287401f01c5dfd7da"
+    },
+    {
+      "from": "task/connector-configuration-removal/connector-configuration-removal-landing",
+      "to": "task/connector-configuration-removal/connector-configuration-removal-control",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/connector-configuration-removal/connector-configuration-removal-landing",
+      "to": "rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:9c5e05e96b38950e393e149707fe94bba3e544cb8c7bc5b02414859a7f7f8e48"
+    },
+    {
+      "from": "task/connector-configuration-removal/connector-configuration-removal-landing",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[1]",
+      "digest": "sha256:345272c25d8ad14d2f0b0619f462e4534ae2c7c8ee3115b819e6c1d3a09b380b"
+    },
+    {
+      "from": "task/connector-configuration-removal/connector-configuration-removal-landing",
+      "to": "constraints/a-successful-connector-configuration-removal-answers-with-no-content",
+      "kind": "implements",
+      "at": "implements[2]",
+      "digest": "sha256:56a9a5afda6471b5ea6e131be0b05293c2d175d393a04b6e741b42c9d91b6dd1"
+    },
+    {
+      "from": "task/connector-configuration-removal/connector-configuration-removal-outcome-disclosure",
+      "to": "task/connector-configuration-removal/connector-configuration-removal-control",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/connector-configuration-removal/connector-configuration-removal-outcome-disclosure",
+      "to": "rules/integration/a-submitted-removal-states-its-outcome-to-the-operator",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:59a5439312d27a35e4ea6cc1a84dfea3b4986ae88cf6ca2ce0844bf3e8577a87"
+    },
+    {
+      "from": "task/connector-configuration-removal/connector-configuration-removal-outcome-disclosure",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[1]",
+      "digest": "sha256:345272c25d8ad14d2f0b0619f462e4534ae2c7c8ee3115b819e6c1d3a09b380b"
+    },
+    {
+      "from": "task/connector-configuration-removal/connector-configuration-removal-outcome-disclosure",
+      "to": "constraints/a-successful-connector-configuration-removal-answers-with-no-content",
+      "kind": "implements",
+      "at": "implements[2]",
+      "digest": "sha256:56a9a5afda6471b5ea6e131be0b05293c2d175d393a04b6e741b42c9d91b6dd1"
+    },
+    {
+      "from": "task/connector-configuration-removal/connector-configuration-removal-outcome-disclosure",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "implements",
+      "at": "implements[3]",
+      "digest": "sha256:684d6f2f9eb53d8d64a6303c243f4789ec08c1145a369829bbb2dda83fa4c05a"
+    },
+    {
+      "from": "task/connector-configuration-removal/connector-configuration-removal-outcome-disclosure",
+      "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
+      "kind": "implements",
+      "at": "implements[4]",
+      "digest": "sha256:d86861c14df4ef89fe00ab5effa8316e7b0ee387c26deed970632b818e50e74b"
+    }
+  ]
+}
