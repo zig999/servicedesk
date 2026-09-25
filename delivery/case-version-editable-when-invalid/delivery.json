@@ -58,6 +58,14 @@
       "task": "task/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor"
     },
     {
+      "id": "implementation/draft-editor-correction-while-invalid/route-the-simulation-screen-to-the-version-editor",
+      "kind": "implementation",
+      "file": "implementation/draft-editor-correction-while-invalid/route-the-simulation-screen-to-the-version-editor.md",
+      "title": "Route the simulation screen to the version's editor on every reading",
+      "summary": "case-simulation-screen.tsx now carries a route to the named version's own editor in its loading and load-error phases, and case-simulation-header.tsx now carries a second, distinctly-labelled route to that same version's own editor on a released reading, alongside its existing route to a new sourced draft.",
+      "task": "task/draft-editor-correction-while-invalid/route-the-simulation-screen-to-the-version-editor"
+    },
+    {
       "id": "proof/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
       "kind": "proof",
       "file": "proof/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record.md",
@@ -112,6 +120,14 @@
       "title": "Proof that the manifest screen routes to the version's editor on every reading",
       "summary": "One test walks the manifest screen through all five readings its four phases distinguish -- pending, failed-to-complete, refused with CaseVersionNotValidError, answered draft, answered released -- and asserts the Edit version link's href is /cases/$slug/versions/$version, keyed to the screen's own path params, on each.",
       "task": "task/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor"
+    },
+    {
+      "id": "proof/draft-editor-correction-while-invalid/route-the-simulation-screen-to-the-version-editor",
+      "kind": "proof",
+      "file": "proof/draft-editor-correction-while-invalid/route-the-simulation-screen-to-the-version-editor.md",
+      "title": "Route the simulation screen to the version's editor on every reading -- proof",
+      "summary": "One sequential test walks the simulation screen through its five declared readings (pending, failed, refused for validation, answered draft, answered released) and confirms the route to the named version's own editor survives each, discharging the task's six criteria and the node's fact whole; a second test covers the task's own UNDERDETERMINED entry on a refusal carrying an unrecognized error code.",
+      "task": "task/draft-editor-correction-while-invalid/route-the-simulation-screen-to-the-version-editor"
     }
   ],
   "edges": [
@@ -368,6 +384,18 @@
       "at": "the path"
     },
     {
+      "from": "implementation/draft-editor-correction-while-invalid/route-the-simulation-screen-to-the-version-editor",
+      "to": "rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-editing-surface-on-every-reading",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/draft-editor-correction-while-invalid/route-the-simulation-screen-to-the-version-editor",
+      "to": "task/draft-editor-correction-while-invalid/route-the-simulation-screen-to-the-version-editor",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
       "to": "implementation/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
       "kind": "proves",
@@ -406,6 +434,12 @@
     {
       "from": "proof/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor",
       "to": "implementation/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/draft-editor-correction-while-invalid/route-the-simulation-screen-to-the-version-editor",
+      "to": "implementation/draft-editor-correction-while-invalid/route-the-simulation-screen-to-the-version-editor",
       "kind": "proves",
       "at": "the path"
     }

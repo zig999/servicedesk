@@ -52,15 +52,22 @@ export function CaseSimulationHeader({
               </Link>
             </Button>
           ) : (
-            <Button type="button" variant="secondary" asChild>
-              <Link
-                to="/cases/$slug/versions/new"
-                params={{ slug }}
-                search={{ sourceVersion: version }}
-              >
-                Edit version
-              </Link>
-            </Button>
+            <>
+              <Button type="button" variant="secondary" asChild>
+                <Link to="/cases/$slug/versions/$version" params={versionParams}>
+                  View this version
+                </Link>
+              </Button>
+              <Button type="button" variant="secondary" asChild>
+                <Link
+                  to="/cases/$slug/versions/new"
+                  params={{ slug }}
+                  search={{ sourceVersion: version }}
+                >
+                  Edit version
+                </Link>
+              </Button>
+            </>
           )}
           <Button type="button" variant="secondary" asChild>
             <Link to="/cases/$slug/versions/$version/manifest" params={versionParams}>

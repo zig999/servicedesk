@@ -3,6 +3,7 @@ import { useParams } from "@tanstack/react-router";
 import { Button } from "@tui/ui/button";
 import { useCaseSimulationVersion } from "../hooks/use-case-simulation-version";
 import { CaseSimulationReadyView } from "./case-simulation-ready-view";
+import { CaseVersionEditorLink } from "./case-version-editor-link";
 
 export function CaseSimulationScreen(): JSX.Element {
   const { slug, version } = useParams({
@@ -11,7 +12,12 @@ export function CaseSimulationScreen(): JSX.Element {
   const state = useCaseSimulationVersion(slug, Number(version));
 
   if (state.phase === "loading") {
-    return <p>Loading version {version}…</p>;
+    return (
+      <section>
+        <p>Loading version {version}…</p>
+        <CaseVersionEditorLink slug={slug} version={version} />
+      </section>
+    );
   }
 
   if (state.phase === "load-error") {
@@ -21,6 +27,7 @@ export function CaseSimulationScreen(): JSX.Element {
         <Button type="button" onClick={state.retryLoad}>
           Retry
         </Button>
+        <CaseVersionEditorLink slug={slug} version={version} />
       </section>
     );
   }
