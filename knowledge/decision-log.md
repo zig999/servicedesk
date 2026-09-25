@@ -6049,3 +6049,21 @@ entries:
     without reopening delivered work -- correcting the specification is the smaller, reversible edit, and
     the alternative (renaming the backend's already-tested values to match the specification's invented
     pattern) would be a corrective increment against working, specified code for no behavioral reason.
+- location: rules/glossary/a-registered-concept-is-never-removed.md
+  field: statement
+  unstated: What the HTTP 409 ConceptInUseError response's details carry beyond the reference itself,
+    and whether the wire error code is the class name as delivered. No node stated the details' shape;
+    the material never described this refusal's wire response.
+  decided: The details carry the concept's own name and the reference, and nothing else. The wire error
+    code is the literal string ConceptInUseError, exactly the class name.
+  why: The delivered, tested backend already fixes this shape -- src/src/http/error-handler.middleware.ts's
+    domainEnvelope sends code: error.name and details: error.context for every domain error with a
+    context, and ConceptInUseError's own context is { concept, reference }
+    (src/src/errors/concept-in-use.error.ts); src/src/__tests__/unit/http/remove-concept.routes.spec.ts
+    asserts exactly this: body.error.code toBe('ConceptInUseError') and body.error.details toEqual({
+    concept: 'a-cited-concept', reference: 'capability' }). This is the same route this specification's
+    own decision log already took for CaseAlreadyHasDraftError, ManifestPositionOccupiedError and the
+    case-has-at-least-one-hypothesis removal refusal: the decision names the caller-facing shape that
+    was built and tested rather than choosing a second one. A prior /plan-work in this same initiative
+    tried to decide this without reading the backend and was refused by its own decider for exactly that
+    reason; deciding it here, with the code read, is what that refusal asked for.
