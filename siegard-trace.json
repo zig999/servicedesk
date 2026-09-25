@@ -267,6 +267,20 @@
       ]
     },
     {
+      "node": "constraints/a-successful-case-version-discard-answers-with-no-content",
+      "digest": "sha256:7a9f0725834649367a3debd2d91be12a4d6ed7d06e17921ce99ddfc3131d8fd5",
+      "files": [
+        {
+          "path": "src/src/http/discard.routes.ts",
+          "digest": "sha256:e362444445114dda2a91a77d96379275843144127bf7cb5ee4a92a498c3660f4"
+        },
+        {
+          "path": "src/src/http/dto/discard.dto.ts",
+          "digest": "sha256:2879aba3684a9c594452e8412e1162074c8965576354346a2b2abc7f8b88c68c"
+        }
+      ]
+    },
+    {
       "node": "constraints/a-successful-case-version-own-record-read-answers-with-http-200",
       "digest": "sha256:1b11b7e01386dea252b6146834b3ec74f8e3dbae6c8ef8a80f4a1bdd1320c9dd",
       "files": [
@@ -9299,6 +9313,20 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case",
+      "digest": "sha256:9b36b5c3332ce180313d4225436d76ff48b88bd7f9faf5ba005d53b73b705e7f",
+      "files": [
+        {
+          "path": "src/src/case/discard.operation.ts",
+          "digest": "sha256:f1957fc9c6f222a7d78ecb3920d6d4fbea2543ead4de68b939b6fe4d85663320"
+        },
+        {
+          "path": "src/src/http/discard.controller.ts",
+          "digest": "sha256:424b941499668ff8344ab39373779a46850672ba2ab873cb53ba9cec43ac1598"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record",
       "digest": "sha256:432dc3c3f910a4a2e281a0e5db7a7082bcfa24b7b2ec5702215aec412d858d92",
       "files": [
@@ -11118,6 +11146,16 @@
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
           "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable",
+      "digest": "sha256:4be0102591208989f3d5fe190fd0427e137266f8290229aec646d040d8935bb6",
+      "files": [
+        {
+          "path": "src/src/case/discard.operation.ts",
+          "digest": "sha256:f1957fc9c6f222a7d78ecb3920d6d4fbea2543ead4de68b939b6fe4d85663320"
         }
       ]
     },

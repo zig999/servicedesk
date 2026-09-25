@@ -1,10 +1,74 @@
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
+import type {
+  AssembledCaseVersion,
+  CaseCatalogEntry,
+  CaseVersionListItem,
+  CreateDraftInput,
+  DraftVersion,
+  HypothesisIdentity,
+  HypothesisRevisionInput,
+  HypothesisRevisionListItem,
+  ICaseStore,
+  PlaceHypothesisInput,
+  UpdateDraftInput,
+} from '../../../case/case-store.port.js';
+import { discardCaseVersion } from '../../../case/discard.operation.js';
 import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
 import { CaseVersionNotDraftError } from '../../../errors/case-version-not-draft.error.js';
 import { handleUnexpectedError } from '../../../http/error-handler.middleware.js';
 import type { DiscardControllerDependencies } from '../../../http/discard.controller.js';
 import { createDiscardRoutesPlugin } from '../../../http/discard.routes.js';
+import type { PaginatedResponse, PaginationRequest } from '../../../types/pagination.js';
+
+// Stands in for the store boundary only (TST-03): every method discardCaseVersion does not call
+// throws, so this fixture cannot silently answer a call the real operation was never meant to make.
+function notNeededByDiscard(): never {
+  throw new Error('not needed by discardCaseVersion, and not exercised by this fixture');
+}
+
+class SingleDraftCaseStore implements ICaseStore {
+  public constructor(private version: AssembledCaseVersion | undefined) {}
+
+  public async assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined> {
+    if (this.version === undefined || this.version.slug !== slug || this.version.version !== version) {
+      return undefined;
+    }
+    return this.version;
+  }
+
+  public async discard(slug: string, version: number): Promise<void> {
+    if (this.version?.slug === slug && this.version.version === version) {
+      this.version = undefined;
+    }
+  }
+
+  public findDraftVersion(): Promise<DraftVersion | undefined> { return notNeededByDiscard(); }
+  public listCases(_pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>> { return notNeededByDiscard(); }
+  public listCaseVersions(_slug: string, _pagination: PaginationRequest): Promise<PaginatedResponse<CaseVersionListItem>> { return notNeededByDiscard(); }
+  public listHypotheses(_slug: string, _pagination: PaginationRequest): Promise<PaginatedResponse<HypothesisIdentity>> { return notNeededByDiscard(); }
+  public listHypothesisRevisions(_slug: string, _hypothesisName: string, _pagination: PaginationRequest): Promise<PaginatedResponse<HypothesisRevisionListItem>> { return notNeededByDiscard(); }
+  public createDraft(_input: CreateDraftInput): Promise<number> { return notNeededByDiscard(); }
+  public insertHypothesisRevision(_input: HypothesisRevisionInput): Promise<number> { return notNeededByDiscard(); }
+  public placeHypothesis(_input: PlaceHypothesisInput): Promise<void> { return notNeededByDiscard(); }
+  public removeManifestEntry(_slug: string, _version: number, _hypothesisName: string): Promise<void> { return notNeededByDiscard(); }
+  public release(_slug: string, _version: number): Promise<void> { return notNeededByDiscard(); }
+  public updateDraft(_slug: string, _version: number, _attributes: UpdateDraftInput): Promise<void> { return notNeededByDiscard(); }
+}
+
+function aDraftWithSubject(slug: string, version: number, subject: string): AssembledCaseVersion {
+  return {
+    slug,
+    version,
+    title: 'A title',
+    when_to_use: 'A use',
+    authored_at: '2026-01-01T00:00:00Z',
+    subject,
+    fallback: { outcome: 'an-outcome', referral: { action: 'an-action', recipient: 'a-recipient' } },
+    state: 'draft',
+    manifest: [],
+  };
+}
 
 type DiscardMock = ReturnType<typeof vi.fn<(slug: string, version: number) => Promise<void>>>;
 
@@ -123,3 +187,23 @@ it('answers the unchanged generic envelope, never a partial body or leaked detai
   expect(response.json()).toEqual({ error: { code: 'INTERNAL_ERROR', message: 'an unexpected error occurred' } });
   expect(response.body).not.toContain('a generic failure');
 });
+
+it(
+  'accepts a discard of a draft whose stored subject names a subject type the glossary does not hold, ' +
+    'answering 204 with an empty body, routed through the real controller and the real discard ' +
+    'operation rather than a mocked dependency',
+  async () => {
+    const slug = 'a-slug-with-an-unglossaried-subject';
+    const version = 7;
+    const store = new SingleDraftCaseStore(aDraftWithSubject(slug, version, 'a-subject-type-the-glossary-does-not-hold'));
+    const dependencies: DiscardControllerDependencies = { discard: (s, v) => discardCaseVersion(store, s, v) };
+    app = Fastify();
+    app.register(createDiscardRoutesPlugin(dependencies));
+
+    const response = await app.inject({ method: 'DELETE', url: `/v1/cases/${slug}/versions/${version}` });
+
+    expect(response.statusCode).toBe(204);
+    expect(response.body).toBe('');
+    await expect(store.assembleVersion(slug, version)).resolves.toBeUndefined();
+  },
+);

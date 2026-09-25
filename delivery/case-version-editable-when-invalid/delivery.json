@@ -18,6 +18,14 @@
       "task": "task/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http"
     },
     {
+      "id": "implementation/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation",
+      "kind": "implementation",
+      "file": "implementation/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation.md",
+      "title": "Discard already accepts a draft failing validation -- confirmed, no change",
+      "summary": "Verifies that discard.controller.ts, discard.operation.ts and discard.routes.ts already accept and answer a discard of a draft whose manifest is empty or whose subject fails glossary coherence, since discard's own call chain never parses or validates the case document; no source was created or modified.",
+      "task": "task/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation"
+    },
+    {
       "id": "proof/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
       "kind": "proof",
       "file": "proof/draft-correction-while-invalid/read-a-drafts-own-declared-attributes.md",
@@ -32,6 +40,14 @@
       "title": "HTTP route serving a case version's own declared attributes -- proof",
       "summary": "Six tests over GET /v1/cases/:slug/versions/:version/declared-attributes, each an obligation this task states -- its six criteria and the four UNDERDETERMINED entries the binder named -- with the http-200 constraint node demonstrated whole by the test covering both representative calls its own fitness names.",
       "task": "task/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http"
+    },
+    {
+      "id": "proof/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation",
+      "kind": "proof",
+      "file": "proof/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation.md",
+      "title": "Proof that discard accepts a draft failing validation",
+      "summary": "Two new tests exercise the real discard route, controller and operation -- one against a real Postgres-backed store for a manifest-empty draft, one against a fake store standing in for the boundary a foreign key makes unreachable -- showing acceptance and a bodyless 204 for both a structural and a coherence validator failure, plus one pre-existing test cited for the no-content constraint it already fully decides.",
+      "task": "task/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation"
     }
   ],
   "edges": [
@@ -108,6 +124,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation",
+      "to": "rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation",
+      "to": "scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation",
+      "to": "constraints/a-successful-case-version-discard-answers-with-no-content",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation",
+      "to": "task/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
       "to": "implementation/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
       "kind": "proves",
@@ -116,6 +156,12 @@
     {
       "from": "proof/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http",
       "to": "implementation/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation",
+      "to": "implementation/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation",
       "kind": "proves",
       "at": "the path"
     }
