@@ -2706,7 +2706,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
+          "digest": "sha256:05acf99c3215f69d625c7dfa8e230200ca910b9aac71cb5839dd026861c77a69"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
@@ -4220,7 +4220,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
+          "digest": "sha256:05acf99c3215f69d625c7dfa8e230200ca910b9aac71cb5839dd026861c77a69"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
@@ -5894,7 +5894,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
+          "digest": "sha256:05acf99c3215f69d625c7dfa8e230200ca910b9aac71cb5839dd026861c77a69"
         },
         {
           "path": "src/src/fixtures/glossary/concept.json",
@@ -7643,7 +7643,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
+          "digest": "sha256:05acf99c3215f69d625c7dfa8e230200ca910b9aac71cb5839dd026861c77a69"
         }
       ]
     },
@@ -7653,7 +7653,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
+          "digest": "sha256:05acf99c3215f69d625c7dfa8e230200ca910b9aac71cb5839dd026861c77a69"
         }
       ]
     },
@@ -8047,7 +8047,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:3a516af691032d16cfb5f60f1d63ff042376aaf2c79b7c61a232ee91a3697e86"
+          "digest": "sha256:05acf99c3215f69d625c7dfa8e230200ca910b9aac71cb5839dd026861c77a69"
         },
         {
           "path": "src/src/investigation/field-semantics.ts",

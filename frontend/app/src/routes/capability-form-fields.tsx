@@ -37,6 +37,17 @@ const NATURE_OPTIONS: SelectOption[] = CAPABILITY_NATURES.map((nature) => ({
   label: nature,
 }));
 
+const OUTPUT_SCHEMA_GUIDANCE =
+  "O que é inserido aqui é JSON. Os nomes de campo lidos a partir dele são os caminhos " +
+  "através do objeto properties de nível superior deste schema e de todo objeto " +
+  "properties e todo schema items alcançável a partir dele. Esse caminho é construído " +
+  "concatenando a chave própria de cada objeto ao caminho do seu pai com um ponto, e os " +
+  "items próprios de cada array ao caminho do seu pai com colchetes. O type e a " +
+  "description declarados no nó que cada caminho alcança, onde o schema os declara, são " +
+  "lidos como a semântica declarada desse campo. Nenhum outro conteúdo deste schema é " +
+  "lido ou validado. Uma description aqui declara o que seu valor significa e não " +
+  "nomeia nenhuma decisão.";
+
 function FormField({
   label,
   errorId,
@@ -223,6 +234,7 @@ export function CapabilityFormFields({
             disabled={isSubmitting}
             tall
           />
+          <p className="text-sm text-muted-foreground">{OUTPUT_SCHEMA_GUIDANCE}</p>
         </div>
       </div>
 
