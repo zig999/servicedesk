@@ -48,6 +48,7 @@ function stubCaseQuery(theCase: Case): ICaseQuery {
 
   return {
     readCase: async () => ({ case: theCase, hash: 'a-hash' }),
+    readCaseVersion: vi.fn(),
     listCases: vi.fn(),
     listCaseVersions: vi.fn(),
     listHypotheses: vi.fn(),

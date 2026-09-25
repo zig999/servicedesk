@@ -11,7 +11,7 @@ import {
 } from './case-input-requirements.js';
 import type { ICaseInputRequirementsQuery } from './case-input-requirements.port.js';
 import type { Case, Hypothesis, ManifestEntry } from './case.js';
-import type { ICaseQuery, ReadCaseResult } from './case-query.port.js';
+import type { CaseVersionAttributes, ICaseQuery, ReadCaseResult, ReadCaseVersionResult } from './case-query.port.js';
 import type {
   AssembledCaseVersion,
   CaseCatalogEntry,
@@ -36,6 +36,11 @@ export class CaseQueryService implements ICaseQuery, ICaseInputRequirementsQuery
     const theCase = structuralCase(assembled, slug, version);
     await this.refuseIncoherence(theCase, version);
     return { case: theCase };
+  }
+
+  public async readCaseVersion(slug: string, version: number): Promise<ReadCaseVersionResult> {
+    const assembled = await heldVersion(this.caseStore, slug, version);
+    return { version: attributesOf(assembled) };
   }
 
   public async readCaseInputRequirements(slug: string, version: number): Promise<CaseInputRequirementsResult> {
@@ -92,6 +97,18 @@ function refuseViolations(slug: string, version: number, violations: readonly st
 export async function replayCase(slug: string, version: number, caseStore: ICaseStore): Promise<Case> {
   const assembled = await heldVersion(caseStore, slug, version);
   return trustedCaseOf(assembled);
+}
+
+function attributesOf(assembled: AssembledCaseVersion): CaseVersionAttributes {
+  return {
+    title: assembled.title,
+    when_to_use: assembled.when_to_use,
+    subject: assembled.subject,
+    fallback: assembled.fallback,
+    ...(assembled.consolidation_register !== undefined
+      ? { consolidation_register: assembled.consolidation_register }
+      : {}),
+  };
 }
 
 function trustedCaseOf(assembled: AssembledCaseVersion): Case {

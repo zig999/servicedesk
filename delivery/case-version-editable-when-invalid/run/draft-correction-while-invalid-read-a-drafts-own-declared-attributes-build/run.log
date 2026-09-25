@@ -1,0 +1,46 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 358 packages, and audited 359 packages in 11s
+
+98 packages are looking for funding
+  run `npm fund` for details
+
+5 vulnerabilities (3 moderate, 2 high)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+
+===== typecheck :: npm run typecheck :: failed =====
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/http/build-app.spec.ts(49,3): error TS2741: Property 'readCaseVersion' is missing in type '{ readCase: () => Promise<{ case: Case; hash: string; }>; listCases: Mock<Procedure>; listCaseVersions: Mock<Procedure>; listHypotheses: Mock<...>; listHypothesisRevisions: Mock<...>; }' but required in type 'ICaseQuery'.
+src/__tests__/unit/http/diagnose.controller.spec.ts(75,9): error TS2741: Property 'readCaseVersion' is missing in type '{ readCase: Mock<(slug: string, version: number) => Promise<ReadCaseResult>>; listCases: Mock<Procedure>; listCaseVersions: Mock<Procedure>; listHypotheses: Mock<...>; listHypothesisRevisions: Mock<...>; }' but required in type 'ICaseQuery'.
+src/__tests__/unit/http/diagnose.routes.spec.ts(66,9): error TS2741: Property 'readCaseVersion' is missing in type '{ readCase: Mock<(slug: string, version: number) => Promise<ReadCaseResult>>; listCases: Mock<Procedure>; listCaseVersions: Mock<Procedure>; listHypotheses: Mock<...>; listHypothesisRevisions: Mock<...>; }' but required in type 'ICaseQuery'.
+src/__tests__/unit/http/list-case-versions.routes.spec.ts(33,9): error TS2741: Property 'readCaseVersion' is missing in type '{ readCase: Mock<(slug: string, version: number) => Promise<ReadCaseResult>>; listCases: Mock<Procedure>; listCaseVersions: Mock<(slug: string, pagination: PaginationRequest) => Promise<PaginatedResponse<CaseVersionListItem>>>; listHypotheses: Mock<...>; listHypothesisRevisions: Mock<...>; }' but required in type 'ICaseQuery'.
+src/__tests__/unit/http/list-cases.routes.spec.ts(33,9): error TS2741: Property 'readCaseVersion' is missing in type '{ readCase: Mock<(slug: string, version: number) => Promise<ReadCaseResult>>; listCases: Mock<(pagination: PaginationRequest) => Promise<PaginatedResponse<CaseCatalogEntry>>>; listCaseVersions: Mock<...>; listHypotheses: Mock<...>; listHypothesisRevisions: Mock<...>; }' but required in type 'ICaseQuery'.
+src/__tests__/unit/http/list-hypotheses.routes.spec.ts(33,9): error TS2741: Property 'readCaseVersion' is missing in type '{ readCase: Mock<(slug: string, version: number) => Promise<ReadCaseResult>>; listCases: Mock<Procedure>; listCaseVersions: Mock<Procedure>; listHypotheses: Mock<...>; listHypothesisRevisions: Mock<...>; }' but required in type 'ICaseQuery'.
+src/__tests__/unit/http/list-hypothesis-revisions.routes.spec.ts(38,9): error TS2741: Property 'readCaseVersion' is missing in type '{ readCase: Mock<(slug: string, version: number) => Promise<ReadCaseResult>>; listCases: Mock<Procedure>; listCaseVersions: Mock<Procedure>; listHypotheses: Mock<...>; listHypothesisRevisions: Mock<...>; }' but required in type 'ICaseQuery'.
+src/__tests__/unit/http/read-case.routes.spec.ts(67,9): error TS2741: Property 'readCaseVersion' is missing in type '{ readCase: Mock<(slug: string, version: number) => Promise<ReadCaseResult>>; listCases: Mock<Procedure>; listCaseVersions: Mock<Procedure>; listHypotheses: Mock<...>; listHypothesisRevisions: Mock<...>; }' but required in type 'ICaseQuery'.
+src/__tests__/unit/http/release.routes.spec.ts(51,3): error TS2741: Property 'readCaseVersion' is missing in type '{ readCase: Mock<(slug: string, version: number) => Promise<ReadCaseResult>>; listCases: Mock<Procedure>; listCaseVersions: Mock<Procedure>; listHypotheses: Mock<...>; listHypothesisRevisions: Mock<...>; }' but required in type 'ICaseQuery'.
+src/__tests__/unit/http/route-rate-limiting-cross-route-independence.spec.ts(30,3): error TS2741: Property 'readCaseVersion' is missing in type '{ readCase: Mock<Procedure>; listCases: Mock<Procedure>; listCaseVersions: Mock<Procedure>; listHypotheses: Mock<Procedure>; listHypothesisRevisions: Mock<...>; }' but required in type 'ICaseQuery'.
+src/__tests__/unit/http/simulate-case.controller.spec.ts(82,9): error TS2741: Property 'readCaseVersion' is missing in type '{ readCase: Mock<(slug: string, version: number) => Promise<ReadCaseResult>>; listCases: Mock<Procedure>; listCaseVersions: Mock<Procedure>; listHypotheses: Mock<...>; listHypothesisRevisions: Mock<...>; }' but required in type 'ICaseQuery'.
+src/__tests__/unit/http/simulate-case.routes.spec.ts(54,9): error TS2741: Property 'readCaseVersion' is missing in type '{ readCase: Mock<Procedure>; listCases: Mock<Procedure>; listCaseVersions: Mock<Procedure>; listHypotheses: Mock<Procedure>; listHypothesisRevisions: Mock<...>; }' but required in type 'ICaseQuery'.
+src/__tests__/unit/http/simulate-hypothesis.controller.spec.ts(80,9): error TS2741: Property 'readCaseVersion' is missing in type '{ readCase: Mock<(slug: string, version: number) => Promise<ReadCaseResult>>; listCases: Mock<Procedure>; listCaseVersions: Mock<Procedure>; listHypotheses: Mock<...>; listHypothesisRevisions: Mock<...>; }' but required in type 'ICaseQuery'.
+src/__tests__/unit/http/simulate-hypothesis.routes.spec.ts(43,9): error TS2741: Property 'readCaseVersion' is missing in type '{ readCase: Mock<Procedure>; listCases: Mock<Procedure>; listCaseVersions: Mock<Procedure>; listHypotheses: Mock<Procedure>; listHypothesisRevisions: Mock<...>; }' but required in type 'ICaseQuery'.
+src/__tests__/unit/http/update-draft.routes.spec.ts(78,3): error TS2741: Property 'readCaseVersion' is missing in type '{ readCase: Mock<(slug: string, version: number) => Promise<ReadCaseResult>>; listCases: Mock<Procedure>; listCaseVersions: Mock<Procedure>; listHypotheses: Mock<...>; listHypothesisRevisions: Mock<...>; }' but required in type 'ICaseQuery'.
+
+===== lint :: npm run lint :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+
+===== test-unit :: node --env-file=.env.test node_modules/.bin/vitest run src/__tests__/unit :: not_run =====
+

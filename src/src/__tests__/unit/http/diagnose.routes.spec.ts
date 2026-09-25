@@ -65,6 +65,7 @@ function buildTestApp(
   const runDiagnose: RunDiagnoseMock = vi.fn();
   const caseQuery: ICaseQuery = {
     readCase,
+    readCaseVersion: vi.fn(),
     listCases: vi.fn(),
     listCaseVersions: vi.fn(),
     listHypotheses: vi.fn(),

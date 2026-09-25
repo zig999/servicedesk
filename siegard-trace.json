@@ -2056,7 +2056,7 @@
     },
     {
       "node": "contracts/knowledge/case-query",
-      "digest": "sha256:fadeb7489f7cb0a8560f305e7c9afda7de7ef65891314c53cd5f486652feca44",
+      "digest": "sha256:97874bda7c1b2ec6518b299bd669e3bac93b3628f2eddbd4bac95a86fe7eec26",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-case-hypotheses.ts",
@@ -2104,11 +2104,11 @@
         },
         {
           "path": "src/src/case/case-query.port.ts",
-          "digest": "sha256:e103931064d324132385389945b886206de495342069495d1cbe9ea194b80c6d"
+          "digest": "sha256:1fd484d96b36abb37eb5da6863b3562c8e1dfa8983574533889bdaa8ce2e62d2"
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:c14bccb0a90ee8e0d9ae9ac16907daebecad7c003a24150c8fa6597e86309a32"
+          "digest": "sha256:6aa1bc1111eec71b238e6040e01efecf2f87f371227f052785424bbb07fed930"
         },
         {
           "path": "src/src/case/case-store.port.ts",
@@ -4940,6 +4940,10 @@
         {
           "path": "src/src/case/case-query.port.ts",
           "digest": "sha256:e103931064d324132385389945b886206de495342069495d1cbe9ea194b80c6d"
+        },
+        {
+          "path": "src/src/case/case-query.service.ts",
+          "digest": "sha256:6aa1bc1111eec71b238e6040e01efecf2f87f371227f052785424bbb07fed930"
         },
         {
           "path": "src/src/case/case-store.port.ts",
@@ -8982,6 +8986,10 @@
       "digest": "sha256:dafe2beaea64e45544258706b58cb93136b1395c74f636e5e0ac6ba987f232d6",
       "files": [
         {
+          "path": "src/src/case/case-query.service.ts",
+          "digest": "sha256:6aa1bc1111eec71b238e6040e01efecf2f87f371227f052785424bbb07fed930"
+        },
+        {
           "path": "src/src/errors/case-not-found.error.ts",
           "digest": "sha256:e7aad6edc919e1e87f076678f476cccbb054a4a8a0be950c35df50c9134097ea"
         }
@@ -10165,6 +10173,20 @@
         {
           "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
           "digest": "sha256:48c2f14c027a045bbd6a33294a595c1a1e1568a486f20f512a36a24905f2218e"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case",
+      "digest": "sha256:ca85f0e9dc89b48783b0c4e3990bf1ced3bc305cafef0b677b45c78234d66d6d",
+      "files": [
+        {
+          "path": "src/src/case/case-query.port.ts",
+          "digest": "sha256:1fd484d96b36abb37eb5da6863b3562c8e1dfa8983574533889bdaa8ce2e62d2"
+        },
+        {
+          "path": "src/src/case/case-query.service.ts",
+          "digest": "sha256:6aa1bc1111eec71b238e6040e01efecf2f87f371227f052785424bbb07fed930"
         }
       ]
     },

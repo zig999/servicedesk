@@ -42,6 +42,7 @@ function buildTestApp(): FastifyInstance {
   const readCaseResult: ReadCaseResult = { case: heldCase() };
   const caseQuery: ICaseQuery = {
     readCase: vi.fn().mockResolvedValue(readCaseResult),
+    readCaseVersion: vi.fn(),
     listCases: vi.fn(),
     listCaseVersions: vi.fn(),
     listHypotheses: vi.fn(),

@@ -77,6 +77,7 @@ function stubCaseStore(updateDraft: UpdateDraftMock): ICaseStore {
 function stubCaseQuery(readCase: ReadCaseMock): ICaseQuery {
   return {
     readCase,
+    readCaseVersion: vi.fn(),
     listCases: vi.fn(),
     listCaseVersions: vi.fn(),
     listHypotheses: vi.fn(),

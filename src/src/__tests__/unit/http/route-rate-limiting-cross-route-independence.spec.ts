@@ -29,6 +29,7 @@ function freshCaseQuery(): ICaseQuery {
   const readCaseResult: ReadCaseResult = { case: heldCase() };
   return {
     readCase: vi.fn().mockResolvedValue(readCaseResult),
+    readCaseVersion: vi.fn(),
     listCases: vi.fn(),
     listCaseVersions: vi.fn(),
     listHypotheses: vi.fn(),

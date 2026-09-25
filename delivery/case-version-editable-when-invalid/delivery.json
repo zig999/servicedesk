@@ -1,0 +1,59 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
+      "kind": "implementation",
+      "file": "implementation/draft-correction-while-invalid/read-a-drafts-own-declared-attributes.md",
+      "title": "Read a draft case version's own declared attributes, unvalidated",
+      "summary": "Adds a read-case-version operation to the case-query port and service that answers a case version's title, when_to_use, subject, fallback and consolidation_register straight from its own stored record, gated by no validator rule and excluding the manifest.",
+      "task": "task/draft-correction-while-invalid/read-a-drafts-own-declared-attributes"
+    },
+    {
+      "id": "proof/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
+      "kind": "proof",
+      "file": "proof/draft-correction-while-invalid/read-a-drafts-own-declared-attributes.md",
+      "title": "Proof for reading a draft case version's own declared attributes",
+      "summary": "Seven tests against CaseQueryService.readCaseVersion prove all thirteen criteria of draft-correction-while-invalid/read-a-drafts-own-declared-attributes, plus one test resolving the task's own UNDERDETERMINED entry about released versions; the four implemented nodes are left in untested because none of their whole facts is decided within this task's scope.",
+      "task": "task/draft-correction-while-invalid/read-a-drafts-own-declared-attributes"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
+      "to": "rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
+      "to": "rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
+      "to": "task/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
+      "to": "implementation/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

@@ -37,6 +37,7 @@ function buildTestApp(bounds: { defaultLimit?: number; maxLimit?: number } = {})
   const readCase = vi.fn<(slug: string, version: number) => Promise<ReadCaseResult>>();
   const caseQuery: ICaseQuery = {
     readCase,
+    readCaseVersion: vi.fn(),
     listCases: vi.fn(),
     listCaseVersions: vi.fn(),
     listHypotheses: vi.fn(),

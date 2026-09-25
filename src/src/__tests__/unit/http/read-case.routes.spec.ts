@@ -66,6 +66,7 @@ function buildTestApp(): { app: FastifyInstance; readCase: ReadCaseMock } {
 
   const caseQuery: ICaseQuery = {
     readCase,
+    readCaseVersion: vi.fn(),
     listCases: vi.fn(),
     listCaseVersions: vi.fn(),
     listHypotheses: vi.fn(),

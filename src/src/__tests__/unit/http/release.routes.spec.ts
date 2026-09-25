@@ -50,6 +50,7 @@ function heldReleasedCase(overrides: Partial<Case> = {}): Case {
 function stubCaseQuery(readCase: ReadCaseMock): ICaseQuery {
   return {
     readCase,
+    readCaseVersion: vi.fn(),
     listCases: vi.fn(),
     listCaseVersions: vi.fn(),
     listHypotheses: vi.fn(),

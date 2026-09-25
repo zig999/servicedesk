@@ -35,6 +35,7 @@ import type {
   TermResolution,
 } from '../../../glossary/glossary-query.port.js';
 import type { Concept, TermVocabulary } from '../../../glossary/terms.js';
+import type { ConsolidationRegister } from '../../../investigation/consolidation-register.js';
 import type { PaginatedResponse, PaginationRequest } from '../../../types/pagination.js';
 
 const SLUG = 'a-case';
@@ -58,6 +59,7 @@ interface IStoredVersion {
   readonly authored_at: string;
   readonly subject: string;
   readonly fallback: Resolution;
+  readonly consolidation_register?: ConsolidationRegister;
   state: CaseVersionState;
   released_at?: string;
   manifest: ManifestEntry[];
@@ -86,6 +88,7 @@ class FakeCaseStore implements ICaseStore {
       authored_at: stored.authored_at,
       subject: stored.subject,
       fallback: stored.fallback,
+      ...(stored.consolidation_register !== undefined ? { consolidation_register: stored.consolidation_register } : {}),
       state: stored.state,
       ...(stored.released_at !== undefined ? { released_at: stored.released_at } : {}),
       manifest: [...stored.manifest].sort((left, right) => left.position - right.position),
@@ -145,6 +148,7 @@ class FakeCaseStore implements ICaseStore {
       authored_at: '2024-01-01T00:00:00.000Z',
       subject: input.subject,
       fallback: input.fallback,
+      ...(input.consolidation_register !== undefined ? { consolidation_register: input.consolidation_register } : {}),
       state: 'draft',
       manifest,
     });
@@ -267,7 +271,9 @@ function expectedDefaultManifest(revision = 1): unknown[] {
 interface ISeedOptions {
   readonly slug?: string;
   readonly title?: string;
+  readonly subject?: string;
   readonly hypotheses?: readonly IHypothesisFixture[];
+  readonly consolidation_register?: ConsolidationRegister;
 
   readonly release?: boolean;
 }
@@ -279,8 +285,9 @@ async function seedCase(store: FakeCaseStore, options: ISeedOptions = {}): Promi
     slug,
     title: options.title ?? 'A case',
     when_to_use: 'when a curator needs a case to test read-case composition over',
-    subject: SUBJECT,
+    subject: options.subject ?? SUBJECT,
     fallback: { outcome: FALLBACK_OUTCOME, referral: { action: FALLBACK_ACTION, recipient: FALLBACK_RECIPIENT } },
+    ...(options.consolidation_register !== undefined ? { consolidation_register: options.consolidation_register } : {}),
   });
   for (const hypothesis of hypotheses) {
     const revision = await store.insertHypothesisRevision({
@@ -841,5 +848,102 @@ it(
     expect(message).toContain(String(version));
     expect(message).toContain('o caso não declara nenhuma hipótese');
     expect(statusForError(refusal)).toBe(409);
+  },
+);
+
+it(
+  "answers a draft's own declared title, when_to_use, subject and fallback exactly as its stored record " +
+    'carries them, even though its manifest holds no entry',
+  async () => {
+    const store = new FakeCaseStore();
+    const version = await seedCase(store, { hypotheses: [], release: false });
+    const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
+
+    const result = await service.readCaseVersion(SLUG, version);
+
+    expect(result.version).toEqual({
+      title: 'A case',
+      when_to_use: 'when a curator needs a case to test read-case composition over',
+      subject: SUBJECT,
+      fallback: { outcome: FALLBACK_OUTCOME, referral: { action: FALLBACK_ACTION, recipient: FALLBACK_RECIPIENT } },
+    });
+  },
+);
+
+it(
+  "answers a draft's own declared attributes even though its stored subject names a subject type the " +
+    'glossary does not hold',
+  async () => {
+    const store = new FakeCaseStore();
+    const version = await seedCase(store, { subject: 'unrecognized-subject', release: false });
+    const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
+
+    const result = await service.readCaseVersion(SLUG, version);
+
+    expect(result.version.subject).toBe('unrecognized-subject');
+  },
+);
+
+it("answers a draft's own declared attributes even though its stored title is blank", async () => {
+  const store = new FakeCaseStore();
+  const version = await seedCase(store, { title: '', release: false });
+  const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
+
+  const result = await service.readCaseVersion(SLUG, version);
+
+  expect(result.version.title).toBe('');
+});
+
+it(
+  "answers the draft's own declared consolidation_register exactly as its stored record carries it, when " +
+    'the draft declares one',
+  async () => {
+    const store = new FakeCaseStore();
+    const version = await seedCase(store, { consolidation_register: 'formal', release: false });
+    const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
+
+    const result = await service.readCaseVersion(SLUG, version);
+
+    expect(result.version.consolidation_register).toBe('formal');
+  },
+);
+
+it("answers each version's own title, never another version's, for the same case", async () => {
+  const store = new FakeCaseStore();
+  await seedCase(store, { title: 'version one' });
+  const secondVersion = await seedCase(store, { title: 'version two' });
+  const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
+
+  const result = await service.readCaseVersion(SLUG, secondVersion);
+
+  expect(result.version.title).toBe('version two');
+});
+
+it('raises CaseNotFoundError, carrying the slug and version, when no case version is stored for them', async () => {
+  const service = new CaseQueryService(new FakeCaseStore(), coherentGlossary(), coherentCapabilities());
+
+  const refusal = await readAsError(service.readCaseVersion('never-authored', 7));
+
+  expect(refusal).toBeInstanceOf(CaseNotFoundError);
+  expect((refusal as CaseNotFoundError).context).toEqual({ slug: 'never-authored', version: 7 });
+});
+
+it(
+  "answers a released version's own declared attributes unvalidated, even though the same stored content " +
+    "fails read-case's structural validation",
+  async () => {
+    const store = new FakeCaseStore();
+    const version = await seedCase(store, { hypotheses: [] });
+    const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
+    await expect(service.readCase(SLUG, version)).rejects.toBeInstanceOf(CaseVersionNotValidError);
+
+    const result = await service.readCaseVersion(SLUG, version);
+
+    expect(result.version).toEqual({
+      title: 'A case',
+      when_to_use: 'when a curator needs a case to test read-case composition over',
+      subject: SUBJECT,
+      fallback: { outcome: FALLBACK_OUTCOME, referral: { action: FALLBACK_ACTION, recipient: FALLBACK_RECIPIENT } },
+    });
   },
 );

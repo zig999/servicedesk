@@ -74,6 +74,7 @@ function buildDependencies(
   const readCaseInputRequirements: ReadCaseInputRequirementsMock = vi.fn().mockResolvedValue(requirementsResult);
   const caseQuery: ICaseQuery = {
     readCase,
+    readCaseVersion: vi.fn(),
     listCases: vi.fn(),
     listCaseVersions: vi.fn(),
     listHypotheses: vi.fn(),
