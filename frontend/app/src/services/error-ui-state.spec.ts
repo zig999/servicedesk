@@ -155,6 +155,44 @@ describe("the error-code mapping resolves an API error's own code to a user-faci
     expect(state.kind).toBe("concept-already-answered");
   });
 
+  it("resolves ConceptInUseError to its own concept-in-use state, not the shared generic-error fallback", () => {
+    const state = uiStateForApiError(new ApiError("ConceptInUseError", "concept in use"));
+    expect(state.kind).toBe("concept-in-use");
+    expect(state.kind).not.toBe("generic-error");
+  });
+
+  it("resolves ConceptInUseError to a kind no other named code resolves to, distinct from the generic fallback", () => {
+    const otherCodes = [
+      "CaseNotFoundError",
+      "ConceptNotAnsweredError",
+      "ConceptNotHeldError",
+      "VocabularyTermNotHeldError",
+      "CaseAlreadyHasDraftError",
+      "ManifestPositionOccupiedError",
+      "CaseVersionNotDraftError",
+      "CaseVersionNotDraftAtReleaseError",
+      "HypothesisRevisionNotDraftAtReleaseError",
+      "ConceptAlreadyAnsweredError",
+      "CaseVersionNotReleasableError",
+      "ManifestWouldHoldNoHypothesisError",
+      "IncompleteCapabilityContractError",
+      "CapabilityNotReadOnlyError",
+      "CapabilitySchemaNotWellFormedError",
+      "ConnectorConfigurationNotWellFormedError",
+      "ConceptDescriptionRequiredError",
+      "CaseHoldsNoDraftError",
+      "ConceptNotInGlossaryError",
+      "ConceptRefusesSubjectTypeError",
+      "CaseVersionNotValidError",
+    ];
+
+    const targetKind = uiStateForApiError(new ApiError("ConceptInUseError", "concept in use")).kind;
+    const otherKinds = otherCodes.map((code) => uiStateForApiError(new ApiError(code, "message")).kind);
+
+    expect(otherKinds).not.toContain(targetKind);
+    expect(targetKind).not.toBe("generic-error");
+  });
+
   it("resolves IncompleteCapabilityContractError to the incomplete-capability-contract state", () => {
     const state = uiStateForApiError(
       new ApiError("IncompleteCapabilityContractError", "incomplete contract"),

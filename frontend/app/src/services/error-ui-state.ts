@@ -11,6 +11,7 @@ export type UiErrorStateKind =
   | "case-version-not-draft-at-release"
   | "hypothesis-revision-not-draft-at-release"
   | "concept-already-answered"
+  | "concept-in-use"
   | "case-version-not-releasable"
   | "manifest-would-hold-no-hypothesis"
   | "incomplete-capability-contract"
@@ -41,6 +42,7 @@ const UI_STATE_BY_ERROR_CODE: Readonly<Record<string, UiErrorState>> = {
   HypothesisRevisionNotDraftAtReleaseError: { kind: "hypothesis-revision-not-draft-at-release" },
 
   ConceptAlreadyAnsweredError: { kind: "concept-already-answered" },
+  ConceptInUseError: { kind: "concept-in-use" },
 
   CaseVersionNotReleasableError: { kind: "case-version-not-releasable" },
   ManifestWouldHoldNoHypothesisError: { kind: "manifest-would-hold-no-hypothesis" },
