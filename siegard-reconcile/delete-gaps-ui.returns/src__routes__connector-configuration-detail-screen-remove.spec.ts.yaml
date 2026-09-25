@@ -1,0 +1,100 @@
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      The file's only stubbed DELETE response is `new Response(null, { status: 204 })`
+      in `removableHandlers()`; no scenario raises or asserts an unmapped domain error's
+      HTTP 500/INTERNAL_ERROR shape.
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      No request in the file is malformed and no assertion checks a 400/VALIDATION_ERROR
+      response; the file only counts and inspects DELETE calls via `deleteCallCount` and
+      `deleteCallUrl`.
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      The only capability-shaped object in the file, `{ name: "some-capability", version: "1", ... }`,
+      is fixture data for `CAPABILITIES_PATH` used to test the connector-configuration
+      control (criterion 8); no capability is removed and no capability-removal response
+      is asserted.
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      The file contains no concept-related endpoint, fixture, or assertion at all.
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: removableHandlers(), line 33-40
+    evidence: |-
+      [CONFIGURATION_PATH]: (method) =>
+        method === "DELETE"
+          ? new Response(null, { status: 204 })
+          : jsonResponse({ connector: CONNECTOR, configuration: LOADED_CONFIGURATION }),
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: >-
+      No `read-capability-by-identity` call, name-and-version identity, or 404/CapabilityIdentityNotFoundError
+      assertion appears anywhere in the file.
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: >-
+      The only appearance of "concept" is the string field `concept: "some-concept"` inside
+      the capability fixture at line 168; no concept value-object with `accepts`, `ttl`, or
+      `description` is constructed or asserted.
+  - node: domain/integration/capability
+    held_at: "the capability fixture, lines 160-169 (criterion 8 test)"
+    evidence: |-
+      {
+        name: "some-capability",
+        version: "1",
+        nature: "read-only",
+        input_schema: "{}",
+        output_schema: "{}",
+        timeout: 1000,
+        connector: CONNECTOR,
+        concept: "some-concept",
+      },
+  - node: domain/integration/connector-configuration
+    held_at: removableHandlers(), line 38
+    evidence: 'jsonResponse({ connector: CONNECTOR, configuration: LOADED_CONFIGURATION })'
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      No concept removal, refusal, or ConceptInUseError handling appears in the file.
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      No capability removal, evidence citation, or CapabilityCitedByEvidenceError handling
+      appears in the file; the capability fixture at line 160-169 is used only to keep the
+      connector-configuration removal control enabled (criterion 8), never to remove that
+      capability.
+  - node: rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act
+    held_at: "the offer/ask/confirm/decline flow, lines 72-151 and 182-193"
+    evidence: |-
+      await openRemoveDialog();
+      fireEvent.click(confirmRemoveButton());
+
+      await waitFor(() => expect(deleteCallCount(fetchMock)).toBe(1));
+      expect(deleteCallUrl(fetchMock)).toBe(CONFIGURATION_PATH);
+  - node: rules/integration/a-submitted-removal-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: >-
+      No assertion in the file checks any operator-facing outcome text, toast, or message
+      after a DELETE resolves or is refused; the file asserts only call counts, the call
+      URL, dialog presence, and field values.
+  - node: rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing
+    held_at: nowhere
+    evidence: >-
+      No assertion in the file checks navigation to a listing route after removal succeeds;
+      the router's list route exists only as `mountConnectorConfigurationDetailScreen`'s
+      test-support scaffolding, never asserted against here.
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: "criterion 8 test, lines 153-180"
+    evidence: 'expect(button.hasAttribute("disabled")).toBe(false);'
+looked_past: >-
+  Criterion 7's assertion that the dialog offers no textbox, and the exact wording/labels
+  of the dialog and its buttons, are UI form the governing rule explicitly leaves
+  undecided ("it does not state which control carries either, its wording, or where it
+  sits — that is form") — a code-review-shaped observation about test strictness rather
+  than a domain-fact finding.
+candidates_opened:
+  - contracts/integration/connector-configuration-registry

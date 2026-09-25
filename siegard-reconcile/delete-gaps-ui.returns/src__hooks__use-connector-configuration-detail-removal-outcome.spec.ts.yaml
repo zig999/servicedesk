@@ -1,0 +1,106 @@
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: >-
+      the criterion-3 describe block, which stubs an HTTP 500 INTERNAL_ERROR removal answer and
+      asserts the toast discloses only the generic outcome
+    evidence: |-
+      const message = await captureRemovalFailureMessage("INTERNAL_ERROR", 500);
+      expect(message.toLowerCase()).toContain("nothing was removed");
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: >-
+      the criterion-2 describe block, which stubs an HTTP 400 VALIDATION_ERROR removal answer and
+      asserts the toast discloses only the generic outcome
+    evidence: |-
+      const message = await captureRemovalFailureMessage("VALIDATION_ERROR", 400);
+      expect(message.toLowerCase()).toContain("nothing was removed");
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      import {
+        useConnectorConfigurationDetail,
+        type ConnectorConfigurationDetailState,
+      } from "./use-connector-configuration-detail";
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      import {
+        useConnectorConfigurationDetail,
+        type ConnectorConfigurationDetailState,
+      } from "./use-connector-configuration-detail";
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: >-
+      the noContentResponse helper and the criterion-1 describe block that stubs it for a
+      successful DELETE
+    evidence: |-
+      function noContentResponse(): Response {
+        return new Response(null, { status: 204 });
+      }
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: |-
+      import {
+        useConnectorConfigurationDetail,
+        type ConnectorConfigurationDetailState,
+      } from "./use-connector-configuration-detail";
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: |-
+      import {
+        useConnectorConfigurationDetail,
+        type ConnectorConfigurationDetailState,
+      } from "./use-connector-configuration-detail";
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: |-
+      import {
+        useConnectorConfigurationDetail,
+        type ConnectorConfigurationDetailState,
+      } from "./use-connector-configuration-detail";
+  - node: domain/integration/connector-configuration
+    held_at: the mocked GET response bodies built inline in each removal scenario
+    evidence: 'jsonResponse({ connector: CONNECTOR, configuration: LOADED_CONFIGURATION })'
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: |-
+      import {
+        useConnectorConfigurationDetail,
+        type ConnectorConfigurationDetailState,
+      } from "./use-connector-configuration-detail";
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: |-
+      import {
+        useConnectorConfigurationDetail,
+        type ConnectorConfigurationDetailState,
+      } from "./use-connector-configuration-detail";
+  - node: rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act
+    held_at: nowhere
+    evidence: |-
+      act(() => {
+        readyState(result.current).onRemove();
+      });
+  - node: rules/integration/a-submitted-removal-states-its-outcome-to-the-operator
+    held_at: >-
+      the success and refusal toast assertions across every describe block, and the criterion-5
+      block asserting neither outcome is stated before the DELETE settles
+    evidence: |-
+      await waitFor(() => expect(toast.success).toHaveBeenCalled());
+      expect(successMessage()).toContain(CONNECTOR);
+  - node: rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing
+    held_at: nowhere
+    evidence: |-
+      await waitFor(() => expect(toast.success).toHaveBeenCalled());
+      expect(successMessage()).toContain(CONNECTOR);
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: |-
+      const { result } = renderHook(() => useConnectorConfigurationDetail(CONNECTOR), {
+        wrapper: createWrapper().Wrapper,
+      });
+looked_past: >-
+  The describe/it titles cite node identities and label two scenarios UNDERDETERMINED with an
+  embedded rationale for merging VALIDATION_ERROR, INTERNAL_ERROR and an unrecognised code into
+  one refusal statement; whether that rationale belongs in a test title rather than a decision
+  record is a comment-discipline question, not a domain-fact one, and I judged the merge itself
+  against the node text and the identical, already-established pattern in
+  use-capability-detail-removal-outcome.spec.ts rather than against the title's own claim.

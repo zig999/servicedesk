@@ -1,0 +1,103 @@
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: |-
+      throw new Error(
+              `glossary-concepts-panel-removal-control.spec: no mocked response for ${key}`,
+            );
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: |-
+      throw new Error(
+              `glossary-concepts-panel-removal-control.spec: no mocked response for ${key}`,
+            );
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      function conceptDeletePath(name: string): string {
+        return `/v1/glossary/concepts/${encodeURIComponent(name)}`;
+      }
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: >-
+      the noContentResponse() helper and its use as the fraud-flag DELETE handler, lines 21-23
+      and 155
+    evidence: |-
+      function noContentResponse(): Response {
+        return new Response(null, { status: 204 });
+      }
+      ...
+      [`DELETE ${conceptDeletePath("fraud-flag")}`]: () => noContentResponse(),
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      function conceptDeletePath(name: string): string {
+        return `/v1/glossary/concepts/${encodeURIComponent(name)}`;
+      }
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: |-
+      function conceptDeletePath(name: string): string {
+        return `/v1/glossary/concepts/${encodeURIComponent(name)}`;
+      }
+  - node: domain/glossary/concept
+    held_at: the concept() fixture factory, lines 52-60
+    evidence: |-
+      function concept(overrides: Partial<GlossaryConcept> = {}): GlossaryConcept {
+        return {
+          name: "billing-dispute",
+          accepts: ["customer-account"],
+          ttl: 3600,
+          description: "Tracks a customer-raised dispute over a billing charge.",
+          ...overrides,
+        };
+      }
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: 'import type { GlossaryConcept } from "../hooks/use-glossary-concepts";'
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: 'import type { GlossaryConcept } from "../hooks/use-glossary-concepts";'
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: |-
+      await waitFor(() => expect(deleteCallCount(fetchMock)).toBe(1));
+        const [[deleteUrl]] = deleteCalls(fetchMock);
+        expect(typeof deleteUrl === "string" ? deleteUrl : deleteUrl.toString()).toBe(
+          conceptDeletePath("fraud-flag"),
+        );
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: 'import type { GlossaryConcept } from "../hooks/use-glossary-concepts";'
+  - node: rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act
+    held_at: >-
+      the ask/no-DELETE-alone test (lines 115-127), the decline test (lines 131-146), the
+      confirm test (lines 149-171), and the no-name-typing test (lines 174-186)
+    evidence: |-
+      clickRemoveTrigger("fraud-flag");
+        await screen.findByRole("dialog");
+        fireEvent.click(dialogConfirmButton());
+
+        await waitFor(() => expect(deleteCallCount(fetchMock)).toBe(1));
+  - node: rules/integration/a-submitted-removal-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: |-
+      const [[deleteUrl]] = deleteCalls(fetchMock);
+        expect(typeof deleteUrl === "string" ? deleteUrl : deleteUrl.toString()).toBe(
+          conceptDeletePath("fraud-flag"),
+        );
+  - node: rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing
+    held_at: nowhere
+    evidence: |-
+      const [[deleteUrl]] = deleteCalls(fetchMock);
+        expect(typeof deleteUrl === "string" ? deleteUrl : deleteUrl.toString()).toBe(
+          conceptDeletePath("fraud-flag"),
+        );
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: 'import type { GlossaryConcept } from "../hooks/use-glossary-concepts";'
+looked_past: >-
+  The test-design choices — bundling criteria 2/3 and 5/6 into single `it` blocks, the
+  exact wording assertions on the "Remove"/"Cancel" labels and the "/remove concept/i"
+  text, and the arbitrary 60-second fake-timer wait — are conventional test-authoring
+  decisions rather than domain facts, so they are left to whatever judgment reviews test
+  design.

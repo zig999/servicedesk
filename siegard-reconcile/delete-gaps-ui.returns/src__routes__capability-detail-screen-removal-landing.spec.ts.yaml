@@ -1,0 +1,127 @@
+findings:
+  - file: src/routes/capability-detail-screen-removal-landing.spec.ts
+    where: >-
+      the describe/it block at lines 94-113, "the landing waits for the removal's own answer,
+      never taken merely because the removal was issued (an underdetermined note in this task)"
+    evidence: |-
+      describe("CapabilityDetailScreen -- the landing waits for the removal's own answer, never taken merely because the removal was issued (an underdetermined note in this task)", () => {
+        it("still presents the capability's own surface while the DELETE request is outstanding, navigating to /capabilities only once it resolves with HTTP 204", async () => {
+          ...
+          await waitFor(() => expect(removeTriggerButton().hasAttribute("disabled")).toBe(true));
+          expect(router.state.location.pathname).toBe(`/capabilities/${NAME}/${VERSION}`);
+    cost: >-
+      The test fixes, as a hard requirement of the screen, that the remove control disables and
+      navigation is withheld for the whole time the DELETE request is outstanding. No node in this
+      file's set, and none found elsewhere in the specification, decides whether a removal in
+      flight disables its own control or what the surface shows meanwhile; the next reader who
+      needs to know that will find only this test enforcing it, never a specification node — and
+      the test's own title concedes the gap it is filling: "(an underdetermined note in this task)".
+    kind: unstated
+    correction: >-
+      Decide, in the specification, whether and how a capability removal in flight is reflected on
+      the remove control and the surface, then bring this test back to assert only what was decided.
+  - file: src/routes/capability-detail-screen-removal-landing.spec.ts
+    where: >-
+      the describe/it block at lines 115-128, "a refused removal leaves the operator on the
+      capability's own surface (an underdetermined note in this task)"
+    evidence: |-
+      describe("CapabilityDetailScreen -- a refused removal leaves the operator on the capability's own surface (an underdetermined note in this task)", () => {
+        it("stays at the capability's own detail route when the removal answers with a refusal instead of HTTP 204", async () => {
+          ...
+          await waitFor(() => expect(removeTriggerButton().hasAttribute("disabled")).toBe(false));
+          expect(router.state.location.pathname).toBe(`/capabilities/${NAME}/${VERSION}`);
+    cost: >-
+      The test fixes, as a hard requirement, that a refused removal leaves the operator on the
+      capability's own detail route with the control usable again. rules/integration/a-submitted-removal-states-its-outcome-to-the-operator
+      states what the surface discloses on a refusal but not where the operator is left able to
+      act next, and no other node in this set settles it; a reader who needs to know what a
+      refused capability removal leaves the operator able to do will find only this assertion, and
+      the test's own title admits the specification does not settle it: "(an underdetermined note
+      in this task)".
+    kind: unstated
+    correction: >-
+      Decide, in the specification, what a refused capability removal leaves the operator able to
+      do — surface, control state — then bring this test back to assert only what was decided.
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      No refusal in this file is raised from a status the map does not name; every refusal mocked
+      here (`errorResponse("SomeRemovalRefusal", 409)`, `errorResponse("CapabilityIdentityNotFoundError", 404)`)
+      is a named, mapped status, and no assertion in the file checks a 500/INTERNAL_ERROR fallback.
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      No request in this file is malformed and no assertion checks a 400/VALIDATION_ERROR response;
+      the file only exercises DELETE against a well-formed identity.
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: >-
+      `noContentResponse()` (lines 35-37) used as the DELETE mock response, e.g. line 65-66
+    evidence: |-
+      function noContentResponse(): Response {
+        return new Response(null, { status: 204 });
+      }
+      ...
+      [CAPABILITY_PATH]: (method) =>
+        method === "DELETE" ? noContentResponse() : jsonResponse(LOADED_CAPABILITY),
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: This file mounts only the capability detail screen and never removes a concept.
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: This file mounts only the capability detail screen and never removes a connector configuration.
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: >-
+      `createLandingFetchStub` (lines 146-153), consumed by the criterion 4 test
+    evidence: |-
+      return removed
+        ? errorResponse("CapabilityIdentityNotFoundError", 404)
+        : jsonResponse(LOADED_CAPABILITY);
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: >-
+      `CONCEPTS_PATH`/`CONCEPTS_RESPONSE` are used only as an opaque background fetch (`if (url ===
+      CONCEPTS_PATH) { return jsonResponse(CONCEPTS_RESPONSE); }`, line 160-162) so the screen can
+      mount; no attribute of the concept value object is asserted anywhere in this file.
+  - node: domain/integration/capability
+    held_at: >-
+      the identity-keyed routes built from NAME and VERSION, e.g. line 64
+    evidence: |-
+      const { router } = await mountReadyAt([`/capabilities/${NAME}/${VERSION}`], {
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: This file never references a connector configuration.
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: This file never removes a concept.
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      The one refused-removal test uses a generic, invented condition — `errorResponse("SomeRemovalRefusal", 409)`
+      — rather than this rule's own CapabilityCitedByEvidenceError, so the rule's own condition is
+      never exercised here.
+  - node: rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act
+    held_at: >-
+      `removeTriggerButton`/`openRemoveDialog`/`removeConfirmButton` (lines 39-50) and their use,
+      e.g. lines 69-70
+    evidence: |-
+      await openRemoveDialog();
+      fireEvent.click(removeConfirmButton());
+  - node: rules/integration/a-submitted-removal-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: >-
+      No assertion in this file checks any text the surface states about the outcome (neither "no
+      longer registered" on success nor which refusal fired); every test checks only navigation
+      and the trigger button's disabled attribute.
+  - node: rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing
+    held_at: >-
+      the navigation assertions in the criterion 1 and criterion 2 tests, e.g. line 72
+    evidence: |-
+      await waitFor(() => expect(router.state.location.pathname).toBe("/capabilities"));
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: This file never removes a connector configuration.
+looked_past: >-
+  The literal UI copy exercised here — the "Remove capability" button and dialog label, and the
+  "Unable to load this capability right now." refusal text checked absent in criterion 4 — is
+  surface wording rather than a domain fact, and is not reported.

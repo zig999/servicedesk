@@ -1,0 +1,340 @@
+findings:
+  - file: src/hooks/use-connector-configuration-detail.ts
+    where: >-
+      the `ConnectorConfigurationDetailState` type's `ready` phase (lines 47-59) and the
+      object the hook returns for it (lines 188-207)
+    evidence: |-
+      | {
+          readonly phase: "ready";
+          readonly form: UseFormReturn<ConnectorConfigurationFormValues>;
+          readonly configuration: ConfigurationFieldState;
+          readonly isDirty: boolean;
+          readonly isSubmitting: boolean;
+
+          readonly isSubmitSuccessful: boolean;
+          readonly onSubmit: (event?: BaseSyntheticEvent) => void;
+          readonly onCancel: () => void;
+          readonly onRemove: () => void;
+          readonly isRemoving: boolean;
+        };
+    cost: >-
+      Nothing in this hook collects a test value per Subject attribute named by the
+      presented answer's own `${subject:<attribute-name>}` placeholders, and nothing
+      detects or states a divergence between the configuration a test would exercise
+      and the one being presented; an operator running the connector's test after the
+      registered configuration has changed underneath them gets no signal that the
+      values they supplied were collected against a configuration they are no longer
+      looking at.
+    kind: contradicts
+    correction: >-
+      Have this hook collect one test value per distinct Subject-attribute name found
+      in the presented answer's own configuration text (never from `configurationValue`,
+      which may hold an unsubmitted edit or applied draft), and compare that attribute
+      set against the configuration read at the moment of the test, exposing a stated
+      divergence to the caller when they differ.
+    node: rules/integration/a-presented-connector-configurations-test-collects-values-for-the-attributes-the-presented-answer-names
+
+  - file: src/hooks/use-connector-configuration-detail.ts
+    where: "the `query.isError` branch, lines 153-161"
+    evidence: |-
+      if (query.isError) {
+          return {
+            phase: "load-error",
+            retryLoad: () => {
+              void query.refetch();
+            },
+            onCancel,
+          };
+        }
+    cost: >-
+      A connector name nothing is registered under and a read that failed for any other
+      reason both resolve to the same `load-error` phase, both carrying `retryLoad`; an
+      operator who reaches an unregistered connector name is offered a retry that can
+      never succeed instead of being told plainly that nothing is registered there.
+      Because `query.isError` returns before the `ready` phase is ever reached, this
+      hook can never present the authoring form under an unregistered connector name
+      either, so the create side of `register-connector` is unreachable from this screen.
+    kind: contradicts
+    correction: >-
+      Distinguish, inside the `query.isError` branch, a refusal naming
+      ConnectorConfigurationNotFoundError from any other failure, and return a phase
+      for the former that states nothing is registered under the connector name,
+      presents no connector or configuration value, and carries no retry action —
+      separate from the `load-error` phase, which keeps `retryLoad` for a read that
+      genuinely failed.
+    node: rules/integration/a-presented-connector-configuration-states-a-connector-name-nothing-is-registered-under
+
+  - file: src/hooks/use-connector-configuration-detail.ts
+    where: "the object the `ready` phase returns, lines 188-207"
+    evidence: |-
+      return {
+          phase: "ready",
+          form,
+          configuration: {
+            value: configurationValue,
+            isValid: configurationValid,
+
+            onChange: handleConfigurationChange,
+          },
+          isDirty,
+          isSubmitting: mutation.isPending,
+          isSubmitSuccessful: mutation.isSuccess,
+          onSubmit,
+          onCancel,
+          onRemove: () => {
+            removeMutation.mutate();
+          },
+          isRemoving: removeMutation.isPending,
+        };
+    cost: >-
+      An operator who has edited the connector name or the Configuration field away
+      from what the read answered has no act, anywhere in this hook, that returns the
+      fields to that read content without leaving the screen: `onCancel` navigates away
+      (`router.history.back()` or to `/connectors`), and no field of the returned state
+      resets `configurationValue`/`configurationBaseline` or `form` to `query.data`.
+      Recovering from an unwanted edit to opaque configuration text an operator cannot
+      retype from memory costs a round trip through another screen instead of the
+      in-place act the rule requires.
+    kind: contradicts
+    correction: >-
+      Expose a discard action from the ready phase (e.g. `onDiscard`) whose whole
+      effect is to reset `form` to `{ connector: query.data.connector }` and reset
+      `configurationValue`/`configurationBaseline` to `query.data.configuration`,
+      available while `isDirty` is true and taking effect only on a further explicit
+      act, per the rule.
+    node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: |-
+      function removalFailureMessage(error: unknown): string {
+        if (error instanceof ApiError) {
+          const state = uiStateForApiError(error);
+          return REMOVAL_FAILURE_MESSAGE_BY_KIND[state.kind] ?? GENERIC_REMOVAL_FAILURE_MESSAGE;
+        }
+        return GENERIC_REMOVAL_FAILURE_MESSAGE;
+      }
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: |-
+      function removalFailureMessage(error: unknown): string {
+        if (error instanceof ApiError) {
+          const state = uiStateForApiError(error);
+          return REMOVAL_FAILURE_MESSAGE_BY_KIND[state.kind] ?? GENERIC_REMOVAL_FAILURE_MESSAGE;
+        }
+        return GENERIC_REMOVAL_FAILURE_MESSAGE;
+      }
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: "the `removeMutation`'s `mutationFn`"
+    evidence: |-
+      mutationFn: () =>
+          apiFetch<void>(`/v1/connectors/${encodeURIComponent(connector)}`, {
+            method: "DELETE",
+          }),
+  - node: contracts/integration/connector-configuration-registry
+    held_at: "the `query` and `mutation`/`removeMutation` definitions"
+    evidence: |-
+      queryFn: () =>
+            apiFetch<ConnectorConfiguration>(`/v1/connectors/${encodeURIComponent(connector)}`),
+  - node: domain/integration/connector-configuration
+    held_at: "the form's `defaultValues` and the `configuration` field state"
+    evidence: |-
+      const form = useForm<ConnectorConfigurationFormValues>({
+          resolver: zodResolver(connectorConfigurationFormSchema),
+          defaultValues: { connector },
+        });
+  - node: rules/integration/a-connector-configuration-answer-already-held-stands-presented-while-a-further-read-is-outstanding
+    held_at: "the `query.isLoading || !query.data` guard, combined with the render-phase state sync"
+    evidence: |-
+      if (query.isLoading || !query.data) {
+          return { phase: "loading", onCancel };
+        }
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: "`onCancel`"
+    evidence: |-
+      const onCancel = (): void => {
+          if (router.history.canGoBack()) {
+            router.history.back();
+            return;
+          }
+          void navigate({ to: "/connectors" });
+        };
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: "`isValidConfigurationObject`"
+    evidence: |-
+      function isValidConfigurationObject(text: string): boolean {
+        const minified = getJsonTextareaMinifiedValue(text);
+        if (minified === null) {
+          return false;
+        }
+        const parsed: unknown = JSON.parse(minified);
+        return typeof parsed === "object" && parsed !== null && !Array.isArray(parsed);
+      }
+  - node: rules/integration/a-connector-configuration-surface-first-presented-holding-an-answer-issues-a-further-read
+    held_at: "the `useQuery` call, relying on its default refetch-on-mount behaviour"
+    evidence: |-
+      const query = useQuery({
+          queryKey: ["connector-configuration", connector],
+          queryFn: () =>
+            apiFetch<ConnectorConfiguration>(`/v1/connectors/${encodeURIComponent(connector)}`),
+        });
+  - node: rules/integration/a-connector-configuration-surface-judges-its-configuration-fields-content
+    held_at: "`configuration.isValid`, kept by `handleConfigurationChange` and the state sync"
+    evidence: |-
+      const handleConfigurationChange = useCallback((value: string): void => {
+          setConfigurationValue(value);
+          setConfigurationValid(isValidConfigurationObject(value));
+        }, []);
+  - node: rules/integration/a-connector-configuration-surface-offers-no-submission-while-its-content-is-not-well-formed
+    held_at: "the guard inside `submit`"
+    evidence: |-
+      const submit = form.handleSubmit((values) => {
+          if (!configurationValid) {
+            return;
+          }
+          mutation.mutate(values);
+        });
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: nowhere
+    evidence: |-
+      isDirty,
+          isSubmitting: mutation.isPending,
+          isSubmitSuccessful: mutation.isSuccess,
+          onSubmit,
+          onCancel,
+          onRemove: () => {
+            removeMutation.mutate();
+          },
+          isRemoving: removeMutation.isPending,
+  - node: rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read
+    held_at: "the `loading`, `load-error` and `ready` branches"
+    evidence: |-
+      if (query.isError) {
+          return { phase: "load-error", retryLoad: () => { void query.refetch(); }, onCancel };
+        }
+        if (query.isLoading || !query.data) {
+          return { phase: "loading", onCancel };
+        }
+  - node: rules/integration/a-presented-connector-configuration-with-no-edit-offers-no-discard-and-no-submission
+    held_at: "the exposed `isDirty` flag alongside `onSubmit`, gating left to the caller"
+    evidence: |-
+      const isDirty =
+          form.formState.isDirty ||
+          getJsonTextareaMinifiedValue(configurationValue) !== getJsonTextareaMinifiedValue(configurationBaseline);
+  - node: rules/integration/a-presented-connector-configurations-fields-carry-the-answer-from-the-moment-that-reading-is-entered
+    held_at: "the render-phase state-sync block"
+    evidence: |-
+      if (query.data !== syncedConfigurationData) {
+          setSyncedConfigurationData(query.data);
+          if (query.data) {
+            form.reset({ connector: query.data.connector });
+            setConfigurationValue(query.data.configuration);
+            setConfigurationValid(isValidConfigurationObject(query.data.configuration));
+            setConfigurationBaseline(query.data.configuration);
+          }
+        }
+  - node: rules/integration/a-presented-connector-configurations-test-collects-values-for-the-attributes-the-presented-answer-names
+    held_at: nowhere
+    evidence: |-
+      readonly configuration: ConfigurationFieldState;
+          readonly isDirty: boolean;
+          readonly isSubmitting: boolean;
+  - node: rules/integration/a-registration-outcome-is-never-stated-before-the-registry-answers
+    held_at: "the `mutation`'s `onSuccess`/`onError` callbacks, which only run once the call resolves"
+    evidence: |-
+      onSuccess: () => {
+
+          form.reset({ connector });
+          setConfigurationBaseline(configurationValue);
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: "`onCancel`, returned from every one of the three phases"
+    evidence: |-
+      if (query.isError) {
+          return { phase: "load-error", retryLoad: () => { void query.refetch(); }, onCancel };
+        }
+        if (query.isLoading || !query.data) {
+          return { phase: "loading", onCancel };
+        }
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: "`mutation.onError`'s `toast.error(...)` and the `isSubmitSuccessful` flag for the registered outcome"
+    evidence: |-
+      onError: (error) => {
+          toast.error(saveFailureMessage(error));
+        },
+  - node: rules/integration/a-submitted-removal-states-its-outcome-to-the-operator
+    held_at: "`removeMutation`'s `onSuccess`/`onError`"
+    evidence: |-
+      onSuccess: () => {
+          toast.success(`Connector configuration ${connector} removed.`);
+          void queryClient.invalidateQueries({ queryKey: ["connector-configurations"] });
+          void queryClient.invalidateQueries({ queryKey: ["connector-configuration", connector] });
+          void navigate({ to: "/connectors" });
+        },
+        onError: (error) => {
+          toast.error(removalFailureMessage(error));
+        },
+  - node: rules/integration/a-successful-connector-registration-lands-on-the-configurations-own-surface
+    held_at: "the absence of any navigation call in `mutation`'s `onSuccess`"
+    evidence: |-
+      onSuccess: () => {
+
+          form.reset({ connector });
+          setConfigurationBaseline(configurationValue);
+
+          void queryClient.invalidateQueries({ queryKey: ["connector-configurations"] });
+          void queryClient.invalidateQueries({ queryKey: ["connector-configuration", connector] });
+        },
+  - node: rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing
+    held_at: "`navigate({ to: \"/connectors\" })` in `removeMutation`'s `onSuccess`"
+    evidence: "void navigate({ to: \"/connectors\" });"
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: "`onCancel`'s fallback branch"
+    evidence: "void navigate({ to: \"/connectors\" });"
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-registers-nothing
+    held_at: "`onCancel`, which issues no mutation of any kind"
+    evidence: |-
+      const onCancel = (): void => {
+          if (router.history.canGoBack()) {
+            router.history.back();
+            return;
+          }
+          void navigate({ to: "/connectors" });
+        };
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: "apiFetch<void>(`/v1/connectors/${encodeURIComponent(connector)}`, { method: \"DELETE\" })"
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: "apiFetch<void>(`/v1/connectors/${encodeURIComponent(connector)}`, { method: \"DELETE\" })"
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: "apiFetch<ConnectorConfiguration>(`/v1/connectors/${encodeURIComponent(connector)}`)"
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: "This file's only endpoints are `/v1/connectors/${connector}`; no glossary concept is read, written or referenced."
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: "This file's only endpoints are `/v1/connectors/${connector}`; no capability is read, written or referenced."
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: "mutationFn: () => apiFetch<void>(`/v1/connectors/${encodeURIComponent(connector)}`, { method: \"DELETE\" })"
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: "mutationFn: () => apiFetch<void>(`/v1/connectors/${encodeURIComponent(connector)}`, { method: \"DELETE\" })"
+  - node: rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act
+    held_at: "`onRemove`, which calls the removal unconditionally when invoked; the asking step is left to the caller"
+    evidence: |-
+      onRemove: () => {
+            removeMutation.mutate();
+          },
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: "the empty `REMOVAL_FAILURE_MESSAGE_BY_KIND` map, which never names a domain-specific removal condition"
+    evidence: "const REMOVAL_FAILURE_MESSAGE_BY_KIND: Partial<Record<UiErrorStateKind, string>> = {};"
+
+looked_past: >-
+  The two-step "ask, then confirm" gate `a-removal-surface-offers-a-control-behind-a-further-explicit-act`
+  requires, and whether `onSubmit`'s lack of an `isDirty` check is safe, both turn on how
+  `connector-configuration-detail-ready-view.tsx` wires the exposed `onRemove`, `isDirty`
+  and `onSubmit` — that file is outside this review's file set, so whether the control
+  layer actually supplies the missing gate is that file's own question, not reported here.

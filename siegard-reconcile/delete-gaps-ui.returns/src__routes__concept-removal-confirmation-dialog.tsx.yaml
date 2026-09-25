@@ -1,0 +1,102 @@
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: |-
+      export type ConceptRemovalConfirmationDialogProps = {
+        readonly concept: GlossaryConcept | null;
+        readonly onOpenChange: (open: boolean) => void;
+        readonly onConfirm: () => void;
+      };
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: |-
+      export type ConceptRemovalConfirmationDialogProps = {
+        readonly concept: GlossaryConcept | null;
+        readonly onOpenChange: (open: boolean) => void;
+        readonly onConfirm: () => void;
+      };
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      import type { GlossaryConcept } from "../hooks/use-glossary-concepts";
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      onConfirm: () => void;
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      import type { GlossaryConcept } from "../hooks/use-glossary-concepts";
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: |-
+      import type { GlossaryConcept } from "../hooks/use-glossary-concepts";
+  - node: domain/glossary/concept
+    held_at: the dialog title, line 36
+    evidence: |-
+      {concept !== null ? `Remove concept "${concept.name}"?` : CONCEPT_REMOVAL_DEFAULT_TITLE}
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: |-
+      export type ConceptRemovalConfirmationDialogProps = {
+        readonly concept: GlossaryConcept | null;
+        readonly onOpenChange: (open: boolean) => void;
+        readonly onConfirm: () => void;
+      };
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: |-
+      export type ConceptRemovalConfirmationDialogProps = {
+        readonly concept: GlossaryConcept | null;
+        readonly onOpenChange: (open: boolean) => void;
+        readonly onConfirm: () => void;
+      };
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: |-
+      <Button type="button" variant="destructive" onClick={onConfirm}>
+        {CONCEPT_REMOVAL_CONFIRM_BUTTON}
+      </Button>
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: |-
+      import type { GlossaryConcept } from "../hooks/use-glossary-concepts";
+  - node: rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act
+    held_at: the dialog's footer, lines 40-51
+    evidence: |-
+      <DialogFooter>
+        <DialogClose asChild>
+          <Button type="button" variant="secondary">
+            {CONCEPT_REMOVAL_CANCEL_BUTTON}
+          </Button>
+        </DialogClose>
+        <DialogClose asChild>
+          <Button type="button" variant="destructive" onClick={onConfirm}>
+            {CONCEPT_REMOVAL_CONFIRM_BUTTON}
+          </Button>
+        </DialogClose>
+      </DialogFooter>
+  - node: rules/integration/a-submitted-removal-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: |-
+      export function ConceptRemovalConfirmationDialog({
+        concept,
+        onOpenChange,
+        onConfirm,
+      }: ConceptRemovalConfirmationDialogProps): JSX.Element {
+  - node: rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing
+    held_at: nowhere
+    evidence: |-
+      export function ConceptRemovalConfirmationDialog({
+        concept,
+        onOpenChange,
+        onConfirm,
+      }: ConceptRemovalConfirmationDialogProps): JSX.Element {
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: |-
+      import type { GlossaryConcept } from "../hooks/use-glossary-concepts";
+looked_past: >-
+  The button variants ("secondary"/"destructive"), the dialog copy wording, and the fallback
+  default title are presentational form the specification leaves to the surface, not a domain
+  fact — noted but not reported.

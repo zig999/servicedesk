@@ -321,29 +321,25 @@
       "from": "task/capability-removal/capability-cited-by-evidence-refusal-recognition",
       "to": "rules/integration/a-submitted-removal-states-its-outcome-to-the-operator",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:59a5439312d27a35e4ea6cc1a84dfea3b4986ae88cf6ca2ce0844bf3e8577a87"
+      "at": "implements[0]"
     },
     {
       "from": "task/capability-removal/capability-cited-by-evidence-refusal-recognition",
       "to": "rules/integration/a-registered-capability-cited-by-evidence-is-never-removed",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:8195034158d28a4e3c3b39c3b7506a739d6f0aad4f54c7ff289c26b278056a08"
+      "at": "implements[1]"
     },
     {
       "from": "task/capability-removal/capability-removal-control",
       "to": "rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:f3c95d9cbbdc291af55026a852d27ecf1bcc7e6a74b3d3daf15bbca070d7e482"
+      "at": "implements[0]"
     },
     {
       "from": "task/capability-removal/capability-removal-control",
       "to": "domain/integration/capability",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:91a8e47dde1bb38dea81d4e464723f23b227e2b9788696ab0f899bbebe2b5148"
+      "at": "implements[1]"
     },
     {
       "from": "task/capability-removal/capability-removal-landing",
@@ -355,22 +351,19 @@
       "from": "task/capability-removal/capability-removal-landing",
       "to": "rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:9c5e05e96b38950e393e149707fe94bba3e544cb8c7bc5b02414859a7f7f8e48"
+      "at": "implements[0]"
     },
     {
       "from": "task/capability-removal/capability-removal-landing",
       "to": "constraints/a-successful-capability-removal-answers-with-no-content",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:b6096e0b5208d67397fae54613a754b9e2de23299d55860eed833190c316201a"
+      "at": "implements[1]"
     },
     {
       "from": "task/capability-removal/capability-removal-landing",
       "to": "constraints/the-capability-identity-read-refuses-an-unregistered-identity",
       "kind": "implements",
-      "at": "implements[2]",
-      "digest": "sha256:420332183825ece65d96e027961e42943f7f82327c29b36340051ac939ee5d28"
+      "at": "implements[2]"
     },
     {
       "from": "task/capability-removal/capability-removal-outcome-disclosure",
@@ -388,57 +381,49 @@
       "from": "task/capability-removal/capability-removal-outcome-disclosure",
       "to": "rules/integration/a-submitted-removal-states-its-outcome-to-the-operator",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:59a5439312d27a35e4ea6cc1a84dfea3b4986ae88cf6ca2ce0844bf3e8577a87"
+      "at": "implements[0]"
     },
     {
       "from": "task/capability-removal/capability-removal-outcome-disclosure",
       "to": "domain/integration/capability",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:91a8e47dde1bb38dea81d4e464723f23b227e2b9788696ab0f899bbebe2b5148"
+      "at": "implements[1]"
     },
     {
       "from": "task/capability-removal/capability-removal-outcome-disclosure",
       "to": "rules/integration/a-registered-capability-cited-by-evidence-is-never-removed",
       "kind": "implements",
-      "at": "implements[2]",
-      "digest": "sha256:8195034158d28a4e3c3b39c3b7506a739d6f0aad4f54c7ff289c26b278056a08"
+      "at": "implements[2]"
     },
     {
       "from": "task/capability-removal/capability-removal-outcome-disclosure",
       "to": "constraints/a-successful-capability-removal-answers-with-no-content",
       "kind": "implements",
-      "at": "implements[3]",
-      "digest": "sha256:b6096e0b5208d67397fae54613a754b9e2de23299d55860eed833190c316201a"
+      "at": "implements[3]"
     },
     {
       "from": "task/capability-removal/capability-removal-outcome-disclosure",
       "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
       "kind": "implements",
-      "at": "implements[4]",
-      "digest": "sha256:684d6f2f9eb53d8d64a6303c243f4789ec08c1145a369829bbb2dda83fa4c05a"
+      "at": "implements[4]"
     },
     {
       "from": "task/capability-removal/capability-removal-outcome-disclosure",
       "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
       "kind": "implements",
-      "at": "implements[5]",
-      "digest": "sha256:d86861c14df4ef89fe00ab5effa8316e7b0ee387c26deed970632b818e50e74b"
+      "at": "implements[5]"
     },
     {
       "from": "task/concept-removal/concept-in-use-refusal-recognition",
       "to": "rules/glossary/a-registered-concept-is-never-removed",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:091ca19540ec1a66521d63462a8bcc84b8bdca7d8985a078ea3fb409779f1735"
+      "at": "implements[0]"
     },
     {
       "from": "task/concept-removal/concept-in-use-refusal-recognition",
       "to": "rules/integration/a-submitted-removal-states-its-outcome-to-the-operator",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:59a5439312d27a35e4ea6cc1a84dfea3b4986ae88cf6ca2ce0844bf3e8577a87"
+      "at": "implements[1]"
     },
     {
       "from": "task/concept-removal/concept-removal-landing",
@@ -450,22 +435,19 @@
       "from": "task/concept-removal/concept-removal-landing",
       "to": "rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:9c5e05e96b38950e393e149707fe94bba3e544cb8c7bc5b02414859a7f7f8e48"
+      "at": "implements[0]"
     },
     {
       "from": "task/concept-removal/concept-removal-landing",
       "to": "constraints/a-successful-concept-removal-answers-with-no-content",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:1984fe0e225843f530ec0e99ccfed89ae2508bed581e785c6db35c604b61883e"
+      "at": "implements[1]"
     },
     {
       "from": "task/concept-removal/concept-removal-landing",
       "to": "domain/glossary/concept",
       "kind": "implements",
-      "at": "implements[2]",
-      "digest": "sha256:3d67d2df55f4442a50e5ff3740b7229e0b34059033d27903dff72c5de61a5dd1"
+      "at": "implements[2]"
     },
     {
       "from": "task/concept-removal/concept-removal-outcome-disclosure",
@@ -483,78 +465,67 @@
       "from": "task/concept-removal/concept-removal-outcome-disclosure",
       "to": "domain/glossary/concept",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:3d67d2df55f4442a50e5ff3740b7229e0b34059033d27903dff72c5de61a5dd1"
+      "at": "implements[0]"
     },
     {
       "from": "task/concept-removal/concept-removal-outcome-disclosure",
       "to": "rules/integration/a-submitted-removal-states-its-outcome-to-the-operator",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:59a5439312d27a35e4ea6cc1a84dfea3b4986ae88cf6ca2ce0844bf3e8577a87"
+      "at": "implements[1]"
     },
     {
       "from": "task/concept-removal/concept-removal-outcome-disclosure",
       "to": "rules/glossary/a-registered-concept-is-never-removed",
       "kind": "implements",
-      "at": "implements[2]",
-      "digest": "sha256:091ca19540ec1a66521d63462a8bcc84b8bdca7d8985a078ea3fb409779f1735"
+      "at": "implements[2]"
     },
     {
       "from": "task/concept-removal/concept-removal-outcome-disclosure",
       "to": "constraints/a-successful-concept-removal-answers-with-no-content",
       "kind": "implements",
-      "at": "implements[3]",
-      "digest": "sha256:1984fe0e225843f530ec0e99ccfed89ae2508bed581e785c6db35c604b61883e"
+      "at": "implements[3]"
     },
     {
       "from": "task/concept-removal/concept-removal-outcome-disclosure",
       "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
       "kind": "implements",
-      "at": "implements[4]",
-      "digest": "sha256:684d6f2f9eb53d8d64a6303c243f4789ec08c1145a369829bbb2dda83fa4c05a"
+      "at": "implements[4]"
     },
     {
       "from": "task/concept-removal/concept-removal-outcome-disclosure",
       "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
       "kind": "implements",
-      "at": "implements[5]",
-      "digest": "sha256:d86861c14df4ef89fe00ab5effa8316e7b0ee387c26deed970632b818e50e74b"
+      "at": "implements[5]"
     },
     {
       "from": "task/concept-removal/concept-row-removal-control",
       "to": "rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:f3c95d9cbbdc291af55026a852d27ecf1bcc7e6a74b3d3daf15bbca070d7e482"
+      "at": "implements[0]"
     },
     {
       "from": "task/concept-removal/concept-row-removal-control",
       "to": "domain/glossary/concept",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:3d67d2df55f4442a50e5ff3740b7229e0b34059033d27903dff72c5de61a5dd1"
+      "at": "implements[1]"
     },
     {
       "from": "task/connector-configuration-removal/connector-configuration-removal-control",
       "to": "domain/integration/connector-configuration",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:345272c25d8ad14d2f0b0619f462e4534ae2c7c8ee3115b819e6c1d3a09b380b"
+      "at": "implements[0]"
     },
     {
       "from": "task/connector-configuration-removal/connector-configuration-removal-control",
       "to": "rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:f3c95d9cbbdc291af55026a852d27ecf1bcc7e6a74b3d3daf15bbca070d7e482"
+      "at": "implements[1]"
     },
     {
       "from": "task/connector-configuration-removal/connector-configuration-removal-control",
       "to": "rules/integration/removing-a-connector-configuration-is-unconditional",
       "kind": "implements",
-      "at": "implements[2]",
-      "digest": "sha256:f06d983ab60c78fc1c0acca181d2489ecb9679fd8a596be287401f01c5dfd7da"
+      "at": "implements[2]"
     },
     {
       "from": "task/connector-configuration-removal/connector-configuration-removal-landing",
@@ -566,22 +537,19 @@
       "from": "task/connector-configuration-removal/connector-configuration-removal-landing",
       "to": "rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:9c5e05e96b38950e393e149707fe94bba3e544cb8c7bc5b02414859a7f7f8e48"
+      "at": "implements[0]"
     },
     {
       "from": "task/connector-configuration-removal/connector-configuration-removal-landing",
       "to": "domain/integration/connector-configuration",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:345272c25d8ad14d2f0b0619f462e4534ae2c7c8ee3115b819e6c1d3a09b380b"
+      "at": "implements[1]"
     },
     {
       "from": "task/connector-configuration-removal/connector-configuration-removal-landing",
       "to": "constraints/a-successful-connector-configuration-removal-answers-with-no-content",
       "kind": "implements",
-      "at": "implements[2]",
-      "digest": "sha256:56a9a5afda6471b5ea6e131be0b05293c2d175d393a04b6e741b42c9d91b6dd1"
+      "at": "implements[2]"
     },
     {
       "from": "task/connector-configuration-removal/connector-configuration-removal-outcome-disclosure",
@@ -593,36 +561,31 @@
       "from": "task/connector-configuration-removal/connector-configuration-removal-outcome-disclosure",
       "to": "rules/integration/a-submitted-removal-states-its-outcome-to-the-operator",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:59a5439312d27a35e4ea6cc1a84dfea3b4986ae88cf6ca2ce0844bf3e8577a87"
+      "at": "implements[0]"
     },
     {
       "from": "task/connector-configuration-removal/connector-configuration-removal-outcome-disclosure",
       "to": "domain/integration/connector-configuration",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:345272c25d8ad14d2f0b0619f462e4534ae2c7c8ee3115b819e6c1d3a09b380b"
+      "at": "implements[1]"
     },
     {
       "from": "task/connector-configuration-removal/connector-configuration-removal-outcome-disclosure",
       "to": "constraints/a-successful-connector-configuration-removal-answers-with-no-content",
       "kind": "implements",
-      "at": "implements[2]",
-      "digest": "sha256:56a9a5afda6471b5ea6e131be0b05293c2d175d393a04b6e741b42c9d91b6dd1"
+      "at": "implements[2]"
     },
     {
       "from": "task/connector-configuration-removal/connector-configuration-removal-outcome-disclosure",
       "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
       "kind": "implements",
-      "at": "implements[3]",
-      "digest": "sha256:684d6f2f9eb53d8d64a6303c243f4789ec08c1145a369829bbb2dda83fa4c05a"
+      "at": "implements[3]"
     },
     {
       "from": "task/connector-configuration-removal/connector-configuration-removal-outcome-disclosure",
       "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
       "kind": "implements",
-      "at": "implements[4]",
-      "digest": "sha256:d86861c14df4ef89fe00ab5effa8316e7b0ee387c26deed970632b818e50e74b"
+      "at": "implements[4]"
     }
   ]
 }

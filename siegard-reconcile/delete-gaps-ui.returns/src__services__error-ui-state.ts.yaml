@@ -1,0 +1,148 @@
+read:
+  - node: rules/glossary/a-concept-declares-its-description
+    held_at: >-
+      the map entry for ConceptDescriptionRequiredError, line 58
+    evidence: >-
+      ConceptDescriptionRequiredError: { kind: "concept-description-required" },
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: >-
+      the map entry for CapabilitySchemaNotWellFormedError, line 53
+    evidence: >-
+      CapabilitySchemaNotWellFormedError: { kind: "capability-schema-not-well-formed" },
+  - node: rules/integration/a-capability-is-read-only
+    held_at: >-
+      the map entry for CapabilityNotReadOnlyError, line 52
+    evidence: >-
+      CapabilityNotReadOnlyError: { kind: "capability-not-read-only" },
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: >-
+      the map entry for ConnectorConfigurationNotWellFormedError, line 56 — the node's
+      other named condition, IncompleteConnectorConfigurationError, has no entry of its
+      own and falls to the generic fallback along with every code the map does not name
+    evidence: >-
+      ConnectorConfigurationNotWellFormedError: { kind: "connector-configuration-not-well-formed" },
+  - node: rules/integration/one-capability-answers-one-concept
+    held_at: >-
+      the map entry for ConceptAlreadyAnsweredError, line 45 — the node's other named
+      condition, DuplicateConceptAnswerError, has no entry of its own
+    evidence: >-
+      ConceptAlreadyAnsweredError: { kind: "concept-already-answered" },
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: >-
+      the map entry for CaseVersionNotValidError, line 64
+    evidence: >-
+      CaseVersionNotValidError: { kind: "case-not-valid" },
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: >-
+      the map entry for HypothesisRevisionNotDraftAtReleaseError, line 43
+    evidence: >-
+      HypothesisRevisionNotDraftAtReleaseError: { kind: "hypothesis-revision-not-draft-at-release" },
+  - node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+    held_at: >-
+      the generic fallback, line 30 and line 69
+    evidence: |-
+      const GENERIC_ERROR_STATE: UiErrorState = { kind: "generic-error" };
+      ...
+      return state ?? GENERIC_ERROR_STATE;
+  - node: scenarios/glossary/a-concept-with-no-description-is-refused
+    held_at: >-
+      the map entry for ConceptDescriptionRequiredError, line 58, kept distinct from
+      the generic fallback
+    evidence: >-
+      ConceptDescriptionRequiredError: { kind: "concept-description-required" },
+  - node: scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so
+    held_at: >-
+      the map entry for HypothesisRevisionNotDraftAtReleaseError, line 43, kept distinct
+      from the generic fallback
+    evidence: >-
+      HypothesisRevisionNotDraftAtReleaseError: { kind: "hypothesis-revision-not-draft-at-release" },
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      the map has no entry keyed "INTERNAL_ERROR"; this constraint governs the wire-side
+      status-map fallback, which this file does not implement
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      the map has no entry keyed "VALIDATION_ERROR"; this constraint governs a route's
+      own request-shape refusal, which this file does not implement
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the file holds only a code-to-kind map for error responses; a successful,
+      body-less removal answer is not a value this file ever receives or states
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the file holds only a code-to-kind map for error responses; a successful,
+      body-less removal answer is not a value this file ever receives or states
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the file holds only a code-to-kind map for error responses; a successful,
+      body-less removal answer is not a value this file ever receives or states
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: >-
+      the map has no entry keyed "CapabilityIdentityNotFoundError"
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: >-
+      the file declares no attribute of a concept; it only names the error code
+      ConceptDescriptionRequiredError that one of the rules constraining this domain raises
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: >-
+      the file declares no attribute of a capability; it only names the error codes that
+      rules constraining this domain raise
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      the file declares no attribute of a connector configuration; it only names the
+      error code ConnectorConfigurationNotWellFormedError that a rule constraining this
+      domain raises
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: >-
+      the map entry for ConceptInUseError, line 46
+    evidence: >-
+      ConceptInUseError: { kind: "concept-in-use" },
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: >-
+      the map entry for CapabilityCitedByEvidenceError, line 54
+    evidence: >-
+      CapabilityCitedByEvidenceError: { kind: "capability-cited-by-evidence" },
+  - node: rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act
+    held_at: nowhere
+    evidence: >-
+      the file is a pure error-code-to-kind lookup; it offers no control and gates no act
+  - node: rules/integration/a-submitted-removal-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: >-
+      the file supplies the kind labels (concept-in-use, capability-cited-by-evidence)
+      a caller could use to state which refusal answered, but states no outcome to an
+      operator itself — uiStateForApiError only returns a UiErrorState value
+  - node: rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing
+    held_at: nowhere
+    evidence: >-
+      the file contains no navigation or routing logic
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: >-
+      the file names no error code for connector-configuration removal, consistent with
+      a removal this rule states is never refused
+looked_past: >-
+  Several backend error codes this map lists or omits (CaseNotFoundError, ConceptNotAnsweredError,
+  ConceptNotHeldError, VocabularyTermNotHeldError, CaseAlreadyHasDraftError, ManifestPositionOccupiedError,
+  CaseVersionNotDraftError, CaseVersionNotDraftAtReleaseError, CaseVersionNotReleasableError,
+  ManifestWouldHoldNoHypothesisError, IncompleteCapabilityContractError, CaseHoldsNoDraftError,
+  ConceptNotInGlossaryError, ConceptRefusesSubjectTypeError, DuplicateConceptAnswerError,
+  IncompleteConnectorConfigurationError, CapabilityIdentityNotFoundError) are governed by nodes
+  outside this file's set and not shown to contradict them; whether the map is exhaustive over
+  every code a governing node names is a completeness question this one-directional pass does
+  not answer, since it asks only whether the source states more or other than the specification
+  holds, not whether it states everything the specification holds.
+candidates_opened:
+  - rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+  - rules/knowledge/a-concept-accepts-the-declared-subject-type
+  - rules/knowledge/case-terms-exist-in-the-glossary
+  - scenarios/knowledge/a-case-holding-no-versions-is-told-explicitly

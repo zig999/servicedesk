@@ -1,0 +1,138 @@
+findings:
+  - file: src/routes/glossary-browser-screen-concept-removal-landing.spec.ts
+    where: >-
+      the third describe block, lines 89-112 ("no surface addressed by the removed
+      identity survives the removal (underdetermined, from the specification)")
+    evidence: >-
+      describe("GlossaryBrowserScreen — no surface addressed by the removed identity
+      survives the removal (underdetermined, from the specification)", () => { it("shows
+      the removed concept's own name nowhere on the screen once its removal answers 204,
+      not only absent from the listing's own rows", ... expect(await
+      screen.findByRole("row", { name: /fraud-flag/i })).toBeTruthy();
+      expect(screen.queryByText("billing-dispute")).toBeNull(); });
+    cost: >-
+      The test asserts, as behavior a caller can depend on, that once a concept's
+      removal answers 204 no trace of the removed concept's own name survives anywhere
+      on the whole screen — a stronger, more general guarantee than the specification
+      decided. The decision log records only that a successful removal's destination is
+      the listing and never the removed identity's own surface
+      (rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing);
+      it says nothing about every other place the removed name might still appear (a
+      lingering dialog, a status message, or any other element). A reader who wants to
+      know what a concept removal is required to purge from the screen will look in the
+      specification and find only the narrower, decided fact — and the test's own title
+      concedes as much by calling the guarantee it encodes "underdetermined, from the
+      specification."
+    kind: unstated
+    correction: >-
+      Either decide the broader guarantee — that no reference to a just-removed identity
+      survives anywhere on the presenting screen, not only in the listing's own rows —
+      into the specification (widening
+      rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing or
+      a sibling node) and record it in the decision log, or narrow this test to what that
+      node and constraints/a-successful-concept-removal-answers-with-no-content actually
+      decide.
+    node: rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      const fetchMock = createGlossaryFetchStub({ [CONCEPTS_PATH]: () =>
+      jsonResponse(page(concepts)), [conceptRemovalPath("billing-dispute")]: () => { ...
+      return new Response(null, { status: 204 }); }, }); — only success-path handlers are
+      stubbed anywhere in this file; no unmapped domain error or 500 response is ever
+      produced or asserted.
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      const fetchMock = createGlossaryFetchStub({ [CONCEPTS_PATH]: () =>
+      jsonResponse(page(concepts)), [conceptRemovalPath("billing-dispute")]: () => { ...
+      }, }); — the file never sends a malformed path, query or body and never asserts a
+      400 VALIDATION_ERROR response.
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      import { CONCEPTS_PATH, createGlossaryFetchStub, glossaryConcept, jsonResponse,
+      mountGlossaryBrowserScreen, page, } from "./glossary-browser-screen.test-support";
+      — nothing in this file names a capability or a capability-removal path.
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: the fetch stub handler for the concept-removal path in every test
+    evidence: >-
+      [conceptRemovalPath("billing-dispute")]: () => { concepts = concepts.filter((concept)
+      => concept.name !== "billing-dispute"); return new Response(null, { status: 204 });
+      }
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      import { CONCEPTS_PATH, createGlossaryFetchStub, glossaryConcept, jsonResponse,
+      mountGlossaryBrowserScreen, page, } from "./glossary-browser-screen.test-support";
+      — nothing in this file names a connector configuration or a connector-removal path.
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: >-
+      import { CONCEPTS_PATH, createGlossaryFetchStub, glossaryConcept, jsonResponse,
+      mountGlossaryBrowserScreen, page, } from "./glossary-browser-screen.test-support";
+      — this file never exercises a read-capability-by-identity route.
+  - node: domain/glossary/concept
+    held_at: the concept fixtures seeded for every test, by their name attribute
+    evidence: >-
+      let concepts = [ glossaryConcept({ name: "billing-dispute" }), glossaryConcept({
+      name: "fraud-flag" }), ];
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: >-
+      import { CONCEPTS_PATH, createGlossaryFetchStub, glossaryConcept, jsonResponse,
+      mountGlossaryBrowserScreen, page, } from "./glossary-browser-screen.test-support";
+      — no capability fixture or attribute appears anywhere in this file.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      import { CONCEPTS_PATH, createGlossaryFetchStub, glossaryConcept, jsonResponse,
+      mountGlossaryBrowserScreen, page, } from "./glossary-browser-screen.test-support";
+      — no connector-configuration fixture or attribute appears anywhere in this file.
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: >-
+      the success branch exercised by every test — the fetch stub lets the named
+      concept's removal go through and the listing then omits it
+    evidence: >-
+      concepts = concepts.filter((concept) => concept.name !== "billing-dispute"); return
+      new Response(null, { status: 204 });
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      import { CONCEPTS_PATH, createGlossaryFetchStub, glossaryConcept, jsonResponse,
+      mountGlossaryBrowserScreen, page, } from "./glossary-browser-screen.test-support";
+      — this file never removes a capability.
+  - node: rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act
+    held_at: >-
+      the two-step trigger-then-confirm flow every test drives
+    evidence: >-
+      function clickRemoveTrigger(name: string): void { fireEvent.click(within(findConceptRow(name)).getByRole("button",
+      { name: "Remove" })); } function confirmRemoval(): void {
+      fireEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name:
+      "Remove" })); }
+  - node: rules/integration/a-submitted-removal-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: >-
+      await waitFor(() => expect(screen.queryByRole("row", { name: /billing-dispute/i
+      })).toBeNull()); expect(screen.getByRole("row", { name: /fraud-flag/i
+      })).toBeTruthy(); — none of this file's assertions checks any outcome message
+      stated to the operator.
+  - node: rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing
+    held_at: >-
+      the "criterion 1" test's assertions that the Concepts tab stays selected and the
+      panel's own New concept control stays present
+    evidence: >-
+      expect(screen.getByRole("tab", { name: /Concepts/ }).getAttribute("aria-selected")).toBe("true",);
+      expect(screen.getByRole("button", { name: "New concept" })).toBeTruthy();
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: >-
+      import { CONCEPTS_PATH, createGlossaryFetchStub, glossaryConcept, jsonResponse,
+      mountGlossaryBrowserScreen, page, } from "./glossary-browser-screen.test-support";
+      — this file never removes a connector configuration.
+looked_past: >-
+  This file exercises only the success path of concept removal (204) and never the
+  refusal branches rules/glossary/a-registered-concept-is-never-removed also states
+  (ConceptInUseError and its four reference kinds), which is a coverage question for
+  whoever schedules tests rather than a conformance finding over this file.

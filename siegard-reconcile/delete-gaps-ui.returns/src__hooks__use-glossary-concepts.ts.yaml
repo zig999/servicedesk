@@ -1,0 +1,127 @@
+findings:
+  - file: src/hooks/use-glossary-concepts.ts
+    where: the concept-in-use branch of removalFailureMessage, lines 52-57
+    evidence: |-
+      if (error instanceof ApiError && uiStateForApiError(error).kind === "concept-in-use") {
+        return `Nothing was removed; something else in the glossary still names the concept "${name}".`;
+      }
+    cost: >-
+      An operator told the concept is "still named" by something "in the glossary" will look inside
+      glossary management — at other concepts or vocabulary terms — to find and clear the reference.
+      The rule that actually produces this refusal never fires for anything inside the glossary: it
+      fires because a registered capability answers the concept, a collected evidence item or its
+      citation names it, or a hypothesis-revision's own collects lists it — a capability, an
+      investigation record, or a knowledge artefact, none of them part of the glossary. The message
+      sends the operator to the wrong bounded context to resolve a refusal they cannot act on there.
+    kind: contradicts
+    node: rules/glossary/a-registered-concept-is-never-removed
+    correction: >-
+      State that the concept is still referenced elsewhere in the system — by a capability, a
+      collected evidence item, a citation, or a hypothesis-revision — rather than asserting the
+      reference is "in the glossary".
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: |-
+      return GENERIC_REMOVAL_FAILURE_MESSAGE;
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: |-
+      if (error instanceof ApiError && uiStateForApiError(error).kind === "concept-in-use") {
+        return `Nothing was removed; something else in the glossary still names the concept "${name}".`;
+      }
+      return GENERIC_REMOVAL_FAILURE_MESSAGE;
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: the mutationFn of useRemoveGlossaryConcept, lines 62-65
+    evidence: |-
+      mutationFn: (name: string) =>
+        apiFetch<void>(`/v1/glossary/concepts/${encodeURIComponent(name)}`, {
+          method: "DELETE",
+        }),
+  - node: contracts/glossary/glossary-query
+    held_at: the queryFn of useGlossaryConcepts, line 32
+    evidence: |-
+      queryFn: () => apiFetch<GlossaryConceptsPage>("/v1/glossary/concepts"),
+  - node: domain/glossary/concept
+    held_at: the GlossaryConcept type, lines 11-16
+    evidence: |-
+      export type GlossaryConcept = {
+        readonly name: string;
+        readonly accepts: readonly string[];
+        readonly ttl: number;
+        readonly description: string;
+      };
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: the concept-in-use branch of removalFailureMessage, lines 52-57
+    evidence: |-
+      if (error instanceof ApiError && uiStateForApiError(error).kind === "concept-in-use") {
+        return `Nothing was removed; something else in the glossary still names the concept "${name}".`;
+      }
+  - node: rules/integration/a-submitted-removal-states-its-outcome-to-the-operator
+    held_at: the mutation's onSuccess and onError handlers, lines 66-72
+    evidence: |-
+      onSuccess: (_data, name) => {
+        toast.success(`Concept ${name} removed.`);
+        void queryClient.invalidateQueries({ queryKey: ["glossary", "concepts-with-ttl"] });
+      },
+      onError: (error, name) => {
+        toast.error(removalFailureMessage(error, name));
+      },
+  - node: rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing
+    held_at: the onSuccess invalidateQueries call, line 68
+    evidence: |-
+      void queryClient.invalidateQueries({ queryKey: ["glossary", "concepts-with-ttl"] });
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      export function useGlossaryConcepts(): GlossaryConceptsResult {
+      export function useRemoveGlossaryConcept(): RemoveGlossaryConceptResult {
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      export function useGlossaryConcepts(): GlossaryConceptsResult {
+      export function useRemoveGlossaryConcept(): RemoveGlossaryConceptResult {
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: |-
+      export function useGlossaryConcepts(): GlossaryConceptsResult {
+      export function useRemoveGlossaryConcept(): RemoveGlossaryConceptResult {
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: |-
+      export type GlossaryConcept = {
+        readonly name: string;
+        readonly accepts: readonly string[];
+        readonly ttl: number;
+        readonly description: string;
+      };
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: |-
+      export type GlossaryConcept = {
+        readonly name: string;
+        readonly accepts: readonly string[];
+        readonly ttl: number;
+        readonly description: string;
+      };
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: |-
+      export function useGlossaryConcepts(): GlossaryConceptsResult {
+      export function useRemoveGlossaryConcept(): RemoveGlossaryConceptResult {
+  - node: rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act
+    held_at: nowhere
+    evidence: |-
+      remove: (name: string) => {
+        mutation.mutate(name);
+      },
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: |-
+      export function useGlossaryConcepts(): GlossaryConceptsResult {
+      export function useRemoveGlossaryConcept(): RemoveGlossaryConceptResult {
+looked_past: >-
+  The confirmation gating before a removal is issued and the operator's navigation after a
+  successful or refused removal are rendered by whatever component calls these hooks, not by this
+  file, so I did not weigh their presence here, and the classification `uiStateForApiError` performs
+  on the raw error is that function's own file to judge, not this one's.

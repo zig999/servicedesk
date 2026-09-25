@@ -1,0 +1,201 @@
+findings:
+  - file: src/routes/connector-configuration-detail-ready-view.tsx
+    where: the `state.justSaved` success message, lines 87-92
+    evidence: |-
+      {state.justSaved && (
+
+        <p role="status" className="text-sm text-foreground">
+          Saved.
+        </p>
+      )}
+    cost: >-
+      An operator who submits an edit is told only "Saved.", never which connector
+      configuration now stands registered. The node requires the surface to state what
+      was registered — the connector name the submission carried — alongside the fact
+      that it registered; this text carries no such content even though the connector
+      name (the `connector` prop) is already in scope of this component. An operator who
+      has moved between several connectors' detail screens, or returned to this one via
+      the listing, has nothing in this confirmation to tie the "Saved." to the connector
+      it was saved for.
+    kind: contradicts
+    correction: >-
+      Interpolate the connector name into the confirmation text (e.g. state that the
+      connector configuration for `{connector}` is now registered) instead of the bare,
+      unqualified word "Saved."
+    node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+
+read:
+  - node: contracts/integration/connector-configuration-registry
+    held_at: >-
+      the "Remove connector configuration" dialog's confirm action and the "Connectors"
+      link, lines 96-98 and 120-124
+    evidence: |-
+      <Button variant="secondary" asChild>
+        <Link to="/connectors">Connectors</Link>
+      </Button>
+  - node: domain/integration/connector-configuration
+    held_at: the `!state.configuration.isValid` guard, lines 38-42
+    evidence: |-
+      {!state.configuration.isValid && (
+        <p role="alert" className="text-sm text-destructive">
+          {INVALID_CONFIGURATION_WARNING}
+        </p>
+      )}
+  - node: rules/integration/a-connector-configuration-authoring-may-be-abandoned-without-registering
+    held_at: the "Cancel" button, lines 93-95
+    evidence: |-
+      <Button type="button" variant="secondary" onClick={state.onCancel}>
+        Cancel
+      </Button>
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: the invalid-configuration warning banner, lines 38-42
+    evidence: |-
+      const INVALID_CONFIGURATION_WARNING =
+        "This connector configuration's stored value must be a JSON object. Correct it before Save can succeed.";
+  - node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+    held_at: the `testPanel` prop, lines 50-55, fed `state.registeredConfigurationText`
+    evidence: |-
+      testPanel={
+        <ConnectorTestPanel
+          connector={connector}
+          configurationText={state.registeredConfigurationText}
+        />
+      }
+  - node: rules/integration/a-connector-configuration-surface-offers-a-route-to-the-listing
+    held_at: the "Connectors" link, lines 96-98
+    evidence: |-
+      <Button variant="secondary" asChild>
+        <Link to="/connectors">Connectors</Link>
+      </Button>
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: the Discard dialog, lines 58-86, gated on `state.isDirty`
+    evidence: |-
+      <Button
+        type="button"
+        variant="secondary"
+        disabled={!state.isDirty || state.isSubmitting}
+      >
+        Discard changes
+      </Button>
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: the "Cancel" button, lines 93-95, rendered unconditionally
+    evidence: |-
+      <Button type="button" variant="secondary" onClick={state.onCancel}>
+        Cancel
+      </Button>
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: >-
+      the `state.justSaved` status message, lines 87-92 — held only partially; see
+      finding
+    evidence: |-
+      {state.justSaved && (
+
+        <p role="status" className="text-sm text-foreground">
+          Saved.
+        </p>
+      )}
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: |-
+      export type ConnectorConfigurationDetailReadyViewProps = {
+        readonly state: Extract<ConnectorConfigurationDetailViewState, { phase: "ready" }>;
+        readonly connector: string;
+      };
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: |-
+      export type ConnectorConfigurationDetailReadyViewProps = {
+        readonly state: Extract<ConnectorConfigurationDetailViewState, { phase: "ready" }>;
+        readonly connector: string;
+      };
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      export function ConnectorConfigurationDetailReadyView({
+        state,
+        connector,
+      }: ConnectorConfigurationDetailReadyViewProps): JSX.Element {
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      export function ConnectorConfigurationDetailReadyView({
+        state,
+        connector,
+      }: ConnectorConfigurationDetailReadyViewProps): JSX.Element {
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      <DialogClose asChild>
+        <Button type="button" variant="destructive" onClick={state.onRemove}>
+          Remove connector configuration
+        </Button>
+      </DialogClose>
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: |-
+      export type ConnectorConfigurationDetailReadyViewProps = {
+        readonly state: Extract<ConnectorConfigurationDetailViewState, { phase: "ready" }>;
+        readonly connector: string;
+      };
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: |-
+      export type ConnectorConfigurationDetailReadyViewProps = {
+        readonly state: Extract<ConnectorConfigurationDetailViewState, { phase: "ready" }>;
+        readonly connector: string;
+      };
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: |-
+      export type ConnectorConfigurationDetailReadyViewProps = {
+        readonly state: Extract<ConnectorConfigurationDetailViewState, { phase: "ready" }>;
+        readonly connector: string;
+      };
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: |-
+      export type ConnectorConfigurationDetailReadyViewProps = {
+        readonly state: Extract<ConnectorConfigurationDetailViewState, { phase: "ready" }>;
+        readonly connector: string;
+      };
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: |-
+      const REMOVE_DIALOG_DESCRIPTION =
+        "Removing this connector configuration cannot be undone.";
+  - node: rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act
+    held_at: the Remove dialog, lines 99-127, confirm gated behind `DialogClose`
+    evidence: |-
+      <DialogClose asChild>
+        <Button type="button" variant="destructive" onClick={state.onRemove}>
+          Remove connector configuration
+        </Button>
+      </DialogClose>
+  - node: rules/integration/a-submitted-removal-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: |-
+      <DialogClose asChild>
+        <Button type="button" variant="destructive" onClick={state.onRemove}>
+          Remove connector configuration
+        </Button>
+      </DialogClose>
+  - node: rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing
+    held_at: nowhere
+    evidence: |-
+      <DialogClose asChild>
+        <Button type="button" variant="destructive" onClick={state.onRemove}>
+          Remove connector configuration
+        </Button>
+      </DialogClose>
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: the Remove dialog's description, lines 24-25 and 113
+    evidence: |-
+      const REMOVE_DIALOG_DESCRIPTION =
+        "Removing this connector configuration cannot be undone.";
+
+looked_past: >-
+  This file discloses no outcome for a refused submission and no outcome for a
+  completed or refused removal at all (only the success half of a submission, via
+  `state.justSaved`, is rendered here); whether that disclosure is carried by the
+  sibling form-fields component or the detail hook, both outside this file, is not
+  something this single-file review can settle.

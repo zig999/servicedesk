@@ -1,0 +1,127 @@
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      function noContentResponse(): Response {
+        return new Response(null, { status: 204 });
+      }
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      async function mountReady(
+        overrides: Record<string, FetchResponder> = {},
+      ): Promise<ReturnType<typeof createFetchStub>> {
+        const fetchMock = createFetchStub(baseHandlers(undefined, undefined, overrides));
+        await mountCapabilityDetailScreen(fetchMock);
+        await screen.findByLabelText("Connector");
+        return fetchMock;
+      }
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: >-
+      the fetch-stub override in "confirming the further act issues the DELETE (criterion 4)"
+    evidence: >-
+      [CAPABILITY_PATH]: (method) =>
+        method === "DELETE" ? noContentResponse() : jsonResponse(LOADED_CAPABILITY),
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      describe("CapabilityDetailScreen -- the capability's surface offers a removal control (criterion 1)", () => {
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      describe("CapabilityDetailScreen -- the capability's surface offers a removal control (criterion 1)", () => {
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: >-
+      const fetchMock = createFetchStub(baseHandlers(undefined, undefined, overrides));
+      await mountCapabilityDetailScreen(fetchMock);
+      await screen.findByLabelText("Connector");
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: >-
+      import {
+        CAPABILITY_PATH,
+        LOADED_CAPABILITY,
+        NAME,
+        VERSION,
+      } from "./capability-detail-screen.test-support";
+  - node: domain/integration/capability
+    held_at: >-
+      "declining leaves the capability presented unchanged (criterion 6)"
+    evidence: >-
+      const nameField = screen.getByLabelText<HTMLInputElement>("Name");
+      const versionField = screen.getByLabelText<HTMLInputElement>("Version");
+      ...
+      expect(nameField.value).toBe(NAME);
+      expect(versionField.value).toBe(VERSION);
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      import {
+        CAPABILITY_PATH,
+        LOADED_CAPABILITY,
+        NAME,
+        VERSION,
+      } from "./capability-detail-screen.test-support";
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      function deleteCallCount(fetchMock: ReturnType<typeof createFetchStub>): number {
+        return fetchMock.mock.calls.filter(([input, init]) => {
+          const url = typeof input === "string" ? input : input.toString();
+          return url === CAPABILITY_PATH && (init?.method ?? "GET").toUpperCase() === "DELETE";
+        }).length;
+      }
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      const fetchMock = await mountReady({
+        [CAPABILITY_PATH]: (method) =>
+          method === "DELETE" ? noContentResponse() : jsonResponse(LOADED_CAPABILITY),
+      });
+  - node: rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act
+    held_at: >-
+      "taking the removal control issues no DELETE (criterion 3)", "confirming the further act
+      issues the DELETE (criterion 4)", "declining the further act issues no DELETE (criterion 5)",
+      "declining leaves the capability presented unchanged (criterion 6)", and "the further act
+      asks for no typed name or version (criterion 7)"
+    evidence: >-
+      await openRemoveDialog();
+
+          expect(deleteCallCount(fetchMock)).toBe(0);
+      ...
+          fireEvent.click(removeConfirmButton());
+
+          await waitFor(() => expect(deleteCallCount(fetchMock)).toBe(1));
+      ...
+          fireEvent.click(removeCancelButton());
+
+          await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+          expect(deleteCallCount(fetchMock)).toBe(0);
+      ...
+          expect(within(screen.getByRole("dialog")).queryByRole("textbox")).toBeNull();
+  - node: rules/integration/a-submitted-removal-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: >-
+      fireEvent.click(removeConfirmButton());
+
+      await waitFor(() => expect(deleteCallCount(fetchMock)).toBe(1));
+  - node: rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing
+    held_at: nowhere
+    evidence: >-
+      fireEvent.click(removeConfirmButton());
+
+      await waitFor(() => expect(deleteCallCount(fetchMock)).toBe(1));
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: >-
+      import {
+        CAPABILITY_PATH,
+        LOADED_CAPABILITY,
+        NAME,
+        VERSION,
+      } from "./capability-detail-screen.test-support";
+looked_past: >-
+  The specific button and dialog wording asserted throughout ("Remove capability", "Remove this
+  capability?", "Cancel") is UI copy the governing rule explicitly leaves as form rather than a
+  domain fact, so it is not reported here.
