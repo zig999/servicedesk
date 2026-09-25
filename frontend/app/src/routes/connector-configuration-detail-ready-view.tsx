@@ -21,6 +21,9 @@ const INVALID_CONFIGURATION_WARNING =
 const DISCARD_DIALOG_DESCRIPTION =
   "Every unsaved change to this connector configuration will be lost. This cannot be undone.";
 
+const REMOVE_DIALOG_DESCRIPTION =
+  "Removing this connector configuration cannot be undone.";
+
 export type ConnectorConfigurationDetailReadyViewProps = {
   readonly state: Extract<ConnectorConfigurationDetailViewState, { phase: "ready" }>;
   readonly connector: string;
@@ -93,6 +96,35 @@ export function ConnectorConfigurationDetailReadyView({
             <Button variant="secondary" asChild>
               <Link to="/connectors">Connectors</Link>
             </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  disabled={state.isSubmitting || state.isRemoving}
+                >
+                  Remove connector configuration
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Remove connector configuration?</DialogTitle>
+                </DialogHeader>
+                <DialogDescription>{REMOVE_DIALOG_DESCRIPTION}</DialogDescription>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button type="button" variant="secondary">
+                      Keep configuration
+                    </Button>
+                  </DialogClose>
+                  <DialogClose asChild>
+                    <Button type="button" variant="destructive" onClick={state.onRemove}>
+                      Remove connector configuration
+                    </Button>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </>
         }
       />

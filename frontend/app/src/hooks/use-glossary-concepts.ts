@@ -1,4 +1,4 @@
-import { useQuery, type UseQueryResult } from "@tanstack/react-query";
+import { useMutation, useQuery, type UseQueryResult } from "@tanstack/react-query";
 import { apiFetch } from "../services/api-client";
 
 export type GlossaryConcept = {
@@ -32,5 +32,26 @@ export function useGlossaryConcepts(): GlossaryConceptsResult {
     refetch: () => {
       void query.refetch();
     },
+  };
+}
+
+export type RemoveGlossaryConceptResult = {
+  readonly remove: (name: string) => void;
+  readonly isRemoving: boolean;
+};
+
+export function useRemoveGlossaryConcept(): RemoveGlossaryConceptResult {
+  const mutation = useMutation({
+    mutationFn: (name: string) =>
+      apiFetch<void>(`/v1/glossary/concepts/${encodeURIComponent(name)}`, {
+        method: "DELETE",
+      }),
+  });
+
+  return {
+    remove: (name: string) => {
+      mutation.mutate(name);
+    },
+    isRemoving: mutation.isPending,
   };
 }

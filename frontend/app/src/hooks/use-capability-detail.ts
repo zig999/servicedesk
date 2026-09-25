@@ -34,6 +34,8 @@ export type CapabilityDetailState =
       readonly isSubmitSuccessful: boolean;
       readonly onSubmit: (event?: BaseSyntheticEvent) => void;
       readonly onCancel: () => void;
+      readonly isDeleting: boolean;
+      readonly onDelete: () => void;
     };
 
 export function useCapabilityDetail(name: string, version: string): CapabilityDetailState {
@@ -122,6 +124,14 @@ export function useCapabilityDetail(name: string, version: string): CapabilityDe
     },
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: () =>
+      apiFetch<void>(
+        `/v1/capabilities/${encodeURIComponent(name)}/${encodeURIComponent(version)}`,
+        { method: "DELETE" },
+      ),
+  });
+
   const isLoadingConcepts = conceptOptions.isLoading;
   const isConceptsError = conceptOptions.isError;
 
@@ -203,5 +213,9 @@ export function useCapabilityDetail(name: string, version: string): CapabilityDe
     isSubmitSuccessful: mutation.isSuccess,
     onSubmit,
     onCancel,
+    isDeleting: deleteMutation.isPending,
+    onDelete: () => {
+      deleteMutation.mutate();
+    },
   };
 }

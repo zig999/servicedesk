@@ -22,6 +22,9 @@ const INVALID_OUTPUT_SCHEMA_WARNING =
 const DISCARD_DIALOG_DESCRIPTION =
   "Every unsaved change to this capability will be lost. This cannot be undone.";
 
+const REMOVE_CAPABILITY_DIALOG_DESCRIPTION =
+  "This capability will be removed from the registry. This cannot be undone.";
+
 export type CapabilityDetailReadyViewProps = {
   readonly state: Extract<CapabilityDetailViewState, { phase: "ready" }>;
 };
@@ -76,6 +79,31 @@ export function CapabilityDetailReadyView({
                   <DialogClose asChild>
                     <Button type="button" variant="destructive" onClick={state.onDiscard}>
                       Discard changes
+                    </Button>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button type="button" variant="destructive" disabled={state.isDeleting}>
+                  Remove capability
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Remove this capability?</DialogTitle>
+                </DialogHeader>
+                <DialogDescription>{REMOVE_CAPABILITY_DIALOG_DESCRIPTION}</DialogDescription>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button type="button" variant="secondary">
+                      Cancel
+                    </Button>
+                  </DialogClose>
+                  <DialogClose asChild>
+                    <Button type="button" variant="destructive" onClick={state.onDelete}>
+                      Remove capability
                     </Button>
                   </DialogClose>
                 </DialogFooter>

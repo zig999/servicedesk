@@ -41,6 +41,8 @@ export type ConnectorConfigurationDetailState =
       readonly isSubmitSuccessful: boolean;
       readonly onSubmit: (event?: BaseSyntheticEvent) => void;
       readonly onCancel: () => void;
+      readonly onRemove: () => void;
+      readonly isRemoving: boolean;
     };
 
 export function useConnectorConfigurationDetail(
@@ -114,6 +116,17 @@ export function useConnectorConfigurationDetail(
     },
   });
 
+  const removeMutation = useMutation({
+    mutationFn: () =>
+      apiFetch<void>(`/v1/connectors/${encodeURIComponent(connector)}`, {
+        method: "DELETE",
+      }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["connector-configurations"] });
+      void queryClient.invalidateQueries({ queryKey: ["connector-configuration", connector] });
+    },
+  });
+
   const handleConfigurationChange = useCallback((value: string): void => {
     setConfigurationValue(value);
     setConfigurationValid(isValidConfigurationObject(value));
@@ -168,5 +181,9 @@ export function useConnectorConfigurationDetail(
     isSubmitSuccessful: mutation.isSuccess,
     onSubmit,
     onCancel,
+    onRemove: () => {
+      removeMutation.mutate();
+    },
+    isRemoving: removeMutation.isPending,
   };
 }

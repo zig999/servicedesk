@@ -12,6 +12,7 @@ export type UiErrorStateKind =
   | "hypothesis-revision-not-draft-at-release"
   | "concept-already-answered"
   | "concept-in-use"
+  | "capability-cited-by-evidence"
   | "case-version-not-releasable"
   | "manifest-would-hold-no-hypothesis"
   | "incomplete-capability-contract"
@@ -50,6 +51,7 @@ const UI_STATE_BY_ERROR_CODE: Readonly<Record<string, UiErrorState>> = {
   IncompleteCapabilityContractError: { kind: "incomplete-capability-contract" },
   CapabilityNotReadOnlyError: { kind: "capability-not-read-only" },
   CapabilitySchemaNotWellFormedError: { kind: "capability-schema-not-well-formed" },
+  CapabilityCitedByEvidenceError: { kind: "capability-cited-by-evidence" },
 
   ConnectorConfigurationNotWellFormedError: { kind: "connector-configuration-not-well-formed" },
 
