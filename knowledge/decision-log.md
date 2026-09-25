@@ -5985,3 +5985,27 @@ entries:
     to it makes the structured disclosure exactly the values the message already names and adds no second
     disclosure -- neither the removed entry nor the manifest the refusal left standing -- that the message
     itself does not make.
+- location: rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act.md
+  field: statement
+  unstated: The material asks for a delete control with confirmation for a concept, a capability, and a
+    connector configuration, but does not say whether the confirming act must reproduce the identity being
+    removed, as discarding a draft case version already requires of its own confirming act, or needs only
+    a plain further act.
+  decided: A plain further explicit act, stating that the removal is to be performed, with no reproduction
+    of the removed identity required.
+  why: Discarding a draft case version destroys a whole version and every entry of its manifest, and its
+    own further act additionally requires the case's own slug reproduced for exactly that weight; removing
+    a single registered concept, a capability, or a connector configuration destroys one registration at a
+    time, closer in weight to the abandonment gestures this specification already leaves as a plain further
+    act than to a whole version's discard.
+- location: rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing.md
+  field: statement
+  unstated: The material asks for a removal's success to be reflected in the list or the detail view, but
+    does not say where the operator is taken once the removal succeeds.
+  decided: The listing of registered concepts, capabilities, or connector configurations, respectively --
+    never the surface addressed by the identity just removed.
+  why: The identity a removal just succeeded on is refused by that entity's own unregistered-identity read
+    the moment the removal succeeds (rules/glossary/a-glossary-read-by-an-unheld-name-is-refused,
+    constraints/the-capability-identity-read-refuses-an-unregistered-identity,
+    rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused), so landing the
+    operator there would show a refusal for the very act that just succeeded.

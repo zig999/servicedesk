@@ -27,6 +27,44 @@ fitness: An automated test raises an error the status map does not name from a r
 Stated once for the whole surface so no route decides the shape of this fallback on its own, mirroring constraints/a-malformed-request-is-refused-with-a-validation-error's own system-wide placement for the sibling case of a request the route's own shape already refuses.
 A domain error nothing named is exactly the case this system did not anticipate, so the refusal discloses nothing about it: not the error's own message, which may describe internal state, and not any context object a domain error happens to carry — both stay server-side, and the caller learns only that something failed.
 
+=== constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+---
+statement: >-
+  A domain refusal's message text names a case "caso", a case version "versão", a hypothesis
+  "hipótese", a hypothesis-revision "revisão", a concept "conceito", a case version's manifest
+  "manifesto", a manifest entry's position "posição", the draft state "rascunho" and the
+  released state "liberada", and names none of those nine by its English word nor a case
+  version's or hypothesis-revision's state by the raw lifecycle token that names it internally.
+scope: system
+fitness: >-
+  An automated test reads the message of every domain refusal the error envelope carries and
+  asserts that each of these nine nouns is named there by its Brazilian-Portuguese word alone,
+  with no occurrence of the English word for one of them and no occurrence of a raw lifecycle
+  token such as draft or released.
+---
+
+## Description
+
+Stated once for the whole surface so no error class picks its own name for a noun another error class already names, mirroring `constraints/a-domain-error-unmapped-by-status-is-refused-generically`'s own system-wide placement for the fixed text of the fallback refusal.
+The refusal reaches an operator reading Portuguese while this specification's own element names are English, and with no word fixed per noun the same record is a "versão" in one refusal and a "version" in the next, leaving an operator comparing two refusals unable to tell whether they speak of one thing or two.
+The lifecycle token a state carries is an internal name nobody outside the store is taught, so a refusal interpolating it would hand the operator a value they have no way of reading; the state reaches them as the word the rest of the sentence already uses.
+What is fixed here is the vocabulary and not the phrasing: how each message is built around these words stays free to be written and rewritten for clarity, as every other telling's copy stays with whoever renders it.
+
+=== constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+---
+statement: Every domain refusal whose own message reaches whoever reads it — an operator, a curator, an API caller — in the HTTP response that carries the refusal states that message in Brazilian Portuguese.
+scope: system
+fitness: An automated test raises each domain error the status map names from a route handler and asserts the message its response carries is written in Brazilian Portuguese.
+---
+
+## Description
+
+Stated once for the whole surface so no error class decides the language of its own message — the placement `constraints/a-malformed-request-is-refused-with-a-validation-error` and `constraints/a-domain-error-unmapped-by-status-is-refused-generically` already hold for the other two answers this surface gives.
+
+What someone is told at an outcome is what the business decided, and the people this system refuses read Brazilian Portuguese: a refusal written in a language its reader does not read names its condition to nobody, however exactly it names it. This binds what the response carries and nothing about how a screen renders it — which control carries a statement, and how a surface words copy of its own, stay the interface's, as they do everywhere else this specification states what a reader is told.
+
+It binds the message text alone. The error code beside it, the HTTP status carrying it and the error's own name are identifiers this specification states elsewhere, and no part of the prose this constraint holds.
+
 === constraints/a-malformed-request-is-refused-with-a-validation-error
 ---
 statement: Every route refuses a request whose path, query or body fails the route's declared shape with an HTTP 400 response whose error code is VALIDATION_ERROR, whose message names which of the three failed validation, and whose details list the issues found.
@@ -6636,6 +6674,141 @@ entries:
     configuration pointing somewhere its author never meant, while a refusal status carrying none of the
     call''s own text leaves those two indistinguishable and a 500 in particular discloses nothing whatever
     about the far end.'
+- location: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese.md
+  field: statement
+  unstated: Which language the message text of a domain refusal is written in. Every rule and constraint in the
+    specification states a refusal's HTTP status and the error it reports by name and never a word of the message
+    that error carries, so the text the nineteen backend case and hypothesis error classes put in front of an
+    operator, a curator or an API caller stood in English on no node's authority.
+  found: 'work/operator-error-messages-ptbr-case-hypothesis-backend/intake/scope.md: "Traduzir para PT-br as mensagens
+    de erro/recusa do domínio de case e hypothesis que o backend (target `backend`, `src/`) expõe ao operador via
+    envelope HTTP de erro" — translate into Brazilian Portuguese the case and hypothesis domain error/refusal
+    messages the backend exposes to the operator through the HTTP error envelope; the same section introduces the
+    nineteen error classes as "hoje em inglês" (in English today).'
+- location: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word.md
+  field: statement
+  unstated: No node stated which word a domain refusal's message uses for each domain noun it names — case,
+    case version, hypothesis, hypothesis-revision, concept, manifest, manifest position, the draft state and the
+    released state — nor whether a case version's or hypothesis-revision's state may reach the reader as the raw
+    lifecycle token that names it internally.
+  decided: One fixed Brazilian-Portuguese word per noun — caso, versão, hipótese, revisão, conceito, manifesto,
+    posição, rascunho, liberada — used to the exclusion of the English word, and the state never shown by its raw
+    lifecycle token.
+  why: The material asks for a translation that introduces no information, and a translation choosing its noun
+    per message introduces exactly that -- twenty error classes each naming the same record their own way, so an
+    operator reading two refusals about one case version cannot tell it is one record; the nine words are the
+    ordinary Brazilian-Portuguese terms for these nouns, and the lifecycle token is excluded because it is an
+    internal name no operator is ever taught to read.
+- location: rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused.md
+  field: statement
+  unstated: What answers a write that would create a case version under a case slug and version number some stored
+    case version already answers -- whether the stored version is replaced or recreated, whether the attempt is
+    answered as a case version nobody wrote or as a malformed request, and whether the refusal the curator reads
+    names the slug and the version number at issue.
+  found: 'work/operator-error-messages-ptbr-case-hypothesis-backend/intake/scope.md, in the list of refusal messages
+    the backend exposes to the operator through the HTTP error envelope: `case-version-already-stored.error.ts`
+    — "the case \"{slug}\" already has a stored version {version}, and a case version is written once and never
+    altered" — listed as a refusal class of its own beside `case-not-found.error.ts`.'
+- location: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name.md
+  field: statement
+  unstated: Whether the refusal answering a read that names a stored case version for which some validator
+    rule does not hold at that reading names, in its own message, the case's slug, the version number and
+    the validator rules that do not hold.
+  found: 'work/operator-error-messages-ptbr-case-hypothesis-backend/intake/scope.md, line 13:
+    `case-version-not-valid.error.ts` — "the case \"{slug}\" at version {version} violates its validator
+    rules: {violations}" — the case slug, the version and the violated rules are already named in the
+    message this class raises today.'
+- location: rules/knowledge/a-release-refusal-with-no-named-violation-says-so.md
+  field: statement
+  unstated: Whether the refusal answering a release blocked by violated rules names, in its own message,
+    the case slug and the version number of the draft whose release was refused, beside the violated rules
+    it names.
+  found: 'work/operator-error-messages-ptbr-case-hypothesis-backend/intake/scope.md, line 20:
+    `case-version-not-releasable.error.ts` — "the case \"{slug}\" version {version} cannot be released:
+    {violations}" — the case slug and the version are already named in the message this class raises today.'
+
+---
+- location: rules/knowledge/a-released-hypothesis-revision-is-never-altered.md
+  field: statement
+  unstated: The node states this refusal's condition and its HTTP status and nothing more -- never what
+    ReleasedHypothesisRevisionNotAlterableError's message discloses, what grounds the immutability it
+    reports, or what its context property carries; its two sibling lifecycle rules each settle exactly
+    that question for their own refusal, and settle it in opposite directions (a-case-version-moves-through-its-declared-lifecycle
+    carries slug, version number and the state the version stood in; a-hypothesis-revision-moves-through-its-declared-lifecycle
+    carries no value beyond the refusal's own condition and message), so neither one answers for this
+    one.
+  decided: The message names the hypothesis, the revision number and the case slug and grounds the refusal
+    in the revision's own released state rather than in any case version that references it; the context
+    carries exactly the case slug, the hypothesis name and the revision number, and nothing further.
+  why: 'A hypothesis-revision is addressed by exactly that triple -- the case it belongs to, the hypothesis
+    within it, and its own number -- so those three are what let a curator tell which revision refused
+    them, and the one further value a sibling refusal carries has nothing to say here: CaseVersionNotDraftAtReleaseError
+    must name the state because a version reaching it may stand in any non-draft state, whereas this refusal''s
+    own condition fixes the revision''s state to released, and that same released state is now the revision''s
+    own declared one, so grounding the message in a referencing case version would attribute the bar to
+    a fact this refusal never reads.'
+- location: rules/knowledge/a-case-has-at-most-one-draft.md
+  field: statement
+  unstated: This node settles only the HTTP status and the error name of a second create-draft, and the
+    decision log's earlier entries on it are narrower still; no node states what CaseAlreadyHasDraftError's
+    message names, nor what the refusal's details carry, though the refusal reaches the curator with both.
+  decided: The message names the case slug, and the details carry that slug and nothing else -- the error's
+    context property holding exactly the one value.
+  why: A curator meeting this refusal must learn which case already holds the draft in order to act on
+    it, and the slug is the whole of that case's identity to them, while the held draft's version number
+    is nothing the one act open to them depends on; the delivered, reviewed error class and its own unit
+    test already fix exactly this message and this single-valued context, so the decision names the caller-facing
+    shape that was built rather than choosing a second one.
+- location: rules/knowledge/a-hypothesis-position-is-unique-within-its-case.md
+  field: statement
+  unstated: What a ManifestPositionOccupiedError discloses beyond its HTTP status and its error name --
+    neither which values its message names nor what its details carry was stated by any node. The rule
+    settled the 409 and the error identity alone; the intake scope lists this class's current message
+    but says nothing of the payload the HTTP error envelope carries beside it.
+  decided: The message names the case slug, the version number and the position already occupied, and
+    the details carry exactly those three values and nothing else.
+  why: Those three are the whole of what a curator refused a placement needs in order to act on the refusal
+    -- which case version's manifest refused it, and which position is not free -- and they are the same
+    three the material already records this refusal's message as naming; nothing further is carried because
+    every other fact about that manifest is reachable by reading the version itself, and the hypothesis
+    whose entry occupies the position is a second aggregate's fact the refused placement never asked about.
+- location: rules/knowledge/a-case-has-at-least-one-hypothesis.md
+  field: statement
+  unstated: The node states the removal's refusal by HTTP status and error name alone, and no node states
+    what that refusal discloses -- which values its message names, nor which values its context carries
+    onward to the caller as the error envelope's details.
+  decided: The message names the case slug and the version number of the case version whose manifest the
+    removal would have emptied, and the error's context carries exactly those two values, the slug and
+    the version, and nothing else.
+  why: A case version's identity in this specification is the slug and the number together, and that pin
+    is the whole of what tells the curator which manifest refused the removal, so confining the context
+    to it makes the structured disclosure exactly the values the message already names and adds no second
+    disclosure -- neither the removed entry nor the manifest the refusal left standing -- that the message
+    itself does not make.
+- location: rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act.md
+  field: statement
+  unstated: The material asks for a delete control with confirmation for a concept, a capability, and a
+    connector configuration, but does not say whether the confirming act must reproduce the identity being
+    removed, as discarding a draft case version already requires of its own confirming act, or needs only
+    a plain further act.
+  decided: A plain further explicit act, stating that the removal is to be performed, with no reproduction
+    of the removed identity required.
+  why: Discarding a draft case version destroys a whole version and every entry of its manifest, and its
+    own further act additionally requires the case's own slug reproduced for exactly that weight; removing
+    a single registered concept, a capability, or a connector configuration destroys one registration at a
+    time, closer in weight to the abandonment gestures this specification already leaves as a plain further
+    act than to a whole version's discard.
+- location: rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing.md
+  field: statement
+  unstated: The material asks for a removal's success to be reflected in the list or the detail view, but
+    does not say where the operator is taken once the removal succeeds.
+  decided: The listing of registered concepts, capabilities, or connector configurations, respectively --
+    never the surface addressed by the identity just removed.
+  why: The identity a removal just succeeded on is refused by that entity's own unregistered-identity read
+    the moment the removal succeeds (rules/glossary/a-glossary-read-by-an-unheld-name-is-refused,
+    constraints/the-capability-identity-read-refuses-an-unregistered-identity,
+    rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused), so landing the
+    operator there would show a refusal for the very act that just succeeded.
 
 === domain/glossary/_context
 ---
@@ -10477,6 +10650,62 @@ consistency: eventual
 
 A write repeated is a second write and never a recovery of the first, so a submission is not re-issued by anything stated here, and nothing about an outstanding submission is stated before the registry answers it — the same bound `a-refused-draft-request-states-its-refusal-to-the-operator` puts on its own two outcomes.
 
+=== rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act
+---
+type: policy
+statement: >-
+  A surface presenting exactly one registered concept, capability, or connector
+  configuration, addressed by its own identity, offers a control to remove it; taking
+  that control asks whether the removal is to be performed and issues no removal on
+  that asking alone; the removal named by remove-concept, remove-capability, or
+  remove-connector is issued only where the operator, having asked for it, states in a
+  further, explicit act that the removal is to be performed; and where the operator
+  does not so state, the concept, capability, or connector configuration stands exactly
+  as it stood, registered under the same identity.
+constrains:
+  - domain/glossary/concept
+  - domain/integration/capability
+  - domain/integration/connector-configuration
+consistency: eventual
+---
+
+## Description
+
+A concept, a capability, and a connector configuration are each removed by an
+operation `contracts/glossary/glossary-authoring`, `contracts/integration/capability-registry`,
+or `contracts/integration/connector-configuration-registry` already publishes —
+`remove-concept`, `remove-capability`, `remove-connector` — and each is refused under
+conditions its own registry already states: `rules/glossary/a-registered-concept-is-never-removed`,
+`rules/integration/a-registered-capability-cited-by-evidence-is-never-removed`, and
+`rules/integration/removing-a-connector-configuration-is-unconditional`. None of the
+three states that a surface offers a way to reach the operation at all; left unstated,
+whether an operator could remove anything they registered fell to whatever a surface
+happened to render.
+
+The further explicit act is owed for the reason `releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act`
+already owes one over release and discard: each of these three removals destroys a
+registration held nowhere else, and no operation any of the three contracts publishes
+answers it back. It is a plainer act than that rule's own discard, which additionally
+requires the case's own slug reproduced — the destruction there reaches a whole draft
+version and every entry of its manifest, while a concept, a capability, or a connector
+configuration removed here is a single registration, and this rule asks only that the
+operator state the further act, never that they reproduce the identity being removed.
+
+This states that the control and the further act exist and what the further act gates;
+it does not state which control carries either, its wording, or where it sits — that is
+form, the same reading `a-single-capability-surface-offers-a-route-to-the-capabilities-listing`
+already takes over its own control. Nor does it move any condition the three removal
+rules above already decide, add an attribute to any of the three elements it constrains,
+or say where the operator is taken once a removal is issued —
+`a-successful-removal-lands-on-the-removed-entitys-own-listing` is that rule's own, and
+what the operator is told about the outcome is
+`a-submitted-removal-states-its-outcome-to-the-operator`'s own.
+
+Consistency is eventual because the rule spans three elements across two contexts,
+glossary and integration; nothing here demands an immediate fact across that boundary,
+and each removal it gates still holds immediately inside its own aggregate under the
+rule that governs it.
+
 === rules/integration/a-return-to-origin-routes-presence-turns-on-nothing-further
 ---
 type: policy
@@ -10796,6 +11025,55 @@ What follows a stated outcome is no part of this: where the surface goes after a
 
 Consistency is eventual because the surface performs no registration itself: what it states is the answer to a call issued separately to a registry that holds the registration, and the statement settles only when that call settles.
 
+=== rules/integration/a-submitted-removal-states-its-outcome-to-the-operator
+---
+type: policy
+statement: >-
+  An operator-facing surface from which a removal of a concept, a capability, or a
+  connector configuration was issued states to that operator the outcome the publishing
+  api answered; where the removal succeeded, that the identity named is no longer
+  registered; where the removal was refused, that nothing was removed and which refusal
+  answered it, the condition the api's answer named stated apart from every other
+  condition that route can name and apart from a refusal whose condition the surface
+  does not recognise; and the surface states neither outcome of a removal the api has
+  not yet answered.
+constrains:
+  - domain/glossary/concept
+  - domain/integration/capability
+  - domain/integration/connector-configuration
+consistency: eventual
+---
+
+## Description
+
+`a-submitted-registration-states-its-outcome-to-the-operator` already holds this shape
+for a submission that registers a capability or a connector configuration; this is its
+counterpart for a removal, extended to reach a concept's own registration as well, since
+`contracts/glossary/glossary-authoring` publishes `remove-concept` under the same
+never-removed-unless-refused shape the other two registries publish theirs under.
+
+The two outcomes a removal can answer are the ones
+`a-removal-surface-offers-a-control-behind-a-further-explicit-act` gates behind a
+further explicit act: a removal that goes through, and a removal one of
+`rules/glossary/a-registered-concept-is-never-removed`,
+`rules/integration/a-registered-capability-cited-by-evidence-is-never-removed`, or
+`rules/integration/removing-a-connector-configuration-is-unconditional` refuses. Leaving
+either unstated would leave the operator unable to tell whether the further act they
+just took did anything, and this specification has already refused that shape for
+registration; a removal issued by the same operator through the same kind of surface
+gets no lesser answer.
+
+This states what the surface discloses and nothing further: it does not decide where the
+operator is taken once a removal succeeds — `a-successful-removal-lands-on-the-removed-entitys-own-listing`
+is that rule's own — and it does not move any condition the three removal rules above
+decide, add an attribute to any of the three elements it constrains, or restate what a
+registration's own submission states, which stands exactly as
+`a-submitted-registration-states-its-outcome-to-the-operator` already left it.
+
+Consistency is eventual for the same reason it is eventual there: the rule spans three
+elements across two contexts, and nothing here demands an immediate fact across that
+boundary.
+
 === rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope
 ---
 type: invariant
@@ -10900,6 +11178,53 @@ This states where the operator lands and nothing further. What that surface then
 Which control carries the submission, its wording and where it sits are form and belong to the interface, not here, the same reading `a-connector-configuration-authoring-may-be-abandoned-without-registering` and `a-connector-configuration-surface-offers-a-route-to-the-listing` already take over their own controls.
 
 Both facts this rests on are that one element's own — that the submission succeeded and the connector name it succeeded under — so it constrains `domain/integration/connector-configuration` and holds immediately, inside one boundary, the shape `a-connector-configuration-authoring-may-be-abandoned-without-registering` already took for the other end of the same act.
+
+=== rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing
+---
+type: policy
+statement: >-
+  An operator whose issued removal of a concept, a capability, or a connector
+  configuration succeeds is taken to the listing of registered concepts, capabilities,
+  or connector configurations, respectively, and never to the surface addressed by the
+  identity just removed.
+constrains:
+  - domain/glossary/concept
+  - domain/integration/capability
+  - domain/integration/connector-configuration
+consistency: eventual
+---
+
+## Description
+
+The surface addressed by an identity a removal just succeeded on is no longer a surface
+anything answers: `rules/glossary/a-glossary-read-by-an-unheld-name-is-refused`,
+`constraints/the-capability-identity-read-refuses-an-unregistered-identity`, and
+`rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused`
+each already refuse a read by an identity nothing currently holds, which is exactly what
+a removal that just succeeded leaves behind. Landing the operator there would show a
+refusal for the very act that just succeeded, and this specification has already refused
+that shape for the opposite act — `a-successful-capability-registration-lands-on-the-capabilitys-own-surface`
+and `a-successful-connector-registration-lands-on-the-configurations-own-surface` each
+land a registration on the identity's own surface for the mirrored reason: the identity
+still resolves there. A removal leaves the identity resolving nowhere, so the destination
+a registration takes is the one destination a removal cannot.
+
+The listing each registry's own `list-concepts`, `list-capabilities`, or
+`list-connector-configurations` answers is where every remaining registration under that
+kind still resolves, and each surface a removal is issued from already owes a route to
+that same listing — `a-single-capability-surface-offers-a-route-to-the-capabilities-listing`
+and `a-connector-configuration-surface-offers-a-route-to-the-listing` state it for two of
+the three, and the concept's own listing is the surface `remove-concept` is issued from
+in the first place, so no further route is owed there. This states only the destination
+a successful removal takes; which page of a paged listing the operator lands on is
+`constraints/listings-are-paged`'s own answer, and what the operator is told about the
+outcome itself is `a-submitted-removal-states-its-outcome-to-the-operator`'s own. It adds
+no attribute to any of the three elements it constrains and moves no condition any
+removal rule already decides.
+
+Consistency is eventual for the reason it is eventual in the two rules this one
+completes: it spans three elements across two contexts, and nothing here demands an
+immediate fact across that boundary.
 
 === rules/integration/a-surface-holding-no-read-registration-offers-no-discard
 ---
@@ -12505,7 +12830,7 @@ Reading anyway would cost the surface a call whose answer changes nothing it doe
 === rules/knowledge/a-case-has-at-least-one-hypothesis
 ---
 type: invariant
-statement: A case version's manifest declares at least one entry; remove-hypothesis that would leave the manifest holding none is refused with an HTTP 422 response reporting a ManifestWouldHoldNoHypothesisError.
+statement: A case version's manifest declares at least one entry; remove-hypothesis that would leave the manifest holding none is refused with an HTTP 422 response reporting a ManifestWouldHoldNoHypothesisError, whose message names the case slug and the version number of the case version whose manifest the removal would have emptied, and whose context carries exactly those two values and nothing else.
 constrains:
   - domain/knowledge/case-version
   - domain/knowledge/manifest-entry
@@ -12518,7 +12843,7 @@ A case version with no manifested hypothesis investigates nothing; the fallback 
 === rules/knowledge/a-case-has-at-most-one-draft
 ---
 type: policy
-statement: A case has at most one version in draft state at a time; create-draft asked of a case that already holds a draft is refused with an HTTP 409 response reporting a CaseAlreadyHasDraftError.
+statement: A case has at most one version in draft state at a time; create-draft asked of a case that already holds a draft is refused with an HTTP 409 response reporting a CaseAlreadyHasDraftError, whose message names the case slug and whose details carry that slug and nothing else.
 constrains:
   - domain/knowledge/case
   - domain/knowledge/case-version
@@ -12529,6 +12854,9 @@ consistency: eventual
 
 A case's next version number is assigned the moment its draft is created, not at release; two drafts open at once would have nothing to decide which claims that number.
 Revising a case is therefore always one working copy at a time, resolved to released or discarded before another draft may begin.
+
+What the refusal discloses stands here rather than in the code alone: a curator who meets it learns which case already holds a draft, and what this system tells whoever asked is a fact of the business rather than a detail nobody outside a file could otherwise find.
+The slug alone is that disclosure because it is the whole of the case's identity to the curator who named it; the draft's own version number is nothing they must know to act, since the act open to them is to resolve the draft that case already holds, whichever number it carries.
 
 === rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
 ---
@@ -12733,7 +13061,7 @@ A case that has never once released a version — its one and only version still
 === rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
 ---
 type: invariant
-statement: A read naming a stored case version for which some validator rule of validation-runs-at-every-read does not hold at that reading is refused with an HTTP 409 response reporting a CaseVersionNotValidError; it is never answered with the generic refusal a domain error the status map does not name receives, and never with the CaseNotFoundError that answers a slug or version no case version was ever written for.
+statement: A read naming a stored case version for which some validator rule of validation-runs-at-every-read does not hold at that reading is refused with an HTTP 409 response reporting a CaseVersionNotValidError, whose message names the case slug, the version number read and the validator rules that do not hold at that reading; it is never answered with the generic refusal a domain error the status map does not name receives, and never with the CaseNotFoundError that answers a slug or version no case version was ever written for.
 constrains:
   - domain/knowledge/case-version
 ---
@@ -12797,6 +13125,36 @@ consistency: eventual
 
 A discarded draft leaves no version behind to read, but its number is not returned to be issued again — reusing it would let two different draft attempts, at different times, ever have answered to the identical pin.
 Reverting to an earlier version's content is therefore always a new, higher version number composed with that earlier version's manifest, never the old number reactivated.
+
+=== rules/knowledge/a-case-version-written-under-an-already-stored-slug-and-version-is-refused
+---
+type: policy
+statement: >-
+  A write creating a case version under a case slug and version number some stored case
+  version already answers stores no second version and alters the stored one in no way,
+  and is refused by a name of its own — a CaseVersionAlreadyStoredError, never the
+  CaseNotFoundError that answers a slug or version no case version was ever written for
+  and never the validation refusal a malformed request receives — whose message names
+  that slug and that version number.
+constrains:
+  - domain/knowledge/case
+  - domain/knowledge/case-version
+consistency: eventual
+---
+
+## Description
+
+The pin is the whole of a case version's identity — a slug and a number, with no digest over the content — so a creation arriving at a pin some stored version already answers can be absorbed in no way: keeping both would leave two contents having answered one pin, and letting the arriving one land would move content an investigation may already have pinned.
+
+Each of the answers it might otherwise meet states something untrue. The generic refusal a domain error the status map does not name receives tells the curator nothing at all about what happened. `a-case-read-by-an-unknown-slug-or-version-is-refused`'s CaseNotFoundError says the named pin answers no version, while here it is precisely a stored version that stood in the way. `constraints/a-malformed-request-is-refused-with-a-validation-error` reports a shape the route declared and the request broke, while such a request is well formed and the conflict is in the store. Only a refusal of its own leaves the curator able to tell a pin nothing occupies from one already taken.
+
+Correcting a draft is not this rule's business. update-draft writes into the version already standing at that pin rather than bringing a second one into existence — the freedom `domain/knowledge/case-version` keeps over a draft's own declared attributes for as long as draft state holds — and nothing here narrows it.
+
+Neither standing rule answers this arrival. `a-case-version-is-written-once` holds a released version and its manifest entries unaltered, and `a-case-version-number-is-never-reused` keeps a number the case has spent from being issued a second time; both say how pins are handed out, and neither says what a write that reaches one already occupied is told — which is what a create-draft racing another on one number arrives at, and what `contracts/knowledge/case-lifecycle` already reads as a release naming a slug and version that already exist being refused rather than merged.
+
+The slug and the number are in the message because they are the only things that tell the curator which write lost, and against which case — the same disclosure `a-case-read-by-an-unknown-slug-or-version-is-refused` and `a-case-version-moves-through-its-declared-lifecycle` already make of the pin their own refusals name.
+
+Consistency is eventual: the pin spans the case identity that holds the slug and the case version that holds the number, each read as an aggregate root of its own.
 
 === rules/knowledge/a-case-versions-authored-at-is-fixed-when-its-creating-write-settles
 ---
@@ -13224,7 +13582,7 @@ Evaluations are indexed by hypothesis name; a colliding name would overwrite a v
 === rules/knowledge/a-hypothesis-position-is-unique-within-its-case
 ---
 type: invariant
-statement: No two manifest entries of one case version share a position; place-hypothesis at a position the manifest already places a different hypothesis at is refused with an HTTP 409 response reporting a ManifestPositionOccupiedError.
+statement: No two manifest entries of one case version share a position; place-hypothesis at a position the manifest already places a different hypothesis at is refused with an HTTP 409 response reporting a ManifestPositionOccupiedError, whose message names the case slug, the version number and the position already occupied, and whose details carry exactly those three values and nothing else.
 constrains:
   - domain/knowledge/case-version
   - domain/knowledge/manifest-entry
@@ -13955,7 +14313,7 @@ The rule adds no attribute, moves no pin and refuses no call. Which control carr
 === rules/knowledge/a-release-refusal-with-no-named-violation-says-so
 ---
 type: invariant
-statement: A release whose draft fails any structural or coherence rule is refused once, with an HTTP 422 response reporting a CaseVersionNotReleasableError that names every violated rule together; where release finds no rule specifically violated, the refusal says so explicitly rather than leaving the curator with an unexplained, empty refusal.
+statement: A release whose draft fails any structural or coherence rule is refused once, with an HTTP 422 response reporting a CaseVersionNotReleasableError that names the case slug, the version number of the refused draft and every violated rule together; where release finds no rule specifically violated, the refusal says so explicitly rather than leaving the curator with an unexplained, empty refusal.
 constrains:
   - domain/knowledge/case-version
 ---
@@ -13993,10 +14351,14 @@ This is a policy rather than an invariant because it reads a fact of a third agg
 === rules/knowledge/a-released-hypothesis-revision-is-never-altered
 ---
 type: invariant
-statement: An attempt to alter a hypothesis-revision in released state's criterion, resolution or
+statement: >-
+  An attempt to alter a hypothesis-revision in released state's criterion, resolution or
   state is refused at the point of the attempt with an HTTP 409 response reporting a
-  ReleasedHypothesisRevisionNotAlterableError, rather than being accepted and left with no
-  effect.
+  ReleasedHypothesisRevisionNotAlterableError — whose message names the hypothesis, the
+  revision number and the case slug and grounds the refusal in the revision's own released
+  state rather than in any case version that references it, and whose context carries
+  exactly those three values, the case slug, the hypothesis name and the revision number,
+  and nothing further — rather than being accepted and left with no effect.
 constrains:
   - domain/knowledge/hypothesis-revision
 ---

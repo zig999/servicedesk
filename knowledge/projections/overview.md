@@ -7,9 +7,9 @@ Derived by spec.py from the specification files; never edited.
 | context | strategic | elements | rules | contracts | scenarios |
 |---|---|---|---|---|---|
 | glossary | supporting | 5 | 11 | 2 | 1 |
-| integration | generic | 19 | 136 | 9 | 23 |
+| integration | generic | 19 | 139 | 9 | 23 |
 | investigation | supporting | 16 | 50 | 7 | 19 |
-| knowledge | core | 12 | 79 | 5 | 12 |
+| knowledge | core | 12 | 80 | 5 | 12 |
 
 ## Aggregates
 
@@ -30,6 +30,8 @@ Derived by spec.py from the specification files; never edited.
 
 - a-case-is-read-whole (knowledge)
 - a-domain-error-unmapped-by-status-is-refused-generically (system)
+- a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word (system)
+- a-domain-refusals-message-is-written-in-brazilian-portuguese (system)
 - a-malformed-request-is-refused-with-a-validation-error (system)
 - a-successful-capability-removal-answers-with-no-content (integration)
 - a-successful-concept-removal-answers-with-no-content (glossary)
