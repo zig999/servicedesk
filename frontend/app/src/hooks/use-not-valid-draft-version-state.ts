@@ -6,6 +6,7 @@ import type { CaseVersionFormValues } from "../services/case-version-form-schema
 import type { CaseVersionRecord } from "../services/case-version-record";
 import { useGlossaryVocabularyOptions } from "./use-glossary-vocabulary";
 import { useCaseVersions } from "./use-case-versions";
+import { buildDiscardControlState } from "../services/discard-confirmation";
 import {
   resetFormFrom,
   type EditDraftVersionFormState,
@@ -23,6 +24,11 @@ export function useNotValidDraftVersionState(
   retryVersionQuery: () => void,
   onSubmit: (event?: BaseSyntheticEvent) => void,
   onFieldBlur: () => void,
+  discardDialogOpen: readonly [boolean, (open: boolean) => void],
+  discardSlugConfirmation: readonly [string, (value: string) => void],
+  discardErrorMessage: readonly [string | null, (message: string | null) => void],
+  isDiscardConfirming: boolean,
+  onDiscardConfirm: () => void,
 ): EditDraftVersionFormState | null {
   const versionsQuery = useCaseVersions(slug);
   const notValidVersionState = versionsQuery.data?.data.find(
@@ -97,5 +103,18 @@ export function useNotValidDraftVersionState(
     onSubmit,
     onFieldBlur,
     onCancel,
+    discard:
+      version !== null
+        ? buildDiscardControlState({
+            version,
+            slug,
+            canDiscard: notValidVersionState === "draft",
+            dialogOpen: discardDialogOpen,
+            slugConfirmation: discardSlugConfirmation,
+            errorMessage: discardErrorMessage,
+            isConfirming: isDiscardConfirming,
+            onConfirm: onDiscardConfirm,
+          })
+        : undefined,
   };
 }

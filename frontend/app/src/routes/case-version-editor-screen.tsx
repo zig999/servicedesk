@@ -46,7 +46,7 @@ export function CaseVersionEditorScreen(): JSX.Element {
           <Link to="/cases/$slug/versions/$version/manifest" params={{ slug, version }}>
             Manifest
           </Link>
-          <CaseVersionEditorNotValidView state={state} />
+          <CaseVersionEditorNotValidView state={state} slug={slug} />
         </section>
       );
     }

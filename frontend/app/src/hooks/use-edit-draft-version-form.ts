@@ -45,6 +45,8 @@ export type EditDraftVersionFormState =
       readonly onSubmit?: (event?: BaseSyntheticEvent) => void;
       readonly onFieldBlur?: () => void;
       readonly onCancel?: () => void;
+
+      readonly discard?: DiscardControlState;
     }
   | {
       readonly phase: "ready";
@@ -185,10 +187,22 @@ export function useEditDraftVersionForm(
     }
   };
 
+  const discardMutation = useMutation(
+    buildDiscardMutationOptions({
+      slug, version, onFailed: setDiscardErrorText,
+      onDiscarded: (discardedVersion) => {
+        telemetry.caseDraftDiscarded({ slug, version: discardedVersion });
+        void queryClient.invalidateQueries({ queryKey: ["case-version", slug, discardedVersion] }); void queryClient.invalidateQueries({ queryKey: ["case-versions", slug] });
+        void navigate({ to: "/cases/$slug", params: { slug } });
+      },
+    }),
+  );
+
   const notValidDraftState = useNotValidDraftVersionState(
     slug, version, versionQuery.isError && versionErrorKind === "case-not-valid",
     form, status, setStatus, cancelEditing, () => void versionQuery.refetch(),
     submit, onFieldBlur,
+    [isDiscardDialogOpen, setIsDiscardDialogOpen], [discardSlugConfirmation, setDiscardSlugConfirmation], [discardErrorText, setDiscardErrorText], discardMutation.isPending, () => discardMutation.mutate(),
   );
 
   useEffect(() => {
@@ -250,17 +264,6 @@ export function useEditDraftVersionForm(
       toast.error("Something went wrong while releasing. Try again.");
     },
   });
-
-  const discardMutation = useMutation(
-    buildDiscardMutationOptions({
-      slug, version, onFailed: setDiscardErrorText,
-      onDiscarded: (discardedVersion) => {
-        telemetry.caseDraftDiscarded({ slug, version: discardedVersion });
-        void queryClient.invalidateQueries({ queryKey: ["case-version", slug, discardedVersion] }); void queryClient.invalidateQueries({ queryKey: ["case-versions", slug] });
-        void navigate({ to: "/cases/$slug", params: { slug } });
-      },
-    }),
-  );
 
   const isLoadingGlossary =
     outcomeOptions.isLoading || actionOptions.isLoading || recipientOptions.isLoading;

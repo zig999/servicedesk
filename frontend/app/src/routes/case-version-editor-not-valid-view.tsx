@@ -10,6 +10,8 @@ import {
 import type { EditDraftVersionFormState, SaveStatus } from "../hooks/use-edit-draft-version-form";
 import type { CaseVersionFormValues } from "../services/case-version-form-schema";
 import type { GlossaryVocabularyOptions } from "../hooks/use-glossary-vocabulary";
+import type { DiscardControlState } from "../services/discard-confirmation";
+import { DiscardDraftDialog } from "./discard-draft-dialog";
 
 const NOT_VALID_BANNER_TITLE = "This version does not read back as a case";
 const NOT_VALID_BANNER_MESSAGE =
@@ -29,6 +31,7 @@ export type EnrichedNotValidState = NotValidPhaseState & {
   readonly onSubmit: (event?: BaseSyntheticEvent) => void;
   readonly onFieldBlur: () => void;
   readonly onCancel: () => void;
+  readonly discard?: DiscardControlState;
 };
 
 export function isEnrichedNotValidState(
@@ -39,12 +42,16 @@ export function isEnrichedNotValidState(
 
 export type CaseVersionEditorNotValidViewProps = {
   readonly state: EnrichedNotValidState;
+
+  readonly slug: string;
 };
 
 export function CaseVersionEditorNotValidView({
   state,
+  slug,
 }: CaseVersionEditorNotValidViewProps): JSX.Element {
   const consolidationRegister = state.form.watch("consolidation_register");
+  const discard = state.discard;
 
   return (
     <>
@@ -61,6 +68,9 @@ export function CaseVersionEditorNotValidView({
       />
       {consolidationRegister == null && <p>{NO_CONSOLIDATION_REGISTER_TEXT}</p>}
       <ButtonFooter>
+        {discard !== undefined && discard.canDiscard && (
+          <DiscardDraftDialog discard={discard} slug={slug} disabled={state.isBlocked} />
+        )}
         <Button
           type="submit"
           form={CASE_VERSION_EDITOR_FORM_ID}

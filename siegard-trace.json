@@ -4891,7 +4891,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:f9bce4fbd68a7875c05406b00e22cdea2a1a722a818bea9570d85804e596b546"
+          "digest": "sha256:e6a917cb913593ba4292e96d5824cad23e0aba146dcba0f34842c404d9eff704"
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -4907,7 +4907,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
-          "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
+          "digest": "sha256:3b2ca0db036c01a02456fc7ff84b0a37ea398e0a330604438da775f9c7b8042e"
         },
         {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
@@ -9337,12 +9337,34 @@
       "digest": "sha256:9b36b5c3332ce180313d4225436d76ff48b88bd7f9faf5ba005d53b73b705e7f",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
+          "digest": "sha256:3b2ca0db036c01a02456fc7ff84b0a37ea398e0a330604438da775f9c7b8042e"
+        },
+        {
+          "path": "frontend/app/src/routes/case-version-editor-not-valid-view.tsx",
+          "digest": "sha256:6a8178655f4898c50496a6fdec26e91101c6cd9f249e3a4815acaf1b5d8e4712"
+        },
+        {
+          "path": "frontend/app/src/routes/discard-draft-dialog.tsx",
+          "digest": "sha256:d839cf67abc04e90cc8153148872f113602e9462c4417dcff8552a0fc53c0da5"
+        },
+        {
           "path": "src/src/case/discard.operation.ts",
           "digest": "sha256:f1957fc9c6f222a7d78ecb3920d6d4fbea2543ead4de68b939b6fe4d85663320"
         },
         {
           "path": "src/src/http/discard.controller.ts",
           "digest": "sha256:424b941499668ff8344ab39373779a46850672ba2ab873cb53ba9cec43ac1598"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-draft-case-versions-discard-reproduces-the-cases-own-slug",
+      "digest": "sha256:6511a21cb6fa88d2a51bda0b3fcbddb8e53d5bf7fb8be94a3a5e2e23ac6073a9",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/discard-draft-dialog.tsx",
+          "digest": "sha256:d839cf67abc04e90cc8153148872f113602e9462c4417dcff8552a0fc53c0da5"
         }
       ]
     },
@@ -10550,6 +10572,10 @@
           "digest": "sha256:9c5e239f7b89d23eed3d8f02be0f9be50d055e0c9293b0a3324d8e46503cf34a"
         },
         {
+          "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
+          "digest": "sha256:3b2ca0db036c01a02456fc7ff84b0a37ea398e0a330604438da775f9c7b8042e"
+        },
+        {
           "path": "frontend/app/src/services/discard-confirmation.ts",
           "digest": "sha256:5c2e982a55ea79125fc46599a8fd24b8a1cddfb654df47d594d5fa60b1bc0907"
         },
@@ -10569,11 +10595,15 @@
     },
     {
       "node": "rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act",
-      "digest": "sha256:9538bc2dabe62cc2eae0aca00e3d358e107ba1d2c8e99c5779aa01f64d5128fb",
+      "digest": "sha256:c724d2a5cb5f714762512d9062165abf565a47ea37fcd02a2cbadf9bbb27ca86",
       "files": [
         {
           "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
           "digest": "sha256:2e9975e09a18ad98a216b7e5a228e4e97e6cb41ca599e698d20e675ca2c66401"
+        },
+        {
+          "path": "frontend/app/src/routes/discard-draft-dialog.tsx",
+          "digest": "sha256:d839cf67abc04e90cc8153148872f113602e9462c4417dcff8552a0fc53c0da5"
         },
         {
           "path": "frontend/app/src/services/discard-confirmation.ts",
@@ -11257,6 +11287,10 @@
       "node": "scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable",
       "digest": "sha256:4be0102591208989f3d5fe190fd0427e137266f8290229aec646d040d8935bb6",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
+          "digest": "sha256:3b2ca0db036c01a02456fc7ff84b0a37ea398e0a330604438da775f9c7b8042e"
+        },
         {
           "path": "src/src/case/discard.operation.ts",
           "digest": "sha256:f1957fc9c6f222a7d78ecb3920d6d4fbea2543ead4de68b939b6fe4d85663320"

@@ -74,6 +74,14 @@
       "task": "task/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading"
     },
     {
+      "id": "implementation/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
+      "kind": "implementation",
+      "file": "implementation/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading.md",
+      "title": "Offer discard on the refused reading",
+      "summary": "The editor's not-valid view offers and confirms a draft's discard, reusing the existing discard-confirmation service and gated on the version's own state.",
+      "task": "task/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading"
+    },
+    {
       "id": "proof/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
       "kind": "proof",
       "file": "proof/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record.md",
@@ -144,6 +152,14 @@
       "title": "Save a correction on the refused reading -- proof",
       "summary": "Route-level tests over the not-valid phase's now-functional Save changes button prove that a correction submitted on the refused reading is issued as an update-draft, that its accepted answer refills the form's declared attributes (including clearing an absent consolidation_register), and that a 200 answer shows no save-failure notice.",
       "task": "task/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading"
+    },
+    {
+      "id": "proof/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
+      "kind": "proof",
+      "file": "proof/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading.md",
+      "title": "Offer discard on the refused reading -- proof",
+      "summary": "Route-level tests mount the not-valid reading through the real screen/hook/service stack and prove the shared Discard control's gating, its slug-confirmation barrier, its DELETE issuance, and its silence on a 204 answer.",
+      "task": "task/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading"
     }
   ],
   "edges": [
@@ -448,6 +464,48 @@
       "at": "the path"
     },
     {
+      "from": "implementation/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
+      "to": "rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
+      "to": "rules/knowledge/only-a-draft-case-version-may-be-discarded",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
+      "to": "rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
+      "to": "rules/knowledge/a-draft-case-versions-discard-reproduces-the-cases-own-slug",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
+      "to": "scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
+      "to": "task/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
       "to": "implementation/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
       "kind": "proves",
@@ -498,6 +556,12 @@
     {
       "from": "proof/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
       "to": "implementation/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
+      "to": "implementation/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
       "kind": "proves",
       "at": "the path"
     }

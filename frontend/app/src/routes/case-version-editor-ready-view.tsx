@@ -1,7 +1,5 @@
 import type { JSX } from "react";
 import { Button } from "@tui/ui/button";
-import { Input } from "@tui/ui/input";
-import { Label } from "@tui/ui/label";
 import {
   Dialog,
   DialogClose,
@@ -13,6 +11,7 @@ import {
   DialogTrigger,
 } from "@tui/ui/dialog";
 import { ButtonFooter } from "../shared/components/button-footer";
+import { DiscardDraftDialog } from "./discard-draft-dialog";
 import { ConflictBanner } from "../shared/components/conflict-banner";
 import {
   CASE_VERSION_EDITOR_FORM_ID,
@@ -41,9 +40,6 @@ const CONFLICT_BANNER_MESSAGE =
 
 const RELEASE_DIALOG_DESCRIPTION =
   "Once released, this version and every manifest entry it holds are frozen — permanently.";
-
-const DISCARD_DIALOG_DESCRIPTION =
-  "This case's own hypotheses keep their content — only this draft and its manifest are removed. This cannot be undone.";
 
 const MANIFEST_COLUMNS: StatusTableColumn[] = [
   { key: "position", header: "Position" },
@@ -186,52 +182,7 @@ export function CaseVersionEditorReadyView({
           </Dialog>
         )}
         {discard !== undefined && discard.canDiscard && (
-          <Dialog open={discard.isOpen} onOpenChange={discard.onOpenChange}>
-            <DialogTrigger asChild>
-              <Button type="button" variant="destructive" disabled={state.isBlocked}>
-                Discard draft
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Discard this draft?</DialogTitle>
-              </DialogHeader>
-              <DialogDescription>{DISCARD_DIALOG_DESCRIPTION}</DialogDescription>
-              <Label className="flex flex-col gap-1">
-                <span>Type {slug} to confirm</span>
-                <div className="normal-case tracking-normal font-normal text-foreground">
-                  <Input
-                    value={discard.slugConfirmation}
-                    onChange={(event) => discard.onSlugConfirmationChange(event.target.value)}
-                    aria-invalid={discard.errorMessage !== null}
-                    aria-describedby={discard.errorMessage !== null ? "discard-error" : undefined}
-                  />
-                </div>
-              </Label>
-              {discard.errorMessage !== null && (
-
-                <p id="discard-error" role="alert" className="text-sm text-destructive">
-                  {discard.errorMessage}
-                </p>
-              )}
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button type="button" variant="secondary" disabled={discard.isConfirming}>
-                    Keep draft
-                  </Button>
-                </DialogClose>
-                <Button
-                  type="button"
-                  variant="destructive"
-                  loading={discard.isConfirming}
-                  disabled={!discard.isConfirmEnabled || discard.isConfirming}
-                  onClick={discard.onConfirm}
-                >
-                  Discard draft
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <DiscardDraftDialog discard={discard} slug={slug} disabled={state.isBlocked} />
         )}
         {!isReadOnly && (
           <Button
