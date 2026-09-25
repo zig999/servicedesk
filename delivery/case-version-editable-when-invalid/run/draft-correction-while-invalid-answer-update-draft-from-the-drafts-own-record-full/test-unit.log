@@ -1,0 +1,286 @@
+
+ RUN  v3.2.7 /home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/case-version-editor-not-valid-fix/src
+
+ ✓ src/__tests__/unit/investigation/run-diagnosis.spec.ts (47 tests) 243ms
+ ✓ src/__tests__/unit/investigation/evidence-collection-stage.spec.ts (45 tests) 558ms
+ ✓ src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts (55 tests) 844ms
+ ✓ src/__tests__/unit/investigation/judgment-stage.spec.ts (42 tests) 251ms
+ ✓ src/__tests__/unit/connector-registry/connector-configuration-draft-generation.spec.ts (70 tests) 414ms
+ ✓ src/__tests__/unit/capability-registry/capability-registry.service.spec.ts (68 tests) 779ms
+ ✓ src/__tests__/unit/persistence/relational-investigation-store.repository.spec.ts (46 tests) 492ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts (46 tests) 371ms
+ ✓ src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts (58 tests) 97ms
+ ✓ src/__tests__/unit/http/build-app.spec.ts (51 tests) 4995ms
+   ✓ answers 200 with the diagnose call's resolved assessment narrowed to the response DTO's four fields, for a request naming an existing case, subject, narrative and requester  729ms
+ ✓ src/__tests__/unit/case/case-query.service.spec.ts (35 tests) 163ms
+ ✓ src/__tests__/unit/persistence/relational-case-store.repository.spec.ts (36 tests) 305ms
+ ✓ src/__tests__/unit/connector-registry/openapi-operation-reader.spec.ts (55 tests) 303ms
+ ✓ src/__tests__/unit/glossary/glossary.service.spec.ts (38 tests) 90ms
+ ✓ src/__tests__/unit/case/parse-case-document.spec.ts (79 tests) 162ms
+ ✓ src/__tests__/unit/http/register-capability.routes.spec.ts (29 tests) 1294ms
+   ✓ answers 200 with the held capability registerCapability resolved, for a valid registration at a (name, version) the path names  813ms
+ ✓ src/__tests__/unit/http/test-connector.routes.spec.ts (19 tests) 1224ms
+   ✓ returns the raw HTTP status, headers, body and elapsed time of the call actually made, distinct from the route's own 200 wrapper  665ms
+ ✓ src/__tests__/unit/persistence/relational-glossary-store.repository.spec.ts (24 tests) 153ms
+ ✓ src/__tests__/unit/connector-registry/capability-schema-draft-input-schema.spec.ts (24 tests) 123ms
+ ✓ src/__tests__/unit/investigation/investigation-factory.spec.ts (23 tests) 163ms
+ ✓ src/__tests__/unit/http/draft-connector-configuration-from-openapi.routes.spec.ts (20 tests) 912ms
+   ✓ answers 200 with exactly connector, configuration, unresolved and generated_credentials — and no method_mismatch key at all — for an operation with no parameters, no security scheme and no configuration currently registered for the connector  556ms
+ ✓ src/__tests__/unit/http/draft-capability-schema-from-openapi.routes.spec.ts (20 tests) 2252ms
+   ✓ fetches the operator-named document through the injected document fetcher, using the request's own link, and answers HTTP 200 for a well-formed request that generates a draft  1609ms
+ ✓ src/__tests__/unit/case/validate-case-coherence.spec.ts (17 tests) 130ms
+ ✓ src/__tests__/unit/http/diagnose.controller.spec.ts (12 tests) 91ms
+ ✓ src/__tests__/unit/http/list-hypothesis-revisions.routes.spec.ts (18 tests) 2337ms
+   ✓ answers 200 with the paginated page of every revision the named hypothesis holds, for a request naming its own offset and limit  1690ms
+ ✓ src/__tests__/unit/investigation/resolve-and-narrow-input.spec.ts (17 tests) 94ms
+ ✓ src/__tests__/unit/investigation/simulate-hypothesis-pipeline.spec.ts (11 tests) 281ms
+ ✓ src/__tests__/unit/factories/simulate.factory.spec.ts (14 tests) 301ms
+ ✓ src/__tests__/unit/http/dto/simulate-case.dto.spec.ts (30 tests) 119ms
+ ✓ src/__tests__/unit/http-connector/connector-request-resolver.spec.ts (29 tests) 449ms
+ ✓ src/__tests__/unit/connector-registry/generated-credential-placeholders.spec.ts (22 tests) 126ms
+ ✓ src/__tests__/unit/connector-registry/openapi-document-operations-reader.spec.ts (17 tests) 187ms
+ ✓ src/__tests__/unit/investigation/anthropic-assessment-consolidator.adapter.spec.ts (17 tests) 147ms
+ ✓ src/__tests__/unit/investigation/investigation-pipeline.spec.ts (5 tests) 279ms
+ ✓ src/__tests__/unit/http/list-vocabulary-terms.routes.spec.ts (22 tests) 2598ms
+   ✓ answers 200 with the paginated page of every term the named vocabulary currently holds, for a request naming its own offset and limit  1814ms
+ ✓ src/__tests__/unit/http/revise-hypothesis.routes.spec.ts (14 tests) 813ms
+   ✓ answers 201 with the hypothesis_name and revision reviseHypothesis originated, calling reviseHypothesis with exactly the path slug merged onto the parsed body, for a hypothesis named for the first time  571ms
+ ✓ src/__tests__/unit/errors/status-map.spec.ts (32 tests) 117ms
+ ✓ src/__tests__/unit/http/diagnose.routes.spec.ts (10 tests) 2514ms
+   ✓ answers 409 with the CaseVersionNotReleasedError envelope, naming the pinned slug, version and state, for a draft-state pinned version  1625ms
+ ✓ src/__tests__/unit/case/case-input-requirements.spec.ts (14 tests) 52ms
+ ✓ src/__tests__/unit/factories/production-simulate.factory.spec.ts (12 tests) 239ms
+ ✓ src/__tests__/unit/case/case-resolution.spec.ts (13 tests) 33ms
+ ✓ src/__tests__/unit/investigation/citation-validation.spec.ts (19 tests) 240ms
+ ✓ src/__tests__/unit/investigation/observation-source.port.spec.ts (15 tests) 72ms
+ ❯ src/__tests__/unit/http/update-draft.routes.spec.ts (10 tests | 3 failed) 1223ms
+   × answers 200 with the version updateDraft corrected, read back whole through the published case-query and projected the same way read-case-route already is 1051ms
+     → expected 500 to be 200 // Object.is equality
+   × calls updateDraft before readCase, so the response reflects the write just made rather than a stale prior read 24ms
+     → expected [ 'updateDraft' ] to deeply equal [ 'updateDraft', 'readCase' ]
+   ✓ refuses with the status the status map assigns CaseVersionNotDraftError, and never reads the version back, when the named version is not draft 26ms
+   ✓ refuses with the status the status map assigns CaseNotFoundError, and never reads the version back, when no version answers the named slug and version 9ms
+   ✓ answers 400 for a body missing a required attribute, without ever reaching caseStore.updateDraft 14ms
+   ✓ names VALIDATION_ERROR, the body as the part that failed, and a non-empty details list, on that same missing-attribute refusal 11ms
+   ✓ answers 400 for a non-numeric version segment, without ever reaching caseStore.updateDraft 26ms
+   ✓ answers 400 via validation for a request with an empty version segment, without ever reaching caseStore.updateDraft 14ms
+   × succeeds when consolidation_register is omitted from the body entirely, calling updateDraft with it absent rather than defaulted to some value 30ms
+     → expected 500 to be 200 // Object.is equality
+   ✓ answers the unchanged generic envelope, never a partial body or leaked detail, when updateDraft rejects with a generic, non-domain error 14ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text.spec.ts (10 tests) 45ms
+ ✓ src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts (10 tests) 1320ms
+ ✓ src/__tests__/unit/connector-registry/subject-placeholder-resolution.spec.ts (15 tests) 75ms
+ ✓ src/__tests__/unit/http/list-case-versions.routes.spec.ts (16 tests) 1740ms
+   ✓ answers 200 with the paginated page of every version the named case holds, for a request naming its own offset and limit  1293ms
+ ✓ src/__tests__/unit/http/list-hypotheses.routes.spec.ts (16 tests) 1866ms
+   ✓ answers 200 with the paginated page of every hypothesis the named case holds, for a request naming its own offset and limit  1580ms
+ ✓ src/__tests__/unit/persistence/database-access.spec.ts (14 tests) 123ms
+ ✓ src/__tests__/unit/factories/production-simulate-hypothesis.factory.spec.ts (12 tests) 145ms
+ ✓ src/__tests__/unit/http/read-openapi-document-operations.routes.spec.ts (11 tests) 2007ms
+   ✓ answers 200 with exactly the fetched document's every operation, each entry carrying exactly its own path and upper-cased method and no other key, and forwards the request's own link unchanged to the injected fetcher, for a request naming one OpenAPI document link  1462ms
+ ✓ src/__tests__/unit/http/discard.routes.spec.ts (9 tests) 1583ms
+   ✓ removes the named draft version through discard and answers 204 with a wholly empty body  1220ms
+ ✓ src/__tests__/unit/investigation/field-semantics.spec.ts (24 tests) 136ms
+ ✓ src/__tests__/unit/http/register-connector.routes.spec.ts (11 tests) 660ms
+   ✓ answers 200 with the held connector configuration registerConnector resolved, for a valid registration at the :connector the path names  471ms
+ ✓ src/__tests__/unit/http/simulate-case.controller.spec.ts (9 tests) 123ms
+ ✓ src/__tests__/unit/http/list-connector-configurations.routes.spec.ts (13 tests) 2120ms
+   ✓ answers 200 with every connector configuration the registry read resolved, each carrying its connector and configuration fields unchanged  1546ms
+ ✓ src/__tests__/unit/http/list-capabilities.routes.spec.ts (15 tests) 860ms
+   ✓ answers 200 with the paginated page of every capability the capability query resolved, for a request naming its own offset and limit  657ms
+ ✓ src/__tests__/unit/persistence/relational-connector-configuration-store.repository.spec.ts (9 tests) 164ms
+ ✓ src/__tests__/unit/http/release.routes.spec.ts (9 tests) 1505ms
+   ✓ answers 200 with the version now in released state, read back whole through the published case-query and projected the same way read-case-route already is  1206ms
+ ✓ src/__tests__/unit/factories/production-diagnose.factory.spec.ts (8 tests) 138ms
+ ✓ src/__tests__/unit/http/simulate-hypothesis.controller.spec.ts (8 tests) 49ms
+ ✓ src/__tests__/unit/http/register-concept.routes.spec.ts (11 tests) 1985ms
+   ✓ answers 200 with the held concept registerConcept resolved, for a valid registration at the name the path names  1306ms
+ ✓ src/__tests__/unit/http/read-capability-by-identity.routes.spec.ts (11 tests) 1324ms
+   ✓ answers 200 with the capability currently registered under the named (name, version) identity, carrying its whole declared contract  1005ms
+ ✓ src/__tests__/unit/http/read-case.routes.spec.ts (10 tests) 776ms
+   ✓ answers 200 with the named case version assembled whole — its own attributes, its manifest and every manifest entry's own hypothesis-revision  520ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator.port.spec.ts (12 tests) 148ms
+ ✓ src/__tests__/unit/http/place-hypothesis.routes.spec.ts (12 tests) 1073ms
+   ✓ places the named hypothesis's stated revision at the stated manifest position, and answers 204 with a wholly empty body  918ms
+ ✓ src/__tests__/unit/config/env.spec.ts (28 tests) 23ms
+ ✓ src/__tests__/unit/connector-registry/capability-schema-draft-output-schema.spec.ts (9 tests) 22ms
+ ✓ src/__tests__/unit/http/dto/simulate-hypothesis.dto.spec.ts (19 tests) 37ms
+ ✓ src/__tests__/unit/factories/store-wiring.spec.ts (11 tests) 1126ms
+   ✓ no module anywhere under src imports the four removed file repositories or their shared file helper, by any relative path  946ms
+ ✓ src/__tests__/unit/case/release.operation.spec.ts (2 tests) 16ms
+ ✓ src/__tests__/unit/http/list-concepts.routes.spec.ts (13 tests) 247ms
+ ✓ src/__tests__/unit/http/create-draft.routes.spec.ts (9 tests) 196ms
+ ✓ src/__tests__/unit/connector-registry/registered-method-comparison.spec.ts (13 tests) 19ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator.port.spec.ts (10 tests) 10ms
+ ✓ src/__tests__/unit/persistence/migration-runner.spec.ts (7 tests) 14ms
+ ✓ src/__tests__/unit/http/route-rate-limiting-cross-route-independence.spec.ts (2 tests) 169ms
+ ✓ src/__tests__/unit/http/release-hypothesis-revision.routes.spec.ts (10 tests) 225ms
+ ✓ src/__tests__/unit/persistence/relational-capability-store.repository.spec.ts (8 tests) 24ms
+ ✓ src/__tests__/unit/http/list-cases.routes.spec.ts (13 tests) 377ms
+ ✓ src/__tests__/unit/connector-registry/connector-configuration-draft.spec.ts (15 tests) 30ms
+ ✓ src/__tests__/unit/http/read-connector-configuration.routes.spec.ts (9 tests) 251ms
+ ✓ src/__tests__/unit/http/read-vocabulary-term.routes.spec.ts (11 tests) 161ms
+ ✓ src/__tests__/unit/connector-registry/openapi-document-fetcher.adapter.spec.ts (10 tests) 51ms
+ ✓ src/__tests__/unit/http/error-handler.middleware.spec.ts (10 tests) 231ms
+ ✓ src/__tests__/unit/http/read-case-version.routes.spec.ts (6 tests) 219ms
+ ✓ src/__tests__/unit/http/remove-hypothesis.routes.spec.ts (9 tests) 403ms
+ ✓ src/__tests__/unit/http/test-connector.controller.spec.ts (4 tests) 13ms
+ ✓ src/__tests__/unit/capability-registry/capability-query.port.spec.ts (7 tests) 7ms
+ ✓ src/__tests__/unit/http/read-concept.routes.spec.ts (7 tests) 140ms
+ ✓ src/__tests__/unit/http/rate-limit.middleware.spec.ts (7 tests) 299ms
+ ✓ src/__tests__/unit/http/dto/draft-connector-configuration-from-openapi.dto.spec.ts (15 tests) 20ms
+ ✓ src/__tests__/unit/persistence/database-connection.spec.ts (11 tests) 561ms
+   ✓ is called with only a connection URL nowhere in the tree except this file's own type-level refusal proof above, so every caller — production or test — supplies poolOptions  505ms
+ ✓ src/__tests__/unit/http/read-capability.routes.spec.ts (6 tests) 243ms
+ ✓ src/__tests__/unit/glossary/glossary.service.list-concepts.spec.ts (7 tests) 10ms
+ ✓ src/__tests__/unit/glossary/glossary-query.port.spec.ts (6 tests) 7ms
+ ✓ src/__tests__/unit/http/case-input-requirements.routes.spec.ts (6 tests) 147ms
+ ✓ src/__tests__/unit/http/read-capability-by-identity-rate-limit.middleware.spec.ts (7 tests) 310ms
+ ✓ src/__tests__/unit/deployment-provisions-no-database-service.spec.ts (5 tests) 2642ms
+   ✓ holds no connection URL literal in any file the deployment ships, so nothing hardcodes the endpoint the deployment does not provision  679ms
+   ✓ builds every connection the deployment opens from env.DATABASE_URL, naming no other source for the URL anywhere  743ms
+   ✓ constructs the pg Pool in exactly one place across the entire deployed tree  566ms
+   ✓ builds every production caller's poolOptions from a numeric literal nowhere in that caller's own file  611ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-glossary-and-capability-coverage.spec.ts (6 tests) 69ms
+ ✓ src/__tests__/unit/http/simulate-case.routes.spec.ts (3 tests) 205ms
+ ✓ src/__tests__/unit/http/remove-capability.routes.spec.ts (4 tests) 235ms
+ ✓ src/__tests__/unit/errors/hypothesis-revision-collects-no-concept.error.spec.ts (8 tests) 10ms
+ ✓ src/__tests__/unit/http/simulate-hypothesis.routes.spec.ts (3 tests) 233ms
+ ✓ src/__tests__/unit/http/remove-concept.routes.spec.ts (4 tests) 432ms
+   ✓ answers 204 with a wholly empty body, identically for a concept currently held and one nothing answers, records, cites or collects  375ms
+ ✓ src/__tests__/unit/connector-registry/connector-placeholder-declaration-check.spec.ts (11 tests) 11ms
+ ✓ src/__tests__/unit/http-connector/response-path-extractor.spec.ts (12 tests) 17ms
+ ✓ src/__tests__/unit/http/dto/evidence.dto.spec.ts (10 tests) 19ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator-modules.spec.ts (4 tests) 87ms
+ ✓ src/__tests__/unit/investigation/observation-source-modules.spec.ts (3 tests) 136ms
+ ✓ src/__tests__/unit/errors/hypothesis-not-in-manifest.error.spec.ts (8 tests) 17ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-shape.spec.ts (7 tests) 68ms
+ ✓ src/__tests__/unit/capability-registry/capability-input-schema-shape.spec.ts (13 tests) 6ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator-modules.spec.ts (3 tests) 98ms
+ ✓ src/__tests__/unit/investigation/subject-covers-case-input-requirements.spec.ts (6 tests) 21ms
+ ✓ src/__tests__/unit/http/remove-connector.routes.spec.ts (3 tests) 446ms
+   ✓ answers 204 with a wholly empty body, identically for a connector name currently registered and one nothing is registered under  414ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-observations.spec.ts (2 tests) 24ms
+ ✓ src/__tests__/unit/case/case-document-modules.spec.ts (3 tests) 116ms
+ ✓ src/__tests__/unit/errors/case-version-not-draft.error.spec.ts (8 tests) 8ms
+ ✓ src/__tests__/unit/seed.spec.ts (6 tests) 20ms
+ ✓ src/__tests__/unit/investigation/investigation-factory-modules.spec.ts (2 tests) 55ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text-modules.spec.ts (3 tests) 13ms
+ ✓ src/__tests__/unit/errors/case-version-not-valid.error.spec.ts (6 tests) 5ms
+ ✓ src/__tests__/unit/errors/case-version-already-stored.error.spec.ts (8 tests) 20ms
+ ✓ src/__tests__/unit/index.spec.ts (10 tests) 232ms
+ ✓ src/__tests__/unit/glossary/vocabulary-modules.spec.ts (2 tests) 33ms
+ ✓ src/__tests__/unit/errors/released-hypothesis-revision-not-alterable.error.spec.ts (6 tests) 6ms
+ ✓ src/__tests__/unit/connector-registry/openapi-document-reader.spec.ts (5 tests) 17ms
+ ✓ src/__tests__/unit/fixtures/concept-fixture-declares-descriptions.spec.ts (2 tests) 16ms
+ ✓ src/__tests__/unit/http/read-connector-configuration.controller.spec.ts (3 tests) 7ms
+ ✓ src/__tests__/unit/http/read-capability-by-identity.controller.spec.ts (3 tests) 6ms
+ ✓ src/__tests__/unit/factories/build-app.factory.spec.ts (1 test) 4ms
+ ✓ src/__tests__/unit/errors/case-version-not-releasable.error.spec.ts (6 tests) 5ms
+ ✓ src/__tests__/unit/dependency-manifest.spec.ts (4 tests) 20ms
+ ✓ src/__tests__/unit/investigation/investigation.spec.ts (4 tests) 6ms
+ ✓ src/__tests__/unit/types/pagination.spec.ts (7 tests) 5ms
+ ✓ src/__tests__/unit/errors/openapi-document-not-fetched.error.spec.ts (6 tests) 6ms
+ ✓ src/__tests__/unit/errors/openapi-document-not-readable.error.spec.ts (6 tests) 4ms
+ ✓ src/__tests__/unit/investigation/subject.spec.ts (6 tests) 14ms
+ ✓ src/__tests__/unit/errors/case-version-not-draft-at-release.error.spec.ts (5 tests) 6ms
+ ✓ src/__tests__/unit/errors/concept-refuses-subject-type.error.spec.ts (4 tests) 10ms
+ ✓ src/__tests__/unit/capability-registry/no-network-persistence.spec.ts (1 test) 29ms
+ ✓ src/__tests__/unit/errors/case-version-not-released.error.spec.ts (5 tests) 7ms
+ ✓ src/__tests__/unit/errors/manifest-position-occupied.error.spec.ts (4 tests) 10ms
+ ✓ src/__tests__/unit/case/hypothesis-revision-release-state.port.spec.ts (2 tests) 17ms
+ ✓ src/__tests__/unit/case/hypothesis-revision-own-state.port.spec.ts (2 tests) 28ms
+ ✓ src/__tests__/unit/case/hypothesis-revision-release.port.spec.ts (2 tests) 26ms
+ ✓ src/__tests__/unit/errors/manifest-would-hold-no-hypothesis.error.spec.ts (4 tests) 6ms
+ ✓ src/__tests__/unit/errors/hypothesis-revision-not-draft-at-release.error.spec.ts (4 tests) 3ms
+ ✓ src/__tests__/unit/errors/concept-not-in-glossary.error.spec.ts (4 tests) 6ms
+ ✓ src/__tests__/unit/errors/case-holds-no-draft.error.spec.ts (4 tests) 18ms
+ ✓ src/__tests__/unit/errors/case-already-has-draft.error.spec.ts (4 tests) 17ms
+ ✓ src/__tests__/unit/errors/connector-unreachable.error.spec.ts (4 tests) 5ms
+ ✓ src/__tests__/unit/http/dto/read-capability-by-identity.dto.spec.ts (7 tests) 8ms
+ ✓ src/__tests__/unit/factories/investigation-store.factory.spec.ts (1 test) 9ms
+ ✓ src/__tests__/unit/no-test-creates-or-alters-a-table.spec.ts (1 test) 573ms
+   ✓ no test in the tree writes a table-creating or table-altering statement of its own  569ms
+ ✓ src/__tests__/unit/errors/case-not-found.error.spec.ts (4 tests) 7ms
+ ✓ src/__tests__/unit/investigation/evidence.spec.ts (1 test) 7ms
+ ✓ src/__tests__/unit/http/dto/register-concept.dto.spec.ts (3 tests) 8ms
+ ✓ src/__tests__/unit/migrate.spec.ts (1 test) 52ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator-modules.spec.ts (1 test) 9ms
+ ✓ src/__tests__/unit/errors/openapi-operation-not-found.error.spec.ts (2 tests) 4ms
+ ✓ src/__tests__/unit/capability-registry/evidence-usage-reader.port.spec.ts (1 test) 26ms
+ ✓ src/__tests__/unit/glossary/concept-usage-reader.port.spec.ts (1 test) 8ms
+ ✓ src/__tests__/unit/connector-registry/connector-configuration-store.port.spec.ts (1 test) 2ms
+ ✓ src/__tests__/unit/connector-registry/capability-schema-draft.spec.ts (1 test) 3ms
+ ✓ src/__tests__/unit/glossary/glossary-store.port.spec.ts (1 test) 2ms
+ ✓ src/__tests__/unit/errors/invalid-case-document.error.spec.ts (1 test) 4ms
+ ✓ src/__tests__/unit/errors/incoherent-case.error.spec.ts (1 test) 3ms
+ ✓ src/__tests__/unit/glossary/terms.spec.ts (1 test) 3ms
+ ✓ src/__tests__/unit/investigation/consolidation-register.spec.ts (1 test) 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/__tests__/unit/http/update-draft.routes.spec.ts > answers 200 with the version updateDraft corrected, read back whole through the published case-query and projected the same way read-case-route already is
+AssertionError: expected 500 to be 200 // Object.is equality
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 200[39m
+[31m+ 500[39m
+
+ ❯ src/__tests__/unit/http/update-draft.routes.spec.ts:118:31
+    116|   const response = await app.inject({ method: 'PATCH', url: '/v1/cases…
+    117| 
+    118|   expect(response.statusCode).toBe(200);
+       |                               ^
+    119|   expect(response.json()).toEqual({
+    120|     slug: updatedCase.slug,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  src/__tests__/unit/http/update-draft.routes.spec.ts > calls updateDraft before readCase, so the response reflects the write just made rather than a stale prior read
+AssertionError: expected [ 'updateDraft' ] to deeply equal [ 'updateDraft', 'readCase' ]
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  [[22m
+[2m    "updateDraft",[22m
+[32m-   "readCase",[39m
+[2m  ][22m
+
+ ❯ src/__tests__/unit/http/update-draft.routes.spec.ts:148:21
+    146|   await app.inject({ method: 'PATCH', url: '/v1/cases/a-slug/versions/…
+    147| 
+    148|   expect(callOrder).toEqual(['updateDraft', 'readCase']);
+       |                     ^
+    149| });
+    150| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  src/__tests__/unit/http/update-draft.routes.spec.ts > succeeds when consolidation_register is omitted from the body entirely, calling updateDraft with it absent rather than defaulted to some value
+AssertionError: expected 500 to be 200 // Object.is equality
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 200[39m
+[31m+ 500[39m
+
+ ❯ src/__tests__/unit/http/update-draft.routes.spec.ts:235:31
+    233|   const response = await app.inject({ method: 'PATCH', url: '/v1/cases…
+    234| 
+    235|   expect(response.statusCode).toBe(200);
+       |                               ^
+    236|   const [, , attributes] = built.updateDraft.mock.calls[0] as [string,…
+    237|   expect(attributes).not.toHaveProperty('consolidation_register');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed | 171 passed (172)
+      Tests  3 failed | 2180 passed (2183)
+   Start at  14:01:40
+   Duration  286.27s (transform 17.71s, setup 0ms, collect 65.97s, tests 60.52s, environment 120ms, prepare 52.82s)
+

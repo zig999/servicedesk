@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
+      "kind": "implementation",
+      "file": "implementation/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record.md",
+      "title": "update-draft answers from the draft's own stored record",
+      "summary": "update-draft.controller.ts now builds its 200 answer from caseQuery.readCaseVersion's own stored-record read instead of caseQuery.readCase's whole-case, validated read, so a write that leaves the draft failing validation is still accepted and answered.",
+      "task": "task/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record"
+    },
+    {
       "id": "implementation/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
       "kind": "implementation",
       "file": "implementation/draft-correction-while-invalid/read-a-drafts-own-declared-attributes.md",
@@ -32,6 +40,14 @@
       "title": "Route the manifest screen to the version's editor on every reading",
       "summary": "version-manifest-screen.tsx now carries an unconditional link to that same version's editing surface on every one of its four phases, keyed to the version already in its own path.",
       "task": "task/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor"
+    },
+    {
+      "id": "proof/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
+      "kind": "proof",
+      "file": "proof/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record.md",
+      "title": "Proof — update-draft answers from the draft's own stored record",
+      "summary": "Integration tests against a real Postgres-backed store prove the manifest-empty-draft acceptance and write/answer shape criteria, and unit tests prove the controller's DTO-mapping and its acceptance of a glossary-absent submitted subject, while the pre-existing refusal/validation coverage was kept valid under the renamed readCaseVersion dependency.",
+      "task": "task/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record"
     },
     {
       "id": "proof/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
@@ -67,6 +83,36 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
+      "to": "rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
+      "to": "rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
+      "to": "scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
+      "to": "task/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
       "to": "contracts/knowledge/case-query",
@@ -173,6 +219,12 @@
       "from": "implementation/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor",
       "to": "task/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
+      "to": "implementation/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
+      "kind": "proves",
       "at": "the path"
     },
     {

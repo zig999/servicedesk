@@ -5081,6 +5081,10 @@
           "digest": "sha256:5c18285d35b2c707edcebae060f3a6b9992f7051519aee91d431878719b496ac"
         },
         {
+          "path": "src/src/http/update-draft.controller.ts",
+          "digest": "sha256:e4e2c23abea3210f6b026d94c289509468763d4cc01eec7d5848ae04b11905e2"
+        },
+        {
           "path": "src/src/investigation/draft-assessment-text.ts",
           "digest": "sha256:9270cb0d2537783ad44cbf20722254b725fad1f2d4c09b838ca3dd777b602a76"
         },
@@ -10253,6 +10257,16 @@
       ]
     },
     {
+      "node": "rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes",
+      "digest": "sha256:cb57b01dd94872e07474f7afda749073820a7c2064218422edd627b09ea1cb07",
+      "files": [
+        {
+          "path": "src/src/http/update-draft.controller.ts",
+          "digest": "sha256:e4e2c23abea3210f6b026d94c289509468763d4cc01eec7d5848ae04b11905e2"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case",
       "digest": "sha256:ca85f0e9dc89b48783b0c4e3990bf1ced3bc305cafef0b677b45c78234d66d6d",
       "files": [
@@ -10271,6 +10285,10 @@
         {
           "path": "src/src/http/read-case-version.routes.ts",
           "digest": "sha256:b3224cbd8b7e3c7823c4a192eca55dd4aa10f3cca9ca6f50a55a19f5307db614"
+        },
+        {
+          "path": "src/src/http/update-draft.controller.ts",
+          "digest": "sha256:e4e2c23abea3210f6b026d94c289509468763d4cc01eec7d5848ae04b11905e2"
         }
       ]
     },
@@ -11170,6 +11188,16 @@
         {
           "path": "src/src/case/discard.operation.ts",
           "digest": "sha256:f1957fc9c6f222a7d78ecb3920d6d4fbea2543ead4de68b939b6fe4d85663320"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing",
+      "digest": "sha256:8a74245e82a8092472c37087a0056e3fc78148b6239d88b0c01bf520823e834c",
+      "files": [
+        {
+          "path": "src/src/http/update-draft.controller.ts",
+          "digest": "sha256:e4e2c23abea3210f6b026d94c289509468763d4cc01eec7d5848ae04b11905e2"
         }
       ]
     },
