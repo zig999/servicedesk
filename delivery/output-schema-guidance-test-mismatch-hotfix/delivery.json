@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/output-schema-guidance-restoration/restore-the-output-schema-entrys-guidance-statement",
+      "kind": "implementation",
+      "file": "implementation/output-schema-guidance-restoration/restore-the-output-schema-entrys-guidance-statement.md",
+      "title": "Restore the Output schema entry's guidance paragraph",
+      "summary": "Reinserted the removed six-sentence guidance paragraph beside the Output schema JSON code editor in CapabilityFormFields, restoring the five system-reads claims and no sixth.",
+      "task": "task/output-schema-guidance-restoration/restore-the-output-schema-entrys-guidance-statement"
+    },
+    {
+      "id": "proof/output-schema-guidance-restoration/restore-the-output-schema-entrys-guidance-statement",
+      "kind": "proof",
+      "file": "proof/output-schema-guidance-restoration/restore-the-output-schema-entrys-guidance-statement.md",
+      "title": "Output schema guidance restoration proven by the pre-existing spec file's own criteria 1-7 tests",
+      "summary": "Each of the task's six criteria is already proven, one test per criterion, by the pre-existing spec file's criterion-1, criterion-3, criterion-4, criterion-5, criterion-6 and criterion-7 tests, verified against the restored paragraph's exact text; no gap found, no new test written.",
+      "task": "task/output-schema-guidance-restoration/restore-the-output-schema-entrys-guidance-statement"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/output-schema-guidance-restoration/restore-the-output-schema-entrys-guidance-statement",
+      "to": "rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/output-schema-guidance-restoration/restore-the-output-schema-entrys-guidance-statement",
+      "to": "rules/integration/an-output-schema-entrys-statement-carries-no-sixth-claim",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/output-schema-guidance-restoration/restore-the-output-schema-entrys-guidance-statement",
+      "to": "task/output-schema-guidance-restoration/restore-the-output-schema-entrys-guidance-statement",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/output-schema-guidance-restoration/restore-the-output-schema-entrys-guidance-statement",
+      "to": "implementation/output-schema-guidance-restoration/restore-the-output-schema-entrys-guidance-statement",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
