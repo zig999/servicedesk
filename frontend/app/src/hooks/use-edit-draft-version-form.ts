@@ -42,6 +42,8 @@ export type EditDraftVersionFormState =
       readonly outcomeOptions?: GlossaryVocabularyOptions;
       readonly actionOptions?: GlossaryVocabularyOptions;
       readonly recipientOptions?: GlossaryVocabularyOptions;
+      readonly onSubmit?: (event?: BaseSyntheticEvent) => void;
+      readonly onFieldBlur?: () => void;
       readonly onCancel?: () => void;
     }
   | {
@@ -123,33 +125,6 @@ export function useEditDraftVersionForm(
 
   const form = useForm<CaseVersionFormValues>({ resolver: zodResolver(caseVersionFormSchema) });
 
-  const notValidDraftState = useNotValidDraftVersionState(
-    slug, version, versionQuery.isError && versionErrorKind === "case-not-valid",
-    form, status, setStatus, cancelEditing, () => void versionQuery.refetch(),
-  );
-
-  useEffect(() => {
-    if (versionQuery.data) {
-      resetFormFrom(form, versionQuery.data);
-      setStatus("clean");
-    }
-  }, [versionQuery.data]);
-
-  useEffect(() => {
-    const subscription = form.watch((_value, { type }) => {
-      if (type === "change") {
-        setStatus((current) => (current === "clean" ? "dirty" : current));
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form]);
-
-  useEffect(() => {
-    if (errorStateKind(versionQuery.error) === "case-not-found") {
-      void navigate({ to: "/cases" });
-    }
-  }, [versionQuery.error, navigate]);
-
   const patchMutation = useMutation({
     mutationFn: (values: CaseVersionFormValues) => {
 
@@ -194,6 +169,49 @@ export function useEditDraftVersionForm(
       setStatus("dirty");
     },
   });
+
+  const submit = form.handleSubmit((values) => {
+    if (isSubmittingRef.current) {
+      return;
+    }
+    isSubmittingRef.current = true;
+    setStatus("saving");
+    patchMutation.mutate(values);
+  });
+
+  const onFieldBlur = (): void => {
+    if (status === "dirty") {
+      void submit();
+    }
+  };
+
+  const notValidDraftState = useNotValidDraftVersionState(
+    slug, version, versionQuery.isError && versionErrorKind === "case-not-valid",
+    form, status, setStatus, cancelEditing, () => void versionQuery.refetch(),
+    submit, onFieldBlur,
+  );
+
+  useEffect(() => {
+    if (versionQuery.data) {
+      resetFormFrom(form, versionQuery.data);
+      setStatus("clean");
+    }
+  }, [versionQuery.data]);
+
+  useEffect(() => {
+    const subscription = form.watch((_value, { type }) => {
+      if (type === "change") {
+        setStatus((current) => (current === "clean" ? "dirty" : current));
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
+
+  useEffect(() => {
+    if (errorStateKind(versionQuery.error) === "case-not-found") {
+      void navigate({ to: "/cases" });
+    }
+  }, [versionQuery.error, navigate]);
 
   const releaseMutation = useMutation({
     mutationFn: () => {
@@ -285,15 +303,6 @@ export function useEditDraftVersionForm(
     manifestPinnedStates,
   );
 
-  const submit = form.handleSubmit((values) => {
-    if (isSubmittingRef.current) {
-      return;
-    }
-    isSubmittingRef.current = true;
-    setStatus("saving");
-    patchMutation.mutate(values);
-  });
-
   return {
     phase: "ready",
     form,
@@ -309,11 +318,7 @@ export function useEditDraftVersionForm(
     actionOptions,
     recipientOptions,
     onSubmit: submit,
-    onFieldBlur: () => {
-      if (status === "dirty") {
-        void submit();
-      }
-    },
+    onFieldBlur,
     onCancel: cancelEditing,
 
     isReadOnly: record.state === "released",

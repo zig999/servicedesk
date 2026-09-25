@@ -66,6 +66,14 @@
       "task": "task/draft-editor-correction-while-invalid/route-the-simulation-screen-to-the-version-editor"
     },
     {
+      "id": "implementation/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
+      "kind": "implementation",
+      "file": "implementation/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading.md",
+      "title": "Save a correction on the refused reading",
+      "summary": "Wires the editor's not-valid phase to the shared update-draft submit path so a correction submitted while a draft does not read back as a case is issued and its accepted answer refills the form.",
+      "task": "task/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading"
+    },
+    {
       "id": "proof/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
       "kind": "proof",
       "file": "proof/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record.md",
@@ -128,6 +136,14 @@
       "title": "Route the simulation screen to the version's editor on every reading -- proof",
       "summary": "One sequential test walks the simulation screen through its five declared readings (pending, failed, refused for validation, answered draft, answered released) and confirms the route to the named version's own editor survives each, discharging the task's six criteria and the node's fact whole; a second test covers the task's own UNDERDETERMINED entry on a refusal carrying an unrecognized error code.",
       "task": "task/draft-editor-correction-while-invalid/route-the-simulation-screen-to-the-version-editor"
+    },
+    {
+      "id": "proof/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
+      "kind": "proof",
+      "file": "proof/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading.md",
+      "title": "Save a correction on the refused reading -- proof",
+      "summary": "Route-level tests over the not-valid phase's now-functional Save changes button prove that a correction submitted on the refused reading is issued as an update-draft, that its accepted answer refills the form's declared attributes (including clearing an absent consolidation_register), and that a 200 answer shows no save-failure notice.",
+      "task": "task/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading"
     }
   ],
   "edges": [
@@ -396,6 +412,42 @@
       "at": "the path"
     },
     {
+      "from": "implementation/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
+      "to": "rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
+      "to": "rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
+      "to": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
+      "to": "scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
+      "to": "task/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
       "to": "implementation/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
       "kind": "proves",
@@ -440,6 +492,12 @@
     {
       "from": "proof/draft-editor-correction-while-invalid/route-the-simulation-screen-to-the-version-editor",
       "to": "implementation/draft-editor-correction-while-invalid/route-the-simulation-screen-to-the-version-editor",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
+      "to": "implementation/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
       "kind": "proves",
       "at": "the path"
     }

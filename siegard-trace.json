@@ -4891,7 +4891,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:9c5e239f7b89d23eed3d8f02be0f9be50d055e0c9293b0a3324d8e46503cf34a"
+          "digest": "sha256:f9bce4fbd68a7875c05406b00e22cdea2a1a722a818bea9570d85804e596b546"
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -10244,7 +10244,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:5045edde52dbd794fcfeb11a724d8dd17a9e01d207ea90501256d0d32b0cd2b9"
+          "digest": "sha256:f9bce4fbd68a7875c05406b00e22cdea2a1a722a818bea9570d85804e596b546"
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
@@ -10317,6 +10317,10 @@
       "digest": "sha256:cb57b01dd94872e07474f7afda749073820a7c2064218422edd627b09ea1cb07",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:f9bce4fbd68a7875c05406b00e22cdea2a1a722a818bea9570d85804e596b546"
+        },
+        {
           "path": "src/src/http/update-draft.controller.ts",
           "digest": "sha256:e4e2c23abea3210f6b026d94c289509468763d4cc01eec7d5848ae04b11905e2"
         }
@@ -10328,15 +10332,15 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:5045edde52dbd794fcfeb11a724d8dd17a9e01d207ea90501256d0d32b0cd2b9"
+          "digest": "sha256:f9bce4fbd68a7875c05406b00e22cdea2a1a722a818bea9570d85804e596b546"
         },
         {
           "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
-          "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
+          "digest": "sha256:8184b20de38a84318aea97fa68a80ac1e3ef1a86cf1189cf07a901ece7d122ea"
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-not-valid-view.tsx",
-          "digest": "sha256:f9fb34d14b9dcba8705c2765ac5594d173ae9b6f99f6391c1927f7fe92a07353"
+          "digest": "sha256:3fe9392ffe5529c1c1dc73feb5aaf94014e2d2d8dc6a6a974ceff239ca906804"
         },
         {
           "path": "src/src/case/case-query.port.ts",
@@ -11264,12 +11268,16 @@
       "digest": "sha256:8a74245e82a8092472c37087a0056e3fc78148b6239d88b0c01bf520823e834c",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:f9bce4fbd68a7875c05406b00e22cdea2a1a722a818bea9570d85804e596b546"
+        },
+        {
           "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
-          "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
+          "digest": "sha256:8184b20de38a84318aea97fa68a80ac1e3ef1a86cf1189cf07a901ece7d122ea"
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-not-valid-view.tsx",
-          "digest": "sha256:f9fb34d14b9dcba8705c2765ac5594d173ae9b6f99f6391c1927f7fe92a07353"
+          "digest": "sha256:3fe9392ffe5529c1c1dc73feb5aaf94014e2d2d8dc6a6a974ceff239ca906804"
         },
         {
           "path": "src/src/http/update-draft.controller.ts",

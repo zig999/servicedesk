@@ -26,6 +26,8 @@ export type EnrichedNotValidState = NotValidPhaseState & {
   readonly outcomeOptions: GlossaryVocabularyOptions;
   readonly actionOptions: GlossaryVocabularyOptions;
   readonly recipientOptions: GlossaryVocabularyOptions;
+  readonly onSubmit: (event?: BaseSyntheticEvent) => void;
+  readonly onFieldBlur: () => void;
   readonly onCancel: () => void;
 };
 
@@ -34,12 +36,6 @@ export function isEnrichedNotValidState(
 ): state is EnrichedNotValidState {
   return state.form !== undefined;
 }
-
-function preventNativeSubmit(event?: BaseSyntheticEvent): void {
-  event?.preventDefault();
-}
-
-function ignoreFieldBlur(): void {}
 
 export type CaseVersionEditorNotValidViewProps = {
   readonly state: EnrichedNotValidState;
@@ -60,12 +56,16 @@ export function CaseVersionEditorNotValidView({
         outcomeOptions={state.outcomeOptions}
         actionOptions={state.actionOptions}
         recipientOptions={state.recipientOptions}
-        onSubmit={preventNativeSubmit}
-        onFieldBlur={ignoreFieldBlur}
+        onSubmit={state.onSubmit}
+        onFieldBlur={state.onFieldBlur}
       />
       {consolidationRegister == null && <p>{NO_CONSOLIDATION_REGISTER_TEXT}</p>}
       <ButtonFooter>
-        <Button type="submit" form={CASE_VERSION_EDITOR_FORM_ID} disabled>
+        <Button
+          type="submit"
+          form={CASE_VERSION_EDITOR_FORM_ID}
+          disabled={state.isBlocked || state.status === "clean"}
+        >
           Save changes
         </Button>
         <Button type="button" variant="secondary" onClick={state.onCancel}>

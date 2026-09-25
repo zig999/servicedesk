@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, type BaseSyntheticEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { UseFormReturn } from "react-hook-form";
 import { apiFetch } from "../services/api-client";
@@ -21,6 +21,8 @@ export function useNotValidDraftVersionState(
   setStatus: (status: SaveStatus) => void,
   onCancel: () => void,
   retryVersionQuery: () => void,
+  onSubmit: (event?: BaseSyntheticEvent) => void,
+  onFieldBlur: () => void,
 ): EditDraftVersionFormState | null {
   const versionsQuery = useCaseVersions(slug);
   const notValidVersionState = versionsQuery.data?.data.find(
@@ -92,6 +94,8 @@ export function useNotValidDraftVersionState(
     outcomeOptions,
     actionOptions,
     recipientOptions,
+    onSubmit,
+    onFieldBlur,
     onCancel,
   };
 }
