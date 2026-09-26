@@ -1,0 +1,71 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/output-schema-guidance-fix/render-guidance-paragraph",
+      "kind": "implementation",
+      "file": "implementation/output-schema-guidance-fix/render-guidance-paragraph.md",
+      "title": "Render the Output schema field's guidance paragraph on capability-form-fields",
+      "summary": "CapabilityFormFields now renders a six-sentence Portuguese guidance paragraph beside the Output schema field, restating the five claims an-output-schema-entry-states-what-the-system-reads-from-it makes plus the JSON-entry claim, and nothing else — identical on the capability create and detail screens because both mount the same shared component.",
+      "task": "task/output-schema-guidance-fix/render-guidance-paragraph"
+    },
+    {
+      "id": "proof/output-schema-guidance-fix/render-guidance-paragraph",
+      "kind": "proof",
+      "file": "proof/output-schema-guidance-fix/render-guidance-paragraph.md",
+      "title": "Proof for the Output schema field's guidance paragraph",
+      "summary": "The nine criteria are each decided by one existing test in capability-form-fields-output-schema-guidance.spec.ts; the boundary criterion's substring-matching gap is closed by one new exact-sentence test added to that same file.",
+      "task": "task/output-schema-guidance-fix/render-guidance-paragraph"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/output-schema-guidance-fix/render-guidance-paragraph",
+      "to": "rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/output-schema-guidance-fix/render-guidance-paragraph",
+      "to": "rules/integration/an-output-schema-entrys-statement-carries-no-sixth-claim",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/output-schema-guidance-fix/render-guidance-paragraph",
+      "to": "rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/output-schema-guidance-fix/render-guidance-paragraph",
+      "to": "rules/glossary/a-description-states-meaning-never-policy",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/output-schema-guidance-fix/render-guidance-paragraph",
+      "to": "domain/investigation/field-semantics",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/output-schema-guidance-fix/render-guidance-paragraph",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/output-schema-guidance-fix/render-guidance-paragraph",
+      "to": "task/output-schema-guidance-fix/render-guidance-paragraph",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/output-schema-guidance-fix/render-guidance-paragraph",
+      "to": "implementation/output-schema-guidance-fix/render-guidance-paragraph",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

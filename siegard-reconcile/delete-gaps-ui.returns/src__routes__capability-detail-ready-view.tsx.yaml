@@ -1,0 +1,163 @@
+findings:
+  - file: src/routes/capability-detail-ready-view.tsx
+    where: >-
+      the trailingActions block, between the Remove capability dialog (lines 87-111) and
+      the Cancel/Capabilities controls — the only outcome-disclosure element present is
+      for the save operation, at lines 112-116
+    evidence: |-
+      {state.justSaved && (
+        <p role="status" className="text-sm text-foreground">
+          Saved.
+        </p>
+      )}
+    cost: >-
+      An operator who confirms "Remove capability" and has the removal refused — for
+      instance because a collected evidence item still names the capability — sees the
+      confirmation dialog close and then nothing: this surface's only outcome text is
+      "Saved.", gated on state.justSaved, which reports the save operation alone. The
+      operator is left unable to tell whether the further explicit act they just took did
+      anything, on the one surface required to tell them.
+    kind: contradicts
+    node: rules/integration/a-submitted-removal-states-its-outcome-to-the-operator
+    correction: >-
+      Render the removal's own outcome on this surface — success, or the specific
+      refusal condition the api's answer named — the same way state.justSaved already
+      renders the save outcome.
+read:
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: >-
+      the two conditional warning paragraphs, lines 37-46
+    evidence: |-
+      {!state.inputSchema.isValid && (
+        <p role="alert" className="text-sm text-destructive">
+          {INVALID_INPUT_SCHEMA_WARNING}
+        </p>
+      )}
+      {!state.outputSchema.isValid && (
+        <p role="alert" className="text-sm text-destructive">
+          {INVALID_OUTPUT_SCHEMA_WARNING}
+        </p>
+      )}
+  - node: rules/integration/a-single-capability-surface-offers-a-route-to-the-capabilities-listing
+    held_at: >-
+      the unconditionally rendered "Capabilities" control, lines 120-122
+    evidence: |-
+      <Button variant="secondary" asChild>
+        <Link to="/capabilities">Capabilities</Link>
+      </Button>
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: >-
+      the unconditionally rendered "Cancel" control, lines 117-119
+    evidence: |-
+      <Button type="button" variant="secondary" onClick={state.onCancel}>
+        Cancel
+      </Button>
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: nowhere
+    evidence: >-
+      the file's only discard control addresses an existing capability's own unsaved
+      edit, not an unsubmitted registration entry: DISCARD_DIALOG_DESCRIPTION reads
+      "Every unsaved change to this capability will be lost. This cannot be undone.",
+      and its confirm button `<Button type="button" variant="destructive"
+      onClick={state.onDiscard}>` sits inside a `DialogClose`, closing the dialog rather
+      than landing the operator on a different surface
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      the component receives an already-resolved `state` and renders JSX only —
+      `export function CapabilityDetailReadyView({ state }: CapabilityDetailReadyViewProps):
+      JSX.Element` — with no HTTP-status or error-code handling of its own
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      the component receives an already-resolved `state` and renders JSX only —
+      `export function CapabilityDetailReadyView({ state }: CapabilityDetailReadyViewProps):
+      JSX.Element` — with no request-shape or validation handling of its own
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      removal is delegated entirely to `onClick={state.onDelete}`; the file holds no
+      reference to the response the removal call answers with
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the file's only concept-related content is `conceptOptions={state.conceptOptions}`,
+      unrelated to removing a concept
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the file's imports are `import { CapabilityFormFields } from "./capability-form-fields";`
+      and a `CapabilityDetailViewState` type; nothing in the file names a connector
+      configuration
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: |-
+      export type CapabilityDetailReadyViewProps = {
+        readonly state: Extract<CapabilityDetailViewState, { phase: "ready" }>;
+      };
+  - node: domain/glossary/concept
+    held_at: >-
+      the concept options passed through to the form, line 49
+    evidence: 'conceptOptions={state.conceptOptions}'
+  - node: domain/integration/capability
+    held_at: >-
+      the schema-validity checks against the capability's own input_schema/output_schema,
+      lines 37 and 42
+    evidence: |-
+      {!state.inputSchema.isValid && (
+      {!state.outputSchema.isValid && (
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      the file's imports are `import { CapabilityFormFields } from "./capability-form-fields";`
+      and a `CapabilityDetailViewState` type; nothing in the file names a connector
+      configuration
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      the file's only concept-related content is `conceptOptions={state.conceptOptions}`,
+      unrelated to removing a concept
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      the removal control reads `onClick={state.onDelete}` with no reference to a
+      cited-by-evidence condition or its refusal
+  - node: rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act
+    held_at: >-
+      the "Remove capability" confirmation dialog, lines 87-111
+    evidence: |-
+      <DialogTrigger asChild>
+        <Button type="button" variant="destructive" disabled={state.isDeleting}>
+          Remove capability
+        </Button>
+      </DialogTrigger>
+      ...
+      <DialogClose asChild>
+        <Button type="button" variant="destructive" onClick={state.onDelete}>
+          Remove capability
+        </Button>
+      </DialogClose>
+  - node: rules/integration/a-submitted-removal-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: |-
+      {state.justSaved && (
+        <p role="status" className="text-sm text-foreground">
+          Saved.
+        </p>
+      )}
+  - node: rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing
+    held_at: nowhere
+    evidence: >-
+      removal is delegated entirely to `onClick={state.onDelete}`; the file issues no
+      navigation of its own after that call
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: >-
+      the file's imports are `import { CapabilityFormFields } from "./capability-form-fields";`
+      and a `CapabilityDetailViewState` type; nothing in the file names a connector
+      configuration
+looked_past: >-
+  Surface-level choices — the wording of the two dialog descriptions, the reused
+  "Remove capability" label on both trigger and confirm controls, which control sits
+  where among trailingActions — are the interface's own form under this specification's
+  own reading and are not reported here.

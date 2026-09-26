@@ -6895,6 +6895,88 @@ entries:
     to it makes the structured disclosure exactly the values the message already names and adds no second
     disclosure -- neither the removed entry nor the manifest the refusal left standing -- that the message
     itself does not make.
+- location: rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act.md
+  field: statement
+  unstated: The material asks for a delete control with confirmation for a concept, a capability, and a
+    connector configuration, but does not say whether the confirming act must reproduce the identity being
+    removed, as discarding a draft case version already requires of its own confirming act, or needs only
+    a plain further act.
+  decided: A plain further explicit act, stating that the removal is to be performed, with no reproduction
+    of the removed identity required.
+  why: Discarding a draft case version destroys a whole version and every entry of its manifest, and its
+    own further act additionally requires the case's own slug reproduced for exactly that weight; removing
+    a single registered concept, a capability, or a connector configuration destroys one registration at a
+    time, closer in weight to the abandonment gestures this specification already leaves as a plain further
+    act than to a whole version's discard.
+- location: rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing.md
+  field: statement
+  unstated: The material asks for a removal's success to be reflected in the list or the detail view, but
+    does not say where the operator is taken once the removal succeeds.
+  decided: The listing of registered concepts, capabilities, or connector configurations, respectively --
+    never the surface addressed by the identity just removed.
+  why: The identity a removal just succeeded on is refused by that entity's own unregistered-identity read
+    the moment the removal succeeds (rules/glossary/a-glossary-read-by-an-unheld-name-is-refused,
+    constraints/the-capability-identity-read-refuses-an-unregistered-identity,
+    rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused), so landing the
+    operator there would show a refusal for the very act that just succeeded.
+- location: rules/glossary/a-registered-concept-is-never-removed.md
+  field: statement
+  unstated: What reference a ConceptInUseError reports when a remove-concept is refused because a registered
+    capability answers the concept, because a collected evidence item names it, or because a citation names
+    it. The statement gives a reference value only for the fourth condition (hypothesis-revision-collects,
+    where a hypothesis-revision's own collects lists the concept). No node and no intake material gives one
+    for the other three.
+  decided: capability-concept where a registered capability answers the concept, evidence-concept where a
+    collected evidence item names it, and citation-concept where a citation names it.
+  why: The one value this specification already holds follows a pattern -- hypothesis-revision-collects is
+    the slug of the element that names the concept, followed by the name of that element's attribute typed
+    domain/glossary/concept (domain/knowledge/hypothesis-revision's collects). The same pattern applied to
+    the other three elements that name a concept gives capability-concept from domain/integration/capability's
+    concept attribute, evidence-concept from domain/investigation/evidence's concept attribute, and
+    citation-concept from domain/investigation/citation's concept attribute. This rule's Description has the
+    refusal name which condition was found, so each condition needs its own token. Evidence and citation get
+    separate tokens because the statement lists them as separate referents with separate attributes of their
+    own. Any other scheme would give this one error two naming conventions.
+- location: rules/glossary/a-registered-concept-is-never-removed.md
+  field: statement
+  unstated: The prior entry in this log decided capability-concept, evidence-concept and citation-concept
+    as the ConceptInUseError reference values for three of its four conditions, reasoned from a naming
+    pattern alone, without reading the already-delivered backend. That backend
+    (src/src/glossary/concept-usage-reader.port.ts's ConceptUsageReference type, constructed by
+    ConceptInUseError and covered by src/src/__tests__/unit/glossary/glossary.service.spec.ts and
+    src/src/__tests__/unit/http/remove-concept.routes.spec.ts) already fixes those three values as
+    capability, evidence and citation -- one word each, not the element-slug-plus-attribute pattern the
+    prior entry invented -- alongside the fourth, hypothesis-revision-collects, which the prior entry
+    left unchanged because it already matched.
+  decided: capability where a registered capability answers the concept, evidence where a collected
+    evidence item names it, and citation where a citation names it -- correcting the prior entry's
+    capability-concept, evidence-concept and citation-concept to the values the delivered code already
+    uses.
+  why: The specification states a fact about an HTTP response the backend already sends over a route this
+    plan does not touch; the frontend that reads it must match what is actually sent, not a pattern
+    invented before that code was read. The delivered backend is covered by its own tests asserting these
+    three literal values, so it is the one side of this mismatch a plan-work invocation can correct
+    without reopening delivered work -- correcting the specification is the smaller, reversible edit, and
+    the alternative (renaming the backend's already-tested values to match the specification's invented
+    pattern) would be a corrective increment against working, specified code for no behavioral reason.
+- location: rules/glossary/a-registered-concept-is-never-removed.md
+  field: statement
+  unstated: What the HTTP 409 ConceptInUseError response's details carry beyond the reference itself,
+    and whether the wire error code is the class name as delivered. No node stated the details' shape;
+    the material never described this refusal's wire response.
+  decided: The details carry the concept's own name and the reference, and nothing else. The wire error
+    code is the literal string ConceptInUseError, exactly the class name.
+  why: The delivered, tested backend already fixes this shape -- src/src/http/error-handler.middleware.ts's
+    domainEnvelope sends code: error.name and details: error.context for every domain error with a
+    context, and ConceptInUseError's own context is { concept, reference }
+    (src/src/errors/concept-in-use.error.ts); src/src/__tests__/unit/http/remove-concept.routes.spec.ts
+    asserts exactly this: body.error.code toBe('ConceptInUseError') and body.error.details toEqual({
+    concept: 'a-cited-concept', reference: 'capability' }). This is the same route this specification's
+    own decision log already took for CaseAlreadyHasDraftError, ManifestPositionOccupiedError and the
+    case-has-at-least-one-hypothesis removal refusal: the decision names the caller-facing shape that
+    was built and tested rather than choosing a second one. A prior /plan-work in this same initiative
+    tried to decide this without reading the backend and was refused by its own decider for exactly that
+    reason; deciding it here, with the code read, is what that refusal asked for.
 
 === domain/glossary/_context
 ---
@@ -8383,7 +8465,7 @@ Recipients are real operational queues; binding a referral to an individual woul
 === rules/glossary/a-registered-concept-is-never-removed
 ---
 type: policy
-statement: Registering concepts adds a concept at a new name or replaces the concept already held at that name, and removes no concept already held; removing a concept by name succeeds unless a registered capability answers it, a collected evidence item or its citation names it, or a hypothesis-revision's own collects lists it, in which case the removal is refused with an HTTP 409 response reporting a ConceptInUseError that reports, for the concept found still named, a reference identifying what names it — hypothesis-revision-collects where a hypothesis-revision's own collects lists it — and the concept is never removed from the glossary any other way; a concept's removal takes that concept's own declaration of the subject types it accepts with it and removes no term of the subject-type vocabulary, whose terms are held independently of the concepts that accept them.
+statement: Registering concepts adds a concept at a new name or replaces the concept already held at that name, and removes no concept already held; removing a concept by name succeeds unless a registered capability answers it, a collected evidence item or its citation names it, or a hypothesis-revision's own collects lists it, in which case the removal is refused with an HTTP 409 response whose error code is ConceptInUseError and that reports, for the concept found still named, a reference identifying what names it — capability where a registered capability answers it, evidence where a collected evidence item names it, citation where a citation names it, and hypothesis-revision-collects where a hypothesis-revision's own collects lists it — whose details carry that concept's own name and that reference and nothing else — and the concept is never removed from the glossary any other way; a concept's removal takes that concept's own declaration of the subject types it accepts with it and removes no term of the subject-type vocabulary, whose terms are held independently of the concepts that accept them.
 constrains:
   - domain/glossary/concept
   - domain/glossary/subject-type
@@ -10736,6 +10818,62 @@ consistency: eventual
 
 A write repeated is a second write and never a recovery of the first, so a submission is not re-issued by anything stated here, and nothing about an outstanding submission is stated before the registry answers it — the same bound `a-refused-draft-request-states-its-refusal-to-the-operator` puts on its own two outcomes.
 
+=== rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act
+---
+type: policy
+statement: >-
+  A surface presenting exactly one registered concept, capability, or connector
+  configuration, addressed by its own identity, offers a control to remove it; taking
+  that control asks whether the removal is to be performed and issues no removal on
+  that asking alone; the removal named by remove-concept, remove-capability, or
+  remove-connector is issued only where the operator, having asked for it, states in a
+  further, explicit act that the removal is to be performed; and where the operator
+  does not so state, the concept, capability, or connector configuration stands exactly
+  as it stood, registered under the same identity.
+constrains:
+  - domain/glossary/concept
+  - domain/integration/capability
+  - domain/integration/connector-configuration
+consistency: eventual
+---
+
+## Description
+
+A concept, a capability, and a connector configuration are each removed by an
+operation `contracts/glossary/glossary-authoring`, `contracts/integration/capability-registry`,
+or `contracts/integration/connector-configuration-registry` already publishes —
+`remove-concept`, `remove-capability`, `remove-connector` — and each is refused under
+conditions its own registry already states: `rules/glossary/a-registered-concept-is-never-removed`,
+`rules/integration/a-registered-capability-cited-by-evidence-is-never-removed`, and
+`rules/integration/removing-a-connector-configuration-is-unconditional`. None of the
+three states that a surface offers a way to reach the operation at all; left unstated,
+whether an operator could remove anything they registered fell to whatever a surface
+happened to render.
+
+The further explicit act is owed for the reason `releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act`
+already owes one over release and discard: each of these three removals destroys a
+registration held nowhere else, and no operation any of the three contracts publishes
+answers it back. It is a plainer act than that rule's own discard, which additionally
+requires the case's own slug reproduced — the destruction there reaches a whole draft
+version and every entry of its manifest, while a concept, a capability, or a connector
+configuration removed here is a single registration, and this rule asks only that the
+operator state the further act, never that they reproduce the identity being removed.
+
+This states that the control and the further act exist and what the further act gates;
+it does not state which control carries either, its wording, or where it sits — that is
+form, the same reading `a-single-capability-surface-offers-a-route-to-the-capabilities-listing`
+already takes over its own control. Nor does it move any condition the three removal
+rules above already decide, add an attribute to any of the three elements it constrains,
+or say where the operator is taken once a removal is issued —
+`a-successful-removal-lands-on-the-removed-entitys-own-listing` is that rule's own, and
+what the operator is told about the outcome is
+`a-submitted-removal-states-its-outcome-to-the-operator`'s own.
+
+Consistency is eventual because the rule spans three elements across two contexts,
+glossary and integration; nothing here demands an immediate fact across that boundary,
+and each removal it gates still holds immediately inside its own aggregate under the
+rule that governs it.
+
 === rules/integration/a-return-to-origin-routes-presence-turns-on-nothing-further
 ---
 type: policy
@@ -11055,6 +11193,55 @@ What follows a stated outcome is no part of this: where the surface goes after a
 
 Consistency is eventual because the surface performs no registration itself: what it states is the answer to a call issued separately to a registry that holds the registration, and the statement settles only when that call settles.
 
+=== rules/integration/a-submitted-removal-states-its-outcome-to-the-operator
+---
+type: policy
+statement: >-
+  An operator-facing surface from which a removal of a concept, a capability, or a
+  connector configuration was issued states to that operator the outcome the publishing
+  api answered; where the removal succeeded, that the identity named is no longer
+  registered; where the removal was refused, that nothing was removed and which refusal
+  answered it, the condition the api's answer named stated apart from every other
+  condition that route can name and apart from a refusal whose condition the surface
+  does not recognise; and the surface states neither outcome of a removal the api has
+  not yet answered.
+constrains:
+  - domain/glossary/concept
+  - domain/integration/capability
+  - domain/integration/connector-configuration
+consistency: eventual
+---
+
+## Description
+
+`a-submitted-registration-states-its-outcome-to-the-operator` already holds this shape
+for a submission that registers a capability or a connector configuration; this is its
+counterpart for a removal, extended to reach a concept's own registration as well, since
+`contracts/glossary/glossary-authoring` publishes `remove-concept` under the same
+never-removed-unless-refused shape the other two registries publish theirs under.
+
+The two outcomes a removal can answer are the ones
+`a-removal-surface-offers-a-control-behind-a-further-explicit-act` gates behind a
+further explicit act: a removal that goes through, and a removal one of
+`rules/glossary/a-registered-concept-is-never-removed`,
+`rules/integration/a-registered-capability-cited-by-evidence-is-never-removed`, or
+`rules/integration/removing-a-connector-configuration-is-unconditional` refuses. Leaving
+either unstated would leave the operator unable to tell whether the further act they
+just took did anything, and this specification has already refused that shape for
+registration; a removal issued by the same operator through the same kind of surface
+gets no lesser answer.
+
+This states what the surface discloses and nothing further: it does not decide where the
+operator is taken once a removal succeeds — `a-successful-removal-lands-on-the-removed-entitys-own-listing`
+is that rule's own — and it does not move any condition the three removal rules above
+decide, add an attribute to any of the three elements it constrains, or restate what a
+registration's own submission states, which stands exactly as
+`a-submitted-registration-states-its-outcome-to-the-operator` already left it.
+
+Consistency is eventual for the same reason it is eventual there: the rule spans three
+elements across two contexts, and nothing here demands an immediate fact across that
+boundary.
+
 === rules/integration/a-success-response-schemas-single-object-property-is-read-through-as-its-envelope
 ---
 type: invariant
@@ -11159,6 +11346,53 @@ This states where the operator lands and nothing further. What that surface then
 Which control carries the submission, its wording and where it sits are form and belong to the interface, not here, the same reading `a-connector-configuration-authoring-may-be-abandoned-without-registering` and `a-connector-configuration-surface-offers-a-route-to-the-listing` already take over their own controls.
 
 Both facts this rests on are that one element's own — that the submission succeeded and the connector name it succeeded under — so it constrains `domain/integration/connector-configuration` and holds immediately, inside one boundary, the shape `a-connector-configuration-authoring-may-be-abandoned-without-registering` already took for the other end of the same act.
+
+=== rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing
+---
+type: policy
+statement: >-
+  An operator whose issued removal of a concept, a capability, or a connector
+  configuration succeeds is taken to the listing of registered concepts, capabilities,
+  or connector configurations, respectively, and never to the surface addressed by the
+  identity just removed.
+constrains:
+  - domain/glossary/concept
+  - domain/integration/capability
+  - domain/integration/connector-configuration
+consistency: eventual
+---
+
+## Description
+
+The surface addressed by an identity a removal just succeeded on is no longer a surface
+anything answers: `rules/glossary/a-glossary-read-by-an-unheld-name-is-refused`,
+`constraints/the-capability-identity-read-refuses-an-unregistered-identity`, and
+`rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused`
+each already refuse a read by an identity nothing currently holds, which is exactly what
+a removal that just succeeded leaves behind. Landing the operator there would show a
+refusal for the very act that just succeeded, and this specification has already refused
+that shape for the opposite act — `a-successful-capability-registration-lands-on-the-capabilitys-own-surface`
+and `a-successful-connector-registration-lands-on-the-configurations-own-surface` each
+land a registration on the identity's own surface for the mirrored reason: the identity
+still resolves there. A removal leaves the identity resolving nowhere, so the destination
+a registration takes is the one destination a removal cannot.
+
+The listing each registry's own `list-concepts`, `list-capabilities`, or
+`list-connector-configurations` answers is where every remaining registration under that
+kind still resolves, and each surface a removal is issued from already owes a route to
+that same listing — `a-single-capability-surface-offers-a-route-to-the-capabilities-listing`
+and `a-connector-configuration-surface-offers-a-route-to-the-listing` state it for two of
+the three, and the concept's own listing is the surface `remove-concept` is issued from
+in the first place, so no further route is owed there. This states only the destination
+a successful removal takes; which page of a paged listing the operator lands on is
+`constraints/listings-are-paged`'s own answer, and what the operator is told about the
+outcome itself is `a-submitted-removal-states-its-outcome-to-the-operator`'s own. It adds
+no attribute to any of the three elements it constrains and moves no condition any
+removal rule already decides.
+
+Consistency is eventual for the reason it is eventual in the two rules this one
+completes: it spans three elements across two contexts, and nothing here demands an
+immediate fact across that boundary.
 
 === rules/integration/a-surface-holding-no-read-registration-offers-no-discard
 ---

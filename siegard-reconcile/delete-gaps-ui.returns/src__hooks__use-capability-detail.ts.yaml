@@ -1,0 +1,234 @@
+findings:
+  - file: src/hooks/use-capability-detail.ts
+    where: the update mutation's onSuccess/onError handlers, lines 134-140
+    evidence: |-
+      onSuccess: () => {
+            void queryClient.invalidateQueries({ queryKey: ["capabilities"] });
+            void queryClient.invalidateQueries({ queryKey: ["capability", name, version] });
+          },
+          onError: (error) => {
+            toast.error(saveFailureMessage(error));
+          },
+    cost: An operator who submits an edit to this capability learns nothing from this file about whether the registration was made or what now stands registered — only a bare `isSubmitSuccessful` boolean crosses the hook boundary, carrying no identity and no content — while this same file's removal path, a few lines below, states that outcome in full ("`${name} ${version} is no longer registered.`"). A reader who wants to know what a successful capability edit tells the operator finds it stated for delete and not for save.
+    kind: contradicts
+    node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    correction: onSuccess should state that the registration was made and name what now stands registered — the name and version submitted — the way deleteMutation's onSuccess already names the identity removed.
+  - file: src/hooks/use-capability-detail.ts
+    where: the "ready"-phase returned state, lines 221-244
+    evidence: |-
+      isDirty,
+          isSubmitting: mutation.isPending,
+          isSubmitSuccessful: mutation.isSuccess,
+          onSubmit,
+          onCancel,
+          isDeleting: deleteMutation.isPending,
+          onDelete: () => {
+            deleteMutation.mutate();
+          },
+        };
+    cost: An operator editing this capability who wants to put an edit down and keep working has only `onCancel`, whose whole effect is to leave the surface (back, or to the capabilities listing); there is no act here that returns the form and the two schema fields to the content of the surface's own last read while keeping the operator on that surface, so recovering a schema an operator has typed over costs a full leave-and-return through the listing rather than nothing.
+    kind: contradicts
+    node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    correction: expose a discard action that resets `form`, `inputSchemaValue` and `outputSchemaValue` to `query.data`/`inputSchemaBaseline`/`outputSchemaBaseline` without navigating, taking effect only after a further explicit confirmation, distinct from `onCancel`.
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: "nowhere"
+    evidence: |-
+      return {
+            phase: "load-error",
+            retryLoad: () => {
+              void query.refetch();
+              conceptOptions.refetch();
+            },
+            onCancel,
+          };
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: "nowhere"
+    evidence: |-
+      return {
+            phase: "load-error",
+            retryLoad: () => {
+              void query.refetch();
+              conceptOptions.refetch();
+            },
+            onCancel,
+          };
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: deleteMutation's mutationFn, which treats the DELETE response as carrying nothing
+    evidence: |-
+      mutationFn: () =>
+            apiFetch<void>(
+              `/v1/capabilities/${encodeURIComponent(name)}/${encodeURIComponent(version)}`,
+              { method: "DELETE" },
+            ),
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: the query.isError branch's specific-condition check
+    evidence: |-
+      if (query.error instanceof ApiError && query.error.code === "CapabilityIdentityNotFoundError") {
+            return { phase: "not-registered", onCancel };
+          }
+  - node: contracts/integration/capability-registry
+    held_at: the three apiFetch calls implementing read-capability-by-identity (GET), register-capability (PUT) and remove-capability (DELETE)
+    evidence: |-
+      queryFn: () =>
+            apiFetch<Capability>(
+              `/v1/capabilities/${encodeURIComponent(name)}/${encodeURIComponent(version)}`,
+            ),
+  - node: domain/integration/capability
+    held_at: the form.reset block populating every declared attribute from the read's own answer
+    evidence: |-
+      form.reset({
+              name: query.data.name,
+              version: query.data.version,
+              nature: query.data.nature,
+              timeout: query.data.timeout,
+              connector: query.data.connector,
+              concept: query.data.concept,
+              payload_notes: query.data.payload_notes,
+            });
+  - node: rules/integration/a-capability-declares-its-contract
+    held_at: the form's resolver wiring, whose declared constraints live in the imported schema
+    evidence: "resolver: zodResolver(capabilityFormSchema),"
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: the submit guard checking both schema-validity flags before mutating
+    evidence: |-
+      const submit = form.handleSubmit((values) => {
+          if (!inputSchemaValid || !outputSchemaValid) {
+            return;
+          }
+          mutation.mutate(values);
+        });
+  - node: rules/integration/a-capability-keyed-surface-states-a-read-in-flight-and-a-read-that-failed
+    held_at: the phase-branching over query.isError / isConceptsError / query.isLoading before "ready" is reached
+    evidence: |-
+      if (query.isError) {
+          if (query.error instanceof ApiError && query.error.code === "CapabilityIdentityNotFoundError") {
+            return { phase: "not-registered", onCancel };
+          }
+          return {
+            phase: "load-error",
+            retryLoad: () => {
+              void query.refetch();
+              conceptOptions.refetch();
+            },
+            onCancel,
+          };
+        }
+        if (isConceptsError) {
+          return {
+            phase: "load-error",
+            retryLoad: () => {
+              void query.refetch();
+              conceptOptions.refetch();
+            },
+            onCancel,
+          };
+        }
+        if (query.isLoading || isLoadingConcepts || !query.data) {
+          return { phase: "loading", onCancel };
+        }
+  - node: rules/integration/a-loaded-registration-edit-may-be-discarded-without-leaving-the-surface
+    held_at: "nowhere"
+    evidence: |-
+      isDirty,
+          isSubmitting: mutation.isPending,
+          isSubmitSuccessful: mutation.isSuccess,
+          onSubmit,
+          onCancel,
+          isDeleting: deleteMutation.isPending,
+          onDelete: () => {
+            deleteMutation.mutate();
+          },
+        };
+  - node: rules/integration/a-presented-capability-states-its-declared-attributes-as-the-read-answered-them
+    held_at: the sync block that sets every field, including both schema fields, only from query.data
+    evidence: |-
+      setInputSchemaValue(query.data.input_schema);
+            setInputSchemaValid(getJsonTextareaMinifiedValue(query.data.input_schema) !== null);
+            setInputSchemaBaseline(query.data.input_schema);
+            setOutputSchemaValue(query.data.output_schema);
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: the REMOVE_FAILURE_MESSAGE_BY_KIND mapping naming the distinct refusal
+    evidence: |-
+      const REMOVE_FAILURE_MESSAGE_BY_KIND: Partial<Record<UiErrorStateKind, string>> = {
+        "capability-cited-by-evidence":
+          "Nothing was removed: collected evidence names this capability.",
+      };
+  - node: rules/integration/a-single-registration-surface-offers-a-return-to-its-origin-on-every-reading
+    held_at: the onCancel function, returned on every phase of CapabilityDetailState
+    evidence: |-
+      const onCancel = (): void => {
+          if (router.history.canGoBack()) {
+            router.history.back();
+            return;
+          }
+          void navigate({ to: "/capabilities" });
+        };
+  - node: rules/integration/a-submitted-capability-edit-stands-in-the-fields-until-that-surfaces-own-read-answers
+    held_at: the mutation's onSuccess, which only invalidates queries and never touches form or schema state directly
+    evidence: |-
+      onSuccess: () => {
+            void queryClient.invalidateQueries({ queryKey: ["capabilities"] });
+            void queryClient.invalidateQueries({ queryKey: ["capability", name, version] });
+          },
+  - node: rules/integration/a-submitted-registration-states-its-outcome-to-the-operator
+    held_at: "nowhere"
+    evidence: |-
+      onSuccess: () => {
+            void queryClient.invalidateQueries({ queryKey: ["capabilities"] });
+            void queryClient.invalidateQueries({ queryKey: ["capability", name, version] });
+          },
+          onError: (error) => {
+            toast.error(saveFailureMessage(error));
+          },
+  - node: rules/integration/a-submitted-removal-states-its-outcome-to-the-operator
+    held_at: deleteMutation's onSuccess and onError
+    evidence: |-
+      onSuccess: () => {
+            toast.success(`${name} ${version} is no longer registered.`);
+            void queryClient.invalidateQueries({ queryKey: ["capabilities"] });
+            void navigate({ to: "/capabilities" });
+          },
+          onError: (error) => {
+            toast.error(removeFailureMessage(error));
+          },
+  - node: rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing
+    held_at: deleteMutation's onSuccess navigate call
+    evidence: "void navigate({ to: \"/capabilities\" });"
+  - node: rules/integration/an-abandoned-capability-registration-entry-registers-nothing
+    held_at: "nowhere"
+    evidence: |-
+      export function useCapabilityDetail(name: string, version: string): CapabilityDetailState {
+  - node: rules/integration/an-abandonment-with-no-surface-to-return-to-lands-on-the-registrys-listing
+    held_at: onCancel's fallback branch, taken when there is no surface to return to
+    evidence: |-
+      if (router.history.canGoBack()) {
+            router.history.back();
+            return;
+          }
+          void navigate({ to: "/capabilities" });
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: "nowhere"
+    evidence: the file's only removal call targets `/v1/capabilities/${encodeURIComponent(name)}/${encodeURIComponent(version)}`; no glossary/concept removal appears anywhere in the file
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: "nowhere"
+    evidence: the file's only removal call targets `/v1/capabilities/${encodeURIComponent(name)}/${encodeURIComponent(version)}`; no connector-configuration removal appears anywhere in the file
+  - node: domain/glossary/concept
+    held_at: "nowhere"
+    evidence: "concept: query.data.concept"
+  - node: domain/integration/connector-configuration
+    held_at: "nowhere"
+    evidence: "connector: query.data.connector"
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: "nowhere"
+    evidence: the file contains no remove-concept call or glossary endpoint of any kind
+  - node: rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act
+    held_at: "nowhere"
+    evidence: |-
+      onDelete: () => {
+            deleteMutation.mutate();
+          },
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: "nowhere"
+    evidence: the file contains no connector-configuration removal call of any kind
+looked_past: the retryLoad callbacks always refetch both the capability query and conceptOptions regardless of which one actually failed, and the derived-state-during-render pattern used to sync the form and schema fields to query.data is unconventional React; neither states a domain fact and both are another judgment's to weigh.

@@ -1,0 +1,134 @@
+findings:
+  - file: src/hooks/use-glossary-concepts.spec.ts
+    where: >-
+      lines 311-330, the describe block "useRemoveGlossaryConcept -- the ConceptInUseError
+      statement names the concept, never the reported reference (UNDERDETERMINED...)" and its
+      single test
+    evidence: |-
+      const capabilityMessage = await captureRemovalFailureMessage(
+        refusalResponse(capabilityReference, 409),
+      );
+      const evidenceMessage = await captureRemovalFailureMessage(
+        refusalResponse(evidenceReference, 409),
+      );
+
+      expect(evidenceMessage).toBe(capabilityMessage);
+    cost: >-
+      The test pins, as a passing requirement, that the operator's toast never varies with
+      whether a capability or an evidence item is what still names the concept -- rules/glossary/a-registered-concept-is-never-removed
+      states that the refusal reports "a reference identifying what names it" precisely
+      "so the person told to keep the concept knows what to look at," yet no node decides
+      whether that reference reaches the operator-facing surface distinctly or is folded away.
+      The describe block's own title labels this UNDERDETERMINED and cites a delivery-record
+      inference rather than a specification decision; the next reader who opens the specification
+      to learn why the reference is discarded finds nothing, because the choice was made in
+      the test and a proof record, never decided into the specification's own decision log.
+    kind: unstated
+    correction: >-
+      Decide, into the specification (naming rules/glossary/a-registered-concept-is-never-removed
+      or the operator-outcome rule it feeds), whether a ConceptInUseError refusal's reported
+      reference must reach the operator distinctly or is deliberately folded into one statement,
+      and record that decision in knowledge/decision-log.md rather than only in delivery/proof
+      and this test.
+    node: rules/glossary/a-registered-concept-is-never-removed
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: >-
+      the INTERNAL_ERROR fixture and the assertions distinguishing its toast wording from
+      ConceptInUseError's own, lines 144-147 and 223-232
+    evidence: |-
+      const INTERNAL_ERROR: ApiErrorBody = {
+        code: "INTERNAL_ERROR",
+        message: "an unexpected error occurred",
+      };
+      ...
+      expect(internalErrorMessage).not.toBe(conceptInUseMessage);
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      the VALIDATION_ERROR fixture (lines 138-142) is consumed only to exercise the hook's
+      own refusal-message branch; nothing in this file asserts the route's own 400 shape --
+      that its message names which of path, query or body failed, or that its details list
+      the issues found
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      import { useGlossaryConcepts, useRemoveGlossaryConcept } from "./use-glossary-concepts";
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: the noContentResponse fixture used to drive a successful removal, lines 128-130 and 198-203
+    evidence: |-
+      function noContentResponse(): Response {
+        return new Response(null, { status: 204 });
+      }
+      ...
+      await issueRemoval("billing-dispute", noContentResponse());
+      expect(toast.success).toHaveBeenCalledTimes(1);
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      import { useGlossaryConcepts, useRemoveGlossaryConcept } from "./use-glossary-concepts";
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: |-
+      import { useGlossaryConcepts, useRemoveGlossaryConcept } from "./use-glossary-concepts";
+  - node: domain/glossary/concept
+    held_at: the concepts fixtures across the useGlossaryConcepts describe block, lines 33-59
+    evidence: |-
+      { name: "billing-dispute", accepts: ["customer-account"], ttl: 3600,
+        description: "Tracks a customer-raised dispute over a billing charge." }
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: |-
+      import { useGlossaryConcepts, useRemoveGlossaryConcept } from "./use-glossary-concepts";
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: |-
+      import { useGlossaryConcepts, useRemoveGlossaryConcept } from "./use-glossary-concepts";
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: the CONCEPT_IN_USE_ERROR fixture and the refusal-message tests, lines 132-136 and 205-210
+    evidence: |-
+      const CONCEPT_IN_USE_ERROR: ApiErrorBody = {
+        code: "ConceptInUseError",
+        message: "the concept is still referenced",
+        details: { name: "billing-dispute", reference: "capability" },
+      };
+      ...
+      expect(message.toLowerCase()).toContain("still names");
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: |-
+      import { useGlossaryConcepts, useRemoveGlossaryConcept } from "./use-glossary-concepts";
+  - node: rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act
+    held_at: nowhere
+    evidence: >-
+      the removal itself is invoked directly -- `result.current.remove(name);` inside `act()`
+      (line 162) -- with no confirmation gesture, control, or further explicit act modelled
+      anywhere in this hook-level file
+  - node: rules/integration/a-submitted-removal-states-its-outcome-to-the-operator
+    held_at: >-
+      the describe block "useRemoveGlossaryConcept -- states the answered outcome of a
+      submitted removal", lines 197-288
+    evidence: |-
+      expect(toast.success).not.toHaveBeenCalled();
+      expect(toast.error).not.toHaveBeenCalled();
+      ...
+      await waitFor(() => expect(result.current.isRemoving).toBe(false));
+      expect(toast.success).toHaveBeenCalledTimes(1);
+  - node: rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing
+    held_at: nowhere
+    evidence: >-
+      no router, navigation or listing assertion appears anywhere in the file; only
+      `queryClient.getQueryData(...)` and toast calls are inspected
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: |-
+      import { useGlossaryConcepts, useRemoveGlossaryConcept } from "./use-glossary-concepts";
+looked_past: >-
+  The query-key naming (["glossary", "concepts-with-ttl"] kept distinct from
+  use-concept-options.ts's own key) and the fallback to an empty concepts array on a
+  failed or empty read are cache-hygiene and defensive-return choices rather than
+  disclosed domain facts, and are already flagged in the test's own titles as
+  "(disclosed inference)" -- another judgment's to weigh, not a specification-conformance
+  finding.
+candidates_opened:
+  - contracts/glossary/glossary-query

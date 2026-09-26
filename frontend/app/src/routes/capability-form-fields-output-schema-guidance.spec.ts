@@ -203,3 +203,34 @@ describe("CapabilityFormFields — the surface does not refuse an output schema 
     expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(false);
   });
 });
+
+// The six canonical claim sentences, lowercase and unpunctuated, in the order the guidance
+// states them. Unlike CLAIM_PATTERNS above -- which only checks that each of these appears
+// somewhere inside a sentence -- this list is compared by exact equality against every
+// sentence the guidance renders, so a sentence carrying a claim plus anything else (a worked
+// example tacked onto it, or a further fact about how a path is built that the claim itself
+// does not state) fails here even though it would still satisfy every CLAIM_PATTERNS check.
+const EXACT_CLAIM_SENTENCES: readonly string[] = [
+  "o que é inserido aqui é json",
+  "os nomes de campo lidos a partir dele são os caminhos através do objeto properties de nível superior deste schema e de todo objeto properties e todo schema items alcançável a partir dele",
+  "esse caminho é construído concatenando a chave própria de cada objeto ao caminho do seu pai com um ponto, e os items próprios de cada array ao caminho do seu pai com colchetes",
+  "o type e a description declarados no nó que cada caminho alcança, onde o schema os declara, são lidos como a semântica declarada desse campo",
+  "nenhum outro conteúdo deste schema é lido ou validado",
+  "uma description aqui declara o que seu valor significa e não nomeia nenhuma decisão",
+];
+
+describe("CapabilityFormFields — the guidance's six sentences carry exactly their own claim and nothing appended to it", () => {
+  it("renders exactly the six canonical claim sentences, in order, with no worked example or further path-shape fact folded into any of them", async () => {
+    const fetchMock = createCreateScreenFetchStub(createScreenBaseHandlers());
+    await mountCapabilityCreateScreen(fetchMock);
+    await screen.findByLabelText("Connector");
+
+    const guidance = findGuidanceParagraph(document.body);
+    const sentences = (guidance?.textContent ?? "")
+      .split(".")
+      .map((sentence) => sentence.trim().toLowerCase())
+      .filter((sentence) => sentence.length > 0);
+
+    expect(sentences).toEqual(EXACT_CLAIM_SENTENCES);
+  });
+});

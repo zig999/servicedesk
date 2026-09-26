@@ -1,0 +1,96 @@
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: >-
+      the two tests pinning the fallback path, lines 148-151 and 322-335
+    evidence: |-
+      it("resolves a code the table does not name to the generic-error state rather than throwing", () => {
+          const state = uiStateForApiError(new ApiError("SomeFutureBackendError", "unrecognized"));
+          expect(state.kind).toBe("generic-error");
+        });
+      ...
+      it("resolves a code the table does not name to a fallback state carrying only the kind, not the refusal's own message", () => {
+          const state = uiStateForApiError(new ApiError("SomeFutureBackendError", "some future message"));
+          expect(Object.keys(state)).toEqual(["kind"]);
+        });
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      The file's whole describe block is scoped to "the error-code mapping resolves an API error's own
+      code to a user-facing state" (line 6); no test here exercises a VALIDATION_ERROR/400 shape at all.
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      No test in this file asserts anything about a 204/no-content removal answer; every case
+      constructs an `ApiError` and reads `state.kind`.
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      No test in this file asserts anything about a 204/no-content removal answer.
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      No test in this file asserts anything about a 204/no-content removal answer.
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: >-
+      "CapabilityIdentityNotFoundError" does not appear anywhere in the file — not in any `it()`
+      case, and not in either of the two enumerated `otherCodes` lists (lines 57-77, 229-251).
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: >-
+      The file constructs only `ApiError(code, message)` values and reads `state.kind`; no concept
+      attribute is asserted anywhere.
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: >-
+      No capability attribute is asserted anywhere in the file.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      No connector-configuration attribute is asserted anywhere in the file.
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: >-
+      lines 158-193, the two ConceptInUseError tests
+    evidence: |-
+      it("resolves ConceptInUseError to a state kind other than the shared generic-error fallback", () => {
+          const state = uiStateForApiError(new ApiError("ConceptInUseError", "concept in use"));
+          expect(state.kind).not.toBe("generic-error");
+        });
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: >-
+      lines 228-261, the CapabilityCitedByEvidenceError test
+    evidence: |-
+      it("resolves CapabilityCitedByEvidenceError to a kind no other named code resolves to, distinct from the generic fallback", () => {
+      ...
+        const targetKind = uiStateForApiError(
+          new ApiError("CapabilityCitedByEvidenceError", "cited by evidence"),
+        ).kind;
+      ...
+        expect(targetKind).not.toBe("generic-error");
+      });
+  - node: rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act
+    held_at: nowhere
+    evidence: >-
+      The file tests only the code-to-kind resolution function `uiStateForApiError`; no control,
+      confirmation act, or surface behaviour is exercised.
+  - node: rules/integration/a-submitted-removal-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: >-
+      No test asserts what a removal's outcome states to an operator; the file only resolves error
+      codes to `state.kind` values.
+  - node: rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing
+    held_at: nowhere
+    evidence: >-
+      No navigation or listing destination is asserted anywhere in the file.
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: >-
+      No test in this file exercises a connector-configuration removal.
+looked_past: >-
+  The large literal table of internal UI `kind` strings (e.g. the regression-pinning test at lines
+  263-297) and the citation to "capability schema helper's refusal-stated-to-the-operator criterion 8"
+  at line 327 name an implementation-plan criterion and internal identifiers rather than a domain fact
+  from a specification node, and the OpenApi-document error codes' own handling belongs to whatever
+  file implements that helper, not to this node set.
+candidates_opened:
+  - rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name

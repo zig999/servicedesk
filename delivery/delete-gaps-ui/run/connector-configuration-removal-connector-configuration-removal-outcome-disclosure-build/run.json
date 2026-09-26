@@ -1,0 +1,74 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/connector-configuration-removal-connector-configuration-removal-outcome-disclosure-build",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/delete-gaps-detail/frontend/app",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-25T15:03:36.018+00:00",
+      "ended_at": "2026-09-25T15:04:18.750+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-09-25T15:04:18.750+00:00",
+      "ended_at": "2026-09-25T15:04:47.790+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-09-25T15:04:47.791+00:00",
+      "ended_at": "2026-09-25T15:05:09.763+00:00"
+    },
+    {
+      "name": "style",
+      "command": "npm run lint:css",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "style.log",
+      "started_at": "2026-09-25T15:05:09.763+00:00",
+      "ended_at": "2026-09-25T15:05:10.957+00:00"
+    },
+    {
+      "name": "build",
+      "command": "npm run build",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "build.log",
+      "started_at": "2026-09-25T15:05:10.957+00:00",
+      "ended_at": "2026-09-25T15:05:19.826+00:00"
+    },
+    {
+      "name": "a11y",
+      "command": "npm run test:a11y",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "a11y.log",
+      "started_at": "2026-09-25T15:05:19.826+00:00",
+      "ended_at": "2026-09-25T15:05:32.945+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-09-25T15:05:32.945+00:00",
+      "ended_at": "2026-09-25T15:05:34.283+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

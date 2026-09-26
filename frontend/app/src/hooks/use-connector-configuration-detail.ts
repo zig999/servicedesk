@@ -4,7 +4,8 @@ import { useNavigate, useRouter } from "@tanstack/react-router";
 import { useForm, type UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { apiFetch } from "../services/api-client";
+import { apiFetch, ApiError } from "../services/api-client";
+import { uiStateForApiError, type UiErrorStateKind } from "../services/error-ui-state";
 import { getJsonTextareaMinifiedValue } from "../shared/lib/json-text";
 import {
   connectorConfigurationFormSchema,
@@ -12,6 +13,18 @@ import {
 } from "../services/connector-configuration-form-schema";
 import type { ConnectorConfiguration } from "./use-connector-configurations";
 import { saveFailureMessage, type ConfigurationFieldState } from "./use-connector-configuration-form";
+
+const GENERIC_REMOVAL_FAILURE_MESSAGE = "Nothing was removed.";
+
+const REMOVAL_FAILURE_MESSAGE_BY_KIND: Partial<Record<UiErrorStateKind, string>> = {};
+
+function removalFailureMessage(error: unknown): string {
+  if (error instanceof ApiError) {
+    const state = uiStateForApiError(error);
+    return REMOVAL_FAILURE_MESSAGE_BY_KIND[state.kind] ?? GENERIC_REMOVAL_FAILURE_MESSAGE;
+  }
+  return GENERIC_REMOVAL_FAILURE_MESSAGE;
+}
 
 const UNSYNCED_CONFIGURATION_DATA = Symbol("unsynced-connector-configuration-data");
 
@@ -41,6 +54,8 @@ export type ConnectorConfigurationDetailState =
       readonly isSubmitSuccessful: boolean;
       readonly onSubmit: (event?: BaseSyntheticEvent) => void;
       readonly onCancel: () => void;
+      readonly onRemove: () => void;
+      readonly isRemoving: boolean;
     };
 
 export function useConnectorConfigurationDetail(
@@ -114,6 +129,22 @@ export function useConnectorConfigurationDetail(
     },
   });
 
+  const removeMutation = useMutation({
+    mutationFn: () =>
+      apiFetch<void>(`/v1/connectors/${encodeURIComponent(connector)}`, {
+        method: "DELETE",
+      }),
+    onSuccess: () => {
+      toast.success(`Connector configuration ${connector} removed.`);
+      void queryClient.invalidateQueries({ queryKey: ["connector-configurations"] });
+      void queryClient.invalidateQueries({ queryKey: ["connector-configuration", connector] });
+      void navigate({ to: "/connectors" });
+    },
+    onError: (error) => {
+      toast.error(removalFailureMessage(error));
+    },
+  });
+
   const handleConfigurationChange = useCallback((value: string): void => {
     setConfigurationValue(value);
     setConfigurationValid(isValidConfigurationObject(value));
@@ -168,5 +199,9 @@ export function useConnectorConfigurationDetail(
     isSubmitSuccessful: mutation.isSuccess,
     onSubmit,
     onCancel,
+    onRemove: () => {
+      removeMutation.mutate();
+    },
+    isRemoving: removeMutation.isPending,
   };
 }

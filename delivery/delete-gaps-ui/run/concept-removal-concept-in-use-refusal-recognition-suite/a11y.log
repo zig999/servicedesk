@@ -1,0 +1,20 @@
+
+> case-authoring-console@0.1.0 test:a11y
+> playwright test --pass-with-no-tests
+
+[WebServer] Found 1 warning while optimizing generated CSS:
+[WebServer] 
+[WebServer] │   }
+[WebServer] │   .rounded-\[var\(--radius-\*\)\] {
+[WebServer] │     border-radius: var(--radius-*);
+[WebServer] ┆                                 ^-- Unexpected token Delim('*')
+[WebServer] ┆
+[WebServer] │   }
+[WebServer] │   .rounded-full {
+[WebServer] 
+[WebServer] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+

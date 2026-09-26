@@ -1,0 +1,94 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/output-schema-guidance-fix",
+      "kind": "epic",
+      "file": "epic/output-schema-guidance-fix.md",
+      "title": "Output schema guidance fix",
+      "summary": "Corrective increment: the Output schema field's authoring surface renders no guidance paragraph at all, though the specification's output-schema-entry rules already require one."
+    },
+    {
+      "id": "task/output-schema-guidance-fix/render-guidance-paragraph",
+      "kind": "task",
+      "file": "task/output-schema-guidance-fix/render-guidance-paragraph.md",
+      "title": "Render the Output schema field's guidance paragraph",
+      "summary": "The capability create and detail screens' Output schema field currently shows no guidance paragraph at all.",
+      "epic": "output-schema-guidance-fix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/output-schema-guidance-fix",
+      "to": "rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/output-schema-guidance-fix",
+      "to": "rules/integration/an-output-schema-entrys-statement-carries-no-sixth-claim",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/output-schema-guidance-fix",
+      "to": "rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/output-schema-guidance-fix",
+      "to": "rules/glossary/a-description-states-meaning-never-policy",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/output-schema-guidance-fix",
+      "to": "domain/investigation/field-semantics",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/output-schema-guidance-fix",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "task/output-schema-guidance-fix/render-guidance-paragraph",
+      "to": "rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/output-schema-guidance-fix/render-guidance-paragraph",
+      "to": "rules/integration/an-output-schema-entrys-statement-carries-no-sixth-claim",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/output-schema-guidance-fix/render-guidance-paragraph",
+      "to": "rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/output-schema-guidance-fix/render-guidance-paragraph",
+      "to": "rules/glossary/a-description-states-meaning-never-policy",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/output-schema-guidance-fix/render-guidance-paragraph",
+      "to": "domain/investigation/field-semantics",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/output-schema-guidance-fix/render-guidance-paragraph",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[5]"
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import { useForm, type UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { apiFetch, ApiError } from "../services/api-client";
+import { uiStateForApiError, type UiErrorStateKind } from "../services/error-ui-state";
 import { getJsonTextareaMinifiedValue } from "../shared/lib/json-text";
 import {
   capabilityFormSchema,
@@ -13,6 +14,21 @@ import {
 import { useConceptOptions, type ConceptOption } from "./use-concept-options";
 import type { Capability } from "./use-capabilities";
 import { saveFailureMessage, type JsonSchemaFieldState } from "./use-capability-form";
+
+const GENERIC_REMOVE_FAILURE_MESSAGE = "The removal failed; nothing was removed.";
+
+const REMOVE_FAILURE_MESSAGE_BY_KIND: Partial<Record<UiErrorStateKind, string>> = {
+  "capability-cited-by-evidence":
+    "Nothing was removed: collected evidence names this capability.",
+};
+
+function removeFailureMessage(error: unknown): string {
+  if (error instanceof ApiError) {
+    const state = uiStateForApiError(error);
+    return REMOVE_FAILURE_MESSAGE_BY_KIND[state.kind] ?? GENERIC_REMOVE_FAILURE_MESSAGE;
+  }
+  return GENERIC_REMOVE_FAILURE_MESSAGE;
+}
 
 export type CapabilityDetailState =
   | { readonly phase: "loading"; readonly onCancel: () => void }
@@ -34,6 +50,8 @@ export type CapabilityDetailState =
       readonly isSubmitSuccessful: boolean;
       readonly onSubmit: (event?: BaseSyntheticEvent) => void;
       readonly onCancel: () => void;
+      readonly isDeleting: boolean;
+      readonly onDelete: () => void;
     };
 
 export function useCapabilityDetail(name: string, version: string): CapabilityDetailState {
@@ -122,6 +140,22 @@ export function useCapabilityDetail(name: string, version: string): CapabilityDe
     },
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: () =>
+      apiFetch<void>(
+        `/v1/capabilities/${encodeURIComponent(name)}/${encodeURIComponent(version)}`,
+        { method: "DELETE" },
+      ),
+    onSuccess: () => {
+      toast.success(`${name} ${version} is no longer registered.`);
+      void queryClient.invalidateQueries({ queryKey: ["capabilities"] });
+      void navigate({ to: "/capabilities" });
+    },
+    onError: (error) => {
+      toast.error(removeFailureMessage(error));
+    },
+  });
+
   const isLoadingConcepts = conceptOptions.isLoading;
   const isConceptsError = conceptOptions.isError;
 
@@ -203,5 +237,9 @@ export function useCapabilityDetail(name: string, version: string): CapabilityDe
     isSubmitSuccessful: mutation.isSuccess,
     onSubmit,
     onCancel,
+    isDeleting: deleteMutation.isPending,
+    onDelete: () => {
+      deleteMutation.mutate();
+    },
   };
 }

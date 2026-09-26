@@ -1,0 +1,75 @@
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      resolveDelete(errorResponse("ValidationError", 400));
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      resolveDelete(errorResponse("ValidationError", 400));
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      import { ConnectorConfigurationDetailScreen } from "./connector-configuration-detail-screen";
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      import { ConnectorConfigurationDetailScreen } from "./connector-configuration-detail-screen";
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: >-
+      the removableHandlers() DELETE branch, lines 44-47
+    evidence: >-
+      method === "DELETE" ? new Response(null, { status: 204 }) : jsonResponse({ connector: CONNECTOR, configuration: LOADED_CONFIGURATION })
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: >-
+      import { ConnectorConfigurationDetailScreen } from "./connector-configuration-detail-screen";
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: >-
+      import { ConnectorConfigurationDetailScreen } from "./connector-configuration-detail-screen";
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: >-
+      import { ConnectorConfigurationDetailScreen } from "./connector-configuration-detail-screen";
+  - node: domain/integration/connector-configuration
+    held_at: >-
+      the removableHandlers() GET/DELETE branch, line 47
+    evidence: >-
+      jsonResponse({ connector: CONNECTOR, configuration: LOADED_CONFIGURATION })
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      import { ConnectorConfigurationDetailScreen } from "./connector-configuration-detail-screen";
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      import { ConnectorConfigurationDetailScreen } from "./connector-configuration-detail-screen";
+  - node: rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act
+    held_at: >-
+      openRemoveDialog() and confirmRemoveButton(), lines 55-64, and their use at lines 158-159
+    evidence: |-
+      async function openRemoveDialog(): Promise<void> {
+        fireEvent.click(removeControlButton());
+        await screen.findByRole("dialog");
+      }
+  - node: rules/integration/a-submitted-removal-states-its-outcome-to-the-operator
+    held_at: >-
+      the toast assertions at lines 255 and 271
+    evidence: >-
+      expect(toast.success).toHaveBeenCalledWith(expect.stringContaining(CONNECTOR));
+  - node: rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing
+    held_at: >-
+      the navigation assertion at line 161 (and repeated at lines 174, 196, 225)
+    evidence: >-
+      await waitFor(() => expect(router.state.location.pathname).toBe("/connectors"));
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: >-
+      function removableHandlers(): ReturnType<typeof baseHandlers> { return baseHandlers(LOADED_CONFIGURATION, { [CONFIGURATION_PATH]: (method) => method === "DELETE" ? new Response(null, { status: 204 }) : jsonResponse({ connector: CONNECTOR, configuration: LOADED_CONFIGURATION }), }); }
+looked_past: >-
+  The describe-block prose ("criterion 1"..."criterion 4", the "UNDERDETERMINED note" annotations) and the fact that the refusal-path test only asserts toast.error was called rather than inspecting the refusal's code, message or details, are test-structure and coverage-depth matters rather than a domain-fact discrepancy, so they are left to another pass.
+candidates_opened:
+  - rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
+  - rules/integration/a-held-connector-configuration-answer-stands-presented-through-a-failed-further-read-but-not-a-refused-one
+  - rules/integration/a-presented-connector-configuration-states-an-outstanding-or-failed-read

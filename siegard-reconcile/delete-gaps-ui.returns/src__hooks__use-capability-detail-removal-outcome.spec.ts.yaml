@@ -1,0 +1,89 @@
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: |-
+      the HTTP 500 / INTERNAL_ERROR refusal case, lines 142-150
+    evidence: |-
+      const internalErrorMessage = await captureRemoveFailureMessage("INTERNAL_ERROR", 500);
+
+      expect(internalErrorMessage.toLowerCase()).toContain("nothing was removed");
+      expect(internalErrorMessage).not.toBe(citedByEvidenceMessage);
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: |-
+      the HTTP 400 / VALIDATION_ERROR refusal case, lines 132-140
+    evidence: |-
+      const validationErrorMessage = await captureRemoveFailureMessage("VALIDATION_ERROR", 400);
+
+      expect(validationErrorMessage.toLowerCase()).toContain("nothing was removed");
+      expect(validationErrorMessage).not.toBe(citedByEvidenceMessage);
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: |-
+      noContentResponse(), lines 28-30, used as the DELETE answer in the success-path tests
+    evidence: |-
+      function noContentResponse(): Response {
+        return new Response(null, { status: 204 });
+      }
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      import { useCapabilityDetail, type CapabilityDetailState } from "./use-capability-detail";
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      import { useCapabilityDetail, type CapabilityDetailState } from "./use-capability-detail";
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: |-
+      await waitFor(() => expect(result.current.phase).toBe("ready"));
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: |-
+      import { useCapabilityDetail, type CapabilityDetailState } from "./use-capability-detail";
+  - node: domain/integration/capability
+    held_at: |-
+      the success-message assertion, lines 98-100
+    evidence: |-
+      const message = successMessage();
+      expect(message).toContain(NAME);
+      expect(message).toContain(VERSION);
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: |-
+      import { useCapabilityDetail, type CapabilityDetailState } from "./use-capability-detail";
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: |-
+      import { useCapabilityDetail, type CapabilityDetailState } from "./use-capability-detail";
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: |-
+      the CapabilityCitedByEvidenceError refusal case, lines 123-130
+    evidence: |-
+      const message = await captureRemoveFailureMessage("CapabilityCitedByEvidenceError", 409);
+
+      expect(message.toLowerCase()).toContain("nothing was removed");
+      expect(message.toLowerCase()).toContain("evidence");
+  - node: rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act
+    held_at: nowhere
+    evidence: |-
+      act(() => {
+        readyState(result.current).onDelete();
+      });
+  - node: rules/integration/a-submitted-removal-states-its-outcome-to-the-operator
+    held_at: |-
+      the success test (lines 84-101), the four refusal-branch tests (lines 123-173), and the pending-removal test (lines 175-200)
+    evidence: |-
+      await waitFor(() => expect(readyState(result.current).isDeleting).toBe(true));
+
+      expect(toast.success).not.toHaveBeenCalled();
+      expect(toast.error).not.toHaveBeenCalled();
+  - node: rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing
+    held_at: nowhere
+    evidence: |-
+      const message = successMessage();
+      expect(message).toContain(NAME);
+      expect(message).toContain(VERSION);
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: |-
+      import { useCapabilityDetail, type CapabilityDetailState } from "./use-capability-detail";
+looked_past: |-
+  The "(criterion N)" and "UNDERDETERMINED" labels in the describe titles are traceability/test-design annotations about which behaviors the specification leaves open, not domain-fact claims, and are outside this pass's judgment.

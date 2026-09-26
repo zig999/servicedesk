@@ -1,0 +1,132 @@
+read:
+  - node: domain/glossary/concept
+    held_at: >-
+      toConceptRow (lines 38-66) and CONCEPTS_COLUMNS (lines 17-23), which render the
+      value-object's name, description, accepts and ttl attributes as table cells.
+    evidence: |
+      id: concept.name,
+      name: concept.name,
+      description: toDescriptionCell(concept.description),
+      accepts: concept.accepts.join(", "),
+      ttl: formatTtl(concept.ttl),
+  - node: rules/glossary/a-concept-with-an-empty-description-is-read-as-awaiting-one
+    held_at: "toDescriptionCell, lines 29-36"
+    evidence: |
+      if (description === "") {
+        return { color: "bg-muted-foreground", label: "Awaiting description" };
+      }
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: nowhere
+    evidence: >-
+      the isError branch (lines 78-87) shows a fixed generic message and a Retry
+      button with no reference to a status code or error code — the status-mapping
+      fact this constraint states is not decided in this file: `if (isError) {
+      return ( <section> <p>Unable to load the glossary&apos;s concepts.</p>
+      <Button type="button" onClick={refetch}> Retry </Button> </section> ); }`
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      the same isError branch is the only error surface this file renders, and it
+      carries no validation-shape handling: `<p>Unable to load the glossary&apos;s
+      concepts.</p>`
+  - node: constraints/a-successful-capability-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the file's imports name only glossary concepts, never a capability: `import {
+      useGlossaryConcepts, useRemoveGlossaryConcept, type GlossaryConcept } from
+      "../hooks/use-glossary-concepts";`
+  - node: constraints/a-successful-concept-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the removal call site does not inspect any response: `onConfirm={() => { if
+      (removeTarget !== null) { remove(removeTarget.name); } }}` — the answer's
+      shape is the hook's own concern, not read here.
+  - node: constraints/a-successful-connector-configuration-removal-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      no connector-configuration reference appears anywhere in the file; the only
+      hook imported is `use-glossary-concepts`.
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: >-
+      no capability-identity read appears anywhere in the file; the only hook
+      imported is `use-glossary-concepts`.
+  - node: domain/integration/capability
+    held_at: nowhere
+    evidence: >-
+      the file declares no capability attribute or type anywhere; its only domain
+      type import is `type GlossaryConcept`.
+  - node: domain/integration/connector-configuration
+    held_at: nowhere
+    evidence: >-
+      the file declares no connector-configuration attribute or type anywhere; its
+      only domain type import is `type GlossaryConcept`.
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      the confirm handler issues the removal unconditionally and reads nothing back
+      from it: `onConfirm={() => { if (removeTarget !== null) {
+      remove(removeTarget.name); } }}` — the in-use refusal this rule states is not
+      decided or displayed in this file.
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      no capability-removal code exists in the file; the only removal wired here is
+      `useRemoveGlossaryConcept`.
+  - node: rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act
+    held_at: >-
+      the row's Remove button (lines 55-62) only opens a confirmation dialog, and the
+      dialog's own onConfirm (lines 120-132) is the sole place remove() is called.
+    evidence: |
+      <Button
+        type="button"
+        variant="destructive"
+        onClick={() => onRemove(concept)}
+        disabled={isRemoveDisabled}
+      >
+        Remove
+      </Button>
+      ...
+      <ConceptRemovalConfirmationDialog
+        concept={removeTarget}
+        onOpenChange={(open) => {
+          if (!open) {
+            setRemoveTarget(null);
+          }
+        }}
+        onConfirm={() => {
+          if (removeTarget !== null) {
+            remove(removeTarget.name);
+          }
+        }}
+      />
+  - node: rules/integration/a-submitted-removal-states-its-outcome-to-the-operator
+    held_at: nowhere
+    evidence: >-
+      the confirm handler calls remove() and displays nothing about the outcome:
+      `onConfirm={() => { if (removeTarget !== null) { remove(removeTarget.name); }
+      }}`
+  - node: rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing
+    held_at: >-
+      implicit in the component's own structure: ConceptsPanel is itself the concept
+      listing, and no navigation call follows remove() anywhere in the file, so a
+      successful removal leaves the operator exactly on this listing.
+    evidence: |
+      return (
+        <section className="flex flex-col gap-4">
+          <div className="flex justify-end">
+            <Button type="button" onClick={() => setFormTarget({ mode: "create" })}>
+              New concept
+            </Button>
+          </div>
+          {renderBody()}
+  - node: rules/integration/removing-a-connector-configuration-is-unconditional
+    held_at: nowhere
+    evidence: >-
+      no connector-configuration removal code exists in the file; the only removal
+      wired here is `useRemoveGlossaryConcept`.
+looked_past: >-
+  isRemoveDisabled is bound to a single, file-wide isRemoving flag rather than to the
+  row being removed, so every row's Remove button disables during any one row's
+  in-flight removal — a UI-mechanics choice with no domain fact behind it, not this
+  pass's concern.

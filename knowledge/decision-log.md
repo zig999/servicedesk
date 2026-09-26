@@ -6068,3 +6068,85 @@ entries:
     to it makes the structured disclosure exactly the values the message already names and adds no second
     disclosure -- neither the removed entry nor the manifest the refusal left standing -- that the message
     itself does not make.
+- location: rules/integration/a-removal-surface-offers-a-control-behind-a-further-explicit-act.md
+  field: statement
+  unstated: The material asks for a delete control with confirmation for a concept, a capability, and a
+    connector configuration, but does not say whether the confirming act must reproduce the identity being
+    removed, as discarding a draft case version already requires of its own confirming act, or needs only
+    a plain further act.
+  decided: A plain further explicit act, stating that the removal is to be performed, with no reproduction
+    of the removed identity required.
+  why: Discarding a draft case version destroys a whole version and every entry of its manifest, and its
+    own further act additionally requires the case's own slug reproduced for exactly that weight; removing
+    a single registered concept, a capability, or a connector configuration destroys one registration at a
+    time, closer in weight to the abandonment gestures this specification already leaves as a plain further
+    act than to a whole version's discard.
+- location: rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing.md
+  field: statement
+  unstated: The material asks for a removal's success to be reflected in the list or the detail view, but
+    does not say where the operator is taken once the removal succeeds.
+  decided: The listing of registered concepts, capabilities, or connector configurations, respectively --
+    never the surface addressed by the identity just removed.
+  why: The identity a removal just succeeded on is refused by that entity's own unregistered-identity read
+    the moment the removal succeeds (rules/glossary/a-glossary-read-by-an-unheld-name-is-refused,
+    constraints/the-capability-identity-read-refuses-an-unregistered-identity,
+    rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused), so landing the
+    operator there would show a refusal for the very act that just succeeded.
+- location: rules/glossary/a-registered-concept-is-never-removed.md
+  field: statement
+  unstated: What reference a ConceptInUseError reports when a remove-concept is refused because a registered
+    capability answers the concept, because a collected evidence item names it, or because a citation names
+    it. The statement gives a reference value only for the fourth condition (hypothesis-revision-collects,
+    where a hypothesis-revision's own collects lists the concept). No node and no intake material gives one
+    for the other three.
+  decided: capability-concept where a registered capability answers the concept, evidence-concept where a
+    collected evidence item names it, and citation-concept where a citation names it.
+  why: The one value this specification already holds follows a pattern -- hypothesis-revision-collects is
+    the slug of the element that names the concept, followed by the name of that element's attribute typed
+    domain/glossary/concept (domain/knowledge/hypothesis-revision's collects). The same pattern applied to
+    the other three elements that name a concept gives capability-concept from domain/integration/capability's
+    concept attribute, evidence-concept from domain/investigation/evidence's concept attribute, and
+    citation-concept from domain/investigation/citation's concept attribute. This rule's Description has the
+    refusal name which condition was found, so each condition needs its own token. Evidence and citation get
+    separate tokens because the statement lists them as separate referents with separate attributes of their
+    own. Any other scheme would give this one error two naming conventions.
+- location: rules/glossary/a-registered-concept-is-never-removed.md
+  field: statement
+  unstated: The prior entry in this log decided capability-concept, evidence-concept and citation-concept
+    as the ConceptInUseError reference values for three of its four conditions, reasoned from a naming
+    pattern alone, without reading the already-delivered backend. That backend
+    (src/src/glossary/concept-usage-reader.port.ts's ConceptUsageReference type, constructed by
+    ConceptInUseError and covered by src/src/__tests__/unit/glossary/glossary.service.spec.ts and
+    src/src/__tests__/unit/http/remove-concept.routes.spec.ts) already fixes those three values as
+    capability, evidence and citation -- one word each, not the element-slug-plus-attribute pattern the
+    prior entry invented -- alongside the fourth, hypothesis-revision-collects, which the prior entry
+    left unchanged because it already matched.
+  decided: capability where a registered capability answers the concept, evidence where a collected
+    evidence item names it, and citation where a citation names it -- correcting the prior entry's
+    capability-concept, evidence-concept and citation-concept to the values the delivered code already
+    uses.
+  why: The specification states a fact about an HTTP response the backend already sends over a route this
+    plan does not touch; the frontend that reads it must match what is actually sent, not a pattern
+    invented before that code was read. The delivered backend is covered by its own tests asserting these
+    three literal values, so it is the one side of this mismatch a plan-work invocation can correct
+    without reopening delivered work -- correcting the specification is the smaller, reversible edit, and
+    the alternative (renaming the backend's already-tested values to match the specification's invented
+    pattern) would be a corrective increment against working, specified code for no behavioral reason.
+- location: rules/glossary/a-registered-concept-is-never-removed.md
+  field: statement
+  unstated: What the HTTP 409 ConceptInUseError response's details carry beyond the reference itself,
+    and whether the wire error code is the class name as delivered. No node stated the details' shape;
+    the material never described this refusal's wire response.
+  decided: The details carry the concept's own name and the reference, and nothing else. The wire error
+    code is the literal string ConceptInUseError, exactly the class name.
+  why: The delivered, tested backend already fixes this shape -- src/src/http/error-handler.middleware.ts's
+    domainEnvelope sends code: error.name and details: error.context for every domain error with a
+    context, and ConceptInUseError's own context is { concept, reference }
+    (src/src/errors/concept-in-use.error.ts); src/src/__tests__/unit/http/remove-concept.routes.spec.ts
+    asserts exactly this: body.error.code toBe('ConceptInUseError') and body.error.details toEqual({
+    concept: 'a-cited-concept', reference: 'capability' }). This is the same route this specification's
+    own decision log already took for CaseAlreadyHasDraftError, ManifestPositionOccupiedError and the
+    case-has-at-least-one-hypothesis removal refusal: the decision names the caller-facing shape that
+    was built and tested rather than choosing a second one. A prior /plan-work in this same initiative
+    tried to decide this without reading the backend and was refused by its own decider for exactly that
+    reason; deciding it here, with the code read, is what that refusal asked for.
