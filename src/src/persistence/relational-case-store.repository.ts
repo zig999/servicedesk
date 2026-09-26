@@ -27,6 +27,7 @@ import type {
 } from '../case/hypothesis-revision-release-state.port.js';
 import { CaseAlreadyHasDraftError } from '../errors/case-already-has-draft.error.js';
 import { CaseHoldsNoDraftError } from '../errors/case-holds-no-draft.error.js';
+import { CaseHoldsVersionsError } from '../errors/case-holds-versions.error.js';
 import { CaseNotFoundError } from '../errors/case-not-found.error.js';
 import { CaseStoreError } from '../errors/case-store.error.js';
 import { CaseVersionNotDraftAtReleaseError } from '../errors/case-version-not-draft-at-release.error.js';
@@ -213,6 +214,10 @@ export class RelationalCaseStore
 
   public async updateDraft(slug: string, version: number, attributes: UpdateDraftInput): Promise<void> {
     await runInTransaction(this.connection, raiseWriteFailure, (tx) => updateDraftVersion(tx, { slug, version }, attributes));
+  }
+
+  public async delete(slug: string): Promise<void> {
+    await runInTransaction(this.connection, raiseWriteFailure, (tx) => deleteVersionlessCase(tx, slug));
   }
 
   public async isConceptCollectedByHypothesisRevision(concept: string): Promise<boolean> {
@@ -887,6 +892,38 @@ function deleteManifestEntriesStatement(key: ICaseVersionKey): IStatement {
 
 function deleteCaseVersionStatement(key: ICaseVersionKey): IStatement {
   return { text: `DELETE FROM ${CASE_VERSIONS_TABLE} WHERE slug = $1 AND version = $2`, params: [key.slug, key.version] };
+}
+
+async function deleteVersionlessCase(tx: IQueryable, slug: string): Promise<void> {
+  await requireCaseIdentity(tx, slug);
+  await refuseIfCaseHoldsVersions(tx, slug);
+  await runStatement(tx, hypothesisRevisionCollectsDeleteBySlugStatement(slug), raiseWriteFailure);
+  await runStatement(tx, hypothesisRevisionsDeleteBySlugStatement(slug), raiseWriteFailure);
+  await runStatement(tx, hypothesesDeleteBySlugStatement(slug), raiseWriteFailure);
+  await runStatement(tx, caseDeleteStatement(slug), raiseWriteFailure);
+}
+
+async function refuseIfCaseHoldsVersions(tx: IQueryable, slug: string): Promise<void> {
+  const count = await countCaseVersions(tx, slug);
+  if (count > 0) {
+    throw new CaseHoldsVersionsError(slug);
+  }
+}
+
+function hypothesisRevisionCollectsDeleteBySlugStatement(slug: string): IStatement {
+  return { text: `DELETE FROM ${HYPOTHESIS_REVISION_COLLECTS_TABLE} WHERE case_slug = $1`, params: [slug] };
+}
+
+function hypothesisRevisionsDeleteBySlugStatement(slug: string): IStatement {
+  return { text: `DELETE FROM ${HYPOTHESIS_REVISIONS_TABLE} WHERE case_slug = $1`, params: [slug] };
+}
+
+function hypothesesDeleteBySlugStatement(slug: string): IStatement {
+  return { text: `DELETE FROM ${HYPOTHESES_TABLE} WHERE case_slug = $1`, params: [slug] };
+}
+
+function caseDeleteStatement(slug: string): IStatement {
+  return { text: `DELETE FROM ${CASES_TABLE} WHERE slug = $1`, params: [slug] };
 }
 
 async function updateDraftVersion(tx: IQueryable, key: ICaseVersionKey, attributes: UpdateDraftInput): Promise<void> {

@@ -132,6 +132,10 @@ class FakeReleaseStore implements ICaseStore, IHypothesisRevisionOwnStateQuery {
   public async updateDraft(_slug: string, _version: number, _attributes: UpdateDraftInput): Promise<void> {
     throw new Error('FakeReleaseStore.updateDraft is not scripted for this file');
   }
+
+  public async delete(): Promise<void> {
+    throw new Error('FakeReleaseStore.delete is not scripted for this file');
+  }
 }
 
 function assembledFixture(): AssembledCaseVersion {

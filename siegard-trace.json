@@ -4757,7 +4757,7 @@
     },
     {
       "node": "domain/knowledge/case",
-      "digest": "sha256:6eed8c321a83ed7766bb565d2ada3905933b1f52076e372648a92417ef18965b",
+      "digest": "sha256:769751f90dcf33c0a2dbd1aa0fd92351584463ffc8a76b1e50d91eb9d4132780",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-case-creation-form.ts",
@@ -4825,8 +4825,7 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:ea66a310026bef7aedeb43f12293b215c70f2eca28cbdf1800ffba03fa1cecf0",
-          "judged": true
+          "digest": "sha256:a108a63b52048ced330f050a6365b1a3f055fa4668fad2bd366595acf95104dc"
         },
         {
           "path": "src/src/case/case.ts",
@@ -4919,7 +4918,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
+          "digest": "sha256:c01c0fbd74282d7b730b79818638159bdd861129870549b86f19fe19d4f789aa"
         }
       ]
     },
@@ -5481,7 +5480,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
+          "digest": "sha256:c01c0fbd74282d7b730b79818638159bdd861129870549b86f19fe19d4f789aa"
         }
       ]
     },
@@ -5569,6 +5568,10 @@
         {
           "path": "src/migrations/0021-refuse-altering-a-released-revision.sql",
           "digest": "sha256:c25168d50f394bfdae531225127b1f6d890ea1f3c65a6c556e7f3f854069b635"
+        },
+        {
+          "path": "src/migrations/0026-a-versionless-case-may-delete-released-collects.sql",
+          "digest": "sha256:40ea3022a92fb5fba57bd268c9d5f8a11f87037eb3b796ee171832d8b9d00d93"
         },
         {
           "path": "src/src/__tests__/integration/case/manifest-collects-survive-release.spec.ts",
@@ -5691,7 +5694,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
+          "digest": "sha256:c01c0fbd74282d7b730b79818638159bdd861129870549b86f19fe19d4f789aa"
         },
         {
           "path": "src/src/seed.ts",
@@ -9163,12 +9166,24 @@
       "digest": "sha256:a778266bd7d28b2174b5f9c8220e182913f1b0c59549573adfe8b0ed5225c291",
       "files": [
         {
+          "path": "src/migrations/0026-a-versionless-case-may-delete-released-collects.sql",
+          "digest": "sha256:40ea3022a92fb5fba57bd268c9d5f8a11f87037eb3b796ee171832d8b9d00d93"
+        },
+        {
+          "path": "src/src/case/case-store.port.ts",
+          "digest": "sha256:a108a63b52048ced330f050a6365b1a3f055fa4668fad2bd366595acf95104dc"
+        },
+        {
           "path": "src/src/errors/case-holds-versions.error.ts",
           "digest": "sha256:6e791fbfbf43252110e18d72084e61d3f4b44e116e7f697a7b5e160463260d85"
         },
         {
           "path": "src/src/errors/status-map.ts",
           "digest": "sha256:b67402b4ce9f068fa41126890c323b16f22c6daf80d859fcb7e752767cc04b77"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:c01c0fbd74282d7b730b79818638159bdd861129870549b86f19fe19d4f789aa"
         }
       ]
     },
@@ -9273,6 +9288,10 @@
         {
           "path": "src/src/http/read-case-version.routes.ts",
           "digest": "sha256:b3224cbd8b7e3c7823c4a192eca55dd4aa10f3cca9ca6f50a55a19f5307db614"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:c01c0fbd74282d7b730b79818638159bdd861129870549b86f19fe19d4f789aa"
         }
       ]
     },

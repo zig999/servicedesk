@@ -143,4 +143,6 @@ export interface ICaseStore {
   discard(slug: string, version: number): Promise<void>;
 
   updateDraft(slug: string, version: number, attributes: UpdateDraftInput): Promise<void>;
+
+  delete(slug: string): Promise<void>;
 }

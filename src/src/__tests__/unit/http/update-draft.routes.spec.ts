@@ -52,6 +52,7 @@ function stubCaseStore(updateDraft: UpdateDraftMock): ICaseStore {
     release: vi.fn(),
     discard: vi.fn(),
     updateDraft,
+    delete: vi.fn(),
   };
 }
 

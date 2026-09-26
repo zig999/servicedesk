@@ -87,6 +87,7 @@ function stubCaseStore(): ICaseStore {
     release: async () => undefined,
     discard: async () => undefined,
     updateDraft: async () => undefined,
+    delete: async () => undefined,
   };
 }
 

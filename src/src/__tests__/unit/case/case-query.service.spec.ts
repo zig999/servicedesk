@@ -232,6 +232,10 @@ class FakeCaseStore implements ICaseStore {
   public async updateDraft(_slug: string, _version: number, _attributes: UpdateDraftInput): Promise<void> {
     return;
   }
+
+  public async delete(_slug: string): Promise<void> {
+    return;
+  }
 }
 
 interface IHypothesisFixture {

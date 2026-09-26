@@ -10,6 +10,14 @@
       "task": "task/case-deletion/case-holds-versions-refusal"
     },
     {
+      "id": "implementation/case-deletion/store-deletes-a-versionless-case",
+      "kind": "implementation",
+      "file": "implementation/case-deletion/store-deletes-a-versionless-case.md",
+      "title": "Case-store deletion of a versionless case",
+      "summary": "Adds a delete method to ICaseStore and RelationalCaseStore that removes a case holding no case version, cascading through its hypotheses, hypothesis-revisions and their collects in one transaction, with a migration reconciling the released-collects protection rule so the delete can actually complete, and refuses with CaseHoldsVersionsError or CaseNotFoundError otherwise.",
+      "task": "task/case-deletion/store-deletes-a-versionless-case"
+    },
+    {
       "id": "proof/case-deletion/case-holds-versions-refusal",
       "kind": "proof",
       "file": "proof/case-deletion/case-holds-versions-refusal.md",
@@ -46,6 +54,42 @@
     {
       "from": "implementation/case-deletion/case-holds-versions-refusal",
       "to": "task/case-deletion/case-holds-versions-refusal",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-deletion/store-deletes-a-versionless-case",
+      "to": "rules/knowledge/a-case-holding-no-version-may-be-deleted",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-deletion/store-deletes-a-versionless-case",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-deletion/store-deletes-a-versionless-case",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-deletion/store-deletes-a-versionless-case",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-deletion/store-deletes-a-versionless-case",
+      "to": "rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-deletion/store-deletes-a-versionless-case",
+      "to": "task/case-deletion/store-deletes-a-versionless-case",
       "kind": "implements",
       "at": "the path"
     },

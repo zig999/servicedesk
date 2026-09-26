@@ -5,6 +5,7 @@ import type { Resolution } from '../../../case/case.js';
 import type { IHypothesisRevisionOverwrite } from '../../../case/hypothesis-revision-overwrite.port.js';
 import { CaseAlreadyHasDraftError } from '../../../errors/case-already-has-draft.error.js';
 import { CaseHoldsNoDraftError } from '../../../errors/case-holds-no-draft.error.js';
+import { CaseHoldsVersionsError } from '../../../errors/case-holds-versions.error.js';
 import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
 import { CaseStoreError } from '../../../errors/case-store.error.js';
 import { CaseVersionNotDraftAtReleaseError } from '../../../errors/case-version-not-draft-at-release.error.js';
@@ -2151,3 +2152,115 @@ it(
     expect(statusForError(caught)).toBe(409);
   },
 );
+
+async function aCaseHoldingNoVersionWithHypotheses(
+  store: RelationalCaseStore,
+  glossary: IGlossary,
+  concept: string,
+): Promise<string> {
+  const slug = `case-deletion-store-accept-${randomUUID()}`;
+  const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+  const releasedRevision = await store.insertHypothesisRevision({
+    slug,
+    hypothesis_name: 'released-hypothesis',
+    criterion: 'a criterion',
+    collects: [concept],
+    resolution: aResolution(glossary),
+  });
+  await store.releaseHypothesisRevision(slug, 'released-hypothesis', releasedRevision);
+  await store.insertHypothesisRevision({
+    slug,
+    hypothesis_name: 'draft-hypothesis',
+    criterion: 'another criterion',
+    collects: [],
+    resolution: aResolution(glossary),
+  });
+  await store.discard(slug, version);
+  return slug;
+}
+
+async function aCaseHoldingADraftVersionWithAHypothesis(
+  store: RelationalCaseStore,
+  glossary: IGlossary,
+  concept: string,
+): Promise<string> {
+  const slug = `case-deletion-store-refuse-draft-${randomUUID()}`;
+  await store.createDraft(aCreateDraftInput(slug, glossary));
+  await store.insertHypothesisRevision({
+    slug,
+    hypothesis_name: 'a-hypothesis',
+    criterion: 'a criterion',
+    collects: [concept],
+    resolution: aResolution(glossary),
+  });
+  return slug;
+}
+
+async function aCaseHoldingAReleasedVersion(store: RelationalCaseStore, glossary: IGlossary): Promise<string> {
+  const slug = `case-deletion-store-refuse-released-${randomUUID()}`;
+  const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+  await store.release(slug, version);
+  return slug;
+}
+
+async function assertCaseFullyRemoved(slug: string): Promise<void> {
+  const cases = await pool.query('SELECT slug FROM cases WHERE slug = $1', [slug]);
+  expect(cases.rows).toEqual([]);
+  const hypotheses = await pool.query('SELECT name FROM hypotheses WHERE case_slug = $1', [slug]);
+  expect(hypotheses.rows).toEqual([]);
+  const revisions = await pool.query('SELECT revision FROM hypothesis_revisions WHERE case_slug = $1', [slug]);
+  expect(revisions.rows).toEqual([]);
+  const collects = await pool.query('SELECT concept_name FROM hypothesis_revision_collects WHERE case_slug = $1', [slug]);
+  expect(collects.rows).toEqual([]);
+}
+
+async function assertCaseStillHeld(slug: string): Promise<void> {
+  const cases = await pool.query('SELECT slug FROM cases WHERE slug = $1', [slug]);
+  expect(cases.rows).toEqual([{ slug }]);
+  const hypotheses = await pool.query('SELECT name FROM hypotheses WHERE case_slug = $1', [slug]);
+  expect(hypotheses.rows.length).toBeGreaterThan(0);
+  const revisions = await pool.query('SELECT revision FROM hypothesis_revisions WHERE case_slug = $1', [slug]);
+  expect(revisions.rows.length).toBeGreaterThan(0);
+  const collects = await pool.query('SELECT concept_name FROM hypothesis_revision_collects WHERE case_slug = $1', [slug]);
+  expect(collects.rows.length).toBeGreaterThan(0);
+}
+
+it(
+  'accepts deleting a case holding no version — removing it together with every hypothesis, every ' +
+    'hypothesis-revision (draft and released) and every collect those revisions held — and refuses ' +
+    'deleting a case holding a draft or a released version through CaseHoldsVersionsError naming that ' +
+    'slug, leaving it and everything it holds untouched',
+  async () => {
+    const glossary = await freshGlossary();
+    const concept = await freshConcept();
+    const store = new RelationalCaseStore(pool);
+
+    const acceptedSlug = await aCaseHoldingNoVersionWithHypotheses(store, glossary, concept);
+    slugsWrittenByThisTest.push(acceptedSlug);
+    await store.delete(acceptedSlug);
+    await assertCaseFullyRemoved(acceptedSlug);
+
+    const draftSlug = await aCaseHoldingADraftVersionWithAHypothesis(store, glossary, concept);
+    slugsWrittenByThisTest.push(draftSlug);
+    const draftRejection = store.delete(draftSlug);
+    await expect(draftRejection).rejects.toBeInstanceOf(CaseHoldsVersionsError);
+    await expect(draftRejection).rejects.toMatchObject({ context: { slug: draftSlug } });
+    await assertCaseStillHeld(draftSlug);
+
+    const releasedSlug = await aCaseHoldingAReleasedVersion(store, glossary);
+    slugsWrittenByThisTest.push(releasedSlug);
+    const releasedRejection = store.delete(releasedSlug);
+    await expect(releasedRejection).rejects.toBeInstanceOf(CaseHoldsVersionsError);
+    await expect(releasedRejection).rejects.toMatchObject({ context: { slug: releasedSlug } });
+  },
+);
+
+it('refuses deleting a slug no case holds, through CaseNotFoundError naming that slug', async () => {
+  const store = new RelationalCaseStore(pool);
+  const slug = `case-deletion-store-not-found-${randomUUID()}`;
+
+  const rejection = store.delete(slug);
+
+  await expect(rejection).rejects.toBeInstanceOf(CaseNotFoundError);
+  await expect(rejection).rejects.toMatchObject({ context: { slug } });
+});

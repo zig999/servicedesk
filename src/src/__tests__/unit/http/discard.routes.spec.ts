@@ -54,6 +54,7 @@ class SingleDraftCaseStore implements ICaseStore {
   public removeManifestEntry(_slug: string, _version: number, _hypothesisName: string): Promise<void> { return notNeededByDiscard(); }
   public release(_slug: string, _version: number): Promise<void> { return notNeededByDiscard(); }
   public updateDraft(_slug: string, _version: number, _attributes: UpdateDraftInput): Promise<void> { return notNeededByDiscard(); }
+  public delete(_slug: string): Promise<void> { return notNeededByDiscard(); }
 }
 
 function aDraftWithSubject(slug: string, version: number, subject: string): AssembledCaseVersion {
