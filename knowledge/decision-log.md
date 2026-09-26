@@ -6150,3 +6150,32 @@ entries:
     was built and tested rather than choosing a second one. A prior /plan-work in this same initiative
     tried to decide this without reading the backend and was refused by its own decider for exactly that
     reason; deciding it here, with the code read, is what that refusal asked for.
+- location: rules/knowledge/a-case-holding-no-version-may-be-deleted.md
+  field: statement
+  unstated: No node stated whether a case itself — the aggregate holding a slug and next_version,
+    distinct from any case-version — may ever be removed; domain/knowledge/case's own operations
+    named only create-draft, and only-a-draft-case-version-may-be-discarded governs a case-version's
+    removal, never the case. This was found through a database health review that surfaced a case
+    whose one draft had been discarded, leaving an empty case row with no operation able to remove it,
+    and no stated condition for when such removal should be allowed.
+  decided: Delete is accepted exactly when the case holds no case version, draft or released, and
+    refused otherwise with a CaseHoldsVersionsError naming the slug.
+  why: A released version is never removed (only-a-draft-case-version-may-be-discarded), so a case
+    that has ever been released always keeps that version and never reaches zero; a case that reaches
+    zero versions can therefore only be one whose every draft was discarded before release, and
+    only-a-released-case-version-is-diagnosed means no investigation could ever have pinned it. "Holds
+    no case version" is thus both the simplest testable condition and already equivalent to "no
+    investigation depends on this case", so no separate investigation check is needed.
+- location: domain/knowledge/case.md
+  field: operations
+  unstated: Whether the case aggregate declares any operation beyond create-draft.
+  decided: delete is added to the case's own operations.
+  why: a-case-holding-no-version-may-be-deleted gives the case a second act; the identity that
+    originates a draft is the same identity that ends when nothing is left to hold.
+- location: contracts/knowledge/case-lifecycle.md
+  field: operations
+  unstated: Whether the curator's published api surface exposes an act ending a case itself, as
+    opposed to one of its versions.
+  decided: delete is added alongside the version-level acts already published there.
+  why: case-lifecycle is the one surface a curator reaches every other case act through; withholding
+    delete from it would leave the newly-decided act with no published entrance.

@@ -10,6 +10,7 @@ operations:
   - update-draft
   - release
   - discard
+  - delete
 ---
 
 ## Description

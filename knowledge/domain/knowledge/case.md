@@ -9,6 +9,7 @@ attributes:
     required: true
 operations:
   - create-draft
+  - delete
 ---
 
 ## Description

@@ -756,6 +756,7 @@ operations:
   - update-draft
   - release
   - discard
+  - delete
 ---
 
 ## Description
@@ -6977,6 +6978,35 @@ entries:
     was built and tested rather than choosing a second one. A prior /plan-work in this same initiative
     tried to decide this without reading the backend and was refused by its own decider for exactly that
     reason; deciding it here, with the code read, is what that refusal asked for.
+- location: rules/knowledge/a-case-holding-no-version-may-be-deleted.md
+  field: statement
+  unstated: No node stated whether a case itself — the aggregate holding a slug and next_version,
+    distinct from any case-version — may ever be removed; domain/knowledge/case's own operations
+    named only create-draft, and only-a-draft-case-version-may-be-discarded governs a case-version's
+    removal, never the case. This was found through a database health review that surfaced a case
+    whose one draft had been discarded, leaving an empty case row with no operation able to remove it,
+    and no stated condition for when such removal should be allowed.
+  decided: Delete is accepted exactly when the case holds no case version, draft or released, and
+    refused otherwise with a CaseHoldsVersionsError naming the slug.
+  why: A released version is never removed (only-a-draft-case-version-may-be-discarded), so a case
+    that has ever been released always keeps that version and never reaches zero; a case that reaches
+    zero versions can therefore only be one whose every draft was discarded before release, and
+    only-a-released-case-version-is-diagnosed means no investigation could ever have pinned it. "Holds
+    no case version" is thus both the simplest testable condition and already equivalent to "no
+    investigation depends on this case", so no separate investigation check is needed.
+- location: domain/knowledge/case.md
+  field: operations
+  unstated: Whether the case aggregate declares any operation beyond create-draft.
+  decided: delete is added to the case's own operations.
+  why: a-case-holding-no-version-may-be-deleted gives the case a second act; the identity that
+    originates a draft is the same identity that ends when nothing is left to hold.
+- location: contracts/knowledge/case-lifecycle.md
+  field: operations
+  unstated: Whether the curator's published api surface exposes an act ending a case itself, as
+    opposed to one of its versions.
+  decided: delete is added alongside the version-level acts already published there.
+  why: case-lifecycle is the one surface a curator reaches every other case act through; withholding
+    delete from it would leave the newly-decided act with no published entrance.
 
 === domain/glossary/_context
 ---
@@ -8049,6 +8079,7 @@ attributes:
     required: true
 operations:
   - create-draft
+  - delete
 ---
 
 ## Description
@@ -13026,6 +13057,28 @@ Revising a case is therefore always one working copy at a time, resolved to rele
 What the refusal discloses stands here rather than in the code alone: a curator who meets it learns which case already holds a draft, and what this system tells whoever asked is a fact of the business rather than a detail nobody outside a file could otherwise find.
 The slug alone is that disclosure because it is the whole of the case's identity to the curator who named it; the draft's own version number is nothing they must know to act, since the act open to them is to resolve the draft that case already holds, whichever number it carries.
 
+=== rules/knowledge/a-case-holding-no-version-may-be-deleted
+---
+type: policy
+statement: >-
+  Delete, asked of a case that holds no case version, is accepted and removes the case;
+  asked of a case holding any version, draft or released, it is refused with an HTTP 409
+  response reporting a CaseHoldsVersionsError, whose message names the case slug and whose
+  details carry that slug and nothing else.
+constrains:
+  - domain/knowledge/case
+  - domain/knowledge/case-version
+consistency: eventual
+---
+
+## Description
+
+`only-a-draft-case-version-may-be-discarded` never removes a released version, so a case that has ever been released always keeps that version standing — a case reaches zero versions only where every draft it ever held was discarded before release. `only-a-released-case-version-is-diagnosed` pins an investigation to nothing but a released version, so a case that has reached zero versions is a case no investigation has ever been able to pin. "Holds no case version" is therefore not a convenience narrowing of a harder question about investigations; it already is that question, decided in the case's own store and needing no second table read.
+
+Delete answers a case discard never reaches: `only-a-draft-case-version-may-be-discarded` and `a-case-version-number-is-never-reused` let a curator empty a case of its one draft while the case itself, its slug and its next_version counter, stand exactly as `domain/knowledge/case`'s own Description requires them to survive that. What they leave behind is an identity naming nothing — the state `a-case-holding-no-versions-is-told-explicitly` already requires this specification to say plainly rather than let an empty listing pass unremarked. Delete is the further act that ends that identity itself, where a curator or an operator judges it is not worth keeping.
+
+Once deleted, the case's slug names no case, and `a-case-is-created-by-the-first-create-draft-naming-its-slug` already answers a create-draft naming a slug no case holds by creating a new case under it — a deleted case's slug is claimed by a future case exactly as if the deleted one had never existed, with no rule of its own needed to say so. `a-slug-identifies-one-case` continues to hold: at any instant, at most one case answers to a slug, deleted or not.
+
 === rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
 ---
 type: policy
@@ -16095,6 +16148,27 @@ involves:
 ## Description
 
 Persistence is the single stage exempt from degrading, because the referral is exactly the part that is acted upon.
+
+=== scenarios/knowledge/a-case-holding-no-version-is-deleted
+---
+subject: rules/knowledge/a-case-holding-no-version-may-be-deleted
+given:
+  - a case's only draft version was discarded, so it currently holds no version at all
+when:
+  - the curator deletes that case
+then:
+  - the deletion is accepted
+  - the case no longer appears in the case listing
+  - a future create-draft naming that same slug creates a new case under it, as though the deleted one had never existed
+involves:
+  - domain/knowledge/case
+  - domain/knowledge/case-version
+  - rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+---
+
+## Description
+
+This is the case discovered stuck rather than removed: `a-case-with-no-hypothesis-is-still-discardable` already lets its one draft go, and what is left is exactly the identity `a-case-holding-no-version-may-be-deleted` now gives the curator a further act to end.
 
 === scenarios/knowledge/a-case-holding-no-versions-is-told-explicitly
 ---
