@@ -40,9 +40,16 @@ export function CaseDeleteDialog({ control }: CaseDeleteDialogProps): JSX.Elemen
             <Input
               value={control.slugConfirmation}
               onChange={(event) => control.onSlugConfirmationChange(event.target.value)}
+              aria-invalid={control.errorMessage !== null}
+              aria-describedby={control.errorMessage !== null ? "case-delete-error" : undefined}
             />
           </div>
         </Label>
+        {control.errorMessage !== null && (
+          <p id="case-delete-error" role="alert" className="text-sm text-destructive">
+            {control.errorMessage}
+          </p>
+        )}
         <DialogFooter>
           <DialogClose asChild>
             <Button type="button" variant="secondary" disabled={control.isDeleting}>

@@ -2020,6 +2020,10 @@
           "digest": "sha256:134684834082059655b7a2f77b4b1d8444a2a47e21730cfd0dd0d97043013459"
         },
         {
+          "path": "frontend/app/src/hooks/use-case-delete-control.ts",
+          "digest": "sha256:b135ffdf2eea3f388a1626016d2d05e93879a4692c043301d3f18bf3146820c4"
+        },
+        {
           "path": "frontend/app/src/hooks/use-case-simulation-version.ts",
           "digest": "sha256:23ea4413912d6b89337cf2bae8802bbf97123d7973e26f99d198c3f086ec7347"
         },
@@ -4863,6 +4867,10 @@
         {
           "path": "frontend/app/src/services/case-creation-form-schema.ts",
           "digest": "sha256:58077fc311be741336a0d58d489705aae76762e2a7ca092b5d2e3a2b3b15b343"
+        },
+        {
+          "path": "frontend/app/src/services/case-delete-confirmation.ts",
+          "digest": "sha256:a892dbb1523bcabecb979f3f8072e37222321b94a94d8cc8a46f345ccfdcd8db"
         },
         {
           "path": "frontend/app/src/services/discard-confirmation.ts",
@@ -9194,6 +9202,18 @@
       "digest": "sha256:219369a817f8f3131c34b5248527a27444328f63e5384b5b7cf3134cc5e7b79c",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-case-delete-control.ts",
+          "digest": "sha256:b135ffdf2eea3f388a1626016d2d05e93879a4692c043301d3f18bf3146820c4"
+        },
+        {
+          "path": "frontend/app/src/routes/case-delete-dialog.tsx",
+          "digest": "sha256:2bd4be0e70873832c981a40d702797ca6e9ce65b86d080511b823b15fd8e5f33"
+        },
+        {
+          "path": "frontend/app/src/services/case-delete-confirmation.ts",
+          "digest": "sha256:a892dbb1523bcabecb979f3f8072e37222321b94a94d8cc8a46f345ccfdcd8db"
+        },
+        {
           "path": "frontend/app/src/services/error-ui-state.ts",
           "digest": "sha256:4c7e65c34a1fd4cb483dc246446a3a4a17d5b04540a0b5201d2942f85a4def83"
         }
@@ -9203,6 +9223,18 @@
       "node": "rules/knowledge/a-case-deletion-surface-states-which-refusal-answered-its-delete",
       "digest": "sha256:8aad6bc9ef0272e75145eabf96bf270656bce63c613f0fef9fabd5835c9c587b",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-case-delete-control.ts",
+          "digest": "sha256:b135ffdf2eea3f388a1626016d2d05e93879a4692c043301d3f18bf3146820c4"
+        },
+        {
+          "path": "frontend/app/src/routes/case-delete-dialog.tsx",
+          "digest": "sha256:2bd4be0e70873832c981a40d702797ca6e9ce65b86d080511b823b15fd8e5f33"
+        },
+        {
+          "path": "frontend/app/src/services/case-delete-confirmation.ts",
+          "digest": "sha256:a892dbb1523bcabecb979f3f8072e37222321b94a94d8cc8a46f345ccfdcd8db"
+        },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
           "digest": "sha256:4c7e65c34a1fd4cb483dc246446a3a4a17d5b04540a0b5201d2942f85a4def83"
@@ -9308,6 +9340,10 @@
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
           "digest": "sha256:698941b3fc70f04a85b2b019396066d5442f9f49a8ff7de4081b48747e1bf7b3"
+        },
+        {
+          "path": "frontend/app/src/services/case-delete-confirmation.ts",
+          "digest": "sha256:a892dbb1523bcabecb979f3f8072e37222321b94a94d8cc8a46f345ccfdcd8db"
         },
         {
           "path": "src/migrations/0026-a-versionless-case-may-delete-released-collects.sql",
@@ -9437,6 +9473,10 @@
         {
           "path": "frontend/app/src/hooks/use-delete-case.ts",
           "digest": "sha256:31e31928f2b8eefb9b5d863a1c58521e8bae866b316ff0efe5b6ddd09c086e03"
+        },
+        {
+          "path": "frontend/app/src/services/case-delete-confirmation.ts",
+          "digest": "sha256:a892dbb1523bcabecb979f3f8072e37222321b94a94d8cc8a46f345ccfdcd8db"
         },
         {
           "path": "src/src/case/case-query.service.ts",
