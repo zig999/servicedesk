@@ -9,7 +9,7 @@ implementation: sha256:d2c08b62080327195a840f7fc706acea0a3c6fd4901a96cc8aee9b26d
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:5fe8eeb9502e55e29178a2722e46e792f1d0aa41f50ef3ea4a7024db6e72d0ed
-run: run/draft-editor-correction-while-invalid-save-a-correction-on-the-refused-reading-full-2
+run: run/draft-editor-correction-while-invalid-save-a-correction-on-the-refused-reading-proof-fix
 tests:
 - file: src/routes/case-version-editor-screen-refused-draft-save.spec.ts
   name: CaseVersionEditorScreen -- submitting a correction on the refused reading issues an update-draft

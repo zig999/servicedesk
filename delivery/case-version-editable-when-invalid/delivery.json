@@ -160,6 +160,51 @@
       "title": "Offer discard on the refused reading -- proof",
       "summary": "Route-level tests mount the not-valid reading through the real screen/hook/service stack and prove the shared Discard control's gating, its slug-confirmation barrier, its DELETE issuance, and its silence on a 204 answer.",
       "task": "task/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading"
+    },
+    {
+      "id": "review/case-version-editable-when-invalid-backend",
+      "kind": "review",
+      "file": "review/case-version-editable-when-invalid-backend.md",
+      "title": "case-version-editable-when-invalid -- backend, review",
+      "summary": "Coverage, specification-conformance, standard-conformance and run-failure passes over the 4 backend tasks and their 31 files.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A discard of a draft whose stored subject names a subject type the glossary does not hold is answered HTTP 204.",
+        "A request to the route over a draft whose manifest holds no entry is answered HTTP 200.",
+        "A well-formed update-draft whose submitted subject names a subject type the glossary does not hold, over a draft, is answered HTTP 200.",
+        "Over a draft whose stored subject names a subject type the glossary does not hold, the read answers the draft's declared attributes instead of raising CaseVersionNotValidError.",
+        "Over a draft whose stored title is blank, the read answers the draft's declared attributes instead of raising CaseVersionNotValidError.",
+        "The read answers no manifest entry.",
+        "Where another version of the same case carries a different title, the answered title is the draft's own stored title.",
+        "Where the draft declares no consolidation_register, the read answers no consolidation_register value for it."
+      ],
+      "findings": 7
+    },
+    {
+      "id": "review/case-version-editable-when-invalid-frontend",
+      "kind": "review",
+      "file": "review/case-version-editable-when-invalid-frontend.md",
+      "title": "case-version-editable-when-invalid -- frontend, review",
+      "summary": "Coverage, specification-conformance, standard-conformance and run-failure passes over the 6 frontend tasks and their 18 files.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "On that reading of a draft, asking for the discard without confirming it issues no discard.",
+        "That statement differs from the statement the screen presents where the version's read did not complete.",
+        "Where read-case refuses the named version with CaseVersionNotValidError, the editor reads that version through read-case-version.",
+        "Where read-case-version does not answer the version's record on that reading, the editor's state is the load-error state.",
+        "Where the editor's state carries no not-reading-back mark, the screen states nothing about the version not reading back as a case.",
+        "Where the editor's state carries the not-reading-back mark, the screen's form fields are enabled.",
+        "Where the editor's state on that reading offers release, it states the manifest-pin release condition as not yet decided."
+      ],
+      "findings": 8
     }
   ],
   "edges": [
@@ -564,6 +609,66 @@
       "to": "implementation/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/case-version-editable-when-invalid-backend",
+      "to": "task/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/case-version-editable-when-invalid-backend",
+      "to": "task/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/case-version-editable-when-invalid-backend",
+      "to": "task/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/case-version-editable-when-invalid-backend",
+      "to": "task/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/case-version-editable-when-invalid-frontend",
+      "to": "task/draft-editor-correction-while-invalid/route-the-simulation-screen-to-the-version-editor",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/case-version-editable-when-invalid-frontend",
+      "to": "task/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/case-version-editable-when-invalid-frontend",
+      "to": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/case-version-editable-when-invalid-frontend",
+      "to": "task/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/case-version-editable-when-invalid-frontend",
+      "to": "task/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/case-version-editable-when-invalid-frontend",
+      "to": "task/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
+      "kind": "reviews",
+      "at": "tasks[5]"
     }
   ]
 }

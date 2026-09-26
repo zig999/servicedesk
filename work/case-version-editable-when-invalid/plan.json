@@ -579,57 +579,49 @@
       "from": "task/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
       "to": "rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:cb57b01dd94872e07474f7afda749073820a7c2064218422edd627b09ea1cb07"
+      "at": "implements[0]"
     },
     {
       "from": "task/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
       "to": "rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:ca85f0e9dc89b48783b0c4e3990bf1ced3bc305cafef0b677b45c78234d66d6d"
+      "at": "implements[1]"
     },
     {
       "from": "task/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
       "to": "domain/knowledge/case-version",
       "kind": "implements",
-      "at": "implements[2]",
-      "digest": "sha256:ecc240f94dd4b0877e9d8870288c8167c5d54df3b4464c30d2c67c28fa4c31b6"
+      "at": "implements[2]"
     },
     {
       "from": "task/draft-correction-while-invalid/answer-update-draft-from-the-drafts-own-record",
       "to": "scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing",
       "kind": "implements",
-      "at": "implements[3]",
-      "digest": "sha256:8a74245e82a8092472c37087a0056e3fc78148b6239d88b0c01bf520823e834c"
+      "at": "implements[3]"
     },
     {
       "from": "task/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
       "to": "contracts/knowledge/case-query",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:97874bda7c1b2ec6518b299bd669e3bac93b3628f2eddbd4bac95a86fe7eec26"
+      "at": "implements[0]"
     },
     {
       "from": "task/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
       "to": "domain/knowledge/case-version",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:ecc240f94dd4b0877e9d8870288c8167c5d54df3b4464c30d2c67c28fa4c31b6"
+      "at": "implements[1]"
     },
     {
       "from": "task/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
       "to": "rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused",
       "kind": "implements",
-      "at": "implements[2]",
-      "digest": "sha256:dafe2beaea64e45544258706b58cb93136b1395c74f636e5e0ac6ba987f232d6"
+      "at": "implements[2]"
     },
     {
       "from": "task/draft-correction-while-invalid/read-a-drafts-own-declared-attributes",
       "to": "rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case",
       "kind": "implements",
-      "at": "implements[3]",
-      "digest": "sha256:ca85f0e9dc89b48783b0c4e3990bf1ced3bc305cafef0b677b45c78234d66d6d"
+      "at": "implements[3]"
     },
     {
       "from": "task/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http",
@@ -641,64 +633,55 @@
       "from": "task/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http",
       "to": "contracts/knowledge/case-query",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:97874bda7c1b2ec6518b299bd669e3bac93b3628f2eddbd4bac95a86fe7eec26"
+      "at": "implements[0]"
     },
     {
       "from": "task/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http",
       "to": "constraints/a-successful-case-version-own-record-read-answers-with-http-200",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:1b11b7e01386dea252b6146834b3ec74f8e3dbae6c8ef8a80f4a1bdd1320c9dd"
+      "at": "implements[1]"
     },
     {
       "from": "task/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http",
       "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
       "kind": "implements",
-      "at": "implements[2]",
-      "digest": "sha256:684d6f2f9eb53d8d64a6303c243f4789ec08c1145a369829bbb2dda83fa4c05a"
+      "at": "implements[2]"
     },
     {
       "from": "task/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http",
       "to": "rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused",
       "kind": "implements",
-      "at": "implements[3]",
-      "digest": "sha256:dafe2beaea64e45544258706b58cb93136b1395c74f636e5e0ac6ba987f232d6"
+      "at": "implements[3]"
     },
     {
       "from": "task/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http",
       "to": "rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case",
       "kind": "implements",
-      "at": "implements[4]",
-      "digest": "sha256:ca85f0e9dc89b48783b0c4e3990bf1ced3bc305cafef0b677b45c78234d66d6d"
+      "at": "implements[4]"
     },
     {
       "from": "task/draft-correction-while-invalid/serve-a-drafts-own-declared-attributes-over-http",
       "to": "domain/knowledge/case-version",
       "kind": "implements",
-      "at": "implements[5]",
-      "digest": "sha256:ecc240f94dd4b0877e9d8870288c8167c5d54df3b4464c30d2c67c28fa4c31b6"
+      "at": "implements[5]"
     },
     {
       "from": "task/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation",
       "to": "rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:9b36b5c3332ce180313d4225436d76ff48b88bd7f9faf5ba005d53b73b705e7f"
+      "at": "implements[0]"
     },
     {
       "from": "task/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation",
       "to": "scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:4be0102591208989f3d5fe190fd0427e137266f8290229aec646d040d8935bb6"
+      "at": "implements[1]"
     },
     {
       "from": "task/draft-discard-while-invalid/prove-discard-accepts-a-draft-failing-validation",
       "to": "constraints/a-successful-case-version-discard-answers-with-no-content",
       "kind": "implements",
-      "at": "implements[2]",
-      "digest": "sha256:7a9f0725834649367a3debd2d91be12a4d6ed7d06e17921ce99ddfc3131d8fd5"
+      "at": "implements[2]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
@@ -710,85 +693,73 @@
       "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
       "to": "rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:ca85f0e9dc89b48783b0c4e3990bf1ced3bc305cafef0b677b45c78234d66d6d"
+      "at": "implements[0]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
       "to": "domain/knowledge/case-version",
       "kind": "implements",
-      "at": "implements[10]",
-      "digest": "sha256:ecc240f94dd4b0877e9d8870288c8167c5d54df3b4464c30d2c67c28fa4c31b6"
+      "at": "implements[10]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
       "to": "constraints/a-successful-case-version-own-record-read-answers-with-http-200",
       "kind": "implements",
-      "at": "implements[11]",
-      "digest": "sha256:1b11b7e01386dea252b6146834b3ec74f8e3dbae6c8ef8a80f4a1bdd1320c9dd"
+      "at": "implements[11]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
       "to": "scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:8a74245e82a8092472c37087a0056e3fc78148b6239d88b0c01bf520823e834c"
+      "at": "implements[1]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
       "to": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
       "kind": "implements",
-      "at": "implements[2]",
-      "digest": "sha256:e35889fe6ef7110e3bcc8463b798dd1f99751445fd45e12e4dd61fe2a9705d53"
+      "at": "implements[2]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
       "to": "rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name",
       "kind": "implements",
-      "at": "implements[3]",
-      "digest": "sha256:5f021f1109a9313879c17c86894f2e542b954859a94f16fde358e5a676d89745"
+      "at": "implements[3]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
       "to": "rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record",
       "kind": "implements",
-      "at": "implements[4]",
-      "digest": "sha256:432dc3c3f910a4a2e281a0e5db7a7082bcfa24b7b2ec5702215aec412d858d92"
+      "at": "implements[4]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
       "to": "rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives",
       "kind": "implements",
-      "at": "implements[5]",
-      "digest": "sha256:85aaa93d602749c76f64ef597d97fdfc9c3c8fb5d3c2ff9b44cc60ea2469a4a9"
+      "at": "implements[5]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
       "to": "rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete",
       "kind": "implements",
-      "at": "implements[6]",
-      "digest": "sha256:9155b079b2f0837c579fd28c755d3703b078114fbb7a80c74ab57a6cbe53497d"
+      "at": "implements[6]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
       "to": "rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets",
       "kind": "implements",
-      "at": "implements[7]",
-      "digest": "sha256:bb837a0f834e02e6c2d91c0934e83bfe289dff0175dbe750cee1f88e1360d0f8"
+      "at": "implements[7]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
       "to": "rules/knowledge/an-abandoned-case-version-edit-writes-nothing",
       "kind": "implements",
-      "at": "implements[8]",
-      "digest": "sha256:a05b04357caf0678d56a28190fbdc076131b3f290bb05902e1111effbbc33896"
+      "at": "implements[8]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/load-a-refused-drafts-own-record-into-the-editor-state",
       "to": "contracts/knowledge/case-query",
       "kind": "implements",
-      "at": "implements[9]",
-      "digest": "sha256:97874bda7c1b2ec6518b299bd669e3bac93b3628f2eddbd4bac95a86fe7eec26"
+      "at": "implements[9]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
@@ -800,57 +771,49 @@
       "from": "task/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
       "to": "rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:ca85f0e9dc89b48783b0c4e3990bf1ced3bc305cafef0b677b45c78234d66d6d"
+      "at": "implements[0]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
       "to": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:e35889fe6ef7110e3bcc8463b798dd1f99751445fd45e12e4dd61fe2a9705d53"
+      "at": "implements[1]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
       "to": "rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading",
       "kind": "implements",
-      "at": "implements[2]",
-      "digest": "sha256:18586f901ef5939bd765235d97dca6bd1db0e15d9154044fbbef93255b034bdd"
+      "at": "implements[2]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
       "to": "rules/knowledge/an-abandoned-case-version-edit-writes-nothing",
       "kind": "implements",
-      "at": "implements[3]",
-      "digest": "sha256:a05b04357caf0678d56a28190fbdc076131b3f290bb05902e1111effbbc33896"
+      "at": "implements[3]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/present-the-refused-draft-on-the-editor-screen",
       "to": "scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing",
       "kind": "implements",
-      "at": "implements[4]",
-      "digest": "sha256:8a74245e82a8092472c37087a0056e3fc78148b6239d88b0c01bf520823e834c"
+      "at": "implements[4]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor",
       "to": "rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-editing-surface-on-every-reading",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:7a677f46a95edb877eb50b3ba4469439edf5be1bc8908dfb1793a546668f17c6"
+      "at": "implements[0]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/route-the-manifest-screen-to-the-version-editor",
       "to": "rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:5f021f1109a9313879c17c86894f2e542b954859a94f16fde358e5a676d89745"
+      "at": "implements[1]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/route-the-simulation-screen-to-the-version-editor",
       "to": "rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-editing-surface-on-every-reading",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:7a677f46a95edb877eb50b3ba4469439edf5be1bc8908dfb1793a546668f17c6"
+      "at": "implements[0]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
@@ -868,36 +831,31 @@
       "from": "task/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
       "to": "rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:cb57b01dd94872e07474f7afda749073820a7c2064218422edd627b09ea1cb07"
+      "at": "implements[0]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
       "to": "rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:ca85f0e9dc89b48783b0c4e3990bf1ced3bc305cafef0b677b45c78234d66d6d"
+      "at": "implements[1]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
       "to": "rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case",
       "kind": "implements",
-      "at": "implements[2]",
-      "digest": "sha256:e35889fe6ef7110e3bcc8463b798dd1f99751445fd45e12e4dd61fe2a9705d53"
+      "at": "implements[2]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
       "to": "scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing",
       "kind": "implements",
-      "at": "implements[3]",
-      "digest": "sha256:8a74245e82a8092472c37087a0056e3fc78148b6239d88b0c01bf520823e834c"
+      "at": "implements[3]"
     },
     {
       "from": "task/draft-editor-correction-while-invalid/save-a-correction-on-the-refused-reading",
       "to": "domain/knowledge/case-version",
       "kind": "implements",
-      "at": "implements[4]",
-      "digest": "sha256:ecc240f94dd4b0877e9d8870288c8167c5d54df3b4464c30d2c67c28fa4c31b6"
+      "at": "implements[4]"
     },
     {
       "from": "task/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
@@ -915,50 +873,43 @@
       "from": "task/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
       "to": "rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:9b36b5c3332ce180313d4225436d76ff48b88bd7f9faf5ba005d53b73b705e7f"
+      "at": "implements[0]"
     },
     {
       "from": "task/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
       "to": "rules/knowledge/only-a-draft-case-version-may-be-discarded",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:cae0bb16856d7598c4886764d902941b63927569a64b9acbd25fc96d61b07a06"
+      "at": "implements[1]"
     },
     {
       "from": "task/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
       "to": "rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act",
       "kind": "implements",
-      "at": "implements[2]",
-      "digest": "sha256:c724d2a5cb5f714762512d9062165abf565a47ea37fcd02a2cbadf9bbb27ca86"
+      "at": "implements[2]"
     },
     {
       "from": "task/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
       "to": "rules/knowledge/a-draft-case-versions-discard-reproduces-the-cases-own-slug",
       "kind": "implements",
-      "at": "implements[3]",
-      "digest": "sha256:6511a21cb6fa88d2a51bda0b3fcbddb8e53d5bf7fb8be94a3a5e2e23ac6073a9"
+      "at": "implements[3]"
     },
     {
       "from": "task/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
       "to": "scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable",
       "kind": "implements",
-      "at": "implements[4]",
-      "digest": "sha256:4be0102591208989f3d5fe190fd0427e137266f8290229aec646d040d8935bb6"
+      "at": "implements[4]"
     },
     {
       "from": "task/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
       "to": "constraints/a-successful-case-version-discard-answers-with-no-content",
       "kind": "implements",
-      "at": "implements[5]",
-      "digest": "sha256:7a9f0725834649367a3debd2d91be12a4d6ed7d06e17921ce99ddfc3131d8fd5"
+      "at": "implements[5]"
     },
     {
       "from": "task/draft-editor-discard-while-invalid/offer-discard-on-the-refused-reading",
       "to": "domain/knowledge/case-version",
       "kind": "implements",
-      "at": "implements[6]",
-      "digest": "sha256:ecc240f94dd4b0877e9d8870288c8167c5d54df3b4464c30d2c67c28fa4c31b6"
+      "at": "implements[6]"
     }
   ]
 }

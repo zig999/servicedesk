@@ -144,18 +144,19 @@ describe(
       const fetchMock = createFetchStub(
         notValidDraftHandlers({
           [`PATCH ${VERSION_PATH}`]: () =>
-            jsonResponse({ ...DRAFT_RECORD, title: "Accepted with no manifest in the answer" }),
+            jsonResponse({ ...DRAFT_RECORD, title: "Server-answered title with no manifest" }),
         }),
       );
       await mountCaseVersionEditor(fetchMock);
 
       const titleInput = await screen.findByLabelText("Title");
       fireEvent.change(titleInput, {
-        target: { value: "Accepted with no manifest in the answer" },
+        target: { value: "Locally typed edit before the 200 answer settles" },
       });
       fireEvent.click(screen.getByRole("button", { name: "Save changes" }));
 
-      await screen.findByDisplayValue("Accepted with no manifest in the answer");
+      await waitFor(() => expect(patchCallCount(fetchMock)).toBe(1));
+      expect(await screen.findByDisplayValue("Server-answered title with no manifest")).toBeTruthy();
       expect(toast.error).not.toHaveBeenCalled();
     });
   },
