@@ -6334,3 +6334,39 @@ entries:
     the curator to different acts. Disclosing nothing further matches
     constraints/a-domain-error-unmapped-by-status-is-refused-generically, which already withholds
     an unanticipated error's message and context from the caller.
+- location: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft.md
+  field: statement
+  unstated: >-
+    This node settles only the HTTP status and the error name of a revision requested while the
+    case holds no draft version. No node stated what CaseHoldsNoDraftError's message names or what
+    the refusal's details carry, even though the refusal reaches the curator with both.
+  decided: >-
+    The message names the case slug, and the details carry that slug and nothing else. The
+    error's context property holds exactly that one value.
+  why: >-
+    The refusal depends only on the case, namely whether that case holds a draft version. The act
+    open to a curator who meets it is to start a draft for that case, and the slug is the whole
+    of the case's identity to that curator. The hypothesis named, the content submitted and any
+    revision number are facts the curator supplied, or facts the condition never looked at, so
+    disclosing them would tell the curator nothing about why the revision was refused.
+- location: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft.md
+  field: statement
+  unstated: >-
+    Two refusals can apply to the same write. a-hypothesis-is-revised-only-against-its-cases-draft
+    refuses a revision while the case holds no draft with CaseHoldsNoDraftError.
+    a-released-hypothesis-revision-is-never-altered refuses any alteration of a released revision
+    with ReleasedHypothesisRevisionNotAlterableError. Both hold when a revise targets a released
+    revision in a case that currently holds no draft, and no node said which refusal answers, or
+    whether both are reported together.
+  decided: >-
+    CaseHoldsNoDraftError alone, raised before any of the hypothesis's revisions is written into.
+    ReleasedHypothesisRevisionNotAlterableError is never reported in its place or alongside it.
+  why: >-
+    Without a draft there is no subject type to check against, so no revision may be written at
+    all, whichever revision is targeted. The case's own standing is therefore the deciding bar,
+    and it is the one the curator can act on by starting a draft. Reporting both is refused
+    because this specification combines refusals only in CaseVersionNotReleasableError's
+    release-time aggregation, and a 409 elsewhere reports one error. Letting the answer turn on
+    the target revision's state would give one precondition failure two different answers,
+    depending on a state read that a-hypothesis-revision-is-overwritten-while-unreleased already
+    treats as eventual.

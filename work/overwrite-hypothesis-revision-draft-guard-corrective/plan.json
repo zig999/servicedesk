@@ -1,0 +1,61 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/overwrite-revision-draft-guard",
+      "kind": "epic",
+      "file": "epic/overwrite-revision-draft-guard.md",
+      "title": "Overwrite-revision draft guard",
+      "summary": "The case store's overwriteHypothesisRevision refuses to write once the case holds no draft version, matching insertHypothesisRevision's own guard."
+    },
+    {
+      "id": "task/overwrite-revision-draft-guard/overwrite-revision-refuses-without-a-draft",
+      "kind": "task",
+      "file": "task/overwrite-revision-draft-guard/overwrite-revision-refuses-without-a-draft.md",
+      "title": "overwriteRevision refuses without a draft",
+      "summary": "The case store's overwriteHypothesisRevision refuses to write once the case holds no draft version, matching insertHypothesisRevision's own guard.",
+      "epic": "overwrite-revision-draft-guard"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/overwrite-revision-draft-guard",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/overwrite-revision-draft-guard",
+      "to": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/overwrite-revision-draft-guard",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "task/overwrite-revision-draft-guard/overwrite-revision-refuses-without-a-draft",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:b29b66aa8eaac175a2bc4436925d628193d3a3bb484d57a93a28f06f0613960a"
+    },
+    {
+      "from": "task/overwrite-revision-draft-guard/overwrite-revision-refuses-without-a-draft",
+      "to": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
+      "kind": "implements",
+      "at": "implements[1]",
+      "digest": "sha256:7fc46c10985aaa48cbc8934576a4620da4c8a6c97bc915598babf4ea76452cc9"
+    },
+    {
+      "from": "task/overwrite-revision-draft-guard/overwrite-revision-refuses-without-a-draft",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[2]",
+      "digest": "sha256:b588f7696f72c6b26c55359e903883d02cbc06e242568ffd626d45c2f36ac7fe"
+    }
+  ]
+}
