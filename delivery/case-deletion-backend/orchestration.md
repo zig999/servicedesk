@@ -23,3 +23,12 @@ warranted, is a separate deliver-scope run under case-deletion-frontend).
   re-bind. plan.json derived against standards/backend-node-service.yaml: 25 specification-node
   references implemented (15 unique).
   Commit: aae8efa3 "deliver-scope case-deletion-backend: plan".
+
+- Invoked /implement-task over task/case-deletion/case-holds-versions-refusal, target backend,
+  slug case-deletion-backend. New CaseHoldsVersionsError domain error, registered at HTTP 409 in
+  status-map.ts. Build's first attempt failed on one unrelated pre-existing timing flake
+  (anthropic-assessment-consolidator.adapter.spec.ts, elapsed_ms >= 20 got 19); re-run and full
+  suite both passed clean. 6 tests written, 8/8 criteria met. Trace bound for 4 nodes; bind left
+  42 bindings on status-map.ts stale (this task restamped it under different nodes than earlier
+  binds) — left for this initiative's own /review-change to answer, not a standalone /reconcile.
+  Commit: de183c21 "deliver-scope case-deletion-backend: deliver case-holds-versions-refusal".
