@@ -53,3 +53,12 @@ warranted, is a separate deliver-scope run under case-deletion-frontend).
   suite does not), and handed the situation back to the human rather than improvising past it.
   Commit: 8f3a506a "deliver-scope case-deletion-backend: deliver store-deletes-a-versionless-case
   (implemented, unproven)".
+
+- Resolved the cross-initiative regression via /analyse: rules/knowledge/a-released-revisions-collect-removal-is-accepted-with-no-effect
+  gained an exception (no-effect only while the case still holds a version; the case-delete's own
+  cascade removes the collect once it holds none), cross-checked and logged. Commit: 445050f3
+  "analyse: reconcile released-revision collect no-effect with case delete".
+- Resumed test-authoring for task/case-deletion/store-deletes-a-versionless-case: fixed the sibling
+  test's fixture and added a case proving the new exception directly. Suite passed
+  (run-4). Proof written and validated; delivery.json now holds 2/3 tasks with implementation+proof.
+  Commit: 3cf6b13c "deliver-scope case-deletion-backend: prove store-deletes-a-versionless-case".
