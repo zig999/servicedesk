@@ -10,12 +10,28 @@
       "task": "task/case-deletion-surface/case-holds-versions-error-state"
     },
     {
+      "id": "implementation/case-deletion-surface/delete-case-mutation",
+      "kind": "implementation",
+      "file": "implementation/case-deletion-surface/delete-case-mutation.md",
+      "title": "Case-delete client mutation",
+      "summary": "A useMutation hook that DELETEs /v1/cases/:slug and invalidates the cases-listing query once the delete is accepted.",
+      "task": "task/case-deletion-surface/delete-case-mutation"
+    },
+    {
       "id": "proof/case-deletion-surface/case-holds-versions-error-state",
       "kind": "proof",
       "file": "proof/case-deletion-surface/case-holds-versions-error-state.md",
       "title": "CaseHoldsVersionsError gets a distinct, non-generic UI error-state kind",
       "summary": "Proves that uiStateForApiError now answers CaseHoldsVersionsError with a kind of its own, distinct from every other code the map names (including case-not-found) and from the generic fallback, while the case-not-found and unnamed-code paths remain exactly as they answered before.",
       "task": "task/case-deletion-surface/case-holds-versions-error-state"
+    },
+    {
+      "id": "proof/case-deletion-surface/delete-case-mutation",
+      "kind": "proof",
+      "file": "proof/case-deletion-surface/delete-case-mutation.md",
+      "title": "Case-delete client mutation proof",
+      "summary": "Six tests over useDeleteCase pin the wire request it issues, its 204-success settlement and cache invalidation, its 409/404 error-code pass-through, and the underdetermined boundary that keeps an unnamed refusal's own wire code rather than folding it into CaseNotFoundError.",
+      "task": "task/case-deletion-surface/delete-case-mutation"
     }
   ],
   "edges": [
@@ -38,8 +54,56 @@
       "at": "the path"
     },
     {
+      "from": "implementation/case-deletion-surface/delete-case-mutation",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-deletion-surface/delete-case-mutation",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-deletion-surface/delete-case-mutation",
+      "to": "constraints/a-successful-case-deletion-answers-with-no-content",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-deletion-surface/delete-case-mutation",
+      "to": "rules/knowledge/a-case-holding-no-version-may-be-deleted",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-deletion-surface/delete-case-mutation",
+      "to": "rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-deletion-surface/delete-case-mutation",
+      "to": "scenarios/knowledge/a-case-holding-no-version-is-deleted",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-deletion-surface/delete-case-mutation",
+      "to": "task/case-deletion-surface/delete-case-mutation",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-deletion-surface/case-holds-versions-error-state",
       "to": "implementation/case-deletion-surface/case-holds-versions-error-state",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-deletion-surface/delete-case-mutation",
+      "to": "implementation/case-deletion-surface/delete-case-mutation",
       "kind": "proves",
       "at": "the path"
     }

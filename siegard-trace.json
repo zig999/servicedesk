@@ -317,6 +317,10 @@
       "digest": "sha256:7db4b8384a92fb0ea55c99b1c18263c24b1ab0d1fa855aaf7df6297f41388311",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-delete-case.ts",
+          "digest": "sha256:31e31928f2b8eefb9b5d863a1c58521e8bae866b316ff0efe5b6ddd09c086e03"
+        },
+        {
           "path": "src/src/http/delete-case.routes.ts",
           "digest": "sha256:2d17a5f26f4468eb26e9145ef6732fc2743094f0bf2678641544d5a1ece9463e",
           "judged": true
@@ -2014,6 +2018,10 @@
         {
           "path": "frontend/app/src/hooks/use-case-simulation-version.ts",
           "digest": "sha256:23ea4413912d6b89337cf2bae8802bbf97123d7973e26f99d198c3f086ec7347"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-delete-case.ts",
+          "digest": "sha256:31e31928f2b8eefb9b5d863a1c58521e8bae866b316ff0efe5b6ddd09c086e03"
         },
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
@@ -4809,6 +4817,10 @@
         {
           "path": "frontend/app/src/hooks/use-cases-list.ts",
           "digest": "sha256:717d11a76518762766d07dfae8e58498919c0b9adc1a8c35c63e8824d84675e2"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-delete-case.ts",
+          "digest": "sha256:31e31928f2b8eefb9b5d863a1c58521e8bae866b316ff0efe5b6ddd09c086e03"
         },
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
@@ -9264,6 +9276,10 @@
       "digest": "sha256:a778266bd7d28b2174b5f9c8220e182913f1b0c59549573adfe8b0ed5225c291",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-delete-case.ts",
+          "digest": "sha256:31e31928f2b8eefb9b5d863a1c58521e8bae866b316ff0efe5b6ddd09c086e03"
+        },
+        {
           "path": "src/migrations/0026-a-versionless-case-may-delete-released-collects.sql",
           "digest": "sha256:40ea3022a92fb5fba57bd268c9d5f8a11f87037eb3b796ee171832d8b9d00d93"
         },
@@ -9388,6 +9404,10 @@
       "node": "rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused",
       "digest": "sha256:dafe2beaea64e45544258706b58cb93136b1395c74f636e5e0ac6ba987f232d6",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-delete-case.ts",
+          "digest": "sha256:31e31928f2b8eefb9b5d863a1c58521e8bae866b316ff0efe5b6ddd09c086e03"
+        },
         {
           "path": "src/src/case/case-query.service.ts",
           "digest": "sha256:6aa1bc1111eec71b238e6040e01efecf2f87f371227f052785424bbb07fed930"
@@ -11708,6 +11728,10 @@
       "node": "scenarios/knowledge/a-case-holding-no-version-is-deleted",
       "digest": "sha256:1c23060527070fcdba3d497afd10b1d4e617f26910eb1d962ac6456cfc6360b1",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-delete-case.ts",
+          "digest": "sha256:31e31928f2b8eefb9b5d863a1c58521e8bae866b316ff0efe5b6ddd09c086e03"
+        },
         {
           "path": "src/src/case/delete-case.operation.ts",
           "digest": "sha256:e2541549698c932fcecddd96b0bcce0f6acadbe8e27678e22a281ebf158020bc"
