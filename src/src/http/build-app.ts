@@ -13,6 +13,8 @@ import { createSimulateCaseRoutesPlugin } from './simulate-case.routes.js';
 import type { SimulateCaseControllerDependencies } from './simulate-case.controller.js';
 import { createSimulateHypothesisRoutesPlugin } from './simulate-hypothesis.routes.js';
 import type { SimulateHypothesisControllerDependencies } from './simulate-hypothesis.controller.js';
+import type { DeleteCaseControllerDependencies } from './delete-case.controller.js';
+import { createDeleteCaseRoutesPlugin } from './delete-case.routes.js';
 import type { DiscardControllerDependencies } from './discard.controller.js';
 import { createDiscardRoutesPlugin } from './discard.routes.js';
 import type { ListCapabilitiesControllerDependencies } from './list-capabilities.controller.js';
@@ -92,6 +94,7 @@ export type BuildAppDependencies = {
   readonly release: ReleaseControllerDependencies;
   readonly releaseHypothesisRevision: ReleaseHypothesisRevisionControllerDependencies;
   readonly discard: DiscardControllerDependencies;
+  readonly deleteCase: DeleteCaseControllerDependencies;
   readonly reviseHypothesis: ReviseHypothesisControllerDependencies;
   readonly placeHypothesis: PlaceHypothesisControllerDependencies;
   readonly removeHypothesis: RemoveHypothesisControllerDependencies;
@@ -133,6 +136,7 @@ const routePluginFactories: ReadonlyArray<
   (dependencies) => createReleaseRoutesPlugin(dependencies.release),
   (dependencies) => createReleaseHypothesisRevisionRoutesPlugin(dependencies.releaseHypothesisRevision),
   (dependencies) => createDiscardRoutesPlugin(dependencies.discard),
+  (dependencies) => createDeleteCaseRoutesPlugin(dependencies.deleteCase),
   (dependencies) => createReviseHypothesisRoutesPlugin(dependencies.reviseHypothesis),
   (dependencies) => createPlaceHypothesisRoutesPlugin(dependencies.placeHypothesis),
   (dependencies) => createRemoveHypothesisRoutesPlugin(dependencies.removeHypothesis),

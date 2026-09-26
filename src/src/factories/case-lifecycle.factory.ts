@@ -1,5 +1,6 @@
 import type { CreatedDraft, ICreateDraft } from '../case/create-draft.operation.js';
 import { CreateDraftOperation } from '../case/create-draft.operation.js';
+import { deleteCase } from '../case/delete-case.operation.js';
 import { discardCaseVersion } from '../case/discard.operation.js';
 import {
   placeHypothesis,
@@ -26,6 +27,7 @@ export type CaseLifecycleOperations = {
   readonly release: (slug: string, version: number) => Promise<void>;
   readonly releaseHypothesisRevision: (slug: string, hypothesisName: string, revision: number) => Promise<void>;
   readonly discard: (slug: string, version: number) => Promise<void>;
+  readonly delete: (slug: string) => Promise<void>;
 };
 
 export function createCaseLifecycle(connection: DatabaseConnection): CaseLifecycleOperations {
@@ -45,5 +47,6 @@ export function createCaseLifecycle(connection: DatabaseConnection): CaseLifecyc
     releaseHypothesisRevision: (slug, hypothesisName, revision) =>
       releaseHypothesisRevisionOperation.releaseHypothesisRevision(slug, hypothesisName, revision),
     discard: (slug, version) => discardCaseVersion(caseStore, slug, version),
+    delete: (slug) => deleteCase(caseStore, slug),
   };
 }

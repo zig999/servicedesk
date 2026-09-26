@@ -128,7 +128,7 @@ function listDependencies(resources: ComposedResources): Pick<BuildAppDependenci
   };
 }
 
-function lifecycleDependencies(resources: ComposedResources): Pick<BuildAppDependencies, 'createDraft' | 'updateDraft' | 'release' | 'releaseHypothesisRevision' | 'discard' | 'reviseHypothesis' | 'placeHypothesis' | 'removeHypothesis'> {
+function lifecycleDependencies(resources: ComposedResources): Pick<BuildAppDependencies, 'createDraft' | 'updateDraft' | 'release' | 'releaseHypothesisRevision' | 'discard' | 'deleteCase' | 'reviseHypothesis' | 'placeHypothesis' | 'removeHypothesis'> {
   const { caseLifecycle, caseStore, caseQuery } = resources;
   return {
     createDraft: { createDraft: caseLifecycle.createDraft },
@@ -136,6 +136,7 @@ function lifecycleDependencies(resources: ComposedResources): Pick<BuildAppDepen
     release: { release: caseLifecycle.release, caseQuery },
     releaseHypothesisRevision: { releaseHypothesisRevision: caseLifecycle.releaseHypothesisRevision },
     discard: { discard: caseLifecycle.discard },
+    deleteCase: { delete: caseLifecycle.delete },
     reviseHypothesis: { reviseHypothesis: caseLifecycle.reviseHypothesis },
     placeHypothesis: { placeHypothesis: caseLifecycle.placeHypothesis },
     removeHypothesis: { removeHypothesis: caseLifecycle.removeHypothesis },

@@ -286,7 +286,7 @@ function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): Bui
     registerCapability: stubRegisterCapability(),
     removeCapability: { removeCapability: async () => undefined },
     createDraft: { createDraft: async () => ({ slug: 'a-slug', version: 1 }) },
-    releaseHypothesisRevision: { releaseHypothesisRevision: async () => undefined }, discard: { discard: async () => undefined },
+    releaseHypothesisRevision: { releaseHypothesisRevision: async () => undefined }, discard: { discard: async () => undefined }, deleteCase: { delete: async () => undefined },
     reviseHypothesis: { reviseHypothesis: async () => ({ hypothesis_name: 'a-hypothesis', revision: 1 }) },
     placeHypothesis: { placeHypothesis: async () => undefined }, removeHypothesis: { removeHypothesis: async () => undefined },
     registerConcept: stubRegisterConcept(),
@@ -552,6 +552,7 @@ const REGISTERED_ROUTE_REQUESTS: readonly RegisteredRouteRequest[] = [
   { description: 'release', method: 'POST', url: '/v1/cases/a-slug/versions/1/release' },
   { description: 'release-hypothesis-revision', method: 'POST', url: '/v1/cases/a-slug/hypotheses/a-hypothesis/revisions/1/release' },
   { description: 'discard', method: 'DELETE', url: '/v1/cases/a-slug/versions/1' },
+  { description: 'delete-case', method: 'DELETE', url: '/v1/cases/a-slug' },
   {
     description: 'revise-hypothesis',
     method: 'POST',

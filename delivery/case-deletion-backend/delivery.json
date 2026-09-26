@@ -10,6 +10,14 @@
       "task": "task/case-deletion/case-holds-versions-refusal"
     },
     {
+      "id": "implementation/case-deletion/delete-case-over-case-lifecycle",
+      "kind": "implementation",
+      "file": "implementation/case-deletion/delete-case-over-case-lifecycle.md",
+      "title": "Delete a case over the case-lifecycle surface",
+      "summary": "Wires ICaseStore.delete into a domain-level delete operation, a thin DELETE /v1/cases/:slug route, controller and dto, added to CaseLifecycleOperations and registered in build-app.ts.",
+      "task": "task/case-deletion/delete-case-over-case-lifecycle"
+    },
+    {
       "id": "implementation/case-deletion/store-deletes-a-versionless-case",
       "kind": "implementation",
       "file": "implementation/case-deletion/store-deletes-a-versionless-case.md",
@@ -24,6 +32,14 @@
       "title": "CaseHoldsVersionsError refusal — proof",
       "summary": "Unit tests over CaseHoldsVersionsError's own shape and its registration in the status map, proving every stated criterion and the two named underdetermined implementations, with the four implemented nodes left to a reading since none is decided whole within this task's scope.",
       "task": "task/case-deletion/case-holds-versions-refusal"
+    },
+    {
+      "id": "proof/case-deletion/delete-case-over-case-lifecycle",
+      "kind": "proof",
+      "file": "proof/case-deletion/delete-case-over-case-lifecycle.md",
+      "title": "Delete a case over the case-lifecycle surface — HTTP route, controller, dto and wiring",
+      "summary": "Unit tests over the route/controller's own status and envelope mapping, an extended build-app wiring sweep, and two real-store integration tests proving acceptance-with-cascade, the two identical CaseHoldsVersionsError refusals, the CaseNotFoundError refusal, and the post-delete listing/create-draft-renumbering scenario.",
+      "task": "task/case-deletion/delete-case-over-case-lifecycle"
     },
     {
       "id": "proof/case-deletion/store-deletes-a-versionless-case",
@@ -66,6 +82,54 @@
       "at": "the path"
     },
     {
+      "from": "implementation/case-deletion/delete-case-over-case-lifecycle",
+      "to": "rules/knowledge/a-case-holding-no-version-may-be-deleted",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-deletion/delete-case-over-case-lifecycle",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "encodes",
+      "at": "nodes[13]"
+    },
+    {
+      "from": "implementation/case-deletion/delete-case-over-case-lifecycle",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[14]"
+    },
+    {
+      "from": "implementation/case-deletion/delete-case-over-case-lifecycle",
+      "to": "constraints/a-successful-case-deletion-answers-with-no-content",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-deletion/delete-case-over-case-lifecycle",
+      "to": "scenarios/knowledge/a-case-holding-no-version-is-deleted",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-deletion/delete-case-over-case-lifecycle",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-deletion/delete-case-over-case-lifecycle",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-deletion/delete-case-over-case-lifecycle",
+      "to": "task/case-deletion/delete-case-over-case-lifecycle",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/case-deletion/store-deletes-a-versionless-case",
       "to": "rules/knowledge/a-case-holding-no-version-may-be-deleted",
       "kind": "encodes",
@@ -104,6 +168,12 @@
     {
       "from": "proof/case-deletion/case-holds-versions-refusal",
       "to": "implementation/case-deletion/case-holds-versions-refusal",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-deletion/delete-case-over-case-lifecycle",
+      "to": "implementation/case-deletion/delete-case-over-case-lifecycle",
       "kind": "proves",
       "at": "the path"
     },

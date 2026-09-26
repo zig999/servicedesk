@@ -248,6 +248,10 @@
           "digest": "sha256:fdab8c6f56d356bdd2fc4e5d18bbb561c9bb6b2707e9687a682b7ee25545b0c4"
         },
         {
+          "path": "src/src/http/delete-case.routes.ts",
+          "digest": "sha256:2d17a5f26f4468eb26e9145ef6732fc2743094f0bf2678641544d5a1ece9463e"
+        },
+        {
           "path": "src/src/http/draft-capability-schema-from-openapi.routes.ts",
           "digest": "sha256:538d019e9505b38c1e5b10f880ab0a011f1ffe8f2ef4dbe70e47f1d09e4055cc"
         },
@@ -302,6 +306,16 @@
         {
           "path": "src/src/http/remove-capability.routes.ts",
           "digest": "sha256:ea23e0350bb8b15e4a417167cf27cf7993fcadd62e0270eaacb081f83cfdc87d"
+        }
+      ]
+    },
+    {
+      "node": "constraints/a-successful-case-deletion-answers-with-no-content",
+      "digest": "sha256:7db4b8384a92fb0ea55c99b1c18263c24b1ab0d1fa855aaf7df6297f41388311",
+      "files": [
+        {
+          "path": "src/src/http/delete-case.routes.ts",
+          "digest": "sha256:2d17a5f26f4468eb26e9145ef6732fc2743094f0bf2678641544d5a1ece9463e"
         }
       ]
     },
@@ -734,6 +748,10 @@
         {
           "path": "src/src/capability-registry/evidence-usage-reader.port.ts",
           "digest": "sha256:14fbff4a52dfa31a57ae16f3b2a4d315326e58ea5bdef7937e5d4df85ba44571"
+        },
+        {
+          "path": "src/src/case/delete-case.operation.ts",
+          "digest": "sha256:e2541549698c932fcecddd96b0bcce0f6acadbe8e27678e22a281ebf158020bc"
         },
         {
           "path": "src/src/case/hypothesis-revision-overwrite.port.ts",
@@ -1973,7 +1991,7 @@
     },
     {
       "node": "contracts/knowledge/case-lifecycle",
-      "digest": "sha256:bbd97cb9f747630c88b362a4828663441aae52d9f85b9ce35cf02caf8f6ec3ee",
+      "digest": "sha256:af4d5e25ab4eeeec77966fbdf4d758ed68fd4186273b72782ed229a18a4d1201",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-case-creation-form.ts",
@@ -2056,7 +2074,7 @@
         },
         {
           "path": "src/src/factories/case-lifecycle.factory.ts",
-          "digest": "sha256:bf334a8f42369f4d1fcb679d8a47ad3e451f8ea17731986dd7802c88598bc80c"
+          "digest": "sha256:56a3fe3d90cfef4f7db6c3e3401e68aedd27107fff0ef883c1bb180f66a3a100"
         },
         {
           "path": "src/src/factories/case-store.factory.ts",
@@ -2064,8 +2082,7 @@
         },
         {
           "path": "src/src/http/build-app.ts",
-          "digest": "sha256:e73e5a172b6ec2da811eba986182089c65898aca084b8e8419abe1777eea0ebb",
-          "judged": true
+          "digest": "sha256:28090c843d7d486bd0f3757609d1f19a73335910303852a5d4cb0832ddc84fcc"
         },
         {
           "path": "src/src/http/create-draft.controller.ts",
@@ -2074,6 +2091,10 @@
         {
           "path": "src/src/http/create-draft.routes.ts",
           "digest": "sha256:2c985269c05bce7bc91f64c705af7f6583fccf37b12284e963509d059b120b50"
+        },
+        {
+          "path": "src/src/http/delete-case.routes.ts",
+          "digest": "sha256:2d17a5f26f4468eb26e9145ef6732fc2743094f0bf2678641544d5a1ece9463e"
         },
         {
           "path": "src/src/http/discard.controller.ts",
@@ -4834,6 +4855,10 @@
         {
           "path": "src/src/case/create-draft.operation.ts",
           "digest": "sha256:2816c7ffeb4c93464ba0abfe41bc7f66ce082febbedebbac5a64b1ce760df6fe"
+        },
+        {
+          "path": "src/src/case/delete-case.operation.ts",
+          "digest": "sha256:e2541549698c932fcecddd96b0bcce0f6acadbe8e27678e22a281ebf158020bc"
         },
         {
           "path": "src/src/case/parse-case-document.ts",
@@ -9174,12 +9199,24 @@
           "digest": "sha256:a108a63b52048ced330f050a6365b1a3f055fa4668fad2bd366595acf95104dc"
         },
         {
+          "path": "src/src/case/delete-case.operation.ts",
+          "digest": "sha256:e2541549698c932fcecddd96b0bcce0f6acadbe8e27678e22a281ebf158020bc"
+        },
+        {
           "path": "src/src/errors/case-holds-versions.error.ts",
           "digest": "sha256:6e791fbfbf43252110e18d72084e61d3f4b44e116e7f697a7b5e160463260d85"
         },
         {
           "path": "src/src/errors/status-map.ts",
           "digest": "sha256:b67402b4ce9f068fa41126890c323b16f22c6daf80d859fcb7e752767cc04b77"
+        },
+        {
+          "path": "src/src/factories/case-lifecycle.factory.ts",
+          "digest": "sha256:56a3fe3d90cfef4f7db6c3e3401e68aedd27107fff0ef883c1bb180f66a3a100"
+        },
+        {
+          "path": "src/src/http/delete-case.routes.ts",
+          "digest": "sha256:2d17a5f26f4468eb26e9145ef6732fc2743094f0bf2678641544d5a1ece9463e"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
@@ -11564,6 +11601,24 @@
           "path": "src/src/investigation/run-diagnosis.ts",
           "digest": "sha256:789fdffeef9bcd909ebb6fe318c71ab0ab0ea46c920361e0c2b00e2653e67d42",
           "judged": true
+        }
+      ]
+    },
+    {
+      "node": "scenarios/knowledge/a-case-holding-no-version-is-deleted",
+      "digest": "sha256:1c23060527070fcdba3d497afd10b1d4e617f26910eb1d962ac6456cfc6360b1",
+      "files": [
+        {
+          "path": "src/src/case/delete-case.operation.ts",
+          "digest": "sha256:e2541549698c932fcecddd96b0bcce0f6acadbe8e27678e22a281ebf158020bc"
+        },
+        {
+          "path": "src/src/factories/case-lifecycle.factory.ts",
+          "digest": "sha256:56a3fe3d90cfef4f7db6c3e3401e68aedd27107fff0ef883c1bb180f66a3a100"
+        },
+        {
+          "path": "src/src/http/delete-case.routes.ts",
+          "digest": "sha256:2d17a5f26f4468eb26e9145ef6732fc2743094f0bf2678641544d5a1ece9463e"
         }
       ]
     },
