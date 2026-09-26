@@ -14,7 +14,9 @@ import {
   type CaseVersionState,
 } from "../hooks/use-case-versions";
 import { useCaseCurrentVersionValidity } from "../hooks/use-case-current-version-validity";
+import { useCaseDeleteControl } from "../hooks/use-case-delete-control";
 import { CaseHypothesesTab } from "./case-hypotheses-tab";
+import { CaseDeleteDialog } from "./case-delete-dialog";
 
 const CASE_VERSIONS_COLUMNS: StatusTableColumn[] = [
   { key: "version", header: "Version" },
@@ -70,6 +72,7 @@ function toRow(slug: string, version: CaseVersionListItem): StatusTableRow {
 function VersionsPanel({ slug }: { readonly slug: string }): JSX.Element {
   const { data, isLoading, isError, refetch } = useCaseVersions(slug);
   const currentVersion = useCaseCurrentVersionValidity(slug);
+  const caseDelete = useCaseDeleteControl(slug);
 
   if (isLoading) {
     return <p>Loading version timeline…</p>;
@@ -100,7 +103,10 @@ function VersionsPanel({ slug }: { readonly slug: string }): JSX.Element {
       )}
       {rows.length === 0 ? (
 
-        <p>This case currently holds no version.</p>
+        <div className="flex flex-col items-start gap-4">
+          <p>This case currently holds no version.</p>
+          <CaseDeleteDialog control={caseDelete} />
+        </div>
       ) : (
         <div className="flex flex-col gap-4">
           {currentVersion.phase === "not-valid" && (

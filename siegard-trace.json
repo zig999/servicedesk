@@ -317,6 +317,10 @@
       "digest": "sha256:7db4b8384a92fb0ea55c99b1c18263c24b1ab0d1fa855aaf7df6297f41388311",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-case-delete-control.ts",
+          "digest": "sha256:41381f739df5d6453e4f66a7910b1acb9d37061eda6c0aee7b6788cca4bbeb09"
+        },
+        {
           "path": "frontend/app/src/hooks/use-delete-case.ts",
           "digest": "sha256:31e31928f2b8eefb9b5d863a1c58521e8bae866b316ff0efe5b6ddd09c086e03"
         },
@@ -4815,6 +4819,10 @@
           "digest": "sha256:134684834082059655b7a2f77b4b1d8444a2a47e21730cfd0dd0d97043013459"
         },
         {
+          "path": "frontend/app/src/hooks/use-case-delete-control.ts",
+          "digest": "sha256:41381f739df5d6453e4f66a7910b1acb9d37061eda6c0aee7b6788cca4bbeb09"
+        },
+        {
           "path": "frontend/app/src/hooks/use-cases-list.ts",
           "digest": "sha256:717d11a76518762766d07dfae8e58498919c0b9adc1a8c35c63e8824d84675e2"
         },
@@ -4834,6 +4842,10 @@
         {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
           "digest": "sha256:bc73198664cf02bdf08228fc8efab1a5cc5ab435f9e8cdf89f18889abb0d38a1"
+        },
+        {
+          "path": "frontend/app/src/routes/case-delete-dialog.tsx",
+          "digest": "sha256:f4f9600d7758fe8c7e64d5df791bc7f8d7013dc21f2c37e645fe9459884249c3"
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
@@ -9198,6 +9210,20 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-case-deletion-takes-a-further-explicit-act-reproducing-the-cases-own-slug",
+      "digest": "sha256:5cd2affa0b0dc3b3ad9ec74bbe40efcbf6b804c37ea301b24c5df28c6b076307",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-delete-dialog.tsx",
+          "digest": "sha256:f4f9600d7758fe8c7e64d5df791bc7f8d7013dc21f2c37e645fe9459884249c3"
+        },
+        {
+          "path": "frontend/app/src/services/case-delete-confirmation.ts",
+          "digest": "sha256:8050b3a087cd6cf199d6bd6ad8bda16e34fbdf7bb25ca51488af08d9fdac8b6e"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-case-has-at-least-one-hypothesis",
       "digest": "sha256:a889a60c2211b10397260d58cf75b583413631c7af825dd0d9c16079ec2eab56",
       "files": [
@@ -9278,6 +9304,10 @@
         {
           "path": "frontend/app/src/hooks/use-delete-case.ts",
           "digest": "sha256:31e31928f2b8eefb9b5d863a1c58521e8bae866b316ff0efe5b6ddd09c086e03"
+        },
+        {
+          "path": "frontend/app/src/routes/case-detail-screen.tsx",
+          "digest": "sha256:698941b3fc70f04a85b2b019396066d5442f9f49a8ff7de4081b48747e1bf7b3"
         },
         {
           "path": "src/migrations/0026-a-versionless-case-may-delete-released-collects.sql",
@@ -10648,6 +10678,16 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-successful-case-deletion-lands-on-the-listing-of-every-case",
+      "digest": "sha256:dd04c371c321f2f78a218e44ee8273ca93b970e8f103845adedbc0bc59f29e23",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-case-delete-control.ts",
+          "digest": "sha256:41381f739df5d6453e4f66a7910b1acb9d37061eda6c0aee7b6788cca4bbeb09"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-successful-case-version-creation-lands-on-the-created-versions-own-surface",
       "digest": "sha256:a1a411cfbf461d5e241744b5366115a3c78def6c4d46db7e9d03e705057348ae",
       "files": [
@@ -11729,8 +11769,16 @@
       "digest": "sha256:1c23060527070fcdba3d497afd10b1d4e617f26910eb1d962ac6456cfc6360b1",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-case-delete-control.ts",
+          "digest": "sha256:41381f739df5d6453e4f66a7910b1acb9d37061eda6c0aee7b6788cca4bbeb09"
+        },
+        {
           "path": "frontend/app/src/hooks/use-delete-case.ts",
           "digest": "sha256:31e31928f2b8eefb9b5d863a1c58521e8bae866b316ff0efe5b6ddd09c086e03"
+        },
+        {
+          "path": "frontend/app/src/routes/case-detail-screen.tsx",
+          "digest": "sha256:698941b3fc70f04a85b2b019396066d5442f9f49a8ff7de4081b48747e1bf7b3"
         },
         {
           "path": "src/src/case/delete-case.operation.ts",
