@@ -1,0 +1,59 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/case-deletion/case-holds-versions-refusal",
+      "kind": "implementation",
+      "file": "implementation/case-deletion/case-holds-versions-refusal.md",
+      "title": "CaseHoldsVersionsError domain refusal",
+      "summary": "Adds the CaseHoldsVersionsError domain error class and registers it as an HTTP 409 refusal in the shared status map.",
+      "task": "task/case-deletion/case-holds-versions-refusal"
+    },
+    {
+      "id": "proof/case-deletion/case-holds-versions-refusal",
+      "kind": "proof",
+      "file": "proof/case-deletion/case-holds-versions-refusal.md",
+      "title": "CaseHoldsVersionsError refusal — proof",
+      "summary": "Unit tests over CaseHoldsVersionsError's own shape and its registration in the status map, proving every stated criterion and the two named underdetermined implementations, with the four implemented nodes left to a reading since none is decided whole within this task's scope.",
+      "task": "task/case-deletion/case-holds-versions-refusal"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/case-deletion/case-holds-versions-refusal",
+      "to": "rules/knowledge/a-case-holding-no-version-may-be-deleted",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-deletion/case-holds-versions-refusal",
+      "to": "constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-deletion/case-holds-versions-refusal",
+      "to": "constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-deletion/case-holds-versions-refusal",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-deletion/case-holds-versions-refusal",
+      "to": "task/case-deletion/case-holds-versions-refusal",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-deletion/case-holds-versions-refusal",
+      "to": "implementation/case-deletion/case-holds-versions-refusal",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

@@ -2,6 +2,7 @@ import { expect, it } from 'vitest';
 import { CapabilityIdentityNotFoundError } from '../../../errors/capability-identity-not-found.error.js';
 import { CaseAlreadyHasDraftError } from '../../../errors/case-already-has-draft.error.js';
 import { CaseHoldsNoDraftError } from '../../../errors/case-holds-no-draft.error.js';
+import { CaseHoldsVersionsError } from '../../../errors/case-holds-versions.error.js';
 import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
 import { CaseVersionNotDraftAtReleaseError } from '../../../errors/case-version-not-draft-at-release.error.js';
 import { CaseVersionNotDraftError } from '../../../errors/case-version-not-draft.error.js';
@@ -189,6 +190,14 @@ it('maps CaseAlreadyHasDraftError and ManifestPositionOccupiedError to the same 
 
 it('resolves CaseHoldsNoDraftError to 409', () => {
   const error = new CaseHoldsNoDraftError('a-slug');
+
+  const status = statusForError(error);
+
+  expect(status).toBe(409);
+});
+
+it('resolves CaseHoldsVersionsError to 409', () => {
+  const error = new CaseHoldsVersionsError('a-slug');
 
   const status = statusForError(error);
 

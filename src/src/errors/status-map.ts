@@ -6,6 +6,7 @@ import { CapabilityNotRegisteredForTestError } from './capability-not-registered
 import { CapabilitySchemaNotWellFormedError } from './capability-schema-not-well-formed.error.js';
 import { CaseAlreadyHasDraftError } from './case-already-has-draft.error.js';
 import { CaseHoldsNoDraftError } from './case-holds-no-draft.error.js';
+import { CaseHoldsVersionsError } from './case-holds-versions.error.js';
 import { CaseNotFoundError } from './case-not-found.error.js';
 import { CaseVersionNotDraftAtReleaseError } from './case-version-not-draft-at-release.error.js';
 import { CaseVersionNotDraftError } from './case-version-not-draft.error.js';
@@ -65,6 +66,7 @@ const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<Dom
   [ConceptInUseError, 409],
   [CaseVersionNotReleasedError, 409],
   [CaseHoldsNoDraftError, 409],
+  [CaseHoldsVersionsError, 409],
   [ReleasedHypothesisRevisionNotAlterableError, 409],
   [HypothesisRevisionNotDraftAtReleaseError, 409],
   [CaseVersionNotReleasableError, 422],

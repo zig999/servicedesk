@@ -80,6 +80,10 @@
           "digest": "sha256:a25416505c750d331e9af86cee51983dc592b9b41521212b6d6f9822096b56a3"
         },
         {
+          "path": "src/src/errors/case-holds-versions.error.ts",
+          "digest": "sha256:6e791fbfbf43252110e18d72084e61d3f4b44e116e7f697a7b5e160463260d85"
+        },
+        {
           "path": "src/src/errors/case-not-found.error.ts",
           "digest": "sha256:e7aad6edc919e1e87f076678f476cccbb054a4a8a0be950c35df50c9134097ea"
         },
@@ -160,6 +164,10 @@
         {
           "path": "src/src/errors/case-holds-no-draft.error.ts",
           "digest": "sha256:a25416505c750d331e9af86cee51983dc592b9b41521212b6d6f9822096b56a3"
+        },
+        {
+          "path": "src/src/errors/case-holds-versions.error.ts",
+          "digest": "sha256:6e791fbfbf43252110e18d72084e61d3f4b44e116e7f697a7b5e160463260d85"
         },
         {
           "path": "src/src/errors/case-not-found.error.ts",
@@ -754,6 +762,10 @@
         {
           "path": "src/src/connector-registry/connector-configuration-store.port.ts",
           "digest": "sha256:30d754d19101be3cca5558abadd0f734c3579bf82072e7825e00384a9d4bb96f"
+        },
+        {
+          "path": "src/src/errors/case-holds-versions.error.ts",
+          "digest": "sha256:6e791fbfbf43252110e18d72084e61d3f4b44e116e7f697a7b5e160463260d85"
         },
         {
           "path": "src/src/errors/investigation-not-buildable.error.ts",
@@ -9143,6 +9155,20 @@
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
           "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-case-holding-no-version-may-be-deleted",
+      "digest": "sha256:a778266bd7d28b2174b5f9c8220e182913f1b0c59549573adfe8b0ed5225c291",
+      "files": [
+        {
+          "path": "src/src/errors/case-holds-versions.error.ts",
+          "digest": "sha256:6e791fbfbf43252110e18d72084e61d3f4b44e116e7f697a7b5e160463260d85"
+        },
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:b67402b4ce9f068fa41126890c323b16f22c6daf80d859fcb7e752767cc04b77"
         }
       ]
     },
