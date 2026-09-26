@@ -1,0 +1,52 @@
+read:
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: nowhere
+    evidence: >-
+      Every DELETE mock in this file is a refusal fabricated independently of the case's actual
+      version state — e.g. [`GET ${VERSIONS_PATH}`]: () => jsonResponse({ data: [] }) paired with
+      [`DELETE ${DELETE_PATH}`]: () => errorResponse(409, "CaseHoldsVersionsError", "the case still
+      holds a version", { slug: SLUG }) — so the file never asserts that the accept/refuse decision
+      itself turns on whether the case holds a version; it only uses a fixed 409 as input to test
+      how the surface presents it.
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      No DELETE ${DELETE_PATH} handler in this file returns 204; every one returns
+      errorResponse(409, ...), errorResponse(404, ...) or errorResponse(500, ...) — there is no
+      accepted-delete case in this file.
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: nowhere
+    evidence: >-
+      No test in this file exercises an accepted delete, so nothing here asserts that the case
+      stops appearing in the listing or that its slug becomes reusable; every scenario is a refusal.
+  - node: rules/knowledge/a-case-deletion-takes-a-further-explicit-act-reproducing-the-cases-own-slug
+    held_at: nowhere
+    evidence: >-
+      triggerDelete always types the correct slug — const input = screen.getByLabelText(`Type
+      ${SLUG} to confirm`); fireEvent.change(input, { target: { value: SLUG } }); — and no test in
+      this file asserts that a mismatched or absent slug issues no delete; the rule's own content is
+      only used as scaffolding, never checked.
+  - node: rules/knowledge/a-successful-case-deletion-lands-on-the-listing-of-every-case
+    held_at: nowhere
+    evidence: >-
+      Criterion 5 navigates manually after a refused delete — await act(async () => { await
+      router.navigate({ to: "/cases" }); }); await screen.findByText(SLUG); — this file never
+      asserts an automatic landing on the listing following an accepted delete.
+  - node: rules/knowledge/a-case-deletion-surface-states-which-refusal-answered-its-delete
+    held_at: the assertions in the "CaseHoldsVersionsError refusal" and "CaseNotFoundError refusal" tests, lines 120-160
+    evidence: >-
+      const message = await screen.findByText(/not deleted/i); expect(message.textContent).toMatch(/version/i);
+      and expect(message.textContent).toContain(SLUG); expect(message.textContent).toMatch(/no case
+      answers/i);, plus expect(holdsVersionsText).not.toBe(notFoundText); in the criterion-3 test.
+  - node: rules/knowledge/a-case-deletion-refusal-the-surface-cannot-name-is-told-as-an-unrecognised-failure
+    held_at: the "presenting an unrecognised refusal" test, lines 204-225
+    evidence: >-
+      const message = await screen.findByText(/recognis|recogniz/i); ... expect(text).toMatch(/fail/i);
+      expect(text).not.toContain("INTERNAL_ERROR"); expect(text).not.toContain(SECRET_MESSAGE);
+      expect(text).not.toContain(SECRET_DETAIL); expect(text).not.toMatch(/no case answers/i);
+      expect(text.toLowerCase()).not.toMatch(/still holds/);
+looked_past: >-
+  The precondition await screen.findByText("This case currently holds no version."), repeated in
+  every describe block, asserts a fact governed by
+  scenarios/knowledge/a-case-holding-no-versions-is-told-explicitly, which is outside this file's
+  node set — it is used here only as scaffolding to reach the delete flow.

@@ -1,0 +1,29 @@
+certified:
+  - node: rules/knowledge/a-successful-case-deletion-lands-on-the-listing-of-every-case
+    state: partial
+    tests:
+      - file: src/routes/case-detail-screen-delete-control.spec.ts
+        name: >-
+          navigates to the cases listing route once the delete is accepted, rather than staying on the deleted case's own detail route
+    why: >-
+      The part of the fact about the slug is covered. After an accepted delete of case-alpha
+      (DELETE /v1/cases/case-alpha answered 204), the test checks that the router's pathname is
+      exactly "/cases". That rules out every surface keyed on the deleted slug: the detail route
+      /cases/case-alpha, the version route /cases/case-alpha/versions/$version, and the
+      new-draft route. If the landing moved to any of those, or stayed where it was, the test
+      would fail.
+
+      The part saying the destination is the surface that presents the listing of every case,
+      which list-cases answers, is not exercised. The test builds its own router. In that
+      router "/cases" is a stub placeholder component that makes no list-cases request. So the
+      test only binds the navigation target to the literal path "/cases". It never shows that
+      this path is the listing surface. It also never checks that the placeholder text renders
+      or that GET /v1/cases is issued. If the application's "/cases" route stopped presenting
+      the listing of every case, the fact would stop holding and this test would still pass.
+    remainder: testable
+    remainder_why: >-
+      Mount the case detail screen under the application's own route tree, not a stub tree. Use
+      a case holding no version, perform the delete, and answer it as accepted. Then assert that
+      the curator lands on the rendered listing of every case: the list-cases request (GET
+      /v1/cases) is issued and its answer is presented. Also assert that no surface keyed on the
+      deleted slug is rendered.

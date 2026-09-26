@@ -1,0 +1,49 @@
+read:
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: >-
+      the 409-refusal test, describe block at line 104 through the assertion at line 119
+    evidence: >-
+      expect(apiErrorFrom(result.current.error).code).toBe("CaseHoldsVersionsError");
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: >-
+      the criterion-2 test, lines 71-85, backed by noContentResponse() at lines 19-21
+    evidence: >-
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      expect(result.current.isError).toBe(false);
+      expect(result.current.data).toBeUndefined();
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: >-
+      the criterion-3 test, lines 87-102, which asserts the cases-listing cache is invalidated once the delete settles
+    evidence: >-
+      expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ["cases-list"] });
+  - node: rules/knowledge/a-case-deletion-takes-a-further-explicit-act-reproducing-the-cases-own-slug
+    held_at: nowhere
+    evidence: >-
+      every test invokes the mutation with only the slug and no separate confirmation step, e.g.
+      result.current.mutate("case-alpha"); at line 60 — the further, slug-reproducing confirmation
+      this rule requires is not modeled anywhere in this file, which tests the mutation hook
+      rather than the confirming control.
+  - node: rules/knowledge/a-successful-case-deletion-lands-on-the-listing-of-every-case
+    held_at: nowhere
+    evidence: >-
+      the succeeded-mutation tests (lines 71-102) assert only result.current.isSuccess, isError,
+      data, and the cases-list invalidation; no assertion in the file names a route, a navigation
+      call or a destination.
+  - node: rules/knowledge/a-case-deletion-surface-states-which-refusal-answered-its-delete
+    held_at: >-
+      the criterion-4 and criterion-5 tests, lines 104-138
+    evidence: >-
+      expect(apiErrorFrom(result.current.error).code).toBe("CaseHoldsVersionsError");
+      ...
+      expect(apiErrorFrom(result.current.error).code).toBe("CaseNotFoundError");
+  - node: rules/knowledge/a-case-deletion-refusal-the-surface-cannot-name-is-told-as-an-unrecognised-failure
+    held_at: >-
+      the final test, lines 140-157
+    evidence: >-
+      expect(error.code).toBe("INTERNAL_ERROR");
+      expect(error.code).not.toBe("CaseNotFoundError");
+looked_past: >-
+  the exact wire path (/v1/cases/:slug) and the react-query cache key ("cases-list") the tests
+  assert against are wire/implementation form rather than a domain fact any of these nodes
+  states — consistent with the decision log's own treatment of HTTP-route naming for the sibling
+  concept/capability/connector removals as material the specification does not hold.

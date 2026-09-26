@@ -1,0 +1,73 @@
+read:
+  - node: domain/knowledge/case
+    held_at: >-
+      the slug field of CaseDeleteControlState and its use in
+      isConfirmEnabled: isSlugConfirmed(slugConfirmation, slug) and in caseNotFoundMessage(slug)
+    evidence: >-
+      readonly slug: string;
+      ...
+      isConfirmEnabled: isSlugConfirmed(slugConfirmation, slug),
+  - node: rules/knowledge/a-case-deletion-refusal-the-surface-cannot-name-is-told-as-an-unrecognised-failure
+    held_at: the closing fallback branch of caseDeleteFailureMessage
+    evidence: >-
+      const UNRECOGNISED_DELETE_FAILURE_MESSAGE =
+        "This delete failed for a reason this screen doesn't recognise.";
+      ...
+      return UNRECOGNISED_DELETE_FAILURE_MESSAGE;
+  - node: rules/knowledge/a-case-deletion-surface-states-which-refusal-answered-its-delete
+    held_at: the two named branches of caseDeleteFailureMessage
+    evidence: >-
+      if (kind === "case-holds-versions") {
+            return CASE_HOLDS_VERSIONS_MESSAGE;
+          }
+          if (kind === "case-not-found") {
+            return caseNotFoundMessage(slug);
+          }
+  - node: rules/knowledge/a-case-deletion-takes-a-further-explicit-act-reproducing-the-cases-own-slug
+    held_at: >-
+      the slugConfirmation state and isConfirmEnabled computation in
+      buildCaseDeleteControlState
+    evidence: >-
+      const [slugConfirmation, setSlugConfirmation] = params.slugConfirmation;
+      ...
+      isConfirmEnabled: isSlugConfirmed(slugConfirmation, slug),
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: nowhere
+    evidence: >-
+      const CASE_HOLDS_VERSIONS_MESSAGE =
+        "This case was not deleted: it still holds at least one version.";
+      this file only surfaces the already-classified refusal kind; it issues no
+      delete request and states nothing about acceptance, the HTTP 409 response,
+      or what an accepted delete removes
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: nowhere
+    evidence: |-
+      function caseNotFoundMessage(slug: string): string {
+        return `This case was not deleted: no case answers ${slug}.`;
+      }
+      this only renders text for an already-classified "case-not-found" kind; it
+      states nothing about the HTTP 404 response or the refusal's details
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      import { ApiError } from "./api-client";
+      the file never issues the delete request nor inspects its response; it only
+      builds UI state and failure messages
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: nowhere
+    evidence: >-
+      export function buildCaseDeleteControlState(params: {...}): CaseDeleteControlState
+      the returned state carries no listing and states nothing about the case
+      disappearing from it or about a future create-draft reusing the slug
+  - node: rules/knowledge/a-successful-case-deletion-lands-on-the-listing-of-every-case
+    held_at: nowhere
+    evidence: >-
+      const { slug, isDeleting, onConfirm } = params;
+      ...
+      onConfirm,
+      onConfirm is passed straight through from the caller; this file states no
+      destination for an accepted delete
+looked_past: >-
+  buildCaseDeleteControlState exposes isConfirmEnabled but does not itself gate the call to
+  onConfirm on it — that wiring belongs to whichever component consumes this state, which is
+  outside this file and outside this pass's scope.

@@ -1,0 +1,129 @@
+findings:
+  - file: src/routes/case-detail-screen.tsx
+    where: "VersionsPanel — the hasDraft computation (line 93) and the conditional hiding of the New-draft control (lines 97-103)"
+    evidence: |-
+      const hasDraft = data.data.some((version) => version.state === "draft");
+      ...
+      {!hasDraft && (
+        <Button type="button" variant="secondary" asChild>
+          <Link to="/cases/$slug/versions/new" params={{ slug }}>
+            New draft
+          </Link>
+        </Button>
+      )}
+    cost: >-
+      Whether a curator may even attempt to start a second draft is decided here, in the
+      client, by withholding the control entirely once one draft already exists, rather than
+      offering it and letting create-draft answer with the disclosed refusal
+      rules/knowledge/a-case-has-at-most-one-draft states. That node says only what create-draft
+      answers when asked; it says nothing about a versions listing pre-emptively withholding its
+      own route to create-draft. A reader checking the specification for what capability this
+      screen exposes around drafting will find the backend refusal and its disclosure, but not
+      the fact that the control disappears before the curator ever reaches it — that fact exists
+      only in this component.
+    correction: >-
+      State, alongside rules/knowledge/a-case-has-at-most-one-draft (or in a node of its own),
+      whether and when a case-versions listing withholds its own create-draft route once the
+      case already holds a draft, so this screen's hasDraft gate implements a decided fact
+      rather than one found only in the component.
+    kind: unstated
+read:
+  - node: contracts/investigation/case-simulation
+    held_at: "actionsForRow — the Simulate link rendered for every row regardless of version state"
+    evidence: |-
+      <Button type="button" variant="secondary" asChild>
+        <Link to="/cases/$slug/versions/$version/simulate" params={params}>
+          Simulate
+        </Link>
+      </Button>
+  - node: contracts/knowledge/case-query
+    held_at: "VersionsPanel — the list-case-versions read backing the table"
+    evidence: |-
+      const { data, isLoading, isError, refetch } = useCaseVersions(slug);
+      ...
+      const rows = data.data.map((version) => toRow(slug, version));
+  - node: domain/knowledge/case
+    held_at: "CaseDetailScreen — the heading naming the case by its slug"
+    evidence: "<h1>Case {slug}</h1>"
+  - node: domain/knowledge/case-version
+    held_at: "toRow — each row's own version number and state"
+    evidence: |-
+      return {
+        id: version.version,
+        version: version.version,
+        state: STATE_CELL[version.state],
+        actions: actionsForRow(slug, version),
+      };
+  - node: domain/knowledge/case-version-state
+    held_at: "STATE_CELL — mapping exactly the two enumerated states"
+    evidence: |-
+      const STATE_CELL: Record<CaseVersionState, { color: string; label: string }> = {
+        draft: { color: "bg-warning", label: "Draft" },
+        released: { color: "bg-success", label: "Released" },
+      };
+  - node: rules/knowledge/a-case-has-at-most-one-draft
+    held_at: "VersionsPanel — the hasDraft gate that keeps the create-draft control from ever being taken a second time"
+    evidence: |-
+      const hasDraft = data.data.some((version) => version.state === "draft");
+      {!hasDraft && ( ... New draft ... )}
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: "VersionsPanel — CaseDeleteDialog rendered only where the listing carries no version"
+    evidence: |-
+      {rows.length === 0 ? (
+        <div className="flex flex-col items-start gap-4">
+          <p>This case currently holds no version.</p>
+          <CaseDeleteDialog control={caseDelete} />
+        </div>
+      ) : ( ...
+  - node: rules/knowledge/a-case-keyed-surface-states-a-current-version-that-does-not-read-back-as-a-case
+    held_at: "VersionsPanel — the not-valid Alert, held apart from the read-failed and no-version branches"
+    evidence: |-
+      {currentVersion.phase === "not-valid" && (
+        <Alert variant="destructive" title="Error">
+          This case's current version does not read back as a case.
+        </Alert>
+      )}
+  - node: rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest
+    held_at: "actionsForRow — the Manifest link rendered for every row regardless of version state"
+    evidence: |-
+      <Link to="/cases/$slug/versions/$version/manifest" params={params}>
+        Manifest
+      </Link>
+  - node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+    held_at: "VersionsPanel — the isError branch and the read-failed phase branch, both stating the same generic text and nothing about the refusal itself"
+    evidence: |-
+      <p>Unable to load this case's version timeline.</p>
+      ...
+      {currentVersion.phase === "read-failed" && (
+        <p>Unable to load this case's version timeline.</p>
+      )}
+  - node: rules/knowledge/every-case-version-remains-readable
+    held_at: nowhere
+    evidence: "const rows = data.data.map((version) => toRow(slug, version)); — the file presents whatever the listing read answers; it holds no logic of its own for retaining or discarding a version, that being the store's own guarantee"
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: nowhere
+    evidence: "const caseDelete = useCaseDeleteControl(slug); ... <CaseDeleteDialog control={caseDelete} /> — the accept/removal outcome is delegated to a hook and a dialog not in this file"
+  - node: scenarios/knowledge/a-case-holding-no-versions-is-told-explicitly
+    held_at: "VersionsPanel — the explicit empty-state paragraph"
+    evidence: "<p>This case currently holds no version.</p>"
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: nowhere
+    evidence: "<CaseDeleteDialog control={caseDelete} /> — the response shape of an accepted delete is a fact of the API transport; this file carries no response-handling code of its own"
+  - node: rules/knowledge/a-case-deletion-takes-a-further-explicit-act-reproducing-the-cases-own-slug
+    held_at: nowhere
+    evidence: "<CaseDeleteDialog control={caseDelete} /> — the confirming further act is delegated to CaseDeleteDialog, not present in this file"
+  - node: rules/knowledge/a-successful-case-deletion-lands-on-the-listing-of-every-case
+    held_at: nowhere
+    evidence: "<CaseDeleteDialog control={caseDelete} /> — no navigation call following an accepted delete appears in this file"
+  - node: rules/knowledge/a-case-deletion-surface-states-which-refusal-answered-its-delete
+    held_at: nowhere
+    evidence: "<CaseDeleteDialog control={caseDelete} /> — the refusal-naming statement is delegated to CaseDeleteDialog, not present in this file"
+  - node: rules/knowledge/a-case-deletion-refusal-the-surface-cannot-name-is-told-as-an-unrecognised-failure
+    held_at: nowhere
+    evidence: "<CaseDeleteDialog control={caseDelete} /> — the unrecognised-failure notice is delegated to CaseDeleteDialog, not present in this file"
+looked_past: >-
+  Presentational choices this file makes — the row/tab labels, the bg-warning/bg-success colors
+  in STATE_CELL, and "Continue editing" versus "View" for the same underlying route — are form
+  the interface owns rather than a domain fact, and the delete flow's confirmation, refusal
+  naming and post-delete navigation are implemented in useCaseDeleteControl and CaseDeleteDialog,
+  files outside this set, so their own conformance is a different file's judgment.

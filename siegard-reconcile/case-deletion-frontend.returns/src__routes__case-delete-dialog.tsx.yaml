@@ -1,0 +1,74 @@
+findings:
+  - file: src/routes/case-delete-dialog.tsx
+    where: "lines 17-18, the CASE_DELETE_DIALOG_DESCRIPTION constant rendered as DialogDescription"
+    evidence: >-
+      "This removes the case together with every hypothesis referencing it, every
+      hypothesis-revision of those hypotheses and every collect those revisions hold. This
+      cannot be undone."
+    cost: >-
+      rules/knowledge/a-case-holding-no-version-may-be-deleted already states, as its own
+      authority, exactly what an accepted delete removes ("the case itself, every hypothesis
+      referencing it, every hypothesis-revision of those hypotheses, released ones included,
+      and every collect those revisions hold") and that nothing restores it. The dialog
+      hard-codes a near-restatement of that same list (already dropping "released ones
+      included") as its own copy. Should the rule's scope of what delete removes ever change,
+      this string has no dependency on the rule and would keep telling a curator confirming
+      an irreversible act a consequence the specification no longer states, with nothing
+      forcing the two into agreement.
+    correction: >-
+      Replace the hard-coded enumeration with wording derived from (or generated alongside)
+      rules/knowledge/a-case-holding-no-version-may-be-deleted, so the list of what delete
+      removes has one home.
+    kind: contradicts
+    node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+read:
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: >-
+      nowhere as its own stated fact — the file restates the rule's own enumeration of what
+      delete removes as hard-coded dialog copy rather than holding a dependency on the rule; see
+      the finding above
+    evidence: >-
+      "This removes the case together with every hypothesis referencing it, every
+      hypothesis-revision of those hypotheses and every collect those revisions hold. This
+      cannot be undone."
+  - node: domain/knowledge/case
+    held_at: >-
+      the slug-confirmation label, which reads the case's own slug attribute
+    evidence: '<span>Type {control.slug} to confirm</span>'
+  - node: rules/knowledge/a-case-deletion-refusal-the-surface-cannot-name-is-told-as-an-unrecognised-failure
+    held_at: nowhere
+    evidence: >-
+      the error paragraph renders whatever string the control supplies without itself
+      distinguishing a recognised refusal from an unrecognised one — the discrimination this
+      rule requires is not performed in this file
+  - node: rules/knowledge/a-case-deletion-surface-states-which-refusal-answered-its-delete
+    held_at: nowhere
+    evidence: >-
+      the generic error rendering, {control.errorMessage}, carries whichever message the
+      control already resolved; this file does not itself compute or select the per-refusal
+      wording the rule requires
+  - node: rules/knowledge/a-case-deletion-takes-a-further-explicit-act-reproducing-the-cases-own-slug
+    held_at: >-
+      the slug-confirmation input paired with the confirm button's disabled condition
+    evidence: >-
+      <span>Type {control.slug} to confirm</span> together with the Input bound to
+      control.slugConfirmation and disabled={!control.isConfirmEnabled || control.isDeleting}
+      on the confirm button
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the only outcome-facing wiring is onClick={control.onConfirm}; the file makes no claim
+      about the HTTP response an accepted delete answers with
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: nowhere
+    evidence: >-
+      onClick={control.onConfirm} delegates the delete entirely to the control; this file
+      states nothing about the case listing or slug reclaim the scenario describes
+  - node: rules/knowledge/a-successful-case-deletion-lands-on-the-listing-of-every-case
+    held_at: nowhere
+    evidence: >-
+      onClick={control.onConfirm} is the only action wired to confirmation; no navigation or
+      destination is stated in this file
+looked_past: >-
+  the "Keep case" button is disabled while control.isDeleting, an interaction detail rather
+  than a domain fact any node states, so it is left to another judgment.

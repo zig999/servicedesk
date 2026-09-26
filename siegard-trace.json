@@ -318,11 +318,13 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-case-delete-control.ts",
-          "digest": "sha256:41381f739df5d6453e4f66a7910b1acb9d37061eda6c0aee7b6788cca4bbeb09"
+          "digest": "sha256:b135ffdf2eea3f388a1626016d2d05e93879a4692c043301d3f18bf3146820c4",
+          "judged": true
         },
         {
           "path": "frontend/app/src/hooks/use-delete-case.ts",
-          "digest": "sha256:31e31928f2b8eefb9b5d863a1c58521e8bae866b316ff0efe5b6ddd09c086e03"
+          "digest": "sha256:31e31928f2b8eefb9b5d863a1c58521e8bae866b316ff0efe5b6ddd09c086e03",
+          "judged": true
         },
         {
           "path": "src/src/http/delete-case.routes.ts",
@@ -1760,7 +1762,8 @@
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
+          "digest": "sha256:698941b3fc70f04a85b2b019396066d5442f9f49a8ff7de4081b48747e1bf7b3",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/case-simulation-case-result-json-tab.tsx",
@@ -2021,7 +2024,8 @@
         },
         {
           "path": "frontend/app/src/hooks/use-case-delete-control.ts",
-          "digest": "sha256:b135ffdf2eea3f388a1626016d2d05e93879a4692c043301d3f18bf3146820c4"
+          "digest": "sha256:b135ffdf2eea3f388a1626016d2d05e93879a4692c043301d3f18bf3146820c4",
+          "judged": true
         },
         {
           "path": "frontend/app/src/hooks/use-case-simulation-version.ts",
@@ -2029,7 +2033,8 @@
         },
         {
           "path": "frontend/app/src/hooks/use-delete-case.ts",
-          "digest": "sha256:31e31928f2b8eefb9b5d863a1c58521e8bae866b316ff0efe5b6ddd09c086e03"
+          "digest": "sha256:31e31928f2b8eefb9b5d863a1c58521e8bae866b316ff0efe5b6ddd09c086e03",
+          "judged": true
         },
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
@@ -2271,7 +2276,8 @@
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
+          "digest": "sha256:698941b3fc70f04a85b2b019396066d5442f9f49a8ff7de4081b48747e1bf7b3",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
@@ -4824,7 +4830,8 @@
         },
         {
           "path": "frontend/app/src/hooks/use-case-delete-control.ts",
-          "digest": "sha256:41381f739df5d6453e4f66a7910b1acb9d37061eda6c0aee7b6788cca4bbeb09"
+          "digest": "sha256:b135ffdf2eea3f388a1626016d2d05e93879a4692c043301d3f18bf3146820c4",
+          "judged": true
         },
         {
           "path": "frontend/app/src/hooks/use-cases-list.ts",
@@ -4832,7 +4839,8 @@
         },
         {
           "path": "frontend/app/src/hooks/use-delete-case.ts",
-          "digest": "sha256:31e31928f2b8eefb9b5d863a1c58521e8bae866b316ff0efe5b6ddd09c086e03"
+          "digest": "sha256:31e31928f2b8eefb9b5d863a1c58521e8bae866b316ff0efe5b6ddd09c086e03",
+          "judged": true
         },
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
@@ -4849,11 +4857,13 @@
         },
         {
           "path": "frontend/app/src/routes/case-delete-dialog.tsx",
-          "digest": "sha256:f4f9600d7758fe8c7e64d5df791bc7f8d7013dc21f2c37e645fe9459884249c3"
+          "digest": "sha256:2bd4be0e70873832c981a40d702797ca6e9ce65b86d080511b823b15fd8e5f33",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
+          "digest": "sha256:698941b3fc70f04a85b2b019396066d5442f9f49a8ff7de4081b48747e1bf7b3",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
@@ -4870,7 +4880,8 @@
         },
         {
           "path": "frontend/app/src/services/case-delete-confirmation.ts",
-          "digest": "sha256:a892dbb1523bcabecb979f3f8072e37222321b94a94d8cc8a46f345ccfdcd8db"
+          "digest": "sha256:a892dbb1523bcabecb979f3f8072e37222321b94a94d8cc8a46f345ccfdcd8db",
+          "judged": true
         },
         {
           "path": "frontend/app/src/services/discard-confirmation.ts",
@@ -5110,7 +5121,8 @@
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
+          "digest": "sha256:698941b3fc70f04a85b2b019396066d5442f9f49a8ff7de4081b48747e1bf7b3",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/case-simulation-header.tsx",
@@ -5322,7 +5334,8 @@
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
+          "digest": "sha256:698941b3fc70f04a85b2b019396066d5442f9f49a8ff7de4081b48747e1bf7b3",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/case-simulation-header.tsx",
@@ -6136,7 +6149,7 @@
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
-          "digest": "sha256:ab450342f47134a3d614e9918fba60fcad2298be458a56bc1756681df04e2080",
+          "digest": "sha256:4c7e65c34a1fd4cb483dc246446a3a4a17d5b04540a0b5201d2942f85a4def83",
           "judged": true
         },
         {
@@ -6400,7 +6413,7 @@
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
-          "digest": "sha256:ab450342f47134a3d614e9918fba60fcad2298be458a56bc1756681df04e2080",
+          "digest": "sha256:4c7e65c34a1fd4cb483dc246446a3a4a17d5b04540a0b5201d2942f85a4def83",
           "judged": true
         },
         {
@@ -6458,7 +6471,7 @@
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
-          "digest": "sha256:ab450342f47134a3d614e9918fba60fcad2298be458a56bc1756681df04e2080",
+          "digest": "sha256:4c7e65c34a1fd4cb483dc246446a3a4a17d5b04540a0b5201d2942f85a4def83",
           "judged": true
         },
         {
@@ -6817,7 +6830,7 @@
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
-          "digest": "sha256:ab450342f47134a3d614e9918fba60fcad2298be458a56bc1756681df04e2080",
+          "digest": "sha256:4c7e65c34a1fd4cb483dc246446a3a4a17d5b04540a0b5201d2942f85a4def83",
           "judged": true
         },
         {
@@ -8217,7 +8230,7 @@
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
-          "digest": "sha256:ab450342f47134a3d614e9918fba60fcad2298be458a56bc1756681df04e2080",
+          "digest": "sha256:4c7e65c34a1fd4cb483dc246446a3a4a17d5b04540a0b5201d2942f85a4def83",
           "judged": true
         },
         {
@@ -9247,11 +9260,13 @@
       "files": [
         {
           "path": "frontend/app/src/routes/case-delete-dialog.tsx",
-          "digest": "sha256:f4f9600d7758fe8c7e64d5df791bc7f8d7013dc21f2c37e645fe9459884249c3"
+          "digest": "sha256:2bd4be0e70873832c981a40d702797ca6e9ce65b86d080511b823b15fd8e5f33",
+          "judged": true
         },
         {
           "path": "frontend/app/src/services/case-delete-confirmation.ts",
-          "digest": "sha256:8050b3a087cd6cf199d6bd6ad8bda16e34fbdf7bb25ca51488af08d9fdac8b6e"
+          "digest": "sha256:a892dbb1523bcabecb979f3f8072e37222321b94a94d8cc8a46f345ccfdcd8db",
+          "judged": true
         }
       ]
     },
@@ -9308,7 +9323,8 @@
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
+          "digest": "sha256:698941b3fc70f04a85b2b019396066d5442f9f49a8ff7de4081b48747e1bf7b3",
+          "judged": true
         },
         {
           "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
@@ -9411,7 +9427,8 @@
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
+          "digest": "sha256:698941b3fc70f04a85b2b019396066d5442f9f49a8ff7de4081b48747e1bf7b3",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
@@ -9523,7 +9540,7 @@
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
-          "digest": "sha256:ab450342f47134a3d614e9918fba60fcad2298be458a56bc1756681df04e2080",
+          "digest": "sha256:4c7e65c34a1fd4cb483dc246446a3a4a17d5b04540a0b5201d2942f85a4def83",
           "judged": true
         },
         {
@@ -10134,7 +10151,7 @@
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
-          "digest": "sha256:ab450342f47134a3d614e9918fba60fcad2298be458a56bc1756681df04e2080",
+          "digest": "sha256:4c7e65c34a1fd4cb483dc246446a3a4a17d5b04540a0b5201d2942f85a4def83",
           "judged": true
         },
         {
@@ -10278,7 +10295,8 @@
       "files": [
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
+          "digest": "sha256:698941b3fc70f04a85b2b019396066d5442f9f49a8ff7de4081b48747e1bf7b3",
+          "judged": true
         }
       ]
     },
@@ -10504,7 +10522,8 @@
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
+          "digest": "sha256:698941b3fc70f04a85b2b019396066d5442f9f49a8ff7de4081b48747e1bf7b3",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-screen.tsx",
@@ -10518,7 +10537,7 @@
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
-          "digest": "sha256:ab450342f47134a3d614e9918fba60fcad2298be458a56bc1756681df04e2080",
+          "digest": "sha256:4c7e65c34a1fd4cb483dc246446a3a4a17d5b04540a0b5201d2942f85a4def83",
           "judged": true
         }
       ]
@@ -10723,7 +10742,8 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-case-delete-control.ts",
-          "digest": "sha256:41381f739df5d6453e4f66a7910b1acb9d37061eda6c0aee7b6788cca4bbeb09"
+          "digest": "sha256:b135ffdf2eea3f388a1626016d2d05e93879a4692c043301d3f18bf3146820c4",
+          "judged": true
         }
       ]
     },
@@ -11216,7 +11236,7 @@
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
-          "digest": "sha256:ab450342f47134a3d614e9918fba60fcad2298be458a56bc1756681df04e2080",
+          "digest": "sha256:4c7e65c34a1fd4cb483dc246446a3a4a17d5b04540a0b5201d2942f85a4def83",
           "judged": true
         },
         {
@@ -11840,7 +11860,8 @@
       "files": [
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:c3ffcec14309b0575f8fa0b5b959a7fa3450c2679b07428747d73f78214b82e9"
+          "digest": "sha256:698941b3fc70f04a85b2b019396066d5442f9f49a8ff7de4081b48747e1bf7b3",
+          "judged": true
         }
       ]
     },
@@ -12022,7 +12043,7 @@
       "files": [
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
-          "digest": "sha256:ab450342f47134a3d614e9918fba60fcad2298be458a56bc1756681df04e2080",
+          "digest": "sha256:4c7e65c34a1fd4cb483dc246446a3a4a17d5b04540a0b5201d2942f85a4def83",
           "judged": true
         }
       ]

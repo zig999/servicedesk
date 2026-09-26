@@ -1,0 +1,80 @@
+read:
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: >-
+      the mutationFn's declared success type and its DELETE call
+    evidence: >-
+      apiFetch<void>(`/v1/cases/${encodeURIComponent(slug)}`, { method: "DELETE" })
+  - node: contracts/knowledge/case-lifecycle
+    held_at: >-
+      the mutationFn issuing the delete against the case's own path
+    evidence: >-
+      apiFetch<void>(`/v1/cases/${encodeURIComponent(slug)}`, { method: "DELETE" })
+  - node: domain/knowledge/case
+    held_at: >-
+      the mutation's variable type, carrying the case's slug
+    evidence: |-
+      mutationFn: (slug: string) =>
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: nowhere
+    evidence: |-
+      return useMutation({
+        mutationFn: (slug: string) =>
+          apiFetch<void>(`/v1/cases/${encodeURIComponent(slug)}`, { method: "DELETE" }),
+        onSuccess: () => {
+          void queryClient.invalidateQueries({ queryKey: ["cases-list"] });
+        },
+      });
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: nowhere
+    evidence: |-
+      return useMutation({
+        mutationFn: (slug: string) =>
+          apiFetch<void>(`/v1/cases/${encodeURIComponent(slug)}`, { method: "DELETE" }),
+        onSuccess: () => {
+          void queryClient.invalidateQueries({ queryKey: ["cases-list"] });
+        },
+      });
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: >-
+      the onSuccess callback, which invalidates the listing query so a deleted case stops
+      appearing there
+    evidence: >-
+      onSuccess: () => {
+          void queryClient.invalidateQueries({ queryKey: ["cases-list"] });
+        },
+  - node: rules/knowledge/a-case-deletion-takes-a-further-explicit-act-reproducing-the-cases-own-slug
+    held_at: nowhere
+    evidence: >-
+      mutationFn: (slug: string) =>
+          apiFetch<void>(`/v1/cases/${encodeURIComponent(slug)}`, { method: "DELETE" }),
+  - node: rules/knowledge/a-successful-case-deletion-lands-on-the-listing-of-every-case
+    held_at: nowhere
+    evidence: >-
+      onSuccess: () => {
+          void queryClient.invalidateQueries({ queryKey: ["cases-list"] });
+        },
+  - node: rules/knowledge/a-case-deletion-surface-states-which-refusal-answered-its-delete
+    held_at: nowhere
+    evidence: >-
+      return useMutation({
+          mutationFn: (slug: string) =>
+            apiFetch<void>(`/v1/cases/${encodeURIComponent(slug)}`, { method: "DELETE" }),
+          onSuccess: () => {
+            void queryClient.invalidateQueries({ queryKey: ["cases-list"] });
+          },
+        });
+  - node: rules/knowledge/a-case-deletion-refusal-the-surface-cannot-name-is-told-as-an-unrecognised-failure
+    held_at: nowhere
+    evidence: >-
+      return useMutation({
+          mutationFn: (slug: string) =>
+            apiFetch<void>(`/v1/cases/${encodeURIComponent(slug)}`, { method: "DELETE" }),
+          onSuccess: () => {
+            void queryClient.invalidateQueries({ queryKey: ["cases-list"] });
+          },
+        });
+looked_past: >-
+  use-case-delete-control.ts, case-detail-screen-delete-refusal.tsx/spec and cases-list-screen.tsx
+  reference the case-slug confirmation, the CaseHoldsVersionsError/CaseNotFoundError tellings and
+  the post-delete listing surface this hook itself does not decide; they sit outside this file's
+  set and are not reviewed here.

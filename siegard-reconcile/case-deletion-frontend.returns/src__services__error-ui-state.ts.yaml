@@ -1,0 +1,83 @@
+read:
+  - node: rules/glossary/a-concept-declares-its-description
+    held_at: the entry mapping ConceptDescriptionRequiredError to its own dedicated kind, line 60
+    evidence: 'ConceptDescriptionRequiredError: { kind: "concept-description-required" },'
+  - node: rules/integration/a-capability-declares-well-formed-schemas
+    held_at: the entry mapping CapabilitySchemaNotWellFormedError to its own dedicated kind, line 55
+    evidence: 'CapabilitySchemaNotWellFormedError: { kind: "capability-schema-not-well-formed" },'
+  - node: rules/integration/a-capability-is-read-only
+    held_at: the entry mapping CapabilityNotReadOnlyError to its own dedicated kind, line 54
+    evidence: 'CapabilityNotReadOnlyError: { kind: "capability-not-read-only" },'
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: the entry mapping ConnectorConfigurationNotWellFormedError to its own dedicated kind, line 58
+    evidence: 'ConnectorConfigurationNotWellFormedError: { kind: "connector-configuration-not-well-formed" },'
+  - node: rules/integration/one-capability-answers-one-concept
+    held_at: the entry mapping ConceptAlreadyAnsweredError to its own dedicated kind, line 47
+    evidence: 'ConceptAlreadyAnsweredError: { kind: "concept-already-answered" },'
+  - node: rules/knowledge/a-case-deletion-refusal-the-surface-cannot-name-is-told-as-an-unrecognised-failure
+    held_at: >-
+      the two named entries for CaseNotFoundError and CaseHoldsVersionsError, lines 35-36,
+      together with the fallback returned for every other code, lines 69-71
+    evidence: >-
+      CaseNotFoundError: { kind: "case-not-found" },
+      CaseHoldsVersionsError: { kind: "case-holds-versions" },
+      ... const state = UI_STATE_BY_ERROR_CODE[error.code]; return state ?? GENERIC_ERROR_STATE;
+  - node: rules/knowledge/a-case-deletion-surface-states-which-refusal-answered-its-delete
+    held_at: >-
+      the entries for CaseNotFoundError and CaseHoldsVersionsError, lines 35-36, each given a
+      distinct kind
+    evidence: >-
+      CaseNotFoundError: { kind: "case-not-found" },
+      CaseHoldsVersionsError: { kind: "case-holds-versions" },
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: the entry mapping CaseVersionNotValidError to its own dedicated kind, line 66
+    evidence: 'CaseVersionNotValidError: { kind: "case-not-valid" },'
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: the entry mapping HypothesisRevisionNotDraftAtReleaseError to its own dedicated kind, line 45
+    evidence: 'HypothesisRevisionNotDraftAtReleaseError: { kind: "hypothesis-revision-not-draft-at-release" },'
+  - node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+    held_at: >-
+      the generic fallback of uiStateForApiError, lines 69-71, which returns GENERIC_ERROR_STATE
+      for any code the table does not name
+    evidence: >-
+      const state = UI_STATE_BY_ERROR_CODE[error.code];
+      return state ?? GENERIC_ERROR_STATE;
+  - node: scenarios/glossary/a-concept-with-no-description-is-refused
+    held_at: the same entry as a-concept-declares-its-description, line 60
+    evidence: 'ConceptDescriptionRequiredError: { kind: "concept-description-required" },'
+  - node: scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so
+    held_at: the same entry as a-hypothesis-revision-moves-through-its-declared-lifecycle, line 45
+    evidence: 'HypothesisRevisionNotDraftAtReleaseError: { kind: "hypothesis-revision-not-draft-at-release" },'
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: the entry mapping CaseHoldsVersionsError to its own dedicated kind, line 36
+    evidence: 'CaseHoldsVersionsError: { kind: "case-holds-versions" },'
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the file only maps ApiError codes to a presentation kind — export function
+      uiStateForApiError(error: ApiError): UiErrorState { const state =
+      UI_STATE_BY_ERROR_CODE[error.code]; return state ?? GENERIC_ERROR_STATE; } — and states
+      nothing about an accepted delete's response
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: nowhere
+    evidence: >-
+      the file's only export is uiStateForApiError, over ApiError; nothing here reads or
+      states an accepted delete's effect on the case listing
+  - node: rules/knowledge/a-case-deletion-takes-a-further-explicit-act-reproducing-the-cases-own-slug
+    held_at: nowhere
+    evidence: >-
+      the file carries no control, act or slug-comparison of any kind — its whole content is the
+      UiErrorStateKind union, the UI_STATE_BY_ERROR_CODE table and uiStateForApiError
+  - node: rules/knowledge/a-successful-case-deletion-lands-on-the-listing-of-every-case
+    held_at: nowhere
+    evidence: >-
+      the file states nothing about navigation or destination after a delete; it only turns an
+      ApiError into a UiErrorState
+looked_past: >-
+  the table also maps several error codes outside this node set (CaseAlreadyHasDraftError,
+  ManifestPositionOccupiedError, CaseVersionNotDraftError, CaseVersionNotDraftAtReleaseError,
+  ConceptInUseError, CaseVersionNotReleasableError, ManifestWouldHoldNoHypothesisError,
+  IncompleteCapabilityContractError, CapabilityCitedByEvidenceError,
+  ConceptNotAnsweredError/ConceptNotHeldError/VocabularyTermNotHeldError, and three codes folded
+  into GENERIC_ERROR_STATE) and the un-mapped IncompleteConnectorConfigurationError, all of which
+  resolve to nodes elsewhere in the specification but are not governed by any node in this set.

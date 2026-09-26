@@ -64,6 +64,27 @@
       "title": "Case-delete client mutation proof",
       "summary": "Six tests over useDeleteCase pin the wire request it issues, its 204-success settlement and cache invalidation, its 409/404 error-code pass-through, and the underdetermined boundary that keeps an unnamed refusal's own wire code rather than folding it into CaseNotFoundError.",
       "task": "task/case-deletion-surface/delete-case-mutation"
+    },
+    {
+      "id": "review/case-deletion-frontend",
+      "kind": "review",
+      "file": "review/case-deletion-frontend.md",
+      "title": "Review of case-deletion-frontend",
+      "summary": "Coverage, conformance, standard and failures passes over the case-deletion-frontend delivery: a slug-confirmed delete control on the case detail surface for a case holding no version, landing on the cases listing once accepted, and presenting the CaseHoldsVersionsError, CaseNotFoundError and unrecognised refusals distinctly.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A delete answered with HTTP 409 CaseHoldsVersionsError is presented to the curator as the case holding a version and not having been deleted.",
+        "A delete refused with any error code other than CaseHoldsVersionsError or CaseNotFoundError is presented as a failure distinct from both of those refusals.",
+        "A succeeded mutation invalidates the query backing the cases listing.",
+        "After a delete answered with HTTP 409 CaseHoldsVersionsError, the cases listing still carries an entry for that slug.",
+        "After the delete is answered with HTTP 204, the cases listing carries no entry for the deleted slug.",
+        "After the delete is answered with HTTP 204, the cases listing still carries an entry for every other case it carried before the delete."
+      ],
+      "findings": 3
     }
   ],
   "edges": [
@@ -234,6 +255,30 @@
       "to": "implementation/case-deletion-surface/delete-case-mutation",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/case-deletion-frontend",
+      "to": "task/case-deletion-surface/case-holds-versions-error-state",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/case-deletion-frontend",
+      "to": "task/case-deletion-surface/delete-case-mutation",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/case-deletion-frontend",
+      "to": "task/case-deletion-surface/case-detail-delete-control",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/case-deletion-frontend",
+      "to": "task/case-deletion-surface/case-delete-refusal-presentation",
+      "kind": "reviews",
+      "at": "tasks[3]"
     }
   ]
 }

@@ -1,0 +1,56 @@
+read:
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: >-
+      the "its own visibility (criterion 1)" describe block, lines 121-141, gating whether
+      the Delete case control is rendered on whether the case's own versions read answers
+      zero versions or at least one
+    evidence: |-
+      expect(deleteTrigger()).toBeTruthy();
+      expect(screen.queryByRole("button", { name: "Delete case" })).toBeNull();
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: >-
+      noContentResponse(), the DELETE handler's success response reused across every
+      accepted-delete test (lines 148, 187, 212)
+    evidence: |-
+      function noContentResponse(): Response {
+        return new Response(null, { status: 204 });
+      }
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: >-
+      the confirmed-delete flow inside the "further explicit act" test, lines 170-176,
+      which exercises only the "deletion is accepted" clause; the scenario's other two
+      clauses (the case leaving the listing, a later create-draft reusing the slug) are
+      not exercised anywhere in this file
+    evidence: |-
+      fireEvent.click(deleteConfirmButton());
+
+      await waitFor(() => expect(deleteCalls(fetchMock)).toHaveLength(1));
+  - node: rules/knowledge/a-case-deletion-takes-a-further-explicit-act-reproducing-the-cases-own-slug
+    held_at: >-
+      the "further explicit act reproducing the case's own slug" describe block, lines
+      144-176, and the double-click describe block, lines 179-206
+    evidence: |-
+      typeSlugConfirmation(SLUG.toUpperCase());
+      expect(deleteConfirmButton().hasAttribute("disabled")).toBe(true);
+  - node: rules/knowledge/a-successful-case-deletion-lands-on-the-listing-of-every-case
+    held_at: the "where the curator lands after an accepted delete" test, line 222
+    evidence: |-
+      await waitFor(() => expect(router.state.location.pathname).toBe("/cases"));
+  - node: rules/knowledge/a-case-deletion-surface-states-which-refusal-answered-its-delete
+    held_at: nowhere
+    evidence: >-
+      every DELETE handler stubbed in this file is [`DELETE ${DELETE_PATH}`]: () =>
+      noContentResponse(), (lines 148, 187, 212); no handler in the file ever answers
+      DELETE with a 409 CaseHoldsVersionsError or a 404 CaseNotFoundError, and no
+      assertion in the file reads any surface statement about a refused delete
+  - node: rules/knowledge/a-case-deletion-refusal-the-surface-cannot-name-is-told-as-an-unrecognised-failure
+    held_at: nowhere
+    evidence: >-
+      the same handler map as above stubs only the accepted (204) outcome for every
+      DELETE call in the file; no handler answers an unrecognised error code and no
+      assertion reads a surface statement for one
+looked_past: >-
+  the double-click test's assertion that exactly one DELETE fires despite two rapid
+  clicks, together with the confirm button's disabled-while-pending state, concern
+  request idempotency and UI robustness rather than a fact any of these seven nodes
+  states, so they are left for whichever pass judges implementation quality.

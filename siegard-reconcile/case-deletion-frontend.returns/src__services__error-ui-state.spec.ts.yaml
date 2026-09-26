@@ -1,0 +1,57 @@
+read:
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: nowhere
+    evidence: >-
+      it("resolves CaseHoldsVersionsError to a kind no other named code resolves to, distinct
+      from the generic fallback", () => { expectDistinctKind("CaseHoldsVersionsError", "holds
+      versions", [ ... ]) }) — the file only checks that this code maps to a UI kind distinct from
+      others; it states nothing about when a delete is accepted or refused, about the case
+      holding a version, or about the HTTP status, message or details the rule requires.
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      describe("the error-code mapping resolves an API error's own code to a user-facing state",
+      () => { ... }) — every test in the file maps an error code to a kind; none asserts a
+      response status or an empty body for an accepted delete.
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: nowhere
+    evidence: >-
+      describe("the error-code mapping resolves an API error's own code to a user-facing state",
+      () => { ... }) — the file exercises only the error path of uiStateForApiError; it makes no
+      assertion about an accepted deletion, the case leaving the listing, or slug reuse.
+  - node: rules/knowledge/a-case-deletion-takes-a-further-explicit-act-reproducing-the-cases-own-slug
+    held_at: nowhere
+    evidence: >-
+      describe("the error-code mapping resolves an API error's own code to a user-facing state",
+      () => { ... }) — the file contains no test of a confirmation act or of a slug being
+      reproduced; it only maps already-issued API error codes to UI kinds.
+  - node: rules/knowledge/a-successful-case-deletion-lands-on-the-listing-of-every-case
+    held_at: nowhere
+    evidence: >-
+      describe("the error-code mapping resolves an API error's own code to a user-facing state",
+      () => { ... }) — no test asserts a navigation destination; the file's assertions are all of
+      the form expect(kindFor(...)).toBe(...).
+  - node: rules/knowledge/a-case-deletion-surface-states-which-refusal-answered-its-delete
+    held_at: >-
+      the tests "resolves CaseNotFoundError to the case-not-found state" and "resolves
+      CaseHoldsVersionsError to a kind no other named code resolves to, distinct from the
+      generic fallback"
+    evidence: >-
+      expect(kindFor("CaseNotFoundError", "not found")).toBe("case-not-found"); and
+      expectDistinctKind("CaseHoldsVersionsError", "holds versions", ["CaseNotFoundError", ...])
+      together with expect(targetKind).not.toBe("generic-error") inside expectDistinctKind — the
+      file requires CaseHoldsVersionsError's kind to differ from CaseNotFoundError's kind and
+      from the generic fallback, and vice versa.
+  - node: rules/knowledge/a-case-deletion-refusal-the-surface-cannot-name-is-told-as-an-unrecognised-failure
+    held_at: >-
+      the tests "resolves a code the table does not name to the generic-error state rather than
+      throwing" and "resolves a code the table does not name to a fallback state carrying only
+      the kind, not the refusal's own message"
+    evidence: >-
+      expect(kindFor("SomeFutureBackendError", "unrecognized")).toBe("generic-error"); and
+      const state = stateFor("SomeFutureBackendError", "some future message");
+      expect(Object.keys(state)).toEqual(["kind"]);
+looked_past: >-
+  Most of the file's assertions map error codes belonging to concept, capability, connector,
+  hypothesis-revision and case-validity domains to their own kinds; none of those codes or the
+  nodes governing them are in this set, and reviewing them is a different delegation's work.

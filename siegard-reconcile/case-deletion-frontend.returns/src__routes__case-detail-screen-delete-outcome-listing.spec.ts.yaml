@@ -1,0 +1,64 @@
+read:
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: >-
+      the fetch stub configured for the DELETE call, following a versions fetch that
+      returns no versions
+    evidence: >-
+      [`GET ${VERSIONS_PATH}`]: () => jsonResponse({ data: [] }),
+      [`DELETE ${DELETE_PATH}`]: () => noContentResponse(),
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: >-
+      the noContentResponse() helper and its use as the DELETE handler's response
+    evidence: |-
+      function noContentResponse(): Response {
+        return new Response(null, { status: 204 });
+      }
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: >-
+      the test body: the no-version precondition, the deleteTheCase() act, and the
+      post-delete assertions
+    evidence: >-
+      await screen.findByText("This case currently holds no version.");
+
+      await deleteTheCase();
+
+      await screen.findByText(OTHER_SLUG);
+      expect(router.state.location.pathname).toBe("/cases");
+      expect(screen.queryByText(SLUG)).toBeNull();
+  - node: rules/knowledge/a-case-deletion-takes-a-further-explicit-act-reproducing-the-cases-own-slug
+    held_at: the deleteTheCase() helper function
+    evidence: >-
+      fireEvent.click(await screen.findByRole("button", { name: "Delete case" }));
+      await screen.findByRole("dialog");
+      const input = screen.getByLabelText(`Type ${SLUG} to confirm`);
+      fireEvent.change(input, { target: { value: SLUG } });
+      const confirmButton = within(screen.getByRole("dialog")).getByRole("button", {
+        name: "Delete case",
+      });
+      fireEvent.click(confirmButton);
+  - node: rules/knowledge/a-successful-case-deletion-lands-on-the-listing-of-every-case
+    held_at: the router-location assertion after deleteTheCase()
+    evidence: 'expect(router.state.location.pathname).toBe("/cases");'
+  - node: rules/knowledge/a-case-deletion-surface-states-which-refusal-answered-its-delete
+    held_at: nowhere
+    evidence: >-
+      await screen.findByText(OTHER_SLUG);
+      expect(router.state.location.pathname).toBe("/cases");
+      expect(screen.queryByText(SLUG)).toBeNull();
+  - node: rules/knowledge/a-case-deletion-refusal-the-surface-cannot-name-is-told-as-an-unrecognised-failure
+    held_at: nowhere
+    evidence: >-
+      [`GET ${VERSIONS_PATH}`]: () => jsonResponse({ data: [] }),
+      [`DELETE ${DELETE_PATH}`]: () => noContentResponse(),
+      [`GET ${CASES_PATH}`]: () => jsonResponse(paginated([{ slug: OTHER_SLUG }])),
+      [`GET ${OTHER_VERSIONS_SUMMARY_PATH}`]: () => jsonResponse(paginated([])),
+looked_past: >-
+  The assertion await screen.findByText("This case currently holds no version.") states a fact
+  (the exact notice a zero-version case shows) that belongs to
+  rules/knowledge/a-case-holding-no-versions-is-told-explicitly, a node this description
+  references but that is outside this file's node set, and it is not contradicted here; the
+  pagination fixture shape produced by paginated() and the limit=1&offset=0 version-summary
+  query are UI/listing mechanics not governed by any node in this set. Both refusal-telling nodes
+  are simply not exercised by this file — every fetch stub handler here returns a success
+  response, consistent with the separately delivered case-delete-refusal-presentation task
+  covering that behavior elsewhere.

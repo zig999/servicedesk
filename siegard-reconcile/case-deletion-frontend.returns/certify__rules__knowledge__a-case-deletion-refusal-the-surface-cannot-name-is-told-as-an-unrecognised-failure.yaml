@@ -1,0 +1,38 @@
+certified:
+  - node: rules/knowledge/a-case-deletion-refusal-the-surface-cannot-name-is-told-as-an-unrecognised-failure
+    state: partial
+    tests:
+      - file: src/routes/case-detail-screen-delete-refusal.spec.ts
+        name: presents any other refusal as a failure distinct from both named refusals, disclosing neither its code, its message, nor any carried value
+      - file: src/routes/case-detail-screen-delete-refusal.spec.ts
+        name: presents a CaseHoldsVersionsError refusal as the case still holding a version and not having been deleted
+      - file: src/routes/case-detail-screen-delete-refusal.spec.ts
+        name: presents a CaseNotFoundError refusal as the case not having been deleted and no case answering the slug
+    why: >-
+      The unrecognised-failure notice is tested with one refusal only: code INTERNAL_ERROR at
+      HTTP status 500. The fact depends on the error code, not the status, but nothing in the
+      set sends an unnamed code at a status the two named refusals use. For example, no test
+      sends an unknown code at 409 or at 404. A surface that chose its notice by status would
+      pass the file while showing the case-holds-versions or case-not-found statement for an
+      unnamed code. The fact rules that out. The "states nothing else" half has the same kind
+      of gap. The not-toContain checks for the code, the refusal's own message and the carried
+      traceId run only against the textContent of the one element matched by /recognis|recogniz/.
+      That element is found by its own text nodes. If the code, message or value appeared
+      anywhere else on the surface, such as a sibling element, a detail line or an attribute,
+      the test would still pass. Distinguishability from the CaseNotFoundError statement is
+      bound: the unrecognised text must not contain "no case answers", and the CaseNotFoundError
+      test requires exactly that wording. Distinguishability from the CaseHoldsVersionsError
+      statement is bound only by the check that the text does not contain "still holds".
+      Nothing establishes that the CaseHoldsVersionsError statement contains those words; its
+      own test requires only "not deleted" and "version". So that part holds only by accident
+      of the current wording. No test compares the two rendered texts directly, as the
+      criterion-3 test does for the two named refusals.
+    remainder: testable
+    remainder_why: >-
+      Issue a delete that is refused with a code other than CaseHoldsVersionsError and
+      CaseNotFoundError, once at status 409 and once at status 404. Each time, expect the
+      unrecognised-failure notice. Expect its rendered text to differ from the text rendered
+      for a CaseHoldsVersionsError refusal and for a CaseNotFoundError refusal of the same
+      delete, compared directly across mounts. Expect the refusal's code, its message and
+      each value in its details to appear nowhere in the rendered document, not only outside
+      the notice's own element.

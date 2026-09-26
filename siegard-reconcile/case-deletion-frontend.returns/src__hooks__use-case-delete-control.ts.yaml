@@ -1,0 +1,66 @@
+read:
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: >-
+      nowhere in this file — the hook never inspects a response body or status; it only
+      reacts to success/error callbacks
+    evidence: >-
+      onSuccess: () => {
+              void navigate({ to: "/cases" });
+            },
+  - node: contracts/knowledge/case-lifecycle
+    held_at: the invocation of the delete operation inside onConfirm
+    evidence: >-
+      const deleteCase = useDeleteCase();
+      ...
+      deleteCase.mutate(slug, {
+  - node: domain/knowledge/case
+    held_at: the function's own slug parameter, threaded through the whole hook
+    evidence: 'export function useCaseDeleteControl(slug: string): CaseDeleteControlState {'
+  - node: rules/knowledge/a-case-deletion-refusal-the-surface-cannot-name-is-told-as-an-unrecognised-failure
+    held_at: >-
+      nowhere — the hook delegates the whole distinction to an imported function rather
+      than stating it itself
+    evidence: 'setErrorMessage(caseDeleteFailureMessage(error, slug));'
+  - node: rules/knowledge/a-case-deletion-surface-states-which-refusal-answered-its-delete
+    held_at: >-
+      nowhere — the same delegation call is the only place the refusal outcome is
+      touched, and it does not itself state which refusal answered
+    evidence: 'setErrorMessage(caseDeleteFailureMessage(error, slug));'
+  - node: rules/knowledge/a-successful-case-deletion-lands-on-the-listing-of-every-case
+    held_at: the onSuccess callback passed to deleteCase.mutate
+    evidence: >-
+      onSuccess: () => {
+              void navigate({ to: "/cases" });
+            },
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: >-
+      nowhere — the hook only issues the delete and navigates on success; it does not
+      touch the listing's contents or slug reclaiming, which this scenario's then
+      describes
+    evidence: >-
+      deleteCase.mutate(slug, {
+              onSuccess: () => {
+                void navigate({ to: "/cases" });
+              },
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: >-
+      nowhere — the hook does not branch on CaseHoldsVersionsError itself; it forwards
+      whatever error arrives to the imported message builder
+    evidence: |
+      onError: (error) => {
+              setErrorMessage(caseDeleteFailureMessage(error, slug));
+            },
+  - node: rules/knowledge/a-case-deletion-takes-a-further-explicit-act-reproducing-the-cases-own-slug
+    held_at: >-
+      nowhere — onConfirm calls the delete unconditionally; it carries no comparison
+      between slugConfirmation and slug, so whether the further act's slug was reproduced
+      is not gated in this file
+    evidence: >-
+      onConfirm: () => {
+          deleteCase.mutate(slug, {
+looked_past: >-
+  The dialog's confirm-button gating on slugConfirmation matching slug, and the actual
+  differentiation of CaseHoldsVersionsError / CaseNotFoundError / unrecognised failures
+  inside caseDeleteFailureMessage, live in ../services/case-delete-confirmation.ts and
+  ./use-delete-case.ts, neither of which is in this file set, so their conformance is not
+  this pass's to judge.
