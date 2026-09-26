@@ -1,0 +1,129 @@
+read:
+  - node: rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: >-
+      the "presents every declared attribute" test, which shows the not-valid banner alongside
+      every one of the five declared attributes and lets the "leaves its form fields enabled"
+      test confirm none of them is disabled
+    evidence: >-
+      expect(screen.getByDisplayValue(DRAFT_RECORD.when_to_use)).toBeTruthy();
+      expect(screen.getByDisplayValue(DRAFT_RECORD.subject)).toBeTruthy();
+      expect(screen.getByText(DRAFT_RECORD.fallback.outcome)).toBeTruthy();
+      expect(screen.getByText(DRAFT_RECORD.fallback.referral.action)).toBeTruthy();
+      expect(screen.getByText(DRAFT_RECORD.fallback.referral.recipient)).toBeTruthy();
+      expect(screen.getByText(DRAFT_RECORD.consolidation_register)).toBeTruthy();
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing
+    held_at: >-
+      the first describe block's rendering of the not-valid statement together with the
+      draft's own title on the enriched reading; the scenario's own submit-and-accept step is
+      not exercised in this file
+    evidence: >-
+      expect(await screen.findByDisplayValue(DRAFT_RECORD.title)).toBeTruthy();
+      expect(await screen.findByText(NOT_VALID_BANNER_TITLE)).toBeTruthy();
+  - node: rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+    held_at: >-
+      the first test, which asserts the not-valid banner distinct from the load-error text on
+      the refused reading, and its absence once the same version reads back cleanly
+    evidence: >-
+      expect(await screen.findByText(NOT_VALID_BANNER_TITLE)).toBeTruthy();
+      expect(screen.queryByText(LOAD_ERROR_TEXT)).toBeNull();
+      ...
+      expect(screen.queryByText(NOT_VALID_BANNER_TITLE)).toBeNull();
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: the notValidResponse fixture used for the version read
+    evidence: >-
+      jsonResponse(
+        { error: { code: "CaseVersionNotValidError", message: "validation failed" } },
+        409,
+      );
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: >-
+      expect(screen.queryByText("CACHED-SECRET-TITLE")).toBeNull(); — this guards the
+      whole-case-assembly exclusion the editing-surface rule states, not the create-draft
+      pending interval this node names; no test in this file exercises that interval
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: >-
+      every handler in enrichedNotValidHandlers resolves immediately — `[`GET ${VERSION_PATH}`]:
+      notValidResponse` — so no test in this file leaves a created draft's own record
+      unanswered
+  - node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+    held_at: nowhere
+    evidence: >-
+      expect(screen.queryByText(LOAD_ERROR_TEXT)).toBeNull(); — this checks the load-error
+      statement's absence on the version-keyed surface under test, never a case-keyed
+      surface meeting an unrecognised refusal code, which is what this node names
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: >-
+      const footer = await screen.findByRole("group", { name: "Actions" }); — the footer this
+      file asserts carries only Save changes and Cancel, no release-condition disclosure
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: >-
+      expect(within(footer).getByRole("button", { name: "Cancel" })).toBeTruthy(); — only the
+      control's presence is asserted; no test clicks it or checks that leaving writes nothing
+      or returns the curator to the originating surface
+  - node: contracts/knowledge/case-query
+    held_at: >-
+      the split between the validated version read and the own-record read in
+      enrichedNotValidHandlers
+    evidence: >-
+      [`GET ${VERSION_PATH}`]: notValidResponse,
+      [`GET ${VERSIONS_LIST_PATH}`]: () => jsonResponse({ data: [{ version: 3, state: "draft" }] }),
+      [`GET ${DECLARED_ATTRIBUTES_PATH}`]: () => jsonResponse(record),
+  - node: domain/knowledge/case-version
+    held_at: the DRAFT_RECORD fixture's shape
+    evidence: >-
+      const DRAFT_RECORD = {
+        title: "The refused draft's own title",
+        when_to_use: "The refused draft's own when_to_use",
+        subject: "billing-dispute",
+        fallback: { outcome: "resolved", referral: { action: "escalate", recipient: "supervisor" } },
+        consolidation_register: "formal" as const,
+      };
+  - node: constraints/a-successful-case-version-own-record-read-answers-with-http-200
+    held_at: the declared-attributes handler, answered without a failure status alongside the refused version read
+    evidence: '[`GET ${DECLARED_ATTRIBUTES_PATH}`]: () => jsonResponse(record),'
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
+    held_at: the Manifest-link test
+    evidence: >-
+      const link = await screen.findByRole("link", { name: "Manifest" });
+      expect(link.getAttribute("href")).toBe(`/cases/${SLUG}/versions/3/manifest`);
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-editing-surface-on-every-reading
+    held_at: nowhere
+    evidence: >-
+      await mountCaseVersionEditor(fetchMock); — every test mounts the editing surface
+      directly; none exercises a route from another surface into this one
+  - node: rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes
+    held_at: nowhere
+    evidence: >-
+      expect(titleInput.hasAttribute("disabled")).toBe(false); — only the Save-changes
+      control's presence and the fields' enabled state are asserted; no test submits
+      update-draft or checks what an accepted call answers with
+  - node: rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case
+    held_at: nowhere
+    evidence: >-
+      expect(within(footer).getByRole("button", { name: "Save changes" })).toBeTruthy();
+      expect(within(footer).getByRole("button", { name: "Cancel" })).toBeTruthy(); — no
+      Discard control is asserted anywhere in this file
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: no discard-related assertion appears in this file
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: no further-act or confirmation control is exercised in this file
+  - node: rules/knowledge/a-draft-case-versions-discard-reproduces-the-cases-own-slug
+    held_at: nowhere
+    evidence: no slug-reproducing control is exercised in this file
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable
+    held_at: nowhere
+    evidence: this file exercises only the correction path for the no-hypothesis draft, never the discard path
+  - node: constraints/a-successful-case-version-discard-answers-with-no-content
+    held_at: nowhere
+    evidence: no discard call or handler for one appears among enrichedNotValidHandlers or its overrides
+looked_past: >-
+  the absence of a Discard control on this editing surface, and the REST-path split between
+  VERSION_PATH and DECLARED_ATTRIBUTES_PATH, since neither states a fact any node fixes here —
+  discard's own surface and the wire shape separating the validated read from the own-record
+  read are interface composition, not a domain fact this pass judges.

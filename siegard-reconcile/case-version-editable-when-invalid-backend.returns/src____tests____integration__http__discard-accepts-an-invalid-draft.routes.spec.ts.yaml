@@ -1,0 +1,88 @@
+read:
+  - node: contracts/knowledge/case-query
+    held_at: >-
+      nowhere
+    evidence: >-
+      const assembledAfterDiscard = await store.assembleVersion(slug, discardedVersion);
+      expect(assembledAfterDiscard).toBeUndefined();
+      — the only read this file performs goes straight to the persistence store rather than
+      through any operation contracts/knowledge/case-query publishes (read-case,
+      read-case-version, list-cases, etc.), none of which this file calls.
+  - node: domain/knowledge/case-version
+    held_at: >-
+      the DELETE call that exercises the aggregate's discard operation, and the
+      aCreateDraftInput/aResolution builders that supply its declared attributes
+    evidence: >-
+      const response = await app.inject({ method: 'DELETE', url: `/v1/cases/${slug}/versions/${discardedVersion}` });
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: >-
+      nowhere
+    evidence: >-
+      const discardedVersion = await store.createDraft(aCreateDraftInput(slug, glossary));
+      — the only slug and version the file's single DELETE call ever names are the ones it just
+      created itself; no unknown-slug or unknown-version case is exercised.
+  - node: rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: >-
+      nowhere
+    evidence: >-
+      import { createDiscardRoutesPlugin } from '../../../http/discard.routes.js';
+      — the file registers only the discard route; no editing-surface read is present or
+      asserted anywhere in it.
+  - node: constraints/a-successful-case-version-own-record-read-answers-with-http-200
+    held_at: >-
+      nowhere
+    evidence: >-
+      await app.register(createDiscardRoutesPlugin(dependencies));
+      — the app under test carries only the discard route; read-case-version is never called
+      through it.
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: >-
+      nowhere
+    evidence: >-
+      const response = await app.inject({ method: 'DELETE', url: `/v1/cases/${slug}/versions/${discardedVersion}` });
+      — the sole request sent is well-formed, naming a real slug and a real, freshly-created
+      version number; no malformed path, query or body is exercised.
+  - node: rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case
+    held_at: >-
+      the test's title and its status assertion
+    evidence: >-
+      'accepts a discard of a draft whose manifest holds no entry: the route answers 204 with an
+      empty body, ' ... expect(response.statusCode).toBe(204);
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable
+    held_at: >-
+      the test body as a whole
+    evidence: >-
+      expect(response.statusCode).toBe(204);
+      expect(response.body).toBe('');
+
+      const assembledAfterDiscard = await store.assembleVersion(slug, discardedVersion);
+      expect(assembledAfterDiscard).toBeUndefined();
+
+      const nextVersion = await store.createDraft(aCreateDraftInput(slug, glossary));
+      expect(nextVersion).not.toBe(discardedVersion);
+  - node: constraints/a-successful-case-version-discard-answers-with-no-content
+    held_at: >-
+      the response assertions immediately after the DELETE call
+    evidence: >-
+      expect(response.statusCode).toBe(204);
+      expect(response.body).toBe('');
+  - node: rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes
+    held_at: >-
+      nowhere
+    evidence: >-
+      import { createDiscardRoutesPlugin } from '../../../http/discard.routes.js';
+      — no update-draft controller or route is imported, registered or called anywhere in the
+      file.
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing
+    held_at: >-
+      nowhere
+    evidence: >-
+      const discardedVersion = await store.createDraft(aCreateDraftInput(slug, glossary));
+
+      const response = await app.inject({ method: 'DELETE', url: `/v1/cases/${slug}/versions/${discardedVersion}` });
+      — the draft is discarded immediately after creation; no editing surface is reached or
+      asserted.
+looked_past: >-
+  The Postgres-specific plumbing — the foreign-key-violation tolerance, the raw DELETE/INSERT
+  statements, the per-test cleanup bookkeeping — is test infrastructure rather than a domain
+  fact, and is left to whatever pass judges test-code quality.

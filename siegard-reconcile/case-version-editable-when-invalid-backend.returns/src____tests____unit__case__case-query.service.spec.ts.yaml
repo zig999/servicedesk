@@ -1,0 +1,149 @@
+findings:
+  - file: src/__tests__/unit/case/case-query.service.spec.ts
+    where: >-
+      the coherence-violation assertions in "refuses a structurally valid case failing one
+      coherence rule..." (context.violations) and "joins several coherence violations into the
+      one CaseVersionNotValidError", and the matching readCaseInputRequirements coherence test
+    evidence: |-
+      expect((refusal as CaseVersionNotValidError).context).toEqual({
+        slug: SLUG,
+        version,
+        violations: [`the concept "${CONCEPT}" does not exist in the glossary`],
+      });
+      ...
+      expect((refusal as CaseVersionNotValidError).context.violations).toEqual([
+        `the action "${ACTION}" does not exist in the glossary`,
+        `the concept "${CONCEPT}" does not exist in the glossary`,
+      ]);
+    cost: >-
+      The file's own structural-violation tests show a violations-array entry lands verbatim
+      inside CaseVersionNotValidError's own .message — expect(message).toContain('o caso não
+      declara nenhuma hipótese') reuses the exact string asserted in context.violations
+      elsewhere. Locking the coherence-violation entries to English text therefore locks the
+      same 409 refusal's message to English for a caller in that branch, so the operator this
+      refusal is meant to reach cannot read what it names, and a maintainer implementing to this
+      suite would be building an English domain refusal.
+    kind: contradicts
+    node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    correction: >-
+      assert the coherence violations in Brazilian Portuguese, matching the Portuguese already
+      asserted for the structural family in the same file.
+  - file: src/__tests__/unit/case/case-query.service.spec.ts
+    where: >-
+      the same coherence-violation assertions ("refuses a structurally valid case failing one
+      coherence rule...", "joins several coherence violations...", and the readCaseInputRequirements
+      coherence test)
+    evidence: |-
+      violations: [`the concept "${CONCEPT}" does not exist in the glossary`],
+    cost: >-
+      The specification fixes one Portuguese word per domain noun so a reader comparing two
+      refusals can tell they speak of the same thing; asserting "concept" here instead of
+      "conceito" locks a domain refusal's wording to the one noun this file itself elsewhere
+      renders correctly in Portuguese for other refusals, leaving the vocabulary inconsistent
+      across the same error family.
+    kind: contradicts
+    node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    correction: 'name the noun "conceito" rather than "concept" in the asserted violation text.'
+read:
+  - node: contracts/knowledge/case-query
+    held_at: >-
+      the readCaseVersion tests, which read a version's own stored record — title, when_to_use,
+      subject, fallback, consolidation_register — separately from readCase's validated
+      whole-case assembly
+    evidence: |-
+      const result = await service.readCaseVersion(SLUG, version);
+      expect(result.version).toEqual({
+        title: 'A case',
+        when_to_use: 'when a curator needs a case to test read-case composition over',
+        subject: SUBJECT,
+        fallback: { outcome: FALLBACK_OUTCOME, referral: { action: FALLBACK_ACTION, recipient: FALLBACK_RECIPIENT } },
+      });
+  - node: domain/knowledge/case-version
+    held_at: 'the IStoredVersion fixture interface, mirroring the aggregate''s own declared attributes'
+    evidence: |-
+      interface IStoredVersion {
+        readonly title: string;
+        readonly when_to_use: string;
+        readonly authored_at: string;
+        readonly subject: string;
+        readonly fallback: Resolution;
+        readonly consolidation_register?: ConsolidationRegister;
+        state: CaseVersionState;
+        released_at?: string;
+        manifest: ManifestEntry[];
+      }
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: >-
+      the "refuses with CaseNotFoundError, naming the slug and version" tests, repeated for
+      readCase, readCaseInputRequirements and readCaseVersion
+    evidence: |-
+      const refusal = await readAsError(service.readCase('never-authored', 7));
+      expect(refusal).toBeInstanceOf(CaseNotFoundError);
+      expect((refusal as CaseNotFoundError).context).toEqual({ slug: 'never-authored', version: 7 });
+  - node: rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: >-
+      only the underlying query-service read this rule's own Description builds on: the
+      readCaseVersion tests over a draft whose manifest holds no entry or whose title is blank
+      still answer that draft's own stored attributes. The rule's own surface-facing half — that
+      a surface states the version does not read back as a case, and accepts update-draft on
+      this reading — is not exercised here
+    evidence: |-
+      const version = await seedCase(store, { title: '', release: false });
+      const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
+      const result = await service.readCaseVersion(SLUG, version);
+      expect(result.version.title).toBe('');
+  - node: constraints/a-successful-case-version-own-record-read-answers-with-http-200
+    held_at: >-
+      the underlying unvalidated-read behavior the HTTP-200 constraint depends on; the status
+      code itself is not asserted in this unit test
+    evidence: |-
+      const version = await seedCase(store, { hypotheses: [] });
+      const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
+      await expect(service.readCase(SLUG, version)).rejects.toBeInstanceOf(CaseVersionNotValidError);
+      const result = await service.readCaseVersion(SLUG, version);
+      expect(result.version).toEqual({
+        title: 'A case',
+        when_to_use: 'when a curator needs a case to test read-case composition over',
+        subject: SUBJECT,
+        fallback: { outcome: FALLBACK_OUTCOME, referral: { action: FALLBACK_ACTION, recipient: FALLBACK_RECIPIENT } },
+      });
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      this file exercises CaseQueryService directly and never a route, a request path, query or
+      body; no test in it constructs or asserts an HTTP request shape
+  - node: rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case
+    held_at: nowhere
+    evidence: >-
+      FakeCaseStore.discard is defined but no test in this file ever calls a discard operation
+      through CaseQueryService or otherwise exercises it
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable
+    held_at: nowhere
+    evidence: 'no test in this file issues a discard of any case version'
+  - node: constraints/a-successful-case-version-discard-answers-with-no-content
+    held_at: nowhere
+    evidence: 'no test in this file issues a discard, so no discard answer is asserted here'
+  - node: rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes
+    held_at: nowhere
+    evidence: >-
+      FakeCaseStore.updateDraft is defined as a stub — public async updateDraft(_slug, _version,
+      _attributes): Promise<void> { return; } — but no test in this file ever calls an
+      update-draft operation through CaseQueryService
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing
+    held_at: nowhere
+    evidence: >-
+      the scenario's own surface-facing statement and its accepted update-draft are not
+      exercised here; only the adjacent stored-record read is (see the editing-surface rule's
+      entry above)
+looked_past: >-
+  the file's heavy fixture machinery (FakeCaseStore, FakeGlossaryQuery, FakeCapabilityQuery) and
+  its duplicated pagination stubs across list* methods are a code-shape concern, not a domain-fact
+  one, and are left to whichever pass reviews that.
+candidates_opened:
+  - rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+  - rules/knowledge/validation-runs-at-every-read
+  - rules/investigation/replay-is-pinned
+  - rules/knowledge/a-case-versions-input-requirements-are-derived
+  - rules/knowledge/a-case-has-at-least-one-hypothesis
+  - constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  - constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese

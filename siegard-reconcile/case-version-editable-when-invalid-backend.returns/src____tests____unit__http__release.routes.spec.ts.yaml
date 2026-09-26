@@ -1,0 +1,124 @@
+findings:
+  - file: src/__tests__/unit/http/release.routes.spec.ts
+    where: >-
+      the first test, "answers 200 with the version now in released state, read back whole
+      through the published case-query and projected the same way read-case-route already
+      is", lines 81-105
+    evidence: |-
+      expect(response.statusCode).toBe(200);
+      expect(response.json()).toEqual({
+        slug: releasedCase.slug,
+        title: releasedCase.title,
+        when_to_use: releasedCase.when_to_use,
+        version: releasedCase.version,
+        authored_at: releasedCase.authored_at,
+        subject: releasedCase.subject,
+        fallback: releasedCase.fallback,
+        state: 'released',
+        released_at: releasedCase.released_at,
+        manifest: releasedCase.manifest,
+      });
+    cost: >-
+      Read-case-version's own successful status is decided by
+      constraints/a-successful-case-version-own-record-read-answers-with-http-200, discard's by
+      constraints/a-successful-case-version-discard-answers-with-no-content, and update-draft's
+      by rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes
+      — each names the status and exactly what the body carries. No node states what an accepted
+      release answers with: neither that it is HTTP 200, nor that the body is the released
+      version read back whole through case-query's read-case rather than through
+      read-case-version's own stored record. A later reader who wants to know or change what a
+      release call returns has nowhere in the specification to look, and this test and the
+      controller it exercises are the only place that decision now lives.
+    kind: unstated
+    correction: >-
+      add a constraint, alongside the sibling ones for read-case-version, discard and
+      update-draft, stating that an accepted release answers with HTTP 200 carrying the released
+      version's own attributes read back whole through contracts/knowledge/case-query's read-case
+    node: domain/knowledge/case-version
+read:
+  - node: contracts/knowledge/case-query
+    held_at: >-
+      the ICaseQuery stub built for the test app, stubCaseQuery, lines 50-58
+    evidence: |-
+      return {
+        readCase,
+        readCaseVersion: vi.fn(),
+        listCases: vi.fn(),
+        listCaseVersions: vi.fn(),
+        listHypotheses: vi.fn(),
+        listHypothesisRevisions: vi.fn(),
+      };
+  - node: domain/knowledge/case-version
+    held_at: >-
+      the released-case fixture heldReleasedCase, lines 33-48, and the first test's response
+      assertion, lines 91-102
+    evidence: |-
+      title: 'a-title',
+        when_to_use: 'when an attendant needs this case',
+        version: 3,
+        authored_at: '2024-03-01T00:00:00.000Z',
+        subject: 'a-subject',
+        fallback: heldResolution('no-hypothesis-confirmed'),
+        state: 'released',
+        released_at: '2024-03-02T00:00:00.000Z',
+        manifest: [heldManifestEntry(1, 'hypothesis-a')],
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: >-
+      the fourth test, "refuses with the status the status map assigns CaseNotFoundError...",
+      lines 153-165
+    evidence: |-
+      expect(response.statusCode).toBe(404);
+      const body = response.json() as { error: { code: string; details?: unknown } };
+      expect(body.error.code).toBe('CaseNotFoundError');
+      expect(body.error.details).toEqual({ slug: 'an-absent-slug', version: 9 });
+  - node: rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: |-
+      import { createReleaseRoutesPlugin } from '../../../http/release.routes.js';
+      import type { CaseLifecycleOperations } from '../../../factories/case-lifecycle.factory.js';
+  - node: constraints/a-successful-case-version-own-record-read-answers-with-http-200
+    held_at: nowhere
+    evidence: "readCaseVersion: vi.fn(),"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: >-
+      the three 400-status tests, lines 167-203 (non-numeric version, empty slug, empty version
+      segments)
+    evidence: |-
+      const response = await app.inject({ method: 'POST', url: '/v1/cases/a-slug/versions/not-a-number/release' });
+
+      expect(response.statusCode).toBe(400);
+      expect(built.release).not.toHaveBeenCalled();
+  - node: rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case
+    held_at: nowhere
+    evidence: |-
+      import { createReleaseRoutesPlugin } from '../../../http/release.routes.js';
+      import type { CaseLifecycleOperations } from '../../../factories/case-lifecycle.factory.js';
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable
+    held_at: nowhere
+    evidence: |-
+      import { createReleaseRoutesPlugin } from '../../../http/release.routes.js';
+      import type { CaseLifecycleOperations } from '../../../factories/case-lifecycle.factory.js';
+  - node: constraints/a-successful-case-version-discard-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      import { createReleaseRoutesPlugin } from '../../../http/release.routes.js';
+      import type { CaseLifecycleOperations } from '../../../factories/case-lifecycle.factory.js';
+  - node: rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes
+    held_at: nowhere
+    evidence: |-
+      import { createReleaseRoutesPlugin } from '../../../http/release.routes.js';
+      import type { CaseLifecycleOperations } from '../../../factories/case-lifecycle.factory.js';
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing
+    held_at: nowhere
+    evidence: |-
+      import { createReleaseRoutesPlugin } from '../../../http/release.routes.js';
+      import type { CaseLifecycleOperations } from '../../../factories/case-lifecycle.factory.js';
+looked_past: >-
+  The call-order assertion in the second test (release resolved before readCase is invoked) and
+  the two long test names that embed zod-schema specifics are implementation and naming-style
+  matters rather than a domain fact stated or contradicted, so they are not reported as findings
+  here.
+candidates_opened:
+  - rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  - rules/knowledge/a-release-refusal-with-no-named-violation-says-so
+  - constraints/a-domain-error-unmapped-by-status-is-refused-generically

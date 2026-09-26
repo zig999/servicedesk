@@ -1,0 +1,151 @@
+read:
+  - node: rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case
+    held_at: >-
+      the trigger button that opens the dialog and the confirm button in `DialogFooter`; neither
+      gates on the version's own validation outcome — the trigger takes only the caller-supplied
+      `disabled` prop, and the confirm button takes only `discard.isConfirmEnabled` /
+      `discard.isConfirming`.
+    evidence: |
+      <Button type="button" variant="destructive" disabled={disabled}>
+        Discard draft
+      </Button>
+      ...
+      disabled={!discard.isConfirmEnabled || discard.isConfirming}
+  - node: rules/knowledge/a-draft-case-versions-discard-reproduces-the-cases-own-slug
+    held_at: >-
+      the confirmation `Label`/`Input` pair, which asks the curator to type the case's own slug
+      before the confirm button is enabled.
+    evidence: |
+      <span>Type {slug} to confirm</span>
+      ...
+      <Input
+        value={discard.slugConfirmation}
+        onChange={(event) => discard.onSlugConfirmationChange(event.target.value)}
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: >-
+      the confirm `Button` inside `DialogFooter`, a distinct control from the trigger button that
+      merely asks for the dialog to open.
+    evidence: |
+      <Button
+        type="button"
+        variant="destructive"
+        loading={discard.isConfirming}
+        disabled={!discard.isConfirmEnabled || discard.isConfirming}
+        onClick={discard.onConfirm}
+      >
+        Discard draft
+      </Button>
+  - node: rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: |
+      export type DiscardDraftDialogProps = {
+        readonly discard: DiscardControlState;
+        readonly slug: string;
+        readonly disabled: boolean;
+      };
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing
+    held_at: nowhere
+    evidence: |
+      export type DiscardDraftDialogProps = {
+        readonly discard: DiscardControlState;
+        readonly slug: string;
+        readonly disabled: boolean;
+      };
+  - node: rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: |
+      const DISCARD_DIALOG_DESCRIPTION =
+        "This case's own hypotheses keep their content — only this draft and its manifest are removed. This cannot be undone.";
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: nowhere
+    evidence: |
+      import type { DiscardControlState } from "../services/discard-confirmation";
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: |
+      export type DiscardDraftDialogProps = {
+        readonly discard: DiscardControlState;
+        readonly slug: string;
+        readonly disabled: boolean;
+      };
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: |
+      <Button type="button" variant="destructive" disabled={disabled}>
+        Discard draft
+      </Button>
+  - node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+    held_at: nowhere
+    evidence: |
+      {discard.errorMessage !== null && (
+        <p id="discard-error" role="alert" className="text-sm text-destructive">
+          {discard.errorMessage}
+        </p>
+      )}
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: |
+      export type DiscardDraftDialogProps = {
+        readonly discard: DiscardControlState;
+        readonly slug: string;
+        readonly disabled: boolean;
+      };
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: |
+      <DialogClose asChild>
+        <Button type="button" variant="secondary" disabled={discard.isConfirming}>
+          Keep draft
+        </Button>
+      </DialogClose>
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: |
+      import type { DiscardControlState } from "../services/discard-confirmation";
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: |
+      export type DiscardDraftDialogProps = {
+        readonly discard: DiscardControlState;
+        readonly slug: string;
+        readonly disabled: boolean;
+      };
+  - node: constraints/a-successful-case-version-own-record-read-answers-with-http-200
+    held_at: nowhere
+    evidence: |
+      import type { DiscardControlState } from "../services/discard-confirmation";
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
+    held_at: nowhere
+    evidence: |
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Discard this draft?</DialogTitle>
+        </DialogHeader>
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-editing-surface-on-every-reading
+    held_at: nowhere
+    evidence: |
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Discard this draft?</DialogTitle>
+        </DialogHeader>
+  - node: rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes
+    held_at: nowhere
+    evidence: |
+      import type { DiscardControlState } from "../services/discard-confirmation";
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: >-
+      the `DISCARD_DIALOG_DESCRIPTION` constant, which tells the curator the effect discard
+      states: the version and its manifest are removed and the referenced hypotheses remain.
+    evidence: |
+      const DISCARD_DIALOG_DESCRIPTION =
+        "This case's own hypotheses keep their content — only this draft and its manifest are removed. This cannot be undone.";
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable
+    held_at: nowhere
+    evidence: |
+      <Button type="button" variant="destructive" disabled={disabled}>
+        Discard draft
+      </Button>
+  - node: constraints/a-successful-case-version-discard-answers-with-no-content
+    held_at: nowhere
+    evidence: |
+      import type { DiscardControlState } from "../services/discard-confirmation";

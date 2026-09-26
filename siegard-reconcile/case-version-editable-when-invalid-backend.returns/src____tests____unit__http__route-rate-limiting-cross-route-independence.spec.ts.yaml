@@ -1,0 +1,77 @@
+read:
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: >-
+      The file mocks `ICaseQuery` only to satisfy the three route controllers' dependency
+      shape (`caseQuery: freshCaseQuery()` under `freshDiagnoseDependencies`,
+      `freshSimulateCaseDependencies` and `freshSimulateHypothesisDependencies`); it never
+      exercises `readCaseVersion`, `listCases`, `listCaseVersions`, `listHypotheses` or
+      `listHypothesisRevisions`, and asserts nothing about what any of them answers.
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: >-
+      `import type { Case } from '../../../case/case.js';` and `function heldCase(): Case`
+      construct a `Case`, not a `CaseVersion`; the fixture carries no `consolidation_register`
+      or `manifest` semantics this node declares, and no assertion in the file reads any of
+      this node's attributes or operations.
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: nowhere
+    evidence: >-
+      Neither test sends a request naming an unknown slug or version, and neither assertion
+      checks for an HTTP 404 or a `CaseNotFoundError`; the only status assertions in the file
+      are `expect(onOtherRoutes.map((response) => response?.statusCode)).toEqual([200, 200])`
+      and the matching `[200, 200, 200]` check.
+  - node: rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      The file registers only `createDiagnoseRoutesPlugin`, `createSimulateCaseRoutesPlugin`
+      and `createSimulateHypothesisRoutesPlugin` in `buildThreeRouteTestApp()`; no editing
+      surface, update-draft call or refused-reading path appears anywhere in the file.
+  - node: constraints/a-successful-case-version-own-record-read-answers-with-http-200
+    held_at: nowhere
+    evidence: >-
+      No request in the file targets a read-case-version route or asserts an HTTP 200 tied to
+      a version's own stored record; the 200 assertions here are over `/v1/diagnose`,
+      `/v1/simulate` and `/v1/simulate/hypothesis`.
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      Every `RouteRequest` constant (`DIAGNOSE_REQUEST`, `SIMULATE_CASE_REQUEST`,
+      `SIMULATE_HYPOTHESIS_REQUEST`) sends a complete, well-shaped payload; the file contains
+      no malformed path, query or body case and no assertion of HTTP 400 or `VALIDATION_ERROR`.
+  - node: rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case
+    held_at: nowhere
+    evidence: >-
+      The file never registers or calls a discard route; `buildThreeRouteTestApp()` wires up
+      only the diagnose and simulate route plugins.
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable
+    held_at: nowhere
+    evidence: >-
+      No manifest, hypothesis-count or discard act appears; `heldCase()`'s `manifest: []` and
+      `hypotheses: []` are incidental fixture fields never asserted on by either test.
+  - node: constraints/a-successful-case-version-discard-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      No request in the file is a discard call and no assertion checks for HTTP 204 or an
+      empty body; both tests assert only `200` status codes.
+  - node: rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes
+    held_at: nowhere
+    evidence: >-
+      No request payload or assertion in the file concerns update-draft; the three requests
+      are POSTs to `/v1/diagnose`, `/v1/simulate` and `/v1/simulate/hypothesis` carrying
+      `case`, `subject`, `narrative`/`hypothesis` and `requester` fields, not a version's
+      declared attributes.
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing
+    held_at: nowhere
+    evidence: >-
+      No editing surface, curator correction or update-draft submission is present; the
+      file's two `it(...)` blocks are titled around rate-limit cross-route and cross-address
+      independence, not editing.
+looked_past: >-
+  The file's own domain facts — 10 requests per minute per route via `REQUESTS_WITHIN_LIMIT`,
+  a route's over-limit state on one route (diagnose) leaving simulate-case and
+  simulate-hypothesis unaffected, and one source address's over-limit state on all three
+  routes leaving a second address unaffected — match
+  constraints/the-diagnosis-and-simulation-routes-are-rate-limited's statement and its own
+  fitness clause; that node is outside this delegation's node set, so conformance to it is not
+  reported here.

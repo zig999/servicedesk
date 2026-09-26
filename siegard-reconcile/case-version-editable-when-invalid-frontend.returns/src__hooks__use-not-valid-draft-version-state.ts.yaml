@@ -1,0 +1,150 @@
+read:
+  - node: constraints/a-successful-case-version-own-record-read-answers-with-http-200
+    held_at: >-
+      nowhere — the file consumes the fetch's success/error branches but never itself states
+      or enforces an HTTP status; that lives in the service layer this file calls into.
+    evidence: >-
+      apiFetch<CaseVersionRecord>(
+              `/v1/cases/${encodeURIComponent(slug)}/versions/${version}/declared-attributes`,
+            )
+  - node: contracts/knowledge/case-query
+    held_at: the declaredAttributesQuery definition, lines 46-53
+    evidence: >-
+      queryFn: () =>
+            apiFetch<CaseVersionRecord>(
+              `/v1/cases/${encodeURIComponent(slug)}/versions/${version}/declared-attributes`,
+            ),
+  - node: domain/knowledge/case-version
+    held_at: the effect that resets the form from the fetched record, lines 55-60
+    evidence: |-
+      if (declaredAttributesQuery.data) {
+            resetFormFrom(form, declaredAttributesQuery.data);
+            setStatus("clean");
+          }
+  - node: rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case
+    held_at: the discard construction, lines 106-118
+    evidence: 'canDiscard: notValidVersionState === "draft",'
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: the same effect, lines 55-60
+    evidence: |-
+      if (declaredAttributesQuery.data) {
+            resetFormFrom(form, declaredAttributesQuery.data);
+            setStatus("clean");
+          }
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: the two loading-phase returns, lines 74-76 and 91-93
+    evidence: |-
+      if (!versionsQuery.data) {
+          return { phase: "loading" };
+        }
+      ...
+      if (declaredAttributesQuery.isLoading || isLoadingGlossary || !declaredAttributesQuery.data) {
+          return { phase: "loading" };
+        }
+  - node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+    held_at: the versionsQuery error branch, lines 65-73
+    evidence: |-
+      if (versionsQuery.isError) {
+          return {
+            phase: "load-error",
+            retryLoad: () => {
+              void versionsQuery.refetch();
+              retryVersionQuery();
+            },
+          };
+        }
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere — the object this hook returns for the not-valid reading carries no release-related field at all.
+    evidence: |-
+      return {
+          phase: "not-valid",
+          form,
+          status,
+          isBlocked: status === "saving" || status === "conflict",
+          outcomeOptions,
+          actionOptions,
+          recipientOptions,
+          onSubmit,
+          onFieldBlur,
+          onCancel,
+          discard: ...
+        };
+  - node: rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+    held_at: line 77-79
+    evidence: |-
+      if (notValidVersionState !== "draft") {
+          return { phase: "not-valid" };
+        }
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: >-
+      nowhere in this file — onCancel arrives as a caller-supplied parameter and is only
+      forwarded, never given its own logic here.
+    evidence: 'onCancel,'
+  - node: rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: the query gate (lines 46-53) and the success return (lines 95-119)
+    evidence: >-
+      enabled: version !== null && isNotValid && notValidVersionState === "draft",
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: line 111
+    evidence: 'canDiscard: notValidVersionState === "draft",'
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable
+    held_at: the discard construction, lines 106-118 — gated on state alone, with no manifest/hypothesis check
+    evidence: 'canDiscard: notValidVersionState === "draft",'
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing
+    held_at: the success return, lines 95-119 — form and onSubmit offered on the not-valid reading regardless of which validator rule failed
+    evidence: |-
+      return {
+          phase: "not-valid",
+          form,
+          status,
+          ...
+          onSubmit,
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: >-
+      nowhere — the file receives the refusal already resolved to a boolean and never itself
+      reads an error code or status.
+    evidence: 'isNotValid: boolean,'
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
+    held_at: nowhere — no route or navigation is built anywhere in this file.
+    evidence: |-
+      return {
+          phase: "not-valid",
+          form,
+          status,
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-editing-surface-on-every-reading
+    held_at: nowhere — same reasoning.
+    evidence: |-
+      return {
+          phase: "not-valid",
+          form,
+          status,
+  - node: rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes
+    held_at: >-
+      nowhere — onSubmit arrives as a caller-supplied parameter and is only forwarded; the
+      update-draft call and its answer live elsewhere.
+    evidence: 'onSubmit,'
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: >-
+      the dialog/confirmation state forwarded into buildDiscardControlState, lines 106-118 —
+      the further-act gating itself is not implemented in this file.
+    evidence: |-
+      dialogOpen: discardDialogOpen,
+              slugConfirmation: discardSlugConfirmation,
+              errorMessage: discardErrorMessage,
+              isConfirming: isDiscardConfirming,
+              onConfirm: onDiscardConfirm,
+  - node: rules/knowledge/a-draft-case-versions-discard-reproduces-the-cases-own-slug
+    held_at: >-
+      nowhere — slug is only passed through to buildDiscardControlState; the requirement that
+      the curator reproduce it is enforced elsewhere.
+    evidence: 'slug,'
+  - node: constraints/a-successful-case-version-discard-answers-with-no-content
+    held_at: nowhere — discard's HTTP response handling is not in this file.
+    evidence: 'onConfirm: onDiscardConfirm,'
+looked_past: >-
+  The "loading" and "load-error" phase objects (lines 66-72, 75, 92) carry no onCancel, which
+  could read against a-newly-created-draft-offers-no-act-before-its-own-record-arrives's own
+  statement that leaving is offered throughout the interval unchanged; the sibling hook
+  use-edit-draft-version-form.ts returns the identical shape for its own loading/load-error
+  phases, so this looks like an established cross-file pattern rather than a deviation this
+  single file introduced, and judging it would mean judging a file outside this set.

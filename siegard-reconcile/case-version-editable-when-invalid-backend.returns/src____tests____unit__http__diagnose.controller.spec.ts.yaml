@@ -1,0 +1,114 @@
+findings:
+  - file: src/__tests__/unit/http/diagnose.controller.spec.ts
+    where: "the test \"names the pinned case's own slug, version and state on the thrown refusal, rather than a fixed or unrelated value\", lines 102-110"
+    evidence: |-
+      await expect(rejection).rejects.toMatchObject({
+          context: { slug: 'a-different-slug', version: 4, state: 'draft' },
+        });
+    cost: >-
+      The specification's own refusal rule for this case (rules/investigation/only-a-released-case-version-is-diagnosed)
+      says only that the attempt is "refused with an HTTP 409 response reporting a CaseVersionNotReleasedError" and
+      never says what that error's details carry. This test fixes that the refusal names the pinned version's own
+      slug, version and state — a disclosure decision the same node already made for the sibling CaseNotFoundError
+      (decided: "the named slug and version") but never made for this error. A reader of the rule learns the status
+      and the error name but not that state rides along in the payload; that fact currently lives only in this
+      test.
+    kind: unstated
+    correction: >-
+      State, in rules/investigation/only-a-released-case-version-is-diagnosed, what CaseVersionNotReleasedError's
+      details/context payload carries (the named slug, version and state), the same way the log already closed this
+      for CaseNotFoundError's details.
+    node: rules/investigation/only-a-released-case-version-is-diagnosed
+read:
+  - node: contracts/knowledge/case-query
+    held_at: "the ICaseQuery mock built in buildDependencies, lines 75-82"
+    evidence: |-
+      const caseQuery: ICaseQuery = {
+          readCase,
+          readCaseVersion: vi.fn(),
+          listCases: vi.fn(),
+          listCaseVersions: vi.fn(),
+          listHypotheses: vi.fn(),
+          listHypothesisRevisions: vi.fn(),
+        };
+  - node: domain/knowledge/case-version
+    held_at: "the heldCase fixture builder, lines 30-44"
+    evidence: |-
+      function heldCase(overrides: Partial<Case> = {}): Case {
+        return {
+          slug: 'a-slug',
+          title: 'a-title',
+          when_to_use: 'when an attendant needs it',
+          version: 1,
+          authored_at: '2024-01-01T00:00:00.000Z',
+          subject: 'a-subject',
+          fallback: heldResolution('no-hypothesis-confirmed'),
+          state: 'released',
+          manifest: [heldManifestEntry(1, 'hypothesis-a')],
+          hypotheses: [...],
+          ...overrides,
+        };
+      }
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: nowhere
+    evidence: >-
+      The file imports only CaseVersionNotReleasedError and SubjectDoesNotCoverCaseInputsError,
+      and no test in this file constructs an unknown slug/version or asserts a CaseNotFoundError.
+  - node: rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      The file's only import from ../../../http/ is handleDiagnoseRequest and its dependencies
+      type — no editing surface, update-draft or draft-attribute presentation is exercised
+      anywhere in this file.
+  - node: constraints/a-successful-case-version-own-record-read-answers-with-http-200
+    held_at: nowhere
+    evidence: >-
+      No test in this file calls or asserts on readCaseVersion (a bare vi.fn() never invoked or
+      checked); the file exercises handleDiagnoseRequest only.
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      This is a unit test of handleDiagnoseRequest calling it directly with in-memory request
+      bodies; no HTTP route or its shape validation is exercised anywhere here.
+  - node: rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case
+    held_at: nowhere
+    evidence: >-
+      No test constructs or asserts a discard call; the file's ten it(...) blocks are all about
+      handleDiagnoseRequest's own refusals and assembly.
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable
+    held_at: nowhere
+    evidence: >-
+      Same as above — no discard, manifest-emptiness or slug-reproduction scenario appears
+      anywhere in this file.
+  - node: constraints/a-successful-case-version-discard-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      No discard response, HTTP 204 or empty-body assertion appears anywhere in this file.
+  - node: rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes
+    held_at: nowhere
+    evidence: >-
+      No test calls or references an update-draft operation; dependencies only ever expose
+      caseQuery, caseInputRequirementsQuery, runDiagnose, model and promptVersion.
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing
+    held_at: nowhere
+    evidence: >-
+      No editing-surface presentation or title correction appears anywhere in this file; every
+      heldCase built here already carries a manifest entry.
+candidates_opened:
+  - rules/investigation/only-a-released-case-version-is-diagnosed
+  - contracts/investigation/diagnosis
+  - rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+  - scenarios/investigation/a-diagnose-refuses-a-subject-missing-a-required-attribute
+  - scenarios/investigation/a-draft-case-version-refuses-diagnosis
+  - domain/investigation/investigation
+  - domain/investigation/assessment
+  - rules/investigation/the-customer-sees-only-the-text
+  - contracts/system/guided-diagnosis
+  - rules/investigation/replay-is-pinned
+looked_past: >-
+  The node set handed to this delegation (case-version editing surface, discard, update-draft,
+  case-query) governs none of what this file actually tests — diagnose's draft/released gate and
+  its required-attribute gate — so every node in the given set reads nowhere here; the facts this
+  file does state were checked instead against the investigation-domain nodes found by searching
+  the specification root, and that mismatch between the assigned set and the file's own domain is
+  the caller's scoping to weigh, not a finding of this pass.

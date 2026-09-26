@@ -1,0 +1,47 @@
+certified:
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    state: partial
+    tests:
+      - file: src/routes/case-version-editor-screen-refused-draft-discard.spec.ts
+        name: >-
+          renders the Discard draft control for a not-valid draft whose manifest holds no entry,
+          and renders none once that same version's own state reads released
+      - file: src/routes/case-version-editor-screen-refused-draft-discard.spec.ts
+        name: >-
+          still renders the Discard draft control when the declared-attributes record answers a
+          manifest holding an entry, refuting an editor that shows the control only when the
+          draft's manifest is empty
+    why: >-
+      The first named test puts a draft against a released version, and only on the not-valid
+      reading (the version read refused with CaseVersionNotValidError). It fails if the editor
+      offers Discard draft for a released version, or withholds it for a draft. The second named
+      test only bears on the draft side: a draft whose manifest holds an entry is still offered
+      the discard.
+      The released half is weaker than it looks. It checks that the control is absent right after
+      the not-valid statement appears, with no wait for the versions listing that carries the
+      version's state. Unless that statement only renders after the listing is answered, the
+      absence can be read before the state gate is evaluated, so an editor that did offer discard
+      on a released version could still pass.
+      Three parts of the fact are not exercised at all. First, the editor's ordinary (valid)
+      reading is never mounted in this file, so the rule is only exercised on the not-valid
+      reading. Second, "a released version is never removed" is only exercised as a control not
+      being offered. Nothing sends a DELETE against a released version and checks that it is
+      refused and the version still reads back. Third, the node's description says discarding
+      removes the version and its own manifest entries but never the hypothesis-revisions they
+      referenced. No test discards a draft and then reads a referenced revision back.
+      The test only uses the states draft and released. If a case version can hold any other
+      state, nothing checks that the offer is withheld for it.
+      The other three tests in the file bear on the slug confirmation and the 204 outcome of a
+      discard, not on this fact. Any test elsewhere that exercises the valid reading or the
+      server-side refusal is outside the offered proof and is not cited here.
+    remainder: testable
+    remainder_why: >-
+      Each unexercised part is one input against one expected result:
+      (a) on the released not-valid reading, wait until the versions listing has been answered,
+      then assert no Discard draft control;
+      (b) mount the valid reading for a released version and assert no Discard draft control,
+      and for a draft assert one;
+      (c) send DELETE for a released version and assert it is refused and the version still reads
+      back;
+      (d) discard a draft whose manifest references a hypothesis-revision and assert that
+      revision still reads back, referenced by nothing.

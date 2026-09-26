@@ -1,0 +1,64 @@
+certified:
+  - node: rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+    state: partial
+    tests:
+      - file: src/routes/case-version-editor-screen-refused-draft.spec.ts
+        name: >-
+          renders the draft's own title and the explicit statement, never the load-error text or
+          an attribute cached from an earlier successful read, and renders none of this once the
+          same version reads back as a validated case
+      - file: src/hooks/use-edit-draft-version-form-not-valid-marking.spec.ts
+        name: >-
+          resolves to phase "not-valid" for a draft read-case refuses with CaseVersionNotValidError,
+          and to phase "ready" carrying no such mark once read-case answers the version
+      - file: src/hooks/use-edit-draft-version-form-not-valid-marking.spec.ts
+        name: >-
+          resolves to the bare not-valid phase with no other field, never reading
+          read-case-version, for a released version, and to a distinct load-error phase when the
+          prerequisite read instead fails to complete
+      - file: src/hooks/use-edit-draft-version-form-not-valid-marking.spec.ts
+        name: >-
+          resolves to exactly { phase: "load-error", retryLoad }, carrying neither the refusal's
+          error code nor its own message, when read-case-version fails for a draft read-case
+          refused
+    why: >-
+      These parts of the fact are exercised: the screen shows the explicit statement for a
+      refused draft and does not show the load-error text, and it stops showing the statement
+      once the same version reads back cleanly. Five parts are not exercised.
+      (1) The statement is only rendered on the screen for a draft. A released version refused
+      with CaseVersionNotValidError is only tested at the hook, as the bare "not-valid" phase.
+      Nothing mounts the screen for that reading, so the screen could drop the statement for a
+      released version and every offered test would still pass.
+      (2) "Neither is presented as the other" is only tested in one direction. No screen test
+      renders a read of (s, n) that did not complete and asserts the not-valid statement is
+      absent there. The hook tests only fail the prerequisite reads (the versions listing and
+      declared-attributes). None fails the read of the named version itself (a 5xx or a network
+      failure on GET of the version path) and asserts the result is load-error, not not-valid.
+      (3) Only some of the version's attributes are checked for absence. The screen test checks
+      that the cached title, when_to_use and a manifest entry's hypothesis name do not appear,
+      and that there is no table and no Manifest heading. The cached subject, fallback and
+      consolidation_register have the same values as the draft's own record, so a test on them
+      could not fail. Nothing asserts that the cached state ("released"), authored_at, the
+      entry's position or the pinned revision's criterion ("CACHED-SECRET-CRITERION") are
+      absent, and no cached released_at is seeded at all.
+      (4) A note, not something I decide here: the cache-leak assertions can only fail if the
+      key seeded in the test, ["case-version", SLUG, 3], is the key the screen actually reads.
+      The pack confines this reading to the proof, so that key was not checked against the
+      source.
+      (5) This test, and sibling tests in the same file, assert that the refused draft's own
+      declared attributes (title, when_to_use, subject, fallback, consolidation_register) are
+      shown in the editable form. The node says the surface presents no attribute of the
+      version "as the content standing at that identity", and leaves what a surface offers to
+      other nodes. Whether a form seeded from declared-attributes counts as that content is
+      for a person to decide. Nothing here settles it.
+    remainder: testable
+    remainder_why: >-
+      Three screen-level assertions would close it. (a) Mount the version editor for a
+      released version whose read returns 409 CaseVersionNotValidError. Expect the statement
+      "This version does not read back as a case" and none of the version's attributes or
+      manifest entries. (b) Mount it for a read of (s, n) that does not complete (a 5xx or a
+      network failure on the version path). Expect the load-error text and no not-valid
+      statement. (c) Seed a cached record whose subject, fallback, consolidation_register,
+      state, authored_at, released_at, entry position and pinned-revision criterion all differ
+      from the draft's own record. Expect none of those values to be rendered on the not-valid
+      reading.

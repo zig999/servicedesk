@@ -1,0 +1,84 @@
+read:
+  - node: contracts/knowledge/case-query
+    held_at: >-
+      the ICaseQuery double built for the plugin under test, where listCaseVersions is
+      wired as one of the contract's own operations and driven with a slug plus pagination
+    evidence: |-
+      const caseQuery: ICaseQuery = {
+          readCase,
+          readCaseVersion: vi.fn(),
+          listCases: vi.fn(),
+          listCaseVersions,
+          listHypotheses: vi.fn(),
+          listHypothesisRevisions: vi.fn(),
+        };
+      ...
+      expect(built.listCaseVersions).toHaveBeenCalledWith('a-slug', { offset: 5, limit: 10 });
+  - node: domain/knowledge/case-version
+    held_at: >-
+      the heldPage fixture's data items, carrying exactly the two attributes this file
+      exercises off the aggregate — version and state
+    evidence: "data: [{ version: 1, state: 'released' }, { version: 2, state: 'draft' }],"
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: >-
+      the "refuses with the status the status map assigns CaseNotFoundError" test, which
+      asserts the 404 status, the CaseNotFoundError code, and details carrying slug and
+      version
+    evidence: |-
+      expect(response.statusCode).toBe(404);
+      const body = response.json() as { error: { code: string; details?: unknown } };
+      expect(body.error.code).toBe('CaseNotFoundError');
+      expect(body.error.details).toEqual({ slug: 'an-absent-slug', version: 0 });
+  - node: rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      import { createListCaseVersionsRoutesPlugin } from '../../../http/list-case-versions.routes.js';
+      — the only route plugin this file registers or exercises is list-case-versions; no
+      editing-surface behavior is present.
+  - node: constraints/a-successful-case-version-own-record-read-answers-with-http-200
+    held_at: nowhere
+    evidence: >-
+      app.register(createListCaseVersionsRoutesPlugin(dependencies)); — this file never
+      registers or calls a read-case-version route, so this constraint's own-record-read
+      answer has no test here.
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: >-
+      the four 400 tests over the path and query shape — non-numeric offset, non-numeric
+      limit, negative offset, limit of zero, and the empty :slug segment case
+    evidence: |-
+      const response = await app.inject({ method: 'GET', url: '/v1/cases/a-slug/versions?offset=not-a-number' });
+
+      expect(response.statusCode).toBe(400);
+      expect(built.listCaseVersions).not.toHaveBeenCalled();
+  - node: rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case
+    held_at: nowhere
+    evidence: >-
+      No discard route, controller or operation is imported or exercised anywhere in this
+      file — only createListCaseVersionsRoutesPlugin is registered.
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable
+    held_at: nowhere
+    evidence: >-
+      No discard call or manifest state is constructed anywhere in this file; the only
+      fixture used is heldPage's list-item data.
+  - node: constraints/a-successful-case-version-discard-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      No test in this file issues a discard or asserts an HTTP 204 response; every status
+      asserted here is 200, 400, 404 or 500 over the list-case-versions route.
+  - node: rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes
+    held_at: nowhere
+    evidence: >-
+      No update-draft controller or route is imported here; ListCaseVersionsControllerDependencies
+      is the only dependencies type this file builds.
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing
+    held_at: nowhere
+    evidence: >-
+      The only fixture used, heldPage(), carries version and state alone, never title,
+      when_to_use, subject, fallback or consolidation_register, and no editing-surface
+      route is exercised.
+looked_past: >-
+  The 400 tests (lines 174-226) assert only the status code and that listCaseVersions was
+  not called, never the VALIDATION_ERROR error code, the message naming which of path/query/body
+  failed, or a non-empty details list that constraints/a-malformed-request-is-refused-with-a-validation-error
+  also requires — a coverage gap rather than a stated contradiction, so it is left to a
+  different pass.

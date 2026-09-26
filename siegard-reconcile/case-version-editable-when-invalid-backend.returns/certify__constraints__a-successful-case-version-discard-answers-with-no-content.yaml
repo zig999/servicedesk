@@ -1,0 +1,10 @@
+certified:
+  - node: constraints/a-successful-case-version-discard-answers-with-no-content
+    state: covered
+    tests:
+      - file: src/__tests__/unit/http/discard.routes.spec.ts
+        name: >-
+          removes the named draft version through discard and answers 204 with a wholly empty body
+      - file: src/__tests__/unit/http/discard.routes.spec.ts
+        name: >-
+          accepts a discard of a draft whose stored subject names a subject type the glossary does not hold, answering 204 with an empty body, routed through the real controller and the real discard operation rather than a mocked dependency

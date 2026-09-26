@@ -1,0 +1,136 @@
+read:
+  - node: rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: >-
+      the toEqual assertion on the PATCH body in the "criterion 1" test (submitting a correction
+      on the refused reading)
+    evidence: |-
+      expect(parsedPatchBody(fetchMock)).toEqual({
+        title: "Corrected on the refused reading",
+        when_to_use: DRAFT_RECORD.when_to_use,
+        subject: DRAFT_RECORD.subject,
+        fallback: DRAFT_RECORD.fallback,
+        consolidation_register: DRAFT_RECORD.consolidation_register,
+      });
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing
+    held_at: >-
+      the default notValidDraftHandlers fixture (DRAFT_RECORD carries no manifest key) exercised
+      by the "criterion 1" test, where the title is corrected and the update-draft is accepted
+    evidence: |-
+      const DRAFT_RECORD = {
+        title: "The refused draft's own title",
+        when_to_use: "The refused draft's own when_to_use",
+        subject: "billing-dispute",
+        fallback: { outcome: "resolved", referral: { action: "escalate", recipient: "supervisor" } },
+        consolidation_register: "formal" as const,
+      };
+  - node: rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+    held_at: >-
+      the assertion in the "UNDERDETERMINED entry 3" test that the banner persists
+    evidence: >-
+      expect(screen.getByText(NOT_VALID_BANNER_TITLE)).toBeTruthy();
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: the notValidResponse() fixture used for GET VERSION_PATH in every scenario of this file
+    evidence: >-
+      return jsonResponse(
+        { error: { code: "CaseVersionNotValidError", message: "validation failed" } },
+        409,
+      );
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: >-
+      every handler in this file, including `[`GET ${DECLARED_ATTRIBUTES_PATH}`]: () =>
+      jsonResponse(DRAFT_RECORD)`, answers synchronously; no scenario here exercises the
+      interval before a newly created draft's own record has arrived
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: >-
+      `await mountCaseVersionEditor(fetchMock);` is followed immediately by interacting with the
+      "Save changes" control in every test; none of them mounts a version whose own record has
+      not yet arrived, so no withholding of an act is exercised
+  - node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+    held_at: nowhere
+    evidence: >-
+      `{ error: { code: "CaseVersionNotValidError", message: "validation failed" } }` is the only
+      refusal code this file's GET VERSION_PATH ever answers with; no unrecognized code is
+      exercised
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: >-
+      `screen.getByRole("button", { name: "Save changes" })` is the only control this file
+      queries by role; no release-offering control or release-condition text is asserted
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: >-
+      every test in this file ends with `fireEvent.click(screen.getByRole("button", { name:
+      "Save changes" }))`; none exercises leaving the editing before submission
+  - node: contracts/knowledge/case-query
+    held_at: >-
+      the GET handler answering the declared-attributes read with the version's own stored
+      record
+    evidence: >-
+      [`GET ${DECLARED_ATTRIBUTES_PATH}`]: () => jsonResponse(DRAFT_RECORD),
+  - node: domain/knowledge/case-version
+    held_at: the DRAFT_RECORD constant's shape (title, when_to_use, subject, fallback, consolidation_register)
+    evidence: |-
+      const DRAFT_RECORD = {
+        title: "The refused draft's own title",
+        when_to_use: "The refused draft's own when_to_use",
+        subject: "billing-dispute",
+        fallback: { outcome: "resolved", referral: { action: "escalate", recipient: "supervisor" } },
+        consolidation_register: "formal" as const,
+      };
+  - node: constraints/a-successful-case-version-own-record-read-answers-with-http-200
+    held_at: >-
+      the default-status jsonResponse(DRAFT_RECORD) call answering the declared-attributes GET
+      on the refused reading
+    evidence: >-
+      [`GET ${DECLARED_ATTRIBUTES_PATH}`]: () => jsonResponse(DRAFT_RECORD),
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
+    held_at: nowhere
+    evidence: >-
+      no route to the version's own manifest is queried or clicked anywhere in this file
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-editing-surface-on-every-reading
+    held_at: nowhere
+    evidence: >-
+      `await mountCaseVersionEditor(fetchMock);` lands directly on the editing surface; no test
+      exercises the route reaching it
+  - node: rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes
+    held_at: >-
+      the PATCH handlers returning the settled record and the findByDisplayValue assertions
+      refilling the form from that answer (criteria 2, 3 and 4)
+    evidence: |-
+      [`PATCH ${VERSION_PATH}`]: () =>
+        jsonResponse({ ...DRAFT_RECORD, title: "Server-normalized correction" }),
+      ...
+      expect(await screen.findByDisplayValue("Server-normalized correction")).toBeTruthy();
+  - node: rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case
+    held_at: nowhere
+    evidence: >-
+      no discard control is queried or clicked anywhere in this file
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: >-
+      no discard call is issued or asserted anywhere in this file
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: >-
+      no release or discard confirmation step is exercised anywhere in this file
+  - node: rules/knowledge/a-draft-case-versions-discard-reproduces-the-cases-own-slug
+    held_at: nowhere
+    evidence: >-
+      no slug-reproducing discard act is exercised anywhere in this file
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable
+    held_at: nowhere
+    evidence: >-
+      this file exercises only the correcting act (update-draft) on the empty-manifest draft,
+      never the discarding act
+  - node: constraints/a-successful-case-version-discard-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      no `DELETE`/discard call or 204 response is mocked or asserted anywhere in this file
+looked_past: >-
+  The block comment above notValidDraftHandlers (explaining why this file needs the same
+  refused-draft fixture shape that case-version-editor-screen-refused-draft.spec.ts builds) and
+  the "(criterion N)"/"(UNDERDETERMINED entry N)" suffixes in the describe titles are test-file
+  organization and naming convention, not a domain-fact claim, so they are left to whatever
+  judgment covers comment and style policy rather than reported here.

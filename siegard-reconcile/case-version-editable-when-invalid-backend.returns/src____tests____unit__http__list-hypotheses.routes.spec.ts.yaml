@@ -1,0 +1,63 @@
+read:
+  - node: contracts/knowledge/case-query
+    held_at: >-
+      the assertions exercising `listHypotheses`, one of the contract's published listing
+      operations, through the registered HTTP route
+    evidence: >-
+      expect(built.listHypotheses).toHaveBeenCalledWith('a-slug', { offset: 5, limit: 10 });
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: 'readCaseVersion: vi.fn(),'
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: >-
+      the test asserting the refusal for a slug naming no case at all
+    evidence: >-
+      built.listHypotheses.mockRejectedValueOnce(new CaseNotFoundError('an-absent-slug', 0));
+
+      expect(response.statusCode).toBe(404);
+      expect(body.error.code).toBe('CaseNotFoundError');
+      expect(body.error.details).toEqual({ slug: 'an-absent-slug', version: 0 });
+  - node: rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      const caseQuery: ICaseQuery = {
+      readCase,
+      readCaseVersion: vi.fn(),
+      listCases: vi.fn(),
+      listCaseVersions: vi.fn(),
+      listHypotheses,
+      listHypothesisRevisions: vi.fn(),
+      };
+  - node: constraints/a-successful-case-version-own-record-read-answers-with-http-200
+    held_at: nowhere
+    evidence: 'readCaseVersion: vi.fn(),'
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: >-
+      the several tests asserting a 400 refusal for a malformed offset, limit or slug segment
+      before the case query is ever reached
+    evidence: >-
+      const response = await app.inject({ method: 'GET', url: '/v1/cases/a-slug/hypotheses?offset=not-a-number' });
+
+      expect(response.statusCode).toBe(400);
+      expect(built.listHypotheses).not.toHaveBeenCalled();
+  - node: rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case
+    held_at: nowhere
+    evidence: "import { createListHypothesesRoutesPlugin } from '../../../http/list-hypotheses.routes.js';"
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable
+    held_at: nowhere
+    evidence: "import { createListHypothesesRoutesPlugin } from '../../../http/list-hypotheses.routes.js';"
+  - node: constraints/a-successful-case-version-discard-answers-with-no-content
+    held_at: nowhere
+    evidence: "import { createListHypothesesRoutesPlugin } from '../../../http/list-hypotheses.routes.js';"
+  - node: rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes
+    held_at: nowhere
+    evidence: "import { createListHypothesesRoutesPlugin } from '../../../http/list-hypotheses.routes.js';"
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing
+    held_at: nowhere
+    evidence: "import { createListHypothesesRoutesPlugin } from '../../../http/list-hypotheses.routes.js';"
+looked_past: >-
+  The four HTTP-400 tests (non-numeric offset, non-numeric limit, negative offset, limit of
+  zero) assert only response.statusCode and that listHypotheses was never called; they never
+  assert the VALIDATION_ERROR code, the message or the details list
+  constraints/a-malformed-request-is-refused-with-a-validation-error's own fitness calls for —
+  a test-completeness matter for a different pass, not a stated or contradicted domain fact.

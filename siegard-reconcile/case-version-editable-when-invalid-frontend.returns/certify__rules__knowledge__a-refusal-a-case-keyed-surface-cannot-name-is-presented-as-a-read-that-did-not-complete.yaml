@@ -1,0 +1,41 @@
+certified:
+  - node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+    state: partial
+    tests:
+      - file: src/hooks/use-edit-draft-version-form-not-valid-marking.spec.ts
+        name: >-
+          resolves to exactly { phase: "load-error", retryLoad }, carrying neither the refusal's error code nor its own message, when read-case-version fails for a draft read-case refused
+      - file: src/hooks/use-edit-draft-version-form-not-valid-marking.spec.ts
+        name: >-
+          resolves to the bare not-valid phase with no other field, never reading read-case-version, for a released version, and to a distinct load-error phase when the prerequisite read instead fails to complete
+    why: >-
+      One read the surface makes for the case is fully exercised: read-case-version
+      (declared-attributes). When it is refused with a code the hook does not present
+      (SomeUnrecognizedError, 500, message SECRET-MESSAGE), the first named test asserts
+      two things. The phase is "load-error", so the refusal is not shown as not-valid or
+      ready. The state holds exactly the keys phase and retryLoad, so the test would fail
+      if the code, the message, a carried value or any version attribute were exposed.
+      Three parts of the fact are not exercised.
+      (1) "The same statement it makes for any read of that case that did not complete,
+      indistinguishable from it": no test makes a read fail without a refusal, such as a
+      rejected fetch. Nothing compares that outcome's state with the refusal's state. A
+      hook giving transport failures a different phase or shape than refusals would pass.
+      (2) The case's other reads: nothing refuses read-case (the version path) with an
+      unrecognized code. Every refusal of that read in the set is CaseVersionNotValidError,
+      a code the surface does present. The versions-list read is refused with an
+      unrecognized code only in the second named test. That test asserts only phase
+      "load-error", not the exact key set. A hook that put the code or SECRET-MESSAGE
+      beside that phase would pass, so non-disclosure on that read is unexercised.
+      (3) The proof works at the hook's state, not the rendered surface. Nothing in the
+      offered proof checks what the screen says for load-error, or that it shows neither
+      the code nor the message.
+    remainder: testable
+    remainder_why: >-
+      Each gap is one input against one result. First, stub read-case (the version path)
+      with the unrecognized-code refusal. Assert the hook resolves to exactly
+      { phase: "load-error", retryLoad }. Second, add the same exact-keys assertion to the
+      versions-list refusal. Third, make a read fail without any refusal, for example with
+      a fetch that rejects. Assert it resolves to the same exact state as the unrecognized
+      refusal. Finally, render the editor screen over the unrecognized refusal. Assert its
+      text matches the text for a failed read and contains neither "SomeUnrecognizedError"
+      nor "SECRET-MESSAGE".

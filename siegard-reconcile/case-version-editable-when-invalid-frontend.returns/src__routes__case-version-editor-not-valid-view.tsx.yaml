@@ -1,0 +1,135 @@
+read:
+  - node: rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case
+    held_at: >-
+      the discard control's conditional render in the footer, which turns only on
+      `discard.canDiscard`, not on the version's validation state
+    evidence: |-
+      {discard !== undefined && discard.canDiscard && (
+        <DiscardDraftDialog discard={discard} slug={slug} disabled={state.isBlocked} />
+      )}
+  - node: rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      export function CaseVersionEditorNotValidView({ state, slug }:
+      CaseVersionEditorNotValidViewProps): JSX.Element { — this component is the
+      version's own editing surface, not the version-keyed read surface this node
+      governs, and states no "current content standing at that identity"
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: the Cancel button
+    evidence: |-
+      <Button type="button" variant="secondary" onClick={state.onCancel}>
+        Cancel
+      </Button>
+  - node: rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: >-
+      the CaseVersionEditorFormFields render together with the explicit
+      no-register paragraph
+    evidence: |-
+      <CaseVersionEditorFormFields
+        form={state.form}
+        savedAt={null}
+        isBlocked={state.isBlocked}
+        outcomeOptions={state.outcomeOptions}
+        actionOptions={state.actionOptions}
+        recipientOptions={state.recipientOptions}
+        onSubmit={state.onSubmit}
+        onFieldBlur={state.onFieldBlur}
+      />
+      {consolidationRegister == null && <p>{NO_CONSOLIDATION_REGISTER_TEXT}</p>}
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing
+    held_at: the banner together with the form fields and the accepted submit handler
+    evidence: |-
+      <ConflictBanner title={NOT_VALID_BANNER_TITLE} message={NOT_VALID_BANNER_MESSAGE} />
+      <CaseVersionEditorFormFields
+        form={state.form}
+        ...
+        onSubmit={state.onSubmit}
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: nowhere
+    evidence: >-
+      the file's body contains no status code or error-name handling; it only
+      consumes an already-resolved `state` prop
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: 'const consolidationRegister = state.form.watch("consolidation_register");'
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: 'type NotValidPhaseState = Extract<EditDraftVersionFormState, { phase: "not-valid" }>;'
+  - node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+    held_at: nowhere
+    evidence: >-
+      the only presentational constants in the file are NOT_VALID_BANNER_TITLE,
+      NOT_VALID_BANNER_MESSAGE and NO_CONSOLIDATION_REGISTER_TEXT; none states a
+      read that did not complete
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: |-
+      <ButtonFooter>
+        {discard !== undefined && discard.canDiscard && (
+          <DiscardDraftDialog discard={discard} slug={slug} disabled={state.isBlocked} />
+        )}
+        <Button
+          type="submit"
+          form={CASE_VERSION_EDITOR_FORM_ID}
+          disabled={state.isBlocked || state.status === "clean"}
+        >
+          Save changes
+        </Button>
+        <Button type="button" variant="secondary" onClick={state.onCancel}>
+          Cancel
+        </Button>
+      </ButtonFooter>
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: >-
+      the import list pulls only UI components and hook/service types; none of
+      case-query's operations (read-case, read-case-version, list-*) appear
+  - node: domain/knowledge/case-version
+    held_at: the consolidation-register watch and the form handed to the field component
+    evidence: |-
+      const consolidationRegister = state.form.watch("consolidation_register");
+      ...
+      <CaseVersionEditorFormFields
+        form={state.form}
+  - node: constraints/a-successful-case-version-own-record-read-answers-with-http-200
+    held_at: nowhere
+    evidence: 'no status-code reference appears anywhere in the file'
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
+    held_at: nowhere
+    evidence: >-
+      the JSX return renders only the banner, the form fields, the no-register
+      paragraph and the footer's Save/Cancel/discard controls — no route to the
+      manifest appears
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-editing-surface-on-every-reading
+    held_at: nowhere
+    evidence: >-
+      this file is itself the destination of that route (the editing surface),
+      not a surface offering a route onward to one
+  - node: rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes
+    held_at: nowhere
+    evidence: 'onSubmit={state.onSubmit}'
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: '{discard !== undefined && discard.canDiscard && ('
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: |-
+      import { DiscardDraftDialog } from "./discard-draft-dialog";
+      <DiscardDraftDialog discard={discard} slug={slug} disabled={state.isBlocked} />
+  - node: rules/knowledge/a-draft-case-versions-discard-reproduces-the-cases-own-slug
+    held_at: nowhere
+    evidence: '<DiscardDraftDialog discard={discard} slug={slug} disabled={state.isBlocked} />'
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable
+    held_at: the same discard-control render as only-a-draft-case-version-may-be-discarded
+    evidence: |-
+      {discard !== undefined && discard.canDiscard && (
+        <DiscardDraftDialog discard={discard} slug={slug} disabled={state.isBlocked} />
+      )}
+  - node: constraints/a-successful-case-version-discard-answers-with-no-content
+    held_at: nowhere
+    evidence: 'no HTTP response handling appears in this view'
+looked_past: >-
+  Two things in the file are UI mechanics rather than a domain fact — reusing
+  the `ConflictBanner` component to carry a non-conflict notice, and gating the
+  Save button on a "clean" form-dirtiness status — and neither is reported here
+  because neither states a value, rule or refusal the specification decides.

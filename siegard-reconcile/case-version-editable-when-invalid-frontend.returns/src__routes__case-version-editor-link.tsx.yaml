@@ -1,0 +1,95 @@
+read:
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-editing-surface-on-every-reading
+    held_at: >-
+      the Link element returned by CaseVersionEditorLink, lines 13-17
+    evidence: >-
+      <Link to="/cases/$slug/versions/$version" params={{ slug, version }}>
+            Edit version
+          </Link>
+  - node: rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      return (
+          <Link to="/cases/$slug/versions/$version" params={{ slug, version }}>
+            Edit version
+          </Link>
+        );
+      — the file renders only the route control; it presents no version attribute (title, when_to_use, subject, fallback, consolidation_register), that being the editing surface's own concern, not this link's.
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing
+    held_at: nowhere
+    evidence: >-
+      the file's only content is the Link element and its props type; the scenario's outcome (the surface stating the manifest-less condition and accepting an update-draft) is not enacted here.
+  - node: rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      the component takes slug and version only as route parameters and renders an unconditional Link; it states nothing about whether the named version reads back as a case.
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: nowhere
+    evidence: >-
+      the file makes no read call and reports no HTTP status or error; it only builds a client-side route.
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: >-
+      the file presents no content of a version at all, created-draft or otherwise — only the route control.
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: >-
+      the component offers no act (release, discard or correction) at all; it renders a single navigation link, unconditionally, from whatever slug and version props it is given.
+  - node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+    held_at: nowhere
+    evidence: >-
+      the file has no read of its own to refuse and states nothing about any refusal.
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: >-
+      the file offers no release act and states no release condition; it is a link to the editing surface only.
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: >-
+      the file makes no write call of any kind (no update-draft, place-hypothesis or remove-hypothesis) and offers no editing session to abandon.
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: >-
+      the file imports only `Link` from "@tanstack/react-router" and calls none of read-case, read-case-version or any listing operation.
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: >-
+      export type CaseVersionEditorLinkProps = { readonly slug: string; readonly version: string; } — the props carry only the routing identity (slug, version), not the aggregate's declared attributes, state or manifest.
+  - node: constraints/a-successful-case-version-own-record-read-answers-with-http-200
+    held_at: nowhere
+    evidence: >-
+      the file performs no HTTP call and states no response status.
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
+    held_at: nowhere
+    evidence: >-
+      the Link's `to` is "/cases/$slug/versions/$version", the editing surface's own path (route-tree.tsx maps it to CaseVersionEditorScreen), not "/cases/$slug/versions/$version/manifest"; this file carries no route to the manifest.
+  - node: rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes
+    held_at: nowhere
+    evidence: >-
+      the file issues no update-draft call and states no response body for one.
+  - node: rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case
+    held_at: nowhere
+    evidence: >-
+      the file offers no discard act; its only output is the "Edit version" Link.
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: >-
+      the file reads no version state and gates nothing on draft versus released; it renders the same Link regardless.
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: >-
+      the file offers neither a release act nor a discard act, further or otherwise.
+  - node: rules/knowledge/a-draft-case-versions-discard-reproduces-the-cases-own-slug
+    held_at: nowhere
+    evidence: >-
+      the file has no discard act and asks the curator to reproduce nothing.
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable
+    held_at: nowhere
+    evidence: >-
+      the file's behavior does not vary with the version's manifest content; it renders the unconditional Link regardless of whether the manifest holds a hypothesis.
+  - node: constraints/a-successful-case-version-discard-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the file makes no discard call and states no response for one.
+looked_past: >-
+  Whether case-simulation-screen.tsx and version-manifest-screen.tsx (the two callers of CaseVersionEditorLink) actually render it unconditionally on every reading of their own surfaces, refused and pending readings included, is those files' own conformance question, not this link component's — it was not opened for that judgment here.

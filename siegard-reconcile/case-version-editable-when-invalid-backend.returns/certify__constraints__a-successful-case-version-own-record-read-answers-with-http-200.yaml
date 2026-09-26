@@ -1,0 +1,31 @@
+certified:
+  - node: constraints/a-successful-case-version-own-record-read-answers-with-http-200
+    state: partial
+    tests:
+      - file: src/__tests__/unit/http/read-case-version.routes.spec.ts
+        name: >-
+          answers HTTP 200 both for a draft whose manifest holds no hypothesis and for a version that reads back fully as a case, never conditioning the status on the version's validity
+      - file: src/__tests__/unit/http/read-case-version.routes.spec.ts
+        name: >-
+          answers 200 even when the subject or fallback itself is the declared attribute a validator rule would reject, not only when an empty manifest is the failing rule
+    why: >-
+      The status half is exercised. Both named tests put the HTTP route in front of a
+      mocked case-query port and assert 200, so a route that answered a successful read
+      with 201, 202, 204 or any other status would fail them. The "whether or not every
+      validator rule holds" half is not. No draft whose manifest holds no hypothesis
+      exists anywhere in the proof. readCaseVersion is a vi.fn() that resolves with bare
+      declared attributes, and those attributes carry no manifest. The "draft" and the
+      "version that reads back as a case" differ only in the URL slug and an optional
+      consolidation_register, so at this layer the two calls cannot be told apart by
+      validity, and the test's name claims more than its assertions reach. The second
+      test's 'an-unregistered-subject-type' is also only a string handed through the
+      mock: the route's dependencies hold nothing that could judge it against a validator
+      rule. Suppose the real read-case-version read (the case-query implementation behind
+      the port) began validating the version at this reading, and refused a draft with an
+      empty manifest. Both tests would still pass, and the fact would no longer hold.
+    remainder: testable
+    remainder_why: >-
+      Store a draft case version whose manifest holds no hypothesis. Call read-case-version
+      for it through the real case-query read behind the route (not a mocked port) and
+      assert HTTP 200. Then call it over a stored version that reads back as a case and
+      assert HTTP 200 there too.

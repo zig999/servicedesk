@@ -1,0 +1,41 @@
+certified:
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-editing-surface-on-every-reading
+    state: covered
+    tests:
+      - file: src/routes/case-simulation-screen.spec.ts
+        name: >-
+          carries the route while pending, once failed to complete, once refused for validation,
+          and once answered for a draft and for a released version, always addressed by the
+          screen's own path version
+      - file: src/routes/case-simulation-screen.spec.ts
+        name: >-
+          still carries the route to the named version's own editor when the read is refused with
+          an error code other than CaseVersionNotValidError
+      - file: src/routes/case-simulation-screen.spec.ts
+        name: renders the ready header for a draft version's own slug/version pair
+      - file: src/routes/version-manifest-screen-editor-link.spec.ts
+        name: >-
+          renders an Edit version link to /cases/$slug/versions/$version, carrying the manifest
+          screen's own path version, while the read is still pending, once it has failed to
+          complete, once it has been refused with CaseVersionNotValidError, once it has answered
+          a draft version and once it has answered a released version
+    why: >-
+      Both surfaces that present a named version are covered on every reading the node names.
+      On the simulation screen and on the manifest screen, the tests check that a link goes to
+      /cases/<slug>/versions/<version>, built from the screen's own path. They check it while the
+      read has not answered, after the read failed, after the read was refused with
+      CaseVersionNotValidError, and after the read answered a draft and a released version. If
+      the route depended on the version's state or on what the read answered, one of these
+      checks would fail.
+
+      One over-assertion in the simulation test goes beyond the fact, for a reader to route. On
+      the released reading it checks that exactly one link has the own-editor href
+      (toHaveLength(1)). The node only says such a route is present. This check would break if
+      a second control legitimately went to the same editor.
+
+      A limit on the evidence: each test uses a single slug/version pair (some-slug, v3). The
+      route is tied to the path's version only against implementations that differ from that
+      one pair. That is enough here because on the pending, failed and refused readings the
+      read gives back no version, and the draft record carries none, so the path is the only
+      source. The editor's path shape was taken from the tests; no source was opened to confirm
+      it.

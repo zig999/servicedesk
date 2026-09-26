@@ -1,0 +1,201 @@
+read:
+  - node: contracts/glossary/glossary-query
+    held_at: >-
+      The three vocabulary reads that initialize outcomeOptions, actionOptions and
+      recipientOptions, line 124.
+    evidence: >-
+      const outcomeOptions = useGlossaryVocabularyOptions("outcome"); const actionOptions
+      = useGlossaryVocabularyOptions("action"); const recipientOptions =
+      useGlossaryVocabularyOptions("recipient");
+  - node: contracts/knowledge/case-lifecycle
+    held_at: >-
+      patchMutation's PATCH call (update-draft), releaseMutation's POST .../release call
+      (release), and discardMutation built from buildDiscardMutationOptions (discard).
+    evidence: >-
+      return apiFetch<CaseVersionRecord>(`/v1/cases/${encodeURIComponent(slug)}/versions/${version}`,
+      { method: "PATCH", headers: { "Content-Type": "application/json" }, body:
+      JSON.stringify(values), }); ... return
+      apiFetch<CaseVersionRecord>(`/v1/cases/${encodeURIComponent(slug)}/versions/${version}/release`,
+      { method: "POST" });
+  - node: contracts/knowledge/case-query
+    held_at: "versionQuery's queryFn, line 119."
+    evidence: >-
+      queryFn: () => apiFetch<CaseVersionRecord>(`/v1/cases/${encodeURIComponent(slug)}/versions/${version}`),
+  - node: domain/glossary/action
+    held_at: "actionOptions, fetched line 124 and returned on the ready phase, line 321."
+    evidence: >-
+      const actionOptions = useGlossaryVocabularyOptions("action"); ... actionOptions,
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: >-
+      The file names no concept anywhere; its vocabulary reads are limited to
+      useGlossaryVocabularyOptions("outcome"), ("action") and ("recipient") (line 124).
+  - node: domain/glossary/outcome
+    held_at: "outcomeOptions, fetched line 124 and returned on the ready phase, line 320."
+    evidence: 'const outcomeOptions = useGlossaryVocabularyOptions("outcome");'
+  - node: domain/glossary/recipient
+    held_at: "recipientOptions, fetched line 124 and returned on the ready phase, line 322."
+    evidence: 'const recipientOptions = useGlossaryVocabularyOptions("recipient");'
+  - node: domain/glossary/subject-type
+    held_at: nowhere
+    evidence: >-
+      resetFormFrom writes `subject: record.subject` into the form, but the file fetches
+      no subject-type vocabulary — only useGlossaryVocabularyOptions("outcome"), ("action")
+      and ("recipient") are read (line 124).
+  - node: domain/knowledge/case
+    held_at: "The `slug` parameter, used as the case's own identity across every call."
+    evidence: 'apiFetch<CaseVersionRecord>(`/v1/cases/${encodeURIComponent(slug)}/versions/${version}`)'
+  - node: domain/knowledge/case-version
+    held_at: "The `record` read from versionQuery.data and the fields resetFormFrom writes onto the form."
+    evidence: >-
+      const record = versionQuery.data; ... form.reset({ title: record.title,
+      when_to_use: record.when_to_use, subject: record.subject, fallback: record.fallback,
+      consolidation_register: record.consolidation_register, });
+  - node: domain/knowledge/case-version-state
+    held_at: "The `record.state` comparisons for canRelease, isReadOnly, isBlocked and canDiscard."
+    evidence: >-
+      const canRelease = record.state === "draft" && !isReleased; ... isReadOnly:
+      record.state === "released",
+  - node: domain/knowledge/manifest-entry
+    held_at: "record.manifest, read into useManifestPinnedRevisionStates and exposed on the ready phase."
+    evidence: >-
+      const manifestPinnedStates = useManifestPinnedRevisionStates(slug,
+      versionQuery.data?.manifest ?? []); ... manifest: record.manifest,
+  - node: domain/knowledge/referral
+    held_at: nowhere
+    evidence: >-
+      The file passes `fallback: record.fallback,` wholesale and returns actionOptions
+      and recipientOptions for editing it, without itself reading a referral's action or
+      recipient.
+  - node: domain/knowledge/resolution
+    held_at: "record.fallback reset onto the form, paired with outcomeOptions."
+    evidence: 'fallback: record.fallback, ... outcomeOptions,'
+  - node: rules/knowledge/a-case-has-at-least-one-hypothesis
+    held_at: nowhere
+    evidence: >-
+      The file never inspects manifest length; it only computes `versionQuery.isError
+      && versionErrorKind === "case-not-valid"` (line 202) and forwards it to
+      useNotValidDraftVersionState, where a manifest-empty reading is actually handled.
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: "The `case-not-valid` flag computed for useNotValidDraftVersionState, line 202."
+    evidence: 'versionQuery.isError && versionErrorKind === "case-not-valid",'
+  - node: rules/knowledge/a-case-version-is-written-once
+    held_at: "isReadOnly and isBlocked, keyed on record.state === \"released\"."
+    evidence: >-
+      isReadOnly: record.state === "released", ... record.state === "released" ||
+      isReleased,
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: >-
+      patchMutation's and releaseMutation's onError branches for "case-version-not-draft"
+      and "case-version-not-draft-at-release".
+    evidence: >-
+      if (kind === "case-version-not-draft") { setStatus("conflict"); ... if (kind ===
+      "case-version-not-draft-at-release") {
+  - node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+    held_at: nowhere
+    evidence: "The file never reads or checks a concept's accepted subject types, and has no reference to concept at all."
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: >-
+      The effect that resets the form only once versionQuery.data has arrived, and the
+      "loading" phase returned until then.
+    evidence: >-
+      useEffect(() => { if (versionQuery.data) { resetFormFrom(form, versionQuery.data);
+      setStatus("clean"); } }, [versionQuery.data]); ... if (versionQuery.isLoading ||
+      isLoadingGlossary || !versionQuery.data) { return { phase: "loading" }; }
+  - node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+    held_at: 'The "load-error" phase returned for versionQuery.isError || isGlossaryError.'
+    evidence: >-
+      if (versionQuery.isError || isGlossaryError) { return { phase: "load-error",
+      retryLoad: () => {
+  - node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+    held_at: "releaseMutation's onError branch for \"case-version-not-releasable\"."
+    evidence: >-
+      if (kind === "case-version-not-releasable") { setReleaseViolations(extractReleaseViolations(error));
+      return; }
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: "releaseCondition, computed unconditionally and stated on the release control before any release is attempted."
+    evidence: >-
+      const releaseCondition = manifestPinReleaseCondition( record.manifest ?? [],
+      manifestPinnedStates, ); ... conditions: [releaseCondition],
+  - node: rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+    held_at: "Delegated: the notValidDraftState branch returned in place of the version's own attributes."
+    evidence: 'if (notValidDraftState) { return notValidDraftState; }'
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: "cancelEditing, wired as onCancel on the ready phase."
+    evidence: 'const cancelEditing = (): void => { router.history.back(); }; ... onCancel: cancelEditing,'
+  - node: rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes
+    held_at: "patchMutation's onSuccess, resetting the form directly from the PATCH response."
+    evidence: >-
+      onSuccess: (data) => { isSubmittingRef.current = false; resetFormFrom(form, data);
+      setStatus("clean");
+  - node: rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: "resetFormFrom's own field list."
+    evidence: >-
+      form.reset({ title: record.title, when_to_use: record.when_to_use, subject:
+      record.subject, fallback: record.fallback, consolidation_register:
+      record.consolidation_register, });
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: nowhere
+    evidence: >-
+      The file fetches vocabulary lists (useGlossaryVocabularyOptions("outcome"),
+      ("action"), ("recipient"), line 124) but performs no check that a case version's
+      own named terms exist in them.
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: "canDiscard, passed to buildDiscardControlState."
+    evidence: 'canDiscard: record.state === "draft" && !isReleased,'
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing
+    held_at: nowhere
+    evidence: >-
+      The scenario's behavior is delegated to useNotValidDraftVersionState via the
+      "case-not-valid" flag (line 202); this file only forwards it.
+  - node: scenarios/knowledge/a-release-is-refused-for-manifested-draft-hypothesis-revisions
+    held_at: "releaseMutation's onError branch for \"case-version-not-releasable\"."
+    evidence: 'setReleaseViolations(extractReleaseViolations(error));'
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: 'The "loading" phase returned while !versionQuery.data, which carries no acts.'
+    evidence: >-
+      if (versionQuery.isLoading || isLoadingGlossary || !versionQuery.data) { return {
+      phase: "loading" }; }
+  - node: constraints/a-successful-case-version-own-record-read-answers-with-http-200
+    held_at: nowhere
+    evidence: >-
+      queryFn: () => apiFetch<CaseVersionRecord>(...) — the file reads the response
+      through apiFetch and never itself inspects a status code.
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
+    held_at: nowhere
+    evidence: >-
+      The file exposes `manifest: record.manifest,` (line 328) only on the ready phase;
+      it builds no route and states no such route on other readings.
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-editing-surface-on-every-reading
+    held_at: nowhere
+    evidence: "This file is itself the editing surface such a route would lead to; it contains no route-building code."
+  - node: rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case
+    held_at: "discardMutation, defined unconditionally and forwarded into notValidDraftState alongside the ready phase's own discard control."
+    evidence: >-
+      const discardMutation = useMutation( buildDiscardMutationOptions({ slug, version,
+      onFailed: setDiscardErrorText, ... discardMutation.isPending, () =>
+      discardMutation.mutate(),
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: "The release dialog's isOpen/onConfirm split, and discard's dialogOpen/isConfirming split."
+    evidence: 'isOpen: isReleaseDialogOpen, onOpenChange: (open: boolean) => { ... onConfirm: () => releaseMutation.mutate(),'
+  - node: rules/knowledge/a-draft-case-versions-discard-reproduces-the-cases-own-slug
+    held_at: nowhere
+    evidence: >-
+      The file only holds discardSlugConfirmation state and forwards it —
+      `slugConfirmation: [discardSlugConfirmation, setDiscardSlugConfirmation],` — the
+      reproduction check itself is not visible here.
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable
+    held_at: nowhere
+    evidence: >-
+      `canDiscard: record.state === "draft" && !isReleased,` does not itself distinguish
+      a manifest-empty draft from any other draft; the scenario is realized by delegation.
+  - node: constraints/a-successful-case-version-discard-answers-with-no-content
+    held_at: "discardMutation's onDiscarded callback, which uses no response body."
+    evidence: >-
+      onDiscarded: (discardedVersion) => { telemetry.caseDraftDiscarded({ slug, version:
+      discardedVersion });
+looked_past: >-
+  patchMutation's onSuccess invalidates only the ["case-versions", slug] listing and never
+  the singular ["case-version", slug, version] query cache, and the "ready" phase type
+  declares an isFirstVersion field the hook's own return never populates — both are
+  code-quality observations rather than a domain fact the source states or omits.

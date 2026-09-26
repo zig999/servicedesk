@@ -1,0 +1,28 @@
+certified:
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable
+    state: partial
+    tests:
+      - file: src/__tests__/integration/http/discard-accepts-an-invalid-draft.routes.spec.ts
+    why: >-
+      Two parts of the fact are exercised. The discard is accepted: the test sends a DELETE for
+      the case's only draft, which has no hypothesis, to the case's own slug and version, and
+      expects 204 with an empty body. The spent number is not reused: the test expects the next
+      draft to be numbered differently from the discarded one. For a case whose only draft was
+      removed, that check would catch a numbering taken from the highest remaining version.
+      The removal part goes unexercised. The only evidence that the draft version is removed is
+      that store.assembleVersion(slug, discardedVersion) returns undefined after the discard.
+      Nothing checks that the same read returned the draft before the discard. The subject rule
+      says the discard is offered while the draft's current read does not answer a case. So for
+      a draft with no hypothesis, that read may return undefined whether or not the version was
+      removed. A discard that answered 204 and removed nothing could then pass this assertion.
+      The next-draft check does not close the gap either, because it passes as long as the new
+      number differs, whatever happened to the old draft. The part about the draft's own
+      manifest entries being removed is empty by the scenario's own given, since the manifest
+      holds none, so it asks nothing of the test.
+    remainder: testable
+    remainder_why: >-
+      One input against one expected result. Take a case whose only draft has no hypothesis.
+      First show that the store holds that draft version, by a read that returns it whether or
+      not it answers a case. Discard it with the case's own slug. Then the same read must return
+      nothing at that slug and version. The test must fail if the version still stands after a
+      204.

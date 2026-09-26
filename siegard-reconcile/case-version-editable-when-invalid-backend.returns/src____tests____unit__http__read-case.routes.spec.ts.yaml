@@ -1,0 +1,95 @@
+read:
+  - node: contracts/knowledge/case-query
+    held_at: >-
+      the GET /v1/cases/:slug/versions/:version route registered via createReadCaseRoutesPlugin,
+      answering the read-case operation's case-by-slug-and-version assembled whole
+    evidence: >-
+      const response = await app.inject({ method: 'GET', url: '/v1/cases/a-slug/versions/1' });
+
+      expect(response.statusCode).toBe(200);
+      expect(response.json()).toEqual({
+        slug: theCase.slug,
+        title: theCase.title,
+        when_to_use: theCase.when_to_use,
+        version: theCase.version,
+        authored_at: theCase.authored_at,
+        subject: theCase.subject,
+        fallback: theCase.fallback,
+        consolidation_register: theCase.consolidation_register,
+        state: theCase.state,
+        released_at: theCase.released_at,
+        manifest: theCase.manifest,
+      });
+  - node: domain/knowledge/case-version
+    held_at: >-
+      the same 200-response assertion, enumerating title, when_to_use, subject, fallback,
+      consolidation_register, state, released_at and manifest as the version's own attributes,
+      and the omission test for the two optional ones
+    evidence: >-
+      expect(response.json()).toEqual({ slug: theCase.slug, title: theCase.title,
+      when_to_use: theCase.when_to_use, version: theCase.version, authored_at: theCase.authored_at,
+      subject: theCase.subject, fallback: theCase.fallback,
+      consolidation_register: theCase.consolidation_register, state: theCase.state,
+      released_at: theCase.released_at, manifest: theCase.manifest });
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: >-
+      the "refuses with the status the status map assigns CaseNotFoundError" test
+    evidence: >-
+      expect(response.statusCode).toBe(404);
+      const body = response.json() as { error: { code: string; details?: unknown } };
+      expect(body.error.code).toBe('CaseNotFoundError');
+      expect(body.error.details).toEqual({ slug: 'an-absent-slug', version: 9 });
+  - node: rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      const dependencies: ReadCaseControllerDependencies = { caseQuery };
+      const app = Fastify();
+      app.setErrorHandler(handleUnexpectedError);
+      app.register(createReadCaseRoutesPlugin(dependencies));
+      — the file wires and exercises only the read-case (whole-assembly) route; no editing
+      surface, update-draft or declared-attributes-on-refused-read behavior is built or asserted.
+  - node: constraints/a-successful-case-version-own-record-read-answers-with-http-200
+    held_at: nowhere
+    evidence: >-
+      readCaseVersion: vi.fn(), — stubbed among the ICaseQuery dependencies but never invoked or
+      asserted on by any test in this file; the own-stored-record read (read-case-version) is not
+      exercised here, only read-case's whole-case assembly.
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: >-
+      the three 400 tests for a non-numeric, a zero, and an empty version segment — but only the
+      status code is asserted, not the error code, message or details the constraint also states
+    evidence: >-
+      const response = await app.inject({ method: 'GET', url: '/v1/cases/a-slug/versions/not-a-number' });
+      expect(response.statusCode).toBe(400);
+      expect(built.readCase).not.toHaveBeenCalled();
+  - node: rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case
+    held_at: nowhere
+    evidence: >-
+      app.register(createReadCaseRoutesPlugin(dependencies)); — no discard route, controller or
+      operation is built, called or asserted on anywhere in this file.
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable
+    held_at: nowhere
+    evidence: >-
+      app.register(createReadCaseRoutesPlugin(dependencies)); — the file's only fixtures (heldCase,
+      heldDraftCase) each carry a manifest with at least one hypothesis entry, and no discard is
+      issued anywhere.
+  - node: constraints/a-successful-case-version-discard-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      app.register(createReadCaseRoutesPlugin(dependencies)); — no discard call and no 204/no-body
+      assertion appears in this file.
+  - node: rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes
+    held_at: nowhere
+    evidence: >-
+      app.register(createReadCaseRoutesPlugin(dependencies)); — update-draft is never called or
+      asserted on; the file only injects GET requests against the read-case route.
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing
+    held_at: nowhere
+    evidence: >-
+      app.register(createReadCaseRoutesPlugin(dependencies)); — no editing-surface reading or
+      title-correction scenario is built or asserted on in this file.
+looked_past: >-
+  the test asserting the DTO drops Case.hypotheses while "the assembled case itself still carries
+  it" describes an internal read-model field rather than a domain fact the code invents, so
+  whether that internal shape belongs on the shared Case type is a code-structure question for
+  another pass, not a specification-conformance one.

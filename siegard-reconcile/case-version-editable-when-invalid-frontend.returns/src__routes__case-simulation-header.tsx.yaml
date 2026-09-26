@@ -1,0 +1,128 @@
+read:
+  - node: contracts/investigation/case-simulation
+    held_at: >-
+      the Simulate button, which the file leaves unconditioned on draft or released state —
+      matching the contract's "open to a case version in either state"
+    evidence: |-
+      <Button type="button" disabled={!canSimulate} onClick={onSimulateCase}>
+            ▶ Simulate case
+          </Button>
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "nowhere"
+    evidence: >-
+      the file's whole button list only issues navigation (`<Link>` targets) and a
+      `onSimulateCase` callback; no `update-draft`, `release`, `discard`, `place-hypothesis` or
+      other case-lifecycle operation is invoked from this file
+  - node: domain/knowledge/case-version
+    held_at: >-
+      the header's display of the version's slug, number and when_to_use attributes
+    evidence: |-
+      {slug} · v{version}
+      ...
+      <p className="text-sm text-muted-foreground">&quot;{whenToUse}&quot;</p>
+  - node: domain/knowledge/case-version-state
+    held_at: the VERSION_STATE_CELL lookup and the draft/released branch
+    evidence: |-
+      const VERSION_STATE_CELL: Record<CaseVersionState, { color: string; label: string }> = {
+        draft: { color: "bg-warning", label: "Draft" },
+        released: { color: "bg-success", label: "Released" },
+      };
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-editing-surface-on-every-reading
+    held_at: >-
+      both branches of the draft/released ternary route to `/cases/$slug/versions/$version` —
+      labelled "Edit version" for draft and "View this version" for released, so the route
+      itself is present regardless of state
+    evidence: |-
+      <Link to="/cases/$slug/versions/$version" params={versionParams}>
+                    Edit version
+                  </Link>
+      ...
+              <Link to="/cases/$slug/versions/$version" params={versionParams}>
+                  View this version
+                </Link>
+  - node: rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: "nowhere"
+    evidence: >-
+      the file only carries a `<Link>` to the editing route; it renders none of the version's
+      declared attributes as an editing form itself
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing
+    held_at: "nowhere"
+    evidence: >-
+      the file offers no manifest-empty branch or attribute-correction form; it is a route
+      link only
+  - node: rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+    held_at: "nowhere"
+    evidence: >-
+      `versionState: CaseVersionState` together with `VERSION_STATE_CELL`'s two keys admits
+      only "draft" and "released"; the component has no branch stating that the named version
+      does not read back as a case
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: "nowhere"
+    evidence: >-
+      export function CaseSimulationHeader({ slug, version, whenToUse, versionState,
+      canSimulate, onSimulateCase }: CaseSimulationHeaderProps) — a pure presentational
+      component with no HTTP or refusal handling
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: "nowhere"
+    evidence: >-
+      the same props signature; content arrives as already-resolved props, with no
+      record-fetch or pending-state logic in this file
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: "nowhere"
+    evidence: >-
+      all props (`slug`, `version`, `whenToUse`, `versionState`, `canSimulate`) are declared
+      required, non-optional; no interval-before-answer branch is coded here
+  - node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+    held_at: "nowhere"
+    evidence: the file contains no error-code handling of any kind
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: "nowhere"
+    evidence: >-
+      the four buttons rendered are Edit/View, Manifest and Simulate; no release control or
+      condition disclosure appears
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: "nowhere"
+    evidence: the file carries no editing form and no "leave" affordance, only outbound links
+  - node: contracts/knowledge/case-query
+    held_at: "nowhere"
+    evidence: no read-case or read-case-version call appears in this file
+  - node: constraints/a-successful-case-version-own-record-read-answers-with-http-200
+    held_at: "nowhere"
+    evidence: the file performs no HTTP call and states no status code
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
+    held_at: >-
+      the Manifest button, rendered unconditionally outside the draft/released branch,
+      addressed by the same version's own slug and number
+    evidence: |-
+      <Button type="button" variant="secondary" asChild>
+            <Link to="/cases/$slug/versions/$version/manifest" params={versionParams}>
+              Manifest
+            </Link>
+          </Button>
+  - node: rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes
+    held_at: "nowhere"
+    evidence: no update-draft call or response handling appears in this file
+  - node: rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case
+    held_at: "nowhere"
+    evidence: >-
+      the button set rendered — Edit/View, Manifest, Simulate — carries no discard control
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: "nowhere"
+    evidence: the file has no discard-issuing control to condition on state
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: "nowhere"
+    evidence: the file has neither a release nor a discard control, let alone a further-act one
+  - node: rules/knowledge/a-draft-case-versions-discard-reproduces-the-cases-own-slug
+    held_at: "nowhere"
+    evidence: no slug-reproducing confirmation control appears anywhere in this file
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable
+    held_at: "nowhere"
+    evidence: the file carries no discard flow at all
+  - node: constraints/a-successful-case-version-discard-answers-with-no-content
+    held_at: "nowhere"
+    evidence: no discard call or response-status handling appears in this file
+looked_past: >-
+  The colour/label pairing in VERSION_STATE_CELL, the icon character on the Simulate button,
+  and the choice of "Edit version" versus "View this version" wording are styling and copy
+  choices the nodes themselves leave to the interface ("which control carries the route, its
+  wording and where it sits are form") — not reviewed here as a code-quality matter.

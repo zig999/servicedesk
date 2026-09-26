@@ -11,7 +11,8 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:c14bccb0a90ee8e0d9ae9ac16907daebecad7c003a24150c8fa6597e86309a32"
+          "digest": "sha256:6aa1bc1111eec71b238e6040e01efecf2f87f371227f052785424bbb07fed930",
+          "judged": true
         },
         {
           "path": "src/src/case/case-store.port.ts",
@@ -232,7 +233,8 @@
         },
         {
           "path": "src/src/http/read-case-version.routes.ts",
-          "digest": "sha256:b3224cbd8b7e3c7823c4a192eca55dd4aa10f3cca9ca6f50a55a19f5307db614"
+          "digest": "sha256:b3224cbd8b7e3c7823c4a192eca55dd4aa10f3cca9ca6f50a55a19f5307db614",
+          "judged": true
         },
         {
           "path": "src/src/http/read-openapi-document-operations.routes.ts",
@@ -286,15 +288,18 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
-          "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
+          "digest": "sha256:3b2ca0db036c01a02456fc7ff84b0a37ea398e0a330604438da775f9c7b8042e",
+          "judged": true
         },
         {
           "path": "src/src/http/read-case-version.controller.ts",
-          "digest": "sha256:5be0f0211ebc860f16ad35ff56f17bc5342b3e82535fe4a1254bae8cfd60a1c6"
+          "digest": "sha256:5be0f0211ebc860f16ad35ff56f17bc5342b3e82535fe4a1254bae8cfd60a1c6",
+          "judged": true
         },
         {
           "path": "src/src/http/read-case-version.routes.ts",
-          "digest": "sha256:b3224cbd8b7e3c7823c4a192eca55dd4aa10f3cca9ca6f50a55a19f5307db614"
+          "digest": "sha256:b3224cbd8b7e3c7823c4a192eca55dd4aa10f3cca9ca6f50a55a19f5307db614",
+          "judged": true
         }
       ]
     },
@@ -1152,7 +1157,8 @@
         },
         {
           "path": "src/src/http/build-app.ts",
-          "digest": "sha256:a74bc2bcd36379ca47e05d52d3a51ef40a3c13c7cc19cdd9be5110f2d31986aa"
+          "digest": "sha256:e73e5a172b6ec2da811eba986182089c65898aca084b8e8419abe1777eea0ebb",
+          "judged": true
         },
         {
           "path": "src/src/http/dto/register-concept.dto.ts",
@@ -1186,7 +1192,8 @@
         },
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:9c5e239f7b89d23eed3d8f02be0f9be50d055e0c9293b0a3324d8e46503cf34a"
+          "digest": "sha256:e6a917cb913593ba4292e96d5824cad23e0aba146dcba0f34842c404d9eff704",
+          "judged": true
         },
         {
           "path": "frontend/app/src/hooks/use-glossary-concepts.ts",
@@ -1300,7 +1307,8 @@
         },
         {
           "path": "src/src/http/build-app.ts",
-          "digest": "sha256:a74bc2bcd36379ca47e05d52d3a51ef40a3c13c7cc19cdd9be5110f2d31986aa"
+          "digest": "sha256:e73e5a172b6ec2da811eba986182089c65898aca084b8e8419abe1777eea0ebb",
+          "judged": true
         },
         {
           "path": "src/src/http/dto/list-capabilities.dto.ts",
@@ -1371,7 +1379,8 @@
         },
         {
           "path": "src/src/http/build-app.ts",
-          "digest": "sha256:a74bc2bcd36379ca47e05d52d3a51ef40a3c13c7cc19cdd9be5110f2d31986aa"
+          "digest": "sha256:e73e5a172b6ec2da811eba986182089c65898aca084b8e8419abe1777eea0ebb",
+          "judged": true
         },
         {
           "path": "src/src/http/draft-capability-schema-from-openapi.routes.ts",
@@ -1423,7 +1432,8 @@
         },
         {
           "path": "src/src/http/build-app.ts",
-          "digest": "sha256:a74bc2bcd36379ca47e05d52d3a51ef40a3c13c7cc19cdd9be5110f2d31986aa"
+          "digest": "sha256:e73e5a172b6ec2da811eba986182089c65898aca084b8e8419abe1777eea0ebb",
+          "judged": true
         },
         {
           "path": "src/src/http/draft-connector-configuration-from-openapi.routes.ts",
@@ -1488,7 +1498,7 @@
         },
         {
           "path": "src/src/http/build-app.ts",
-          "digest": "sha256:a74bc2bcd36379ca47e05d52d3a51ef40a3c13c7cc19cdd9be5110f2d31986aa",
+          "digest": "sha256:e73e5a172b6ec2da811eba986182089c65898aca084b8e8419abe1777eea0ebb",
           "judged": true
         },
         {
@@ -1612,7 +1622,8 @@
         },
         {
           "path": "src/src/http/build-app.ts",
-          "digest": "sha256:a74bc2bcd36379ca47e05d52d3a51ef40a3c13c7cc19cdd9be5110f2d31986aa"
+          "digest": "sha256:e73e5a172b6ec2da811eba986182089c65898aca084b8e8419abe1777eea0ebb",
+          "judged": true
         },
         {
           "path": "src/src/http/dto/read-openapi-document-operations.dto.ts",
@@ -1686,7 +1697,8 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-header.tsx",
-          "digest": "sha256:871715e76e5bf62eb60ee8faa84f1dc92cf1c1624b06d598d2b6333c14c7931f"
+          "digest": "sha256:3c916fb583942bbf6fd0df65f24bca5eb0b633acd6ebe7fcb596788f5825b8ef",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
@@ -1702,7 +1714,8 @@
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-screen.tsx",
-          "digest": "sha256:5fc4f96c1bf350e1a9462a626c8212003adb0245419960b8d87ae6ccd0f1920c"
+          "digest": "sha256:8201fe1d11dc04e5f230326b83dc829c3d3191e7d3347041012490e05bdf5658",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/route-tree.tsx",
@@ -1877,7 +1890,8 @@
         },
         {
           "path": "src/src/http/build-app.ts",
-          "digest": "sha256:a74bc2bcd36379ca47e05d52d3a51ef40a3c13c7cc19cdd9be5110f2d31986aa"
+          "digest": "sha256:e73e5a172b6ec2da811eba986182089c65898aca084b8e8419abe1777eea0ebb",
+          "judged": true
         },
         {
           "path": "src/src/http/case-input-requirements.controller.ts",
@@ -1948,7 +1962,8 @@
         },
         {
           "path": "src/src/case/discard.operation.ts",
-          "digest": "sha256:f1957fc9c6f222a7d78ecb3920d6d4fbea2543ead4de68b939b6fe4d85663320"
+          "digest": "sha256:f1957fc9c6f222a7d78ecb3920d6d4fbea2543ead4de68b939b6fe4d85663320",
+          "judged": true
         },
         {
           "path": "src/src/case/manifest-composition.operations.ts",
@@ -1989,7 +2004,8 @@
         },
         {
           "path": "src/src/http/build-app.ts",
-          "digest": "sha256:a74bc2bcd36379ca47e05d52d3a51ef40a3c13c7cc19cdd9be5110f2d31986aa"
+          "digest": "sha256:e73e5a172b6ec2da811eba986182089c65898aca084b8e8419abe1777eea0ebb",
+          "judged": true
         },
         {
           "path": "src/src/http/create-draft.controller.ts",
@@ -2001,11 +2017,13 @@
         },
         {
           "path": "src/src/http/discard.controller.ts",
-          "digest": "sha256:424b941499668ff8344ab39373779a46850672ba2ab873cb53ba9cec43ac1598"
+          "digest": "sha256:424b941499668ff8344ab39373779a46850672ba2ab873cb53ba9cec43ac1598",
+          "judged": true
         },
         {
           "path": "src/src/http/discard.routes.ts",
-          "digest": "sha256:e362444445114dda2a91a77d96379275843144127bf7cb5ee4a92a498c3660f4"
+          "digest": "sha256:e362444445114dda2a91a77d96379275843144127bf7cb5ee4a92a498c3660f4",
+          "judged": true
         },
         {
           "path": "src/src/http/dto/create-draft.dto.ts",
@@ -2014,7 +2032,8 @@
         },
         {
           "path": "src/src/http/dto/discard.dto.ts",
-          "digest": "sha256:2879aba3684a9c594452e8412e1162074c8965576354346a2b2abc7f8b88c68c"
+          "digest": "sha256:2879aba3684a9c594452e8412e1162074c8965576354346a2b2abc7f8b88c68c",
+          "judged": true
         },
         {
           "path": "src/src/http/dto/release-hypothesis-revision.dto.ts",
@@ -2078,7 +2097,8 @@
         },
         {
           "path": "src/src/http/update-draft.controller.ts",
-          "digest": "sha256:d0f600276072de1339f8d4c0a0426affbb91f745fe94c8f29a8b82da6416ee47"
+          "digest": "sha256:e4e2c23abea3210f6b026d94c289509468763d4cc01eec7d5848ae04b11905e2",
+          "judged": true
         },
         {
           "path": "src/src/http/update-draft.routes.ts",
@@ -2104,7 +2124,8 @@
         },
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:5045edde52dbd794fcfeb11a724d8dd17a9e01d207ea90501256d0d32b0cd2b9"
+          "digest": "sha256:e6a917cb913593ba4292e96d5824cad23e0aba146dcba0f34842c404d9eff704",
+          "judged": true
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -2128,7 +2149,8 @@
         },
         {
           "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
-          "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
+          "digest": "sha256:3b2ca0db036c01a02456fc7ff84b0a37ea398e0a330604438da775f9c7b8042e",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
@@ -2144,11 +2166,13 @@
         },
         {
           "path": "src/src/case/case-query.port.ts",
-          "digest": "sha256:1fd484d96b36abb37eb5da6863b3562c8e1dfa8983574533889bdaa8ce2e62d2"
+          "digest": "sha256:1fd484d96b36abb37eb5da6863b3562c8e1dfa8983574533889bdaa8ce2e62d2",
+          "judged": true
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:6aa1bc1111eec71b238e6040e01efecf2f87f371227f052785424bbb07fed930"
+          "digest": "sha256:6aa1bc1111eec71b238e6040e01efecf2f87f371227f052785424bbb07fed930",
+          "judged": true
         },
         {
           "path": "src/src/case/case-store.port.ts",
@@ -2213,11 +2237,13 @@
         },
         {
           "path": "src/src/http/read-case-version.controller.ts",
-          "digest": "sha256:5be0f0211ebc860f16ad35ff56f17bc5342b3e82535fe4a1254bae8cfd60a1c6"
+          "digest": "sha256:5be0f0211ebc860f16ad35ff56f17bc5342b3e82535fe4a1254bae8cfd60a1c6",
+          "judged": true
         },
         {
           "path": "src/src/http/read-case-version.routes.ts",
-          "digest": "sha256:b3224cbd8b7e3c7823c4a192eca55dd4aa10f3cca9ca6f50a55a19f5307db614"
+          "digest": "sha256:b3224cbd8b7e3c7823c4a192eca55dd4aa10f3cca9ca6f50a55a19f5307db614",
+          "judged": true
         },
         {
           "path": "src/src/http/read-case.controller.ts",
@@ -2328,7 +2354,8 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:9c5e239f7b89d23eed3d8f02be0f9be50d055e0c9293b0a3324d8e46503cf34a"
+          "digest": "sha256:e6a917cb913593ba4292e96d5824cad23e0aba146dcba0f34842c404d9eff704",
+          "judged": true
         },
         {
           "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
@@ -2517,7 +2544,8 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:9c5e239f7b89d23eed3d8f02be0f9be50d055e0c9293b0a3324d8e46503cf34a"
+          "digest": "sha256:e6a917cb913593ba4292e96d5824cad23e0aba146dcba0f34842c404d9eff704",
+          "judged": true
         },
         {
           "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
@@ -2584,7 +2612,8 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:9c5e239f7b89d23eed3d8f02be0f9be50d055e0c9293b0a3324d8e46503cf34a"
+          "digest": "sha256:e6a917cb913593ba4292e96d5824cad23e0aba146dcba0f34842c404d9eff704",
+          "judged": true
         },
         {
           "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
@@ -4675,7 +4704,8 @@
         },
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:9c5e239f7b89d23eed3d8f02be0f9be50d055e0c9293b0a3324d8e46503cf34a"
+          "digest": "sha256:e6a917cb913593ba4292e96d5824cad23e0aba146dcba0f34842c404d9eff704",
+          "judged": true
         },
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
@@ -4691,7 +4721,8 @@
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
-          "digest": "sha256:2e9975e09a18ad98a216b7e5a228e4e97e6cb41ca599e698d20e675ca2c66401"
+          "digest": "sha256:dc1e66eafdaa571682400d0fc2f3b6e4e3746e7680b4f18e07b2a41ee70bef7c",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
@@ -4715,11 +4746,13 @@
         },
         {
           "path": "src/src/case/case-query.port.ts",
-          "digest": "sha256:e103931064d324132385389945b886206de495342069495d1cbe9ea194b80c6d"
+          "digest": "sha256:1fd484d96b36abb37eb5da6863b3562c8e1dfa8983574533889bdaa8ce2e62d2",
+          "judged": true
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:c14bccb0a90ee8e0d9ae9ac16907daebecad7c003a24150c8fa6597e86309a32"
+          "digest": "sha256:6aa1bc1111eec71b238e6040e01efecf2f87f371227f052785424bbb07fed930",
+          "judged": true
         },
         {
           "path": "src/src/case/case-resolution.ts",
@@ -4784,7 +4817,8 @@
         },
         {
           "path": "src/src/http/discard.routes.ts",
-          "digest": "sha256:e362444445114dda2a91a77d96379275843144127bf7cb5ee4a92a498c3660f4"
+          "digest": "sha256:e362444445114dda2a91a77d96379275843144127bf7cb5ee4a92a498c3660f4",
+          "judged": true
         },
         {
           "path": "src/src/http/dto/list-case-versions.dto.ts",
@@ -4891,7 +4925,8 @@
         },
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:e6a917cb913593ba4292e96d5824cad23e0aba146dcba0f34842c404d9eff704"
+          "digest": "sha256:e6a917cb913593ba4292e96d5824cad23e0aba146dcba0f34842c404d9eff704",
+          "judged": true
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -4907,7 +4942,8 @@
         },
         {
           "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
-          "digest": "sha256:3b2ca0db036c01a02456fc7ff84b0a37ea398e0a330604438da775f9c7b8042e"
+          "digest": "sha256:3b2ca0db036c01a02456fc7ff84b0a37ea398e0a330604438da775f9c7b8042e",
+          "judged": true
         },
         {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
@@ -4931,7 +4967,8 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-header.tsx",
-          "digest": "sha256:871715e76e5bf62eb60ee8faa84f1dc92cf1c1624b06d598d2b6333c14c7931f"
+          "digest": "sha256:3c916fb583942bbf6fd0df65f24bca5eb0b633acd6ebe7fcb596788f5825b8ef",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table.tsx",
@@ -4943,7 +4980,8 @@
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
-          "digest": "sha256:2e9975e09a18ad98a216b7e5a228e4e97e6cb41ca599e698d20e675ca2c66401"
+          "digest": "sha256:dc1e66eafdaa571682400d0fc2f3b6e4e3746e7680b4f18e07b2a41ee70bef7c",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
@@ -4955,7 +4993,8 @@
         },
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
-          "digest": "sha256:aeb9809ec2e0ba1db5dc338b514a24b6bf6c3cb6579d7151922b25e8262806f7"
+          "digest": "sha256:7cb52ba3b78e4157a0260a200ec2eaeaa7ec83db2acbedea1b6c24bd27b67c30",
+          "judged": true
         },
         {
           "path": "frontend/app/src/services/case-creation-form-schema.ts",
@@ -4991,11 +5030,13 @@
         },
         {
           "path": "src/src/case/case-query.port.ts",
-          "digest": "sha256:e103931064d324132385389945b886206de495342069495d1cbe9ea194b80c6d"
+          "digest": "sha256:1fd484d96b36abb37eb5da6863b3562c8e1dfa8983574533889bdaa8ce2e62d2",
+          "judged": true
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:6aa1bc1111eec71b238e6040e01efecf2f87f371227f052785424bbb07fed930"
+          "digest": "sha256:6aa1bc1111eec71b238e6040e01efecf2f87f371227f052785424bbb07fed930",
+          "judged": true
         },
         {
           "path": "src/src/case/case-store.port.ts",
@@ -5008,7 +5049,8 @@
         },
         {
           "path": "src/src/case/discard.operation.ts",
-          "digest": "sha256:f1957fc9c6f222a7d78ecb3920d6d4fbea2543ead4de68b939b6fe4d85663320"
+          "digest": "sha256:f1957fc9c6f222a7d78ecb3920d6d4fbea2543ead4de68b939b6fe4d85663320",
+          "judged": true
         },
         {
           "path": "src/src/case/manifest-composition.operations.ts",
@@ -5053,7 +5095,8 @@
         },
         {
           "path": "src/src/http/discard.controller.ts",
-          "digest": "sha256:424b941499668ff8344ab39373779a46850672ba2ab873cb53ba9cec43ac1598"
+          "digest": "sha256:424b941499668ff8344ab39373779a46850672ba2ab873cb53ba9cec43ac1598",
+          "judged": true
         },
         {
           "path": "src/src/http/dto/create-draft.dto.ts",
@@ -5062,7 +5105,8 @@
         },
         {
           "path": "src/src/http/dto/read-case-version.dto.ts",
-          "digest": "sha256:a2b12e53630d59c8df8277e611c55c94fe2af32004a0e5ec4eb827c8d8728569"
+          "digest": "sha256:a2b12e53630d59c8df8277e611c55c94fe2af32004a0e5ec4eb827c8d8728569",
+          "judged": true
         },
         {
           "path": "src/src/http/dto/read-case.dto.ts",
@@ -5094,7 +5138,8 @@
         },
         {
           "path": "src/src/http/update-draft.controller.ts",
-          "digest": "sha256:e4e2c23abea3210f6b026d94c289509468763d4cc01eec7d5848ae04b11905e2"
+          "digest": "sha256:e4e2c23abea3210f6b026d94c289509468763d4cc01eec7d5848ae04b11905e2",
+          "judged": true
         },
         {
           "path": "src/src/investigation/draft-assessment-text.ts",
@@ -5120,7 +5165,8 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:1b2659db4e925fa9b647a4863a64f879be7eb6ab6f89c302934f7a908a32db8c"
+          "digest": "sha256:e6a917cb913593ba4292e96d5824cad23e0aba146dcba0f34842c404d9eff704",
+          "judged": true
         },
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
@@ -5132,7 +5178,8 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-header.tsx",
-          "digest": "sha256:871715e76e5bf62eb60ee8faa84f1dc92cf1c1624b06d598d2b6333c14c7931f"
+          "digest": "sha256:3c916fb583942bbf6fd0df65f24bca5eb0b633acd6ebe7fcb596788f5825b8ef",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
@@ -5297,7 +5344,8 @@
         },
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
-          "digest": "sha256:f66b11761443d57348d0d65081f2ff00ef05b63583eb3b7c6ce3ac8279f95dbd"
+          "digest": "sha256:7cb52ba3b78e4157a0260a200ec2eaeaa7ec83db2acbedea1b6c24bd27b67c30",
+          "judged": true
         },
         {
           "path": "src/migrations/0004-case-and-hypothesis.sql",
@@ -5309,11 +5357,13 @@
         },
         {
           "path": "src/src/case/case-query.port.ts",
-          "digest": "sha256:e103931064d324132385389945b886206de495342069495d1cbe9ea194b80c6d"
+          "digest": "sha256:1fd484d96b36abb37eb5da6863b3562c8e1dfa8983574533889bdaa8ce2e62d2",
+          "judged": true
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:c14bccb0a90ee8e0d9ae9ac16907daebecad7c003a24150c8fa6597e86309a32"
+          "digest": "sha256:6aa1bc1111eec71b238e6040e01efecf2f87f371227f052785424bbb07fed930",
+          "judged": true
         },
         {
           "path": "src/src/case/case-resolution.ts",
@@ -5428,7 +5478,8 @@
         },
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
-          "digest": "sha256:f66b11761443d57348d0d65081f2ff00ef05b63583eb3b7c6ce3ac8279f95dbd"
+          "digest": "sha256:7cb52ba3b78e4157a0260a200ec2eaeaa7ec83db2acbedea1b6c24bd27b67c30",
+          "judged": true
         },
         {
           "path": "frontend/app/src/services/hypothesis-revision-form-schema.ts",
@@ -5656,7 +5707,8 @@
         },
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:9c5e239f7b89d23eed3d8f02be0f9be50d055e0c9293b0a3324d8e46503cf34a"
+          "digest": "sha256:e6a917cb913593ba4292e96d5824cad23e0aba146dcba0f34842c404d9eff704",
+          "judged": true
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -5676,7 +5728,8 @@
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
-          "digest": "sha256:2e9975e09a18ad98a216b7e5a228e4e97e6cb41ca599e698d20e675ca2c66401"
+          "digest": "sha256:dc1e66eafdaa571682400d0fc2f3b6e4e3746e7680b4f18e07b2a41ee70bef7c",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/place-existing-hypothesis-control.tsx",
@@ -5684,7 +5737,8 @@
         },
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
-          "digest": "sha256:f66b11761443d57348d0d65081f2ff00ef05b63583eb3b7c6ce3ac8279f95dbd"
+          "digest": "sha256:7cb52ba3b78e4157a0260a200ec2eaeaa7ec83db2acbedea1b6c24bd27b67c30",
+          "judged": true
         },
         {
           "path": "frontend/app/src/services/case-version-record.ts",
@@ -5826,7 +5880,8 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:9c5e239f7b89d23eed3d8f02be0f9be50d055e0c9293b0a3324d8e46503cf34a"
+          "digest": "sha256:e6a917cb913593ba4292e96d5824cad23e0aba146dcba0f34842c404d9eff704",
+          "judged": true
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revisions.ts",
@@ -9079,7 +9134,8 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:5045edde52dbd794fcfeb11a724d8dd17a9e01d207ea90501256d0d32b0cd2b9"
+          "digest": "sha256:e6a917cb913593ba4292e96d5824cad23e0aba146dcba0f34842c404d9eff704",
+          "judged": true
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
@@ -9087,7 +9143,8 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:c14bccb0a90ee8e0d9ae9ac16907daebecad7c003a24150c8fa6597e86309a32"
+          "digest": "sha256:6aa1bc1111eec71b238e6040e01efecf2f87f371227f052785424bbb07fed930",
+          "judged": true
         },
         {
           "path": "src/src/errors/case-version-not-valid.error.ts",
@@ -9183,7 +9240,8 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:9c5e239f7b89d23eed3d8f02be0f9be50d055e0c9293b0a3324d8e46503cf34a"
+          "digest": "sha256:e6a917cb913593ba4292e96d5824cad23e0aba146dcba0f34842c404d9eff704",
+          "judged": true
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
@@ -9253,7 +9311,8 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:c14bccb0a90ee8e0d9ae9ac16907daebecad7c003a24150c8fa6597e86309a32"
+          "digest": "sha256:6aa1bc1111eec71b238e6040e01efecf2f87f371227f052785424bbb07fed930",
+          "judged": true
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
@@ -9364,7 +9423,8 @@
       "files": [
         {
           "path": "frontend/app/src/routes/discard-draft-dialog.tsx",
-          "digest": "sha256:d839cf67abc04e90cc8153148872f113602e9462c4417dcff8552a0fc53c0da5"
+          "digest": "sha256:d839cf67abc04e90cc8153148872f113602e9462c4417dcff8552a0fc53c0da5",
+          "judged": true
         }
       ]
     },
@@ -9374,7 +9434,8 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:9c5e239f7b89d23eed3d8f02be0f9be50d055e0c9293b0a3324d8e46503cf34a"
+          "digest": "sha256:e6a917cb913593ba4292e96d5824cad23e0aba146dcba0f34842c404d9eff704",
+          "judged": true
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -9386,7 +9447,8 @@
         },
         {
           "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
-          "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
+          "digest": "sha256:3b2ca0db036c01a02456fc7ff84b0a37ea398e0a330604438da775f9c7b8042e",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
@@ -9833,7 +9895,8 @@
         },
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
-          "digest": "sha256:f66b11761443d57348d0d65081f2ff00ef05b63583eb3b7c6ce3ac8279f95dbd"
+          "digest": "sha256:7cb52ba3b78e4157a0260a200ec2eaeaa7ec83db2acbedea1b6c24bd27b67c30",
+          "judged": true
         }
       ]
     },
@@ -9865,7 +9928,8 @@
         },
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
-          "digest": "sha256:aeb9809ec2e0ba1db5dc338b514a24b6bf6c3cb6579d7151922b25e8262806f7"
+          "digest": "sha256:7cb52ba3b78e4157a0260a200ec2eaeaa7ec83db2acbedea1b6c24bd27b67c30",
+          "judged": true
         }
       ]
     },
@@ -9893,7 +9957,8 @@
         },
         {
           "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
-          "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
+          "digest": "sha256:3b2ca0db036c01a02456fc7ff84b0a37ea398e0a330604438da775f9c7b8042e",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/new-case-draft-screen.tsx",
@@ -9935,19 +10000,35 @@
       "files": [
         {
           "path": "frontend/app/src/routes/case-simulation-header.tsx",
-          "digest": "sha256:3c916fb583942bbf6fd0df65f24bca5eb0b633acd6ebe7fcb596788f5825b8ef"
+          "digest": "sha256:3c916fb583942bbf6fd0df65f24bca5eb0b633acd6ebe7fcb596788f5825b8ef",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/case-simulation-screen.tsx",
-          "digest": "sha256:0fbd269d8430307d306f2e22ea914f8be0f54fda8252faba96f238e0154091bc"
+          "digest": "sha256:0fbd269d8430307d306f2e22ea914f8be0f54fda8252faba96f238e0154091bc",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-link.tsx",
-          "digest": "sha256:088b521effa01c66422699068179a8cf722e4bfc24ad3b6f1bd5d95f4141b63c"
+          "digest": "sha256:088b521effa01c66422699068179a8cf722e4bfc24ad3b6f1bd5d95f4141b63c",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
-          "digest": "sha256:7cb52ba3b78e4157a0260a200ec2eaeaa7ec83db2acbedea1b6c24bd27b67c30"
+          "digest": "sha256:7cb52ba3b78e4157a0260a200ec2eaeaa7ec83db2acbedea1b6c24bd27b67c30",
+          "judged": true
+        }
+      ],
+      "decided_by": "test",
+      "step": "test",
+      "proof": [
+        {
+          "path": "frontend/app/src/routes/case-simulation-screen.spec.ts",
+          "digest": "sha256:e4592568caeb8c572c59a8589c525fc70378aef40b2e5145607d5bfb6dfe3ead"
+        },
+        {
+          "path": "frontend/app/src/routes/version-manifest-screen-editor-link.spec.ts",
+          "digest": "sha256:dc7d9cbe593b8f4a264e0500100c1b6f3809db3a01e83abbb6dd8021fcd8af71"
         }
       ]
     },
@@ -9979,11 +10060,13 @@
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
-          "digest": "sha256:c8aa7a3fb4f52b7c96435b8cc5db6ec363583a1d9bc987688f7eb8c06f3b770a"
+          "digest": "sha256:dc1e66eafdaa571682400d0fc2f3b6e4e3746e7680b4f18e07b2a41ee70bef7c",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
-          "digest": "sha256:f66b11761443d57348d0d65081f2ff00ef05b63583eb3b7c6ce3ac8279f95dbd"
+          "digest": "sha256:7cb52ba3b78e4157a0260a200ec2eaeaa7ec83db2acbedea1b6c24bd27b67c30",
+          "judged": true
         }
       ]
     },
@@ -10001,7 +10084,8 @@
         },
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:9c5e239f7b89d23eed3d8f02be0f9be50d055e0c9293b0a3324d8e46503cf34a"
+          "digest": "sha256:e6a917cb913593ba4292e96d5824cad23e0aba146dcba0f34842c404d9eff704",
+          "judged": true
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -10013,7 +10097,8 @@
         },
         {
           "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
-          "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
+          "digest": "sha256:3b2ca0db036c01a02456fc7ff84b0a37ea398e0a330604438da775f9c7b8042e",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
@@ -10021,11 +10106,13 @@
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-screen.tsx",
-          "digest": "sha256:5fc4f96c1bf350e1a9462a626c8212003adb0245419960b8d87ae6ccd0f1920c"
+          "digest": "sha256:8201fe1d11dc04e5f230326b83dc829c3d3191e7d3347041012490e05bdf5658",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
-          "digest": "sha256:f66b11761443d57348d0d65081f2ff00ef05b63583eb3b7c6ce3ac8279f95dbd"
+          "digest": "sha256:7cb52ba3b78e4157a0260a200ec2eaeaa7ec83db2acbedea1b6c24bd27b67c30",
+          "judged": true
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
@@ -10039,7 +10126,8 @@
       "files": [
         {
           "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
-          "digest": "sha256:2e9975e09a18ad98a216b7e5a228e4e97e6cb41ca599e698d20e675ca2c66401"
+          "digest": "sha256:dc1e66eafdaa571682400d0fc2f3b6e4e3746e7680b4f18e07b2a41ee70bef7c",
+          "judged": true
         },
         {
           "path": "src/src/case/release.operation.ts",
@@ -10057,7 +10145,8 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:1b2659db4e925fa9b647a4863a64f879be7eb6ab6f89c302934f7a908a32db8c"
+          "digest": "sha256:e6a917cb913593ba4292e96d5824cad23e0aba146dcba0f34842c404d9eff704",
+          "judged": true
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
@@ -10073,11 +10162,13 @@
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
-          "digest": "sha256:600125ac93976d6a3b9470ff817fd813f22932c5dc107c518ba30a694ed688b8"
+          "digest": "sha256:dc1e66eafdaa571682400d0fc2f3b6e4e3746e7680b4f18e07b2a41ee70bef7c",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
-          "digest": "sha256:a062a60cb0fb4d304fccfd1b73bcc22b8b5dbb020295a4e2fdf4ac3d5e56c3ab"
+          "digest": "sha256:7cb52ba3b78e4157a0260a200ec2eaeaa7ec83db2acbedea1b6c24bd27b67c30",
+          "judged": true
         },
         {
           "path": "frontend/app/src/services/release-checklist.ts",
@@ -10244,15 +10335,18 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:9c5e239f7b89d23eed3d8f02be0f9be50d055e0c9293b0a3324d8e46503cf34a"
+          "digest": "sha256:e6a917cb913593ba4292e96d5824cad23e0aba146dcba0f34842c404d9eff704",
+          "judged": true
         },
         {
           "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
-          "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
+          "digest": "sha256:3b2ca0db036c01a02456fc7ff84b0a37ea398e0a330604438da775f9c7b8042e",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
-          "digest": "sha256:2e9975e09a18ad98a216b7e5a228e4e97e6cb41ca599e698d20e675ca2c66401"
+          "digest": "sha256:dc1e66eafdaa571682400d0fc2f3b6e4e3746e7680b4f18e07b2a41ee70bef7c",
+          "judged": true
         },
         {
           "path": "frontend/app/src/services/release-checklist.ts",
@@ -10296,7 +10390,8 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:5045edde52dbd794fcfeb11a724d8dd17a9e01d207ea90501256d0d32b0cd2b9"
+          "digest": "sha256:e6a917cb913593ba4292e96d5824cad23e0aba146dcba0f34842c404d9eff704",
+          "judged": true
         },
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
@@ -10304,15 +10399,18 @@
         },
         {
           "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
-          "digest": "sha256:f5577acb97fbcfd6ba7c28c76ac6eb2a9e1d40c46da30359cc89599f74cb51d0"
+          "digest": "sha256:3b2ca0db036c01a02456fc7ff84b0a37ea398e0a330604438da775f9c7b8042e",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-not-valid-view.tsx",
-          "digest": "sha256:f9fb34d14b9dcba8705c2765ac5594d173ae9b6f99f6391c1927f7fe92a07353"
+          "digest": "sha256:6a8178655f4898c50496a6fdec26e91101c6cd9f249e3a4815acaf1b5d8e4712",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
-          "digest": "sha256:2e9975e09a18ad98a216b7e5a228e4e97e6cb41ca599e698d20e675ca2c66401"
+          "digest": "sha256:dc1e66eafdaa571682400d0fc2f3b6e4e3746e7680b4f18e07b2a41ee70bef7c",
+          "judged": true
         }
       ]
     },
@@ -10340,11 +10438,13 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:f9bce4fbd68a7875c05406b00e22cdea2a1a722a818bea9570d85804e596b546"
+          "digest": "sha256:e6a917cb913593ba4292e96d5824cad23e0aba146dcba0f34842c404d9eff704",
+          "judged": true
         },
         {
           "path": "src/src/http/update-draft.controller.ts",
-          "digest": "sha256:e4e2c23abea3210f6b026d94c289509468763d4cc01eec7d5848ae04b11905e2"
+          "digest": "sha256:e4e2c23abea3210f6b026d94c289509468763d4cc01eec7d5848ae04b11905e2",
+          "judged": true
         }
       ]
     },
@@ -10466,7 +10566,8 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:c14bccb0a90ee8e0d9ae9ac16907daebecad7c003a24150c8fa6597e86309a32"
+          "digest": "sha256:6aa1bc1111eec71b238e6040e01efecf2f87f371227f052785424bbb07fed930",
+          "judged": true
         },
         {
           "path": "src/src/case/case-store.port.ts",
@@ -10529,7 +10630,8 @@
         },
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
-          "digest": "sha256:f66b11761443d57348d0d65081f2ff00ef05b63583eb3b7c6ce3ac8279f95dbd"
+          "digest": "sha256:7cb52ba3b78e4157a0260a200ec2eaeaa7ec83db2acbedea1b6c24bd27b67c30",
+          "judged": true
         },
         {
           "path": "src/src/case/case-resolution.ts",
@@ -10569,11 +10671,13 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:9c5e239f7b89d23eed3d8f02be0f9be50d055e0c9293b0a3324d8e46503cf34a"
+          "digest": "sha256:e6a917cb913593ba4292e96d5824cad23e0aba146dcba0f34842c404d9eff704",
+          "judged": true
         },
         {
           "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
-          "digest": "sha256:3b2ca0db036c01a02456fc7ff84b0a37ea398e0a330604438da775f9c7b8042e"
+          "digest": "sha256:3b2ca0db036c01a02456fc7ff84b0a37ea398e0a330604438da775f9c7b8042e",
+          "judged": true
         },
         {
           "path": "frontend/app/src/services/discard-confirmation.ts",
@@ -10585,7 +10689,8 @@
         },
         {
           "path": "src/src/case/discard.operation.ts",
-          "digest": "sha256:f1957fc9c6f222a7d78ecb3920d6d4fbea2543ead4de68b939b6fe4d85663320"
+          "digest": "sha256:f1957fc9c6f222a7d78ecb3920d6d4fbea2543ead4de68b939b6fe4d85663320",
+          "judged": true
         },
         {
           "path": "src/src/errors/case-version-not-draft.error.ts",
@@ -10599,11 +10704,13 @@
       "files": [
         {
           "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
-          "digest": "sha256:2e9975e09a18ad98a216b7e5a228e4e97e6cb41ca599e698d20e675ca2c66401"
+          "digest": "sha256:dc1e66eafdaa571682400d0fc2f3b6e4e3746e7680b4f18e07b2a41ee70bef7c",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/discard-draft-dialog.tsx",
-          "digest": "sha256:d839cf67abc04e90cc8153148872f113602e9462c4417dcff8552a0fc53c0da5"
+          "digest": "sha256:d839cf67abc04e90cc8153148872f113602e9462c4417dcff8552a0fc53c0da5",
+          "judged": true
         },
         {
           "path": "frontend/app/src/services/discard-confirmation.ts",
@@ -10632,7 +10739,8 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:c14bccb0a90ee8e0d9ae9ac16907daebecad7c003a24150c8fa6597e86309a32"
+          "digest": "sha256:6aa1bc1111eec71b238e6040e01efecf2f87f371227f052785424bbb07fed930",
+          "judged": true
         },
         {
           "path": "src/src/case/release.operation.ts",
@@ -10662,7 +10770,8 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:c14bccb0a90ee8e0d9ae9ac16907daebecad7c003a24150c8fa6597e86309a32"
+          "digest": "sha256:6aa1bc1111eec71b238e6040e01efecf2f87f371227f052785424bbb07fed930",
+          "judged": true
         },
         {
           "path": "src/src/case/parse-case-document.ts",
@@ -11289,11 +11398,13 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-not-valid-draft-version-state.ts",
-          "digest": "sha256:3b2ca0db036c01a02456fc7ff84b0a37ea398e0a330604438da775f9c7b8042e"
+          "digest": "sha256:3b2ca0db036c01a02456fc7ff84b0a37ea398e0a330604438da775f9c7b8042e",
+          "judged": true
         },
         {
           "path": "src/src/case/discard.operation.ts",
-          "digest": "sha256:f1957fc9c6f222a7d78ecb3920d6d4fbea2543ead4de68b939b6fe4d85663320"
+          "digest": "sha256:f1957fc9c6f222a7d78ecb3920d6d4fbea2543ead4de68b939b6fe4d85663320",
+          "judged": true
         }
       ]
     },
@@ -11315,7 +11426,8 @@
         },
         {
           "path": "src/src/http/update-draft.controller.ts",
-          "digest": "sha256:e4e2c23abea3210f6b026d94c289509468763d4cc01eec7d5848ae04b11905e2"
+          "digest": "sha256:e4e2c23abea3210f6b026d94c289509468763d4cc01eec7d5848ae04b11905e2",
+          "judged": true
         }
       ]
     },
@@ -11383,11 +11495,13 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:9c5e239f7b89d23eed3d8f02be0f9be50d055e0c9293b0a3324d8e46503cf34a"
+          "digest": "sha256:e6a917cb913593ba4292e96d5824cad23e0aba146dcba0f34842c404d9eff704",
+          "judged": true
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
-          "digest": "sha256:2e9975e09a18ad98a216b7e5a228e4e97e6cb41ca599e698d20e675ca2c66401"
+          "digest": "sha256:dc1e66eafdaa571682400d0fc2f3b6e4e3746e7680b4f18e07b2a41ee70bef7c",
+          "judged": true
         },
         {
           "path": "src/src/case/release.operation.ts",
@@ -11443,7 +11557,8 @@
         },
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
-          "digest": "sha256:f66b11761443d57348d0d65081f2ff00ef05b63583eb3b7c6ce3ac8279f95dbd"
+          "digest": "sha256:7cb52ba3b78e4157a0260a200ec2eaeaa7ec83db2acbedea1b6c24bd27b67c30",
+          "judged": true
         }
       ]
     },

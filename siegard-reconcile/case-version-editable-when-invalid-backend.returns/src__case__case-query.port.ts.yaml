@@ -1,0 +1,119 @@
+read:
+  - node: contracts/knowledge/case-query
+    held_at: >-
+      the ICaseQuery interface's six method signatures, lines 27-43
+    evidence: |
+      readCase(slug: string, version: number): Promise<ReadCaseResult>;
+
+        readCaseVersion(slug: string, version: number): Promise<ReadCaseVersionResult>;
+
+        listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>>;
+
+        listCaseVersions(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<CaseVersionListItem>>;
+
+        listHypotheses(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<HypothesisIdentity>>;
+
+        listHypothesisRevisions(
+          slug: string,
+          hypothesisName: string,
+          pagination: PaginationRequest,
+        ): Promise<PaginatedResponse<HypothesisRevisionListItem>>;
+  - node: domain/knowledge/case
+    held_at: >-
+      the slug: string parameter shared by every operation that names a case
+    evidence: >-
+      listCaseVersions(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<CaseVersionListItem>>;
+  - node: domain/knowledge/case-version
+    held_at: >-
+      the CaseVersionAttributes type (lines 15-21) and the version: number
+      parameter shared by readCase and readCaseVersion
+    evidence: |
+      export type CaseVersionAttributes = {
+        readonly title: string;
+        readonly when_to_use: string;
+        readonly subject: string;
+        readonly fallback: Resolution;
+        readonly consolidation_register?: ConsolidationRegister;
+      };
+  - node: domain/knowledge/hypothesis
+    held_at: >-
+      the hypothesisName: string parameter of listHypothesisRevisions, line 41
+    evidence: >-
+      listHypothesisRevisions(
+        slug: string,
+        hypothesisName: string,
+        pagination: PaginationRequest,
+      ): Promise<PaginatedResponse<HypothesisRevisionListItem>>;
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: >-
+      HypothesisRevisionListItem is only imported and used as the return item type of
+      listHypothesisRevisions; this file declares none of the revision's own attributes
+      (revision, criterion, collects, resolution, state).
+  - node: rules/investigation/replay-is-pinned
+    held_at: nowhere
+    evidence: >-
+      readCaseVersion(slug: string, version: number): Promise<ReadCaseVersionResult>; — the
+      operation carries only slug and version, and states nothing about a model, a prompt
+      version or evidence being pinned to a replay.
+  - node: rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: >-
+      the CaseVersionAttributes type (lines 15-21), returned by readCaseVersion as
+      ReadCaseVersionResult
+    evidence: |
+      export type CaseVersionAttributes = {
+        readonly title: string;
+        readonly when_to_use: string;
+        readonly subject: string;
+        readonly fallback: Resolution;
+        readonly consolidation_register?: ConsolidationRegister;
+      };
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: nowhere
+    evidence: >-
+      readCase(slug: string, version: number): Promise<ReadCaseResult>; — the return type
+      carries only the successful result, no refusal or error type.
+  - node: constraints/a-successful-case-version-own-record-read-answers-with-http-200
+    held_at: nowhere
+    evidence: >-
+      readCaseVersion(slug: string, version: number): Promise<ReadCaseVersionResult>; — the
+      signature states a return value, not an HTTP status.
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      the file declares only method signatures and types — export interface ICaseQuery { ... }
+      — with no validation-refusal construct.
+  - node: rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case
+    held_at: nowhere
+    evidence: >-
+      export interface ICaseQuery { readCase(...); readCaseVersion(...); listCases(...);
+      listCaseVersions(...); listHypotheses(...); listHypothesisRevisions(...); } — no discard
+      operation is declared.
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable
+    held_at: nowhere
+    evidence: >-
+      export interface ICaseQuery { readCase(...); readCaseVersion(...); listCases(...);
+      listCaseVersions(...); listHypotheses(...); listHypothesisRevisions(...); } — no discard
+      operation is declared.
+  - node: constraints/a-successful-case-version-discard-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      export interface ICaseQuery { readCase(...); readCaseVersion(...); listCases(...);
+      listCaseVersions(...); listHypotheses(...); listHypothesisRevisions(...); } — no discard
+      operation is declared.
+  - node: rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes
+    held_at: nowhere
+    evidence: >-
+      export interface ICaseQuery { readCase(...); readCaseVersion(...); listCases(...);
+      listCaseVersions(...); listHypotheses(...); listHypothesisRevisions(...); } — no
+      update-draft operation is declared.
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing
+    held_at: nowhere
+    evidence: >-
+      export interface ICaseQuery { readCase(...); readCaseVersion(...); listCases(...);
+      listCaseVersions(...); listHypotheses(...); listHypothesisRevisions(...); } — no
+      update-draft operation is declared.
+looked_past: >-
+  The internal shape of Case, Resolution and ConsolidationRegister and of CaseCatalogEntry,
+  CaseVersionListItem, HypothesisIdentity and HypothesisRevisionListItem is declared in other
+  files, not this one, and is left to their own pass.

@@ -1,0 +1,109 @@
+read:
+  - node: contracts/knowledge/case-query
+    held_at: >-
+      nowhere
+    evidence: >-
+      const dependencies: UpdateDraftControllerDependencies = { caseStore: store, caseQuery: createCaseQuery(pool) };
+      — case-query is wired as a dependency but neither test calls read-case, read-case-version, nor any listing operation; the file never exercises what the contract publishes.
+  - node: domain/knowledge/case-version
+    held_at: >-
+      the anUpdateDraftBody fixture, and the toEqual assertion of the second test
+    evidence: >-
+      return {
+          title: 'a corrected title',
+          when_to_use: 'when a curator corrects the case',
+          subject: glossary.subjectType,
+          fallback: aResolution(glossary),
+          ...overrides,
+        };
+      and
+      expect(response.json()).toEqual({
+            title: stored!.title,
+            when_to_use: stored!.when_to_use,
+            subject: stored!.subject,
+            fallback: stored!.fallback,
+          });
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: >-
+      nowhere
+    evidence: >-
+      const response = await app.inject({ method: 'PATCH', url: `/v1/cases/${slug}/versions/${version}`, payload: body });
+      — both tests only ever PATCH a slug/version the test itself has just created; neither exercises an unknown slug or version, so this rule's refusal is never touched here.
+  - node: rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: >-
+      the first test, lines 128-140
+    evidence: >-
+      const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+      const body = anUpdateDraftBody(glossary, { title: 'a corrected title for the manifest-empty draft' });
+
+      const response = await app.inject({ method: 'PATCH', url: `/v1/cases/${slug}/versions/${version}`, payload: body });
+
+      expect(response.statusCode).toBe(200);
+  - node: constraints/a-successful-case-version-own-record-read-answers-with-http-200
+    held_at: >-
+      nowhere
+    evidence: >-
+      const response = await app.inject({ method: 'PATCH', url: `/v1/cases/${slug}/versions/${version}`, payload: body });
+      — this file only ever issues a PATCH (update-draft); it never calls read-case-version, so the read's own 200 answer is not exercised here.
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: >-
+      nowhere
+    evidence: >-
+      function anUpdateDraftBody(glossary: IGlossary, overrides: Partial<UpdateDraftBodyDto> = {}): UpdateDraftBodyDto {
+        return {
+          title: 'a corrected title',
+          when_to_use: 'when a curator corrects the case',
+          subject: glossary.subjectType,
+          fallback: aResolution(glossary),
+          ...overrides,
+        };
+      }
+      — every body sent is well-formed; neither test sends a malformed path, query or body, so this refusal is never exercised.
+  - node: rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case
+    held_at: >-
+      nowhere
+    evidence: >-
+      const response = await app.inject({ method: 'PATCH', url: `/v1/cases/${slug}/versions/${version}`, payload: body });
+      — both calls in this file are PATCH (update-draft); no DELETE/discard call appears anywhere in the file.
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable
+    held_at: >-
+      nowhere
+    evidence: >-
+      afterEach(async () => {
+        await cleanupWrittenCases();
+        await cleanupWrittenGlossary();
+      });
+      — cleanup deletes rows directly via SQL rather than issuing a discard through the route; this file never exercises discard as an act.
+  - node: constraints/a-successful-case-version-discard-answers-with-no-content
+    held_at: >-
+      nowhere
+    evidence: >-
+      await deleteTolerantly(pool, 'DELETE FROM case_versions WHERE slug = ANY($1)', [slugsWrittenByThisTest]);
+      — teardown removes rows by direct SQL, not by a discard call whose HTTP answer could be asserted, so this constraint is not touched.
+  - node: rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes
+    held_at: >-
+      the second test, lines 143-163
+    evidence: >-
+      expect(response.json()).toEqual({
+            title: stored!.title,
+            when_to_use: stored!.when_to_use,
+            subject: stored!.subject,
+            fallback: stored!.fallback,
+          });
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing
+    held_at: >-
+      the first test, lines 128-140
+    evidence: >-
+      const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+      const body = anUpdateDraftBody(glossary, { title: 'a corrected title for the manifest-empty draft' });
+
+      const response = await app.inject({ method: 'PATCH', url: `/v1/cases/${slug}/versions/${version}`, payload: body });
+
+      expect(response.statusCode).toBe(200);
+      const stored = await store.assembleVersion(slug, version);
+      expect(stored?.title).toBe(body.title);
+looked_past: >-
+  The header comment (lines 14-18) explaining that the test wires real route/controller/store/query
+  against a real database is prose about test strategy rather than a domain-fact restatement or a
+  tool directive; whether it belongs under this project's comment rule is a different judgment's
+  to make, not this conformance pass's.

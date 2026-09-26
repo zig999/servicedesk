@@ -1,0 +1,147 @@
+findings:
+  - file: src/routes/case-simulation-screen.tsx
+    where: >-
+      the `loading` branch (`state.phase === "loading"`) and the `load-error` branch
+      (`state.phase === "load-error"`)
+    evidence: |
+      <section>
+        <p>Loading version {version}…</p>
+        <CaseVersionEditorLink slug={slug} version={version} />
+      </section>
+      ...
+      <section>
+        <p>Unable to load this version right now.</p>
+        <Button type="button" onClick={state.retryLoad}>
+          Retry
+        </Button>
+        <CaseVersionEditorLink slug={slug} version={version} />
+      </section>
+    cost: >-
+      Both readings of this version-keyed surface carry a route to the version's own
+      editing surface but no route to the version's own manifest, so a curator who
+      reaches this screen while the read is pending or has failed has no way from here
+      to the manifest — the one screen `a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading`
+      says should carry that route regardless of what the read answered is, on these
+      two readings, a screen carrying only the editor's sibling route and not this one.
+    kind: contradicts
+    correction: >-
+      Render a route to the version's manifest (the counterpart of `CaseVersionEditorLink`)
+      in both the `loading` and `load-error` branches, alongside the existing editor route.
+    node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
+
+read:
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-editing-surface-on-every-reading
+    held_at: >-
+      the `loading` branch and the `load-error` branch, each rendering
+      `<CaseVersionEditorLink slug={slug} version={version} />`
+    evidence: |
+      <p>Loading version {version}…</p>
+      <CaseVersionEditorLink slug={slug} version={version} />
+  - node: rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      `import { CaseVersionEditorLink } from "./case-version-editor-link";` — this file
+      carries only the route to the editing surface, never the surface's own presentation
+      of title, when_to_use, subject, fallback or consolidation_register.
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing
+    held_at: nowhere
+    evidence: >-
+      `import { CaseVersionEditorLink } from "./case-version-editor-link";` — the scenario's
+      own editing surface and update-draft acceptance are not rendered by this file.
+  - node: rules/knowledge/a-version-keyed-surface-states-a-named-version-that-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      `<p>Unable to load this version right now.</p>` is the only statement the
+      `load-error` branch makes; it is not distinguished from a statement that the named
+      version does not currently read back as a case.
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: nowhere
+    evidence: >-
+      `if (state.phase === "load-error") { return ( <section> <p>Unable to load this
+      version right now.</p>` — no reference to a CaseVersionNotValidError or an HTTP 409
+      appears in this file.
+  - node: rules/knowledge/a-draft-versions-content-is-presented-only-from-its-own-record
+    held_at: nowhere
+    evidence: >-
+      `<p>Loading version {version}…</p>` — the loading branch presents no version
+      attribute at all, submitted or stored.
+  - node: rules/knowledge/a-newly-created-draft-offers-no-act-before-its-own-record-arrives
+    held_at: nowhere
+    evidence: >-
+      the `loading` branch renders only `<p>Loading version {version}…</p>` and
+      `<CaseVersionEditorLink slug={slug} version={version} />` — no release, discard or
+      update-draft control appears.
+  - node: rules/knowledge/a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+    held_at: nowhere
+    evidence: >-
+      `useParams({ from: "/cases/$slug/versions/$version/simulate" })` — the surface is
+      keyed by the case's slug together with the version's own number, not by the slug
+      alone that this case-keyed rule is written over.
+  - node: rules/knowledge/a-surface-offering-release-states-which-release-conditions-the-draft-meets
+    held_at: nowhere
+    evidence: >-
+      the file's only interactive control besides the editor route is
+      `<Button type="button" onClick={state.retryLoad}>Retry</Button>` — no release
+      offer or condition disclosure appears.
+  - node: rules/knowledge/an-abandoned-case-version-edit-writes-nothing
+    held_at: nowhere
+    evidence: >-
+      the file contains no editing surface and no update-draft, place-hypothesis or
+      remove-hypothesis call to abandon; it only imports `CaseVersionEditorLink`.
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: >-
+      `const state = useCaseSimulationVersion(slug, Number(version));` — the read
+      itself is delegated to this hook, not made in this file.
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: >-
+      `export function CaseSimulationScreen(): JSX.Element {` — the file declares no
+      attribute of the aggregate; it only reads `slug` and `version` route params.
+  - node: constraints/a-successful-case-version-own-record-read-answers-with-http-200
+    held_at: nowhere
+    evidence: >-
+      `if (state.phase === "load-error") {` — the file branches on a hook-supplied
+      phase, not on an HTTP status.
+  - node: rules/knowledge/a-presented-case-version-offers-a-route-to-its-own-manifest-on-every-reading
+    held_at: nowhere
+    evidence: >-
+      neither the `loading` branch nor the `load-error` branch renders any manifest-route
+      construct; the file imports only `CaseVersionEditorLink`, no manifest-link component.
+  - node: rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes
+    held_at: nowhere
+    evidence: >-
+      `const state = useCaseSimulationVersion(slug, Number(version));` — no update-draft
+      call or its answer is handled in this file.
+  - node: rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case
+    held_at: nowhere
+    evidence: >-
+      the file's only button is `<Button type="button" onClick={state.retryLoad}>Retry</Button>`
+      — no discard control appears.
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: nowhere
+    evidence: >-
+      the file contains no discard call or state-based gate on it.
+  - node: rules/knowledge/releasing-or-discarding-a-draft-case-version-takes-a-further-explicit-act
+    held_at: nowhere
+    evidence: >-
+      the file contains no release or discard act, explicit or otherwise.
+  - node: rules/knowledge/a-draft-case-versions-discard-reproduces-the-cases-own-slug
+    held_at: nowhere
+    evidence: >-
+      the file contains no discard act and reproduces no slug for one.
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable
+    held_at: nowhere
+    evidence: >-
+      the file contains no discard flow for this scenario to be observed against.
+  - node: constraints/a-successful-case-version-discard-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the file contains no discard call and handles no such response.
+
+looked_past: >-
+  Whether the default branch's `CaseSimulationReadyView` (a separate file) itself carries
+  the manifest and editor routes on a reading where the version is refused because
+  validation fails, and how `useCaseSimulationVersion`'s own phase values map a
+  validation refusal against a generic load failure, are judgments over files outside
+  this set and are not reported here.

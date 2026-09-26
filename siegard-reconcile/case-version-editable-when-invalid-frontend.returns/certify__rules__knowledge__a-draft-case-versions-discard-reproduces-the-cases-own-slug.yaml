@@ -1,0 +1,31 @@
+certified:
+  - node: rules/knowledge/a-draft-case-versions-discard-reproduces-the-cases-own-slug
+    state: partial
+    tests:
+      - file: src/routes/case-version-editor-screen-refused-draft-discard.spec.ts
+        name: >-
+          issues no DELETE for a typed value other than the exact slug, then issues exactly one
+          DELETE against this version once the slug is typed exactly
+      - file: src/routes/case-version-editor-screen-refused-draft-discard.spec.ts
+        name: issues no DELETE when the confirm control is clicked before anything is typed
+    why: >-
+      On the editor's not-valid draft reading, three cases are tested. Confirming with nothing
+      typed issues no discard. Confirming with the slug plus an added suffix
+      ("<slug>-not-the-slug") issues no discard. Confirming with the slug typed exactly issues
+      exactly one DELETE. So an editor that discards without the slug fails these tests. An
+      editor that accepts any value starting with or containing the slug also fails them.
+      Two parts of the fact are still unexercised. First, this file only exercises the
+      not-valid reading. The discard offered on the editor's ordinary draft reading is never
+      exercised here, so an editor that discards there without the slug passes this proof.
+      The helper module's name suggests a sibling discard spec may cover that reading, but it
+      was not offered as proof and is not cited. Second, no near-miss value other than an
+      added suffix is typed. A value that is a strict prefix of the slug, or the slug with
+      different letter case, is never submitted. So an editor accepting "the slug begins with
+      what was typed" or a case-insensitive match would pass these tests, even though the
+      curator has not reproduced the case's own slug.
+    remainder: testable
+    remainder_why: >-
+      On the editor's ordinary draft reading, confirm the discard with a value other than the
+      case's slug and expect no DELETE, then with the exact slug and expect exactly one DELETE.
+      On either reading, confirm with a strict prefix of the slug (the slug minus its last
+      character) and with a case-varied slug, and expect no DELETE for either.

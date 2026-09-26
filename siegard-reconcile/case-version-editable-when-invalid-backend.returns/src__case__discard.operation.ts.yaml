@@ -1,0 +1,69 @@
+read:
+  - node: contracts/knowledge/case-lifecycle
+    held_at: the exported function that implements the contract's discard operation
+    evidence: 'export async function discardCaseVersion(store: ICaseStore, slug: string, version: number): Promise<void> {'
+  - node: domain/knowledge/case-version
+    held_at: the guard reading the version's own state attribute before the operation acts on it
+    evidence: |-
+      if (assembled.state !== DRAFT_STATE) {
+        throw new CaseVersionNotDraftError(slug, version, assembled.state);
+      }
+  - node: rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case
+    held_at: >-
+      the function's only two guards — not-found and not-draft — with no other validator rule
+      (manifest emptiness, declared attributes, or any other) gating the call to store.discard
+    evidence: |-
+      const assembled = await store.assembleVersion(slug, version);
+      if (assembled === undefined) {
+        throw new CaseNotFoundError(slug, version);
+      }
+      if (assembled.state !== DRAFT_STATE) {
+        throw new CaseVersionNotDraftError(slug, version, assembled.state);
+      }
+      await store.discard(slug, version);
+  - node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    held_at: the state guard that refuses discard for any state other than draft
+    evidence: |-
+      if (assembled.state !== DRAFT_STATE) {
+        throw new CaseVersionNotDraftError(slug, version, assembled.state);
+      }
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable
+    held_at: the absence of any manifest inspection between the state guard and the call to store.discard
+    evidence: 'await store.discard(slug, version);'
+  - node: contracts/knowledge/case-query
+    held_at: nowhere
+    evidence: >-
+      the whole function body calls only store.assembleVersion and store.discard — neither
+      read-case, read-case-version, list-cases, list-case-versions, list-hypotheses nor
+      list-hypothesis-revisions is implemented here
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: the not-found guard raised when the store answers no version
+    evidence: |-
+      if (assembled === undefined) {
+        throw new CaseNotFoundError(slug, version);
+      }
+  - node: rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      the function never reads or returns title, when_to_use, subject, fallback or
+      consolidation_register; assembled is consulted only for .state
+  - node: constraints/a-successful-case-version-own-record-read-answers-with-http-200
+    held_at: nowhere
+    evidence: the function's return type is Promise<void> and it constructs no HTTP response of any status
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: the function takes slug and version as already-typed parameters and performs no request-shape validation
+  - node: constraints/a-successful-case-version-discard-answers-with-no-content
+    held_at: nowhere
+    evidence: 'await store.discard(slug, version); — the function resolves Promise<void> and states no HTTP status or body'
+  - node: rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes
+    held_at: nowhere
+    evidence: the file contains no update-draft logic and returns nothing that could carry a version's declared attributes
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing
+    held_at: nowhere
+    evidence: the file contains no editing-surface presentation logic
+looked_past: >-
+  the acceptance condition that the curator reproduce the case's own slug is not checked in
+  this function, but that rule is traced to discard.controller.ts as well as this file, and
+  this file receives a single resolved slug rather than a pair to compare, so that check is
+  left to the other file's judgment.

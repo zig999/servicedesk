@@ -1,0 +1,107 @@
+read:
+  - node: contracts/knowledge/case-query
+    held_at: >-
+      the stubCaseQuery() test double, whose six methods enumerate exactly the
+      contract's six published operations (read-case, read-case-version, list-cases,
+      list-case-versions, list-hypotheses, list-hypothesis-revisions)
+    evidence: >-
+      function stubCaseQuery(theCase: Case): ICaseQuery {
+
+        return {
+          readCase: async () => ({ case: theCase, hash: 'a-hash' }),
+          readCaseVersion: vi.fn(),
+          listCases: vi.fn(),
+          listCaseVersions: vi.fn(),
+          listHypotheses: vi.fn(),
+          listHypothesisRevisions: vi.fn(),
+        };
+      }
+  - node: domain/knowledge/case-version
+    held_at: >-
+      the minimalCase() fixture, which states version, title, when_to_use,
+      authored_at, subject, fallback, state and manifest as the case-version's
+      own declared attributes
+    evidence: >-
+      function minimalCase(): Case {
+        return {
+          slug: 'a-case',
+          title: 'a title',
+          when_to_use: 'a when-to-use',
+          version: 1,
+          authored_at: '2024-01-01T00:00:00.000Z',
+          subject: 'a-subject-type',
+          fallback: { outcome: 'a-fallback-outcome', referral: { action: 'refer', recipient: 'a-queue' } },
+          state: 'released',
+          manifest: [],
+          hypotheses: [
+            { name: 'h1', criterion: 'h1 criterion', collects: ['a-concept'], resolution: { outcome: 'h1-outcome', referral: { action: 'refer', recipient: 'a-queue' } } },
+          ],
+        };
+      }
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: nowhere
+    evidence: >-
+      { description: 'read-case', method: 'GET', url: '/v1/cases/a-slug/versions/1' },
+      ... async ({ method, url, payload }) => { const built = buildTestApp(); app = built.app;
+      const response = await app.inject({ method, url, payload }); expect(response.statusCode).not.toBe(404); }
+      — every request in this suite names a slug and version the stub answers, and the only
+      assertion made is that the response is not 404; no request names an unknown slug or version.
+  - node: rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: nowhere
+    evidence: >-
+      updateDraft: { caseStore: stubCaseStore(), caseQuery },
+      ... { description: 'update-draft', method: 'PATCH', url: '/v1/cases/a-slug/versions/1',
+      payload: { title: 'a title', when_to_use: 'a when-to-use', subject: 'a-subject-type', fallback: A_RESOLUTION } }
+      — the stub always answers a valid, hypothesis-bearing case; no reading in this file exercises
+      a draft that fails validation-runs-at-every-read.
+  - node: constraints/a-successful-case-version-own-record-read-answers-with-http-200
+    held_at: nowhere
+    evidence: >-
+      { description: 'read-case', method: 'GET', url: '/v1/cases/a-slug/versions/1' },
+      and expect(response.statusCode).not.toBe(404); — the route is only checked for not being 404,
+      never asserted to be 200.
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: >-
+      the two 400 tests on /v1/diagnose — only the status code is asserted, never the
+      VALIDATION_ERROR code or the details list the constraint also names
+    evidence: >-
+      const response = await app.inject({ method: 'POST', url: '/v1/diagnose', payload: withoutNarrative });
+
+      expect(response.statusCode).toBe(400);
+      expect(built.runDiagnose).not.toHaveBeenCalled();
+  - node: rules/knowledge/a-discard-is-offered-and-accepted-while-its-drafts-current-read-does-not-answer-a-case
+    held_at: nowhere
+    evidence: >-
+      { description: 'discard', method: 'DELETE', url: '/v1/cases/a-slug/versions/1' },
+      ... expect(response.statusCode).not.toBe(404); — discard is only checked for reaching a
+      controller; no request in this file discards a draft whose current read fails validation.
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-discardable
+    held_at: nowhere
+    evidence: >-
+      { description: 'discard', method: 'DELETE', url: '/v1/cases/a-slug/versions/1' },
+      ... expect(response.statusCode).not.toBe(404); — the stub's manifest is never varied to an
+      empty one for this route, and acceptance/removal is never asserted here.
+  - node: constraints/a-successful-case-version-discard-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      { description: 'discard', method: 'DELETE', url: '/v1/cases/a-slug/versions/1' },
+      ... expect(response.statusCode).not.toBe(404); — the 204-with-no-body assertions this file
+      does make (expect(deleteResponse.statusCode).toBe(204)) are for /v1/capabilities/{id},
+      /v1/connectors/{id} and /v1/glossary/concepts/{id}, never for a case version discard.
+  - node: rules/knowledge/an-accepted-update-draft-answers-its-versions-own-stored-declared-attributes
+    held_at: nowhere
+    evidence: >-
+      { description: 'update-draft', method: 'PATCH', url: '/v1/cases/a-slug/versions/1',
+      payload: { title: 'a title', when_to_use: 'a when-to-use', subject: 'a-subject-type', fallback: A_RESOLUTION } },
+      ... expect(response.statusCode).not.toBe(404); — no test reads the response body of an
+      accepted update-draft.
+  - node: scenarios/knowledge/a-case-with-no-hypothesis-is-still-open-for-editing
+    held_at: nowhere
+    evidence: >-
+      { description: 'update-draft', method: 'PATCH', url: '/v1/cases/a-slug/versions/1', ... },
+      ... expect(response.statusCode).not.toBe(404); — the manifest-holds-no-entry condition and
+      the presented-then-corrected reading this scenario describes are never exercised here.
+looked_past: >-
+  the diagnose/simulate/capability/connector/glossary/openapi routing, body-limit, framework-choice
+  and no-authentication assertions this same it.each and standalone tests carry, which state facts
+  outside this delegation's node set and belong to whichever pass was given the nodes they answer to.
