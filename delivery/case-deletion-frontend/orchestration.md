@@ -58,3 +58,17 @@ human's /siegard:deliver-scope invocation).
   settle rather than a test to force). 6 tests, 4/4 criteria met. Trace bound for 6 nodes; left 15
   bindings on other frontend files stale — left for /review-change.
   Commit: c4c072ae "deliver-scope case-deletion-frontend: deliver case-detail-delete-control".
+
+- Invoked /implement-task over task/case-deletion-surface/case-delete-refusal-presentation,
+  target frontend, slug case-deletion-frontend. Wired an onError path into the case delete
+  control, mapping CaseHoldsVersionsError, CaseNotFoundError and every other refusal to three
+  distinguishable, inline-rendered statements (role="alert" beside the slug-confirmation input),
+  disclosing nothing for an unrecognised refusal per the note this initiative's own /analyse pass
+  decided. Build and suite both passed clean on the first attempt. 5 tests, 5/5 criteria met.
+  Instructed the task-implementer to read (never resolve) the case-detail-delete-control proof's
+  own `contested` entry before deciding how its own work reaches the accepted branch — it reaches
+  only the refused branch, so it neither resolved nor compounded that disagreement. Trace bound
+  for 6 nodes; left 16 bindings on other frontend files stale — left for /review-change. All 4
+  tasks of this initiative now hold implementation + proof; delivery.json: 4/4 tasks, 0 criteria
+  unmet, 0 unproven.
+  Commit: b0539dfd "deliver-scope case-deletion-frontend: deliver+prove case-delete-refusal-presentation".
