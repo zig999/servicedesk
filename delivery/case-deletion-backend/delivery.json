@@ -24,6 +24,14 @@
       "title": "CaseHoldsVersionsError refusal — proof",
       "summary": "Unit tests over CaseHoldsVersionsError's own shape and its registration in the status map, proving every stated criterion and the two named underdetermined implementations, with the four implemented nodes left to a reading since none is decided whole within this task's scope.",
       "task": "task/case-deletion/case-holds-versions-refusal"
+    },
+    {
+      "id": "proof/case-deletion/store-deletes-a-versionless-case",
+      "kind": "proof",
+      "file": "proof/case-deletion/store-deletes-a-versionless-case.md",
+      "title": "Case-store deletion of a versionless case — integration proof",
+      "summary": "One combined integration test decides the store's whole accept-and-cascade/refuse policy against real PostgreSQL, and a second decides the unknown-slug refusal; four aggregate nodes this task only reads or cascades into are left untested with why.",
+      "task": "task/case-deletion/store-deletes-a-versionless-case"
     }
   ],
   "edges": [
@@ -96,6 +104,12 @@
     {
       "from": "proof/case-deletion/case-holds-versions-refusal",
       "to": "implementation/case-deletion/case-holds-versions-refusal",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-deletion/store-deletes-a-versionless-case",
+      "to": "implementation/case-deletion/store-deletes-a-versionless-case",
       "kind": "proves",
       "at": "the path"
     }

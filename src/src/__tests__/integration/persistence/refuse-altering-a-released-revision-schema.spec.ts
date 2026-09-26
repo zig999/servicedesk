@@ -257,10 +257,11 @@ it(
 );
 
 it(
-  "reads back a released hypothesis-revision's own collects exactly as they were stored, after an ordinary DELETE against those exact rows is attempted",
+  "reads back a released hypothesis-revision's own collects exactly as they were stored, after an ordinary DELETE against those exact rows is attempted, where the revision's own case still holds a case-version",
   async () => {
     const slug = 'a-released-revisions-collects-survive-a-delete-attempt';
     await insertCase(client, slug);
+    await insertCaseVersion(client, glossary, { slug, version: 1, state: 'released', releasedAt: '2026-01-01T00:00:00Z' });
     await insertHypothesis(client, { slug, name: 'the-hypothesis' });
     await insertHypothesisRevision(client, glossary, { slug, hypothesisName: 'the-hypothesis', revision: 1, state: 'released' });
     await insertRevisionCollect(client, { slug, hypothesisName: 'the-hypothesis', revision: 1, conceptName: 'a-collected-concept' });
@@ -272,6 +273,25 @@ it(
 
     const collects = await readRevisionCollects(client, { slug, hypothesisName: 'the-hypothesis', revision: 1 });
     expect(collects).toEqual(['a-collected-concept']);
+  },
+);
+
+it(
+  "removes a released hypothesis-revision's own collects through an ordinary DELETE, once its case holds no case-version at all",
+  async () => {
+    const slug = 'a-released-revisions-collects-are-removable-once-versionless';
+    await insertCase(client, slug);
+    await insertHypothesis(client, { slug, name: 'the-hypothesis' });
+    await insertHypothesisRevision(client, glossary, { slug, hypothesisName: 'the-hypothesis', revision: 1, state: 'released' });
+    await insertRevisionCollect(client, { slug, hypothesisName: 'the-hypothesis', revision: 1, conceptName: 'a-collected-concept' });
+
+    await client.query(
+      'DELETE FROM hypothesis_revision_collects WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1',
+      [slug, 'the-hypothesis'],
+    );
+
+    const collects = await readRevisionCollects(client, { slug, hypothesisName: 'the-hypothesis', revision: 1 });
+    expect(collects).toEqual([]);
   },
 );
 
