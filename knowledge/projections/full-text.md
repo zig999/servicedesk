@@ -91,6 +91,19 @@ A removal that succeeded leaves nothing registered at the name and version the r
 That rule also states that a removal naming a name and version no capability is currently registered at is never refused for that absence and is answered exactly as one that removed a capability, so both branches carry this same status and this same absent body — nothing in the answer tells them apart, which is what that rule settled when it refused to let the absence be reported.
 This is the same statement a-successful-concept-removal-answers-with-no-content holds for the glossary's own removal and a-successful-connector-configuration-removal-answers-with-no-content holds for the sibling registry's, and it states what remove-capability answers when it is not refused and nothing else — the refusal that rule names is answered where that rule states, nothing here reaches any other removal operation the specification publishes, and nothing here states where an operator who removed a capability is then taken.
 
+=== constraints/a-successful-case-deletion-answers-with-no-content
+---
+statement: Where the case lifecycle's delete accepts a delete of a case holding no case version rather than refusing it, it answers with an HTTP 204 response carrying no body.
+scope: knowledge
+fitness: An automated test deletes a case whose only draft version was discarded and asserts the answer is HTTP 204 with an empty body.
+---
+
+## Description
+
+This specification states the HTTP surface's own statuses as constraints. a-malformed-request-is-refused-with-a-validation-error and a-domain-error-unmapped-by-status-is-refused-generically hold the two refusals stated once for the whole surface. Delete's own refusal is already stated where its rule stands: rules/knowledge/a-case-holding-no-version-may-be-deleted refuses a delete of a case holding any version, draft or released, with an HTTP 409 reporting a CaseHoldsVersionsError. So what an accepted delete answers is stated here rather than decided by the route.
+An accepted delete leaves nothing at the slug the request carried: the case the request named no longer exists. The curator asked for that removal and nothing further, so the answer carries the status alone and no body.
+This is the same statement a-successful-case-version-discard-answers-with-no-content, a-successful-concept-removal-answers-with-no-content, a-successful-connector-configuration-removal-answers-with-no-content and a-successful-capability-removal-answers-with-no-content hold for the other removals the published surfaces offer. It states what delete answers when it is accepted and nothing else. Nothing here reaches any other operation contracts/knowledge/case-lifecycle publishes, and nothing here states where a curator who deleted a case is then taken.
+
 === constraints/a-successful-case-version-discard-answers-with-no-content
 ---
 statement: Where the case lifecycle's discard accepts a discard of a draft case version rather than refusing it, it answers with an HTTP 204 response carrying no body.
@@ -7007,6 +7020,38 @@ entries:
   decided: delete is added alongside the version-level acts already published there.
   why: case-lifecycle is the one surface a curator reaches every other case act through; withholding
     delete from it would leave the newly-decided act with no published entrance.
+- location: rules/knowledge/a-case-holding-no-version-may-be-deleted.md
+  field: statement
+  unstated: What deleting a case that holds no case version does to the hypotheses that still
+    reference it, and to their hypothesis-revisions and collects. The statement said only that
+    the delete removes the case. No node said whether the hypotheses go with the case, or
+    whether the delete is refused while any of them remains, and if so under what named refusal.
+  decided: Deleting a case that holds no case version also removes every hypothesis referencing
+    it, every hypothesis-revision of those hypotheses (released ones included) and every collect
+    those revisions hold. No refusal is added for remaining hypotheses. The rule's constrains
+    gains domain/knowledge/hypothesis and domain/knowledge/hypothesis-revision.
+  why: No operation removes a hypothesis. domain/knowledge/hypothesis declares only revise, and
+    a-hypothesis-is-revised-only-against-its-cases-draft refuses even that once the case holds no
+    draft. So a case emptied by discarding its draft keeps hypotheses that nothing can ever
+    remove. A refusal while any hypothesis references the case would leave exactly the stuck
+    case this delete exists for undeletable. Removing released revisions breaks no promise
+    anyone still relies on. A case with zero versions has no manifest that pins them, and no
+    investigation has ever pinned the case.
+- location: constraints/a-successful-case-deletion-answers-with-no-content.md
+  field: statement
+  unstated: No node states the HTTP status or the response body for an accepted delete of a case
+    that holds no case version. contracts/knowledge/case-lifecycle and domain/knowledge/case
+    declare delete, and the api contract class declares no responses.
+    rules/knowledge/a-case-holding-no-version-may-be-deleted states the delete's effect and its
+    HTTP 409 CaseHoldsVersionsError refusal only. scenarios/knowledge/a-case-holding-no-version-is-deleted
+    says only that the deletion is accepted. The intake (work/case-deletion-backend/intake/scope.md)
+    names the refusal's status and never the success's.
+  decided: HTTP 204 with no body, stated as a knowledge-scoped constraint over delete's accepted
+    branch alone.
+  why: An accepted delete ends the case itself, so nothing is left at the slug to send back. The
+    curator asked for that removal and nothing further, so the status alone is the whole answer
+    and no body is owed. This is the same answer the specification already gives for discard,
+    remove-concept, remove-connector and remove-capability.
 
 === domain/glossary/_context
 ---
@@ -13061,13 +13106,17 @@ The slug alone is that disclosure because it is the whole of the case's identity
 ---
 type: policy
 statement: >-
-  Delete, asked of a case that holds no case version, is accepted and removes the case;
-  asked of a case holding any version, draft or released, it is refused with an HTTP 409
-  response reporting a CaseHoldsVersionsError, whose message names the case slug and whose
-  details carry that slug and nothing else.
+  Delete, asked of a case that holds no case version, is accepted and removes the case
+  together with every hypothesis referencing it, every hypothesis-revision of those
+  hypotheses, released ones included, and every collect those revisions hold; asked of a
+  case holding any version, draft or released, it is refused with an HTTP 409 response
+  reporting a CaseHoldsVersionsError, whose message names the case slug and whose details
+  carry that slug and nothing else.
 constrains:
   - domain/knowledge/case
   - domain/knowledge/case-version
+  - domain/knowledge/hypothesis
+  - domain/knowledge/hypothesis-revision
 consistency: eventual
 ---
 
@@ -13078,6 +13127,8 @@ consistency: eventual
 Delete answers a case discard never reaches: `only-a-draft-case-version-may-be-discarded` and `a-case-version-number-is-never-reused` let a curator empty a case of its one draft while the case itself, its slug and its next_version counter, stand exactly as `domain/knowledge/case`'s own Description requires them to survive that. What they leave behind is an identity naming nothing — the state `a-case-holding-no-versions-is-told-explicitly` already requires this specification to say plainly rather than let an empty listing pass unremarked. Delete is the further act that ends that identity itself, where a curator or an operator judges it is not worth keeping.
 
 Once deleted, the case's slug names no case, and `a-case-is-created-by-the-first-create-draft-naming-its-slug` already answers a create-draft naming a slug no case holds by creating a new case under it — a deleted case's slug is claimed by a future case exactly as if the deleted one had never existed, with no rule of its own needed to say so. `a-slug-identifies-one-case` continues to hold: at any instant, at most one case answers to a slug, deleted or not.
+
+A hypothesis has no operation that removes it — `domain/knowledge/hypothesis` names only `revise`, and `a-hypothesis-is-revised-only-against-its-cases-draft` refuses even that once the case holds no draft — so a case emptied by discarding its one draft can still be named by hypotheses nothing else can ever take down. Delete is what takes them down with it: every hypothesis referencing the case, every hypothesis-revision of those hypotheses whether draft or released, and every collect a released revision still holds. A case with zero versions has no manifest pinning any of them, and the same argument that clears the case for deletion — no investigation has ever pinned it — clears its hypotheses too: nothing reads a released revision except through a manifest entry, and a case with no version has none.
 
 === rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
 ---

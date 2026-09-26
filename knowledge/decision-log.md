@@ -6179,3 +6179,35 @@ entries:
   decided: delete is added alongside the version-level acts already published there.
   why: case-lifecycle is the one surface a curator reaches every other case act through; withholding
     delete from it would leave the newly-decided act with no published entrance.
+- location: rules/knowledge/a-case-holding-no-version-may-be-deleted.md
+  field: statement
+  unstated: What deleting a case that holds no case version does to the hypotheses that still
+    reference it, and to their hypothesis-revisions and collects. The statement said only that
+    the delete removes the case. No node said whether the hypotheses go with the case, or
+    whether the delete is refused while any of them remains, and if so under what named refusal.
+  decided: Deleting a case that holds no case version also removes every hypothesis referencing
+    it, every hypothesis-revision of those hypotheses (released ones included) and every collect
+    those revisions hold. No refusal is added for remaining hypotheses. The rule's constrains
+    gains domain/knowledge/hypothesis and domain/knowledge/hypothesis-revision.
+  why: No operation removes a hypothesis. domain/knowledge/hypothesis declares only revise, and
+    a-hypothesis-is-revised-only-against-its-cases-draft refuses even that once the case holds no
+    draft. So a case emptied by discarding its draft keeps hypotheses that nothing can ever
+    remove. A refusal while any hypothesis references the case would leave exactly the stuck
+    case this delete exists for undeletable. Removing released revisions breaks no promise
+    anyone still relies on. A case with zero versions has no manifest that pins them, and no
+    investigation has ever pinned the case.
+- location: constraints/a-successful-case-deletion-answers-with-no-content.md
+  field: statement
+  unstated: No node states the HTTP status or the response body for an accepted delete of a case
+    that holds no case version. contracts/knowledge/case-lifecycle and domain/knowledge/case
+    declare delete, and the api contract class declares no responses.
+    rules/knowledge/a-case-holding-no-version-may-be-deleted states the delete's effect and its
+    HTTP 409 CaseHoldsVersionsError refusal only. scenarios/knowledge/a-case-holding-no-version-is-deleted
+    says only that the deletion is accepted. The intake (work/case-deletion-backend/intake/scope.md)
+    names the refusal's status and never the success's.
+  decided: HTTP 204 with no body, stated as a knowledge-scoped constraint over delete's accepted
+    branch alone.
+  why: An accepted delete ends the case itself, so nothing is left at the slug to send back. The
+    curator asked for that removal and nothing further, so the status alone is the whole answer
+    and no body is owed. This is the same answer the specification already gives for discard,
+    remove-concept, remove-connector and remove-capability.

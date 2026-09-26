@@ -1,13 +1,17 @@
 ---
 type: policy
 statement: >-
-  Delete, asked of a case that holds no case version, is accepted and removes the case;
-  asked of a case holding any version, draft or released, it is refused with an HTTP 409
-  response reporting a CaseHoldsVersionsError, whose message names the case slug and whose
-  details carry that slug and nothing else.
+  Delete, asked of a case that holds no case version, is accepted and removes the case
+  together with every hypothesis referencing it, every hypothesis-revision of those
+  hypotheses, released ones included, and every collect those revisions hold; asked of a
+  case holding any version, draft or released, it is refused with an HTTP 409 response
+  reporting a CaseHoldsVersionsError, whose message names the case slug and whose details
+  carry that slug and nothing else.
 constrains:
   - domain/knowledge/case
   - domain/knowledge/case-version
+  - domain/knowledge/hypothesis
+  - domain/knowledge/hypothesis-revision
 consistency: eventual
 ---
 
@@ -18,3 +22,5 @@ consistency: eventual
 Delete answers a case discard never reaches: `only-a-draft-case-version-may-be-discarded` and `a-case-version-number-is-never-reused` let a curator empty a case of its one draft while the case itself, its slug and its next_version counter, stand exactly as `domain/knowledge/case`'s own Description requires them to survive that. What they leave behind is an identity naming nothing — the state `a-case-holding-no-versions-is-told-explicitly` already requires this specification to say plainly rather than let an empty listing pass unremarked. Delete is the further act that ends that identity itself, where a curator or an operator judges it is not worth keeping.
 
 Once deleted, the case's slug names no case, and `a-case-is-created-by-the-first-create-draft-naming-its-slug` already answers a create-draft naming a slug no case holds by creating a new case under it — a deleted case's slug is claimed by a future case exactly as if the deleted one had never existed, with no rule of its own needed to say so. `a-slug-identifies-one-case` continues to hold: at any instant, at most one case answers to a slug, deleted or not.
+
+A hypothesis has no operation that removes it — `domain/knowledge/hypothesis` names only `revise`, and `a-hypothesis-is-revised-only-against-its-cases-draft` refuses even that once the case holds no draft — so a case emptied by discarding its one draft can still be named by hypotheses nothing else can ever take down. Delete is what takes them down with it: every hypothesis referencing the case, every hypothesis-revision of those hypotheses whether draft or released, and every collect a released revision still holds. A case with zero versions has no manifest pinning any of them, and the same argument that clears the case for deletion — no investigation has ever pinned it — clears its hypotheses too: nothing reads a released revision except through a manifest entry, and a case with no version has none.

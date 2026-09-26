@@ -34,6 +34,7 @@ Derived by spec.py from the specification files; never edited.
 - a-domain-refusals-message-is-written-in-brazilian-portuguese (system)
 - a-malformed-request-is-refused-with-a-validation-error (system)
 - a-successful-capability-removal-answers-with-no-content (integration)
+- a-successful-case-deletion-answers-with-no-content (knowledge)
 - a-successful-case-version-discard-answers-with-no-content (knowledge)
 - a-successful-case-version-own-record-read-answers-with-http-200 (knowledge)
 - a-successful-concept-removal-answers-with-no-content (glossary)
