@@ -32,3 +32,24 @@ warranted, is a separate deliver-scope run under case-deletion-frontend).
   42 bindings on status-map.ts stale (this task restamped it under different nodes than earlier
   binds) — left for this initiative's own /review-change to answer, not a standalone /reconcile.
   Commit: de183c21 "deliver-scope case-deletion-backend: deliver case-holds-versions-refusal".
+
+- Invoked /implement-task over task/case-deletion/store-deletes-a-versionless-case, target
+  backend, slug case-deletion-backend. ICaseStore.delete + RelationalCaseStore.delete
+  implemented; five pre-existing test doubles fixed by the test-authoring role after an
+  interface-widening compile break. Suite caught a real FK violation (cause: code) from
+  PostgreSQL's own released-collects protection rule (migration 0021) silently defeating the
+  cascade delete; fixed with new migration 0026 narrowing that rule for a case holding zero
+  case_versions rows. Re-running the suite then surfaced a genuine regression in
+  src/__tests__/integration/persistence/refuse-altering-a-released-revision-schema.spec.ts,
+  owned by the closed initiative hipotese-release-proprio
+  (task/hypothesis-revision-own-state/refuse-altering-a-released-revision) — that test's own
+  fixture asserts released-revision collects always survive a DELETE, without ever giving the
+  case a case_versions row, which is exactly the shape this initiative's rule now carves an
+  exception for. Diagnosed cause: test, confirmed no overlap between this delivery's files and
+  the owning task's files. Per /implement-task's own protocol this is not this delivery's test
+  to edit; the fix (a proof-only re-delivery over the owning task) is the human's to invoke, and
+  is not directly available since that initiative is closed — it needs a corrective increment
+  instead. STOPPED HERE: committed the implementation without a proof record (build pins clean,
+  suite does not), and handed the situation back to the human rather than improvising past it.
+  Commit: 8f3a506a "deliver-scope case-deletion-backend: deliver store-deletes-a-versionless-case
+  (implemented, unproven)".
