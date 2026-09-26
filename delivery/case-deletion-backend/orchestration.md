@@ -62,3 +62,14 @@ warranted, is a separate deliver-scope run under case-deletion-frontend).
   test's fixture and added a case proving the new exception directly. Suite passed
   (run-4). Proof written and validated; delivery.json now holds 2/3 tasks with implementation+proof.
   Commit: 3cf6b13c "deliver-scope case-deletion-backend: prove store-deletes-a-versionless-case".
+
+- Invoked /implement-task over task/case-deletion/delete-case-over-case-lifecycle, target
+  backend, slug case-deletion-backend. DELETE /v1/cases/:slug wired through the whole
+  operation/controller/route/dto stack into CaseLifecycleOperations and build-app.ts. Two build
+  attempts fixed pre-existing test-double compile breaks (test-authoring role). Suite: one
+  unrelated flake retried clean; two genuine test-fixture bugs (an accidental "case" substring in
+  a test slug; a page-limited listing assertion against the shared long-lived test DB) diagnosed
+  cause: test and fixed by the test-authoring role. Suite passed (run-3). All three tasks of this
+  initiative now hold implementation + proof; delivery.json: 3/3 tasks, 0 criteria unmet, 0
+  unproven. Commit: 28d7ef13 "deliver-scope case-deletion-backend: deliver+prove
+  delete-case-over-case-lifecycle".
