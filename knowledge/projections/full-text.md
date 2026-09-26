@@ -7052,6 +7052,33 @@ entries:
     curator asked for that removal and nothing further, so the status alone is the whole answer
     and no body is owed. This is the same answer the specification already gives for discard,
     remove-concept, remove-connector and remove-capability.
+- location: rules/knowledge/a-released-revisions-collect-removal-is-accepted-with-no-effect.md
+  field: statement
+  unstated: This rule and rules/knowledge/a-case-holding-no-version-may-be-deleted decide one
+    concrete case differently. A case holds a released hypothesis-revision with a collect, and
+    the case holds no case-version at all. This rule's own statement, unqualified, says removing
+    that collect is "accepted and left with no effect" -- always. The delete rule's own statement
+    says deleting that case removes it "together with ... every collect those revisions hold".
+    Read literally, the first rule leaves the collect standing and the second rule removes it,
+    for the identical row. This was caught only after the delete rule's own decision had already
+    landed in this log and a migration had been built against it (case-deletion-backend's own
+    migrations/0026-a-versionless-case-may-delete-released-collects.sql), because this rule sat
+    outside the candidate set the earlier unstated-fact-decider was handed -- a cut problem this
+    entry answers as the cross-check step, not a fresh silence.
+  decided: The no-effect answer holds only while the revision's own case still holds at least one
+    case-version. Once the case holds none, a-case-holding-no-version-may-be-deleted's own delete
+    removes the collect along with everything else that rule names; no other act reaches a
+    versionless case's collects, so this rule's ordinary reach -- revise, discard, and every act
+    the material ever described it for -- is unchanged.
+  why: a-case-holding-no-version-may-be-deleted's own Description already reasons that nothing
+    reads a released revision except through a manifest entry, and a case with no version has
+    none -- the same argument reaches a collect, which is read through that same revision's own
+    manifest entry. The promise this rule states is a promise made to a case that can still serve
+    the revision; once no case-version exists to serve it through, the promise has no reader left
+    to keep it for, and the delete rule's own act is what was already decided to end the identity
+    at that point. Keeping the no-effect answer unconditional would leave the delete rule unable
+    to do what it already states, for exactly the data shape the health review that started this
+    initiative was found holding.
 
 === domain/glossary/_context
 ---
@@ -14712,9 +14739,12 @@ What an attempt to remove one of the revision's own collects meets instead is `a
 ---
 type: invariant
 statement: >-
-  An attempt to remove one of a-released-hypothesis-revision-is-never-altered's collects is not
-  refused with an error; it is accepted and left with no effect, so every collect this revision
-  held before the attempt still reads back unchanged after it.
+  An attempt to remove one of a-released-hypothesis-revision-is-never-altered's collects, where
+  the revision's own case still holds at least one case-version, is not refused with an error; it
+  is accepted and left with no effect, so every collect the revision held before the attempt
+  still reads back unchanged after it — except where a-case-holding-no-version-may-be-deleted's
+  own delete is the attempt, which removes the collect along with everything else that rule names
+  once the case holds no case-version at all.
 constrains:
   - domain/knowledge/hypothesis-revision
 ---
@@ -14722,6 +14752,8 @@ constrains:
 ## Description
 
 A revision's own content is what its own release promises to keep answering forever, and what every case version's manifest that comes to reference it then relies on in turn — a collect included, so a removal attempted against one leaves every collect the revision held unchanged, exactly as `a-released-hypothesis-revision-is-never-altered` leaves the criterion, the resolution and the state.
+
+That promise is to a case a version's manifest can still name, and it ends where the naming does: `a-case-holding-no-version-may-be-deleted`'s own Description already draws this line for the revision as a whole ("nothing reads a released revision except through a manifest entry, and a case with no version has none"), and a collect is read through the same manifest entry the revision itself is. Once the case holds no case-version, this rule's own no-effect answer no longer applies to the one act that rule names — the case's own delete — because that act is deciding a different, later question: not whether a revision the case can still serve keeps its content, but whether an identity nothing can serve any more is worth keeping at all.
 
 === rules/knowledge/a-revise-answers-the-revision-number-it-saved
 ---
