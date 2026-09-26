@@ -174,50 +174,43 @@
       "from": "task/case-deletion-surface/case-delete-refusal-presentation",
       "to": "rules/knowledge/a-case-deletion-surface-states-which-refusal-answered-its-delete",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:8aad6bc9ef0272e75145eabf96bf270656bce63c613f0fef9fabd5835c9c587b"
+      "at": "implements[0]"
     },
     {
       "from": "task/case-deletion-surface/case-delete-refusal-presentation",
       "to": "rules/knowledge/a-case-deletion-refusal-the-surface-cannot-name-is-told-as-an-unrecognised-failure",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:219369a817f8f3131c34b5248527a27444328f63e5384b5b7cf3134cc5e7b79c"
+      "at": "implements[1]"
     },
     {
       "from": "task/case-deletion-surface/case-delete-refusal-presentation",
       "to": "rules/knowledge/a-case-holding-no-version-may-be-deleted",
       "kind": "implements",
-      "at": "implements[2]",
-      "digest": "sha256:a778266bd7d28b2174b5f9c8220e182913f1b0c59549573adfe8b0ed5225c291"
+      "at": "implements[2]"
     },
     {
       "from": "task/case-deletion-surface/case-delete-refusal-presentation",
       "to": "rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused",
       "kind": "implements",
-      "at": "implements[3]",
-      "digest": "sha256:dafe2beaea64e45544258706b58cb93136b1395c74f636e5e0ac6ba987f232d6"
+      "at": "implements[3]"
     },
     {
       "from": "task/case-deletion-surface/case-delete-refusal-presentation",
       "to": "contracts/knowledge/case-lifecycle",
       "kind": "implements",
-      "at": "implements[4]",
-      "digest": "sha256:af4d5e25ab4eeeec77966fbdf4d758ed68fd4186273b72782ed229a18a4d1201"
+      "at": "implements[4]"
     },
     {
       "from": "task/case-deletion-surface/case-delete-refusal-presentation",
       "to": "contracts/knowledge/case-query",
       "kind": "implements",
-      "at": "implements[5]",
-      "digest": "sha256:97874bda7c1b2ec6518b299bd669e3bac93b3628f2eddbd4bac95a86fe7eec26"
+      "at": "implements[5]"
     },
     {
       "from": "task/case-deletion-surface/case-delete-refusal-presentation",
       "to": "domain/knowledge/case",
       "kind": "implements",
-      "at": "implements[6]",
-      "digest": "sha256:769751f90dcf33c0a2dbd1aa0fd92351584463ffc8a76b1e50d91eb9d4132780"
+      "at": "implements[6]"
     },
     {
       "from": "task/case-deletion-surface/case-detail-delete-control",
@@ -229,120 +222,103 @@
       "from": "task/case-deletion-surface/case-detail-delete-control",
       "to": "rules/knowledge/a-case-holding-no-version-may-be-deleted",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:a778266bd7d28b2174b5f9c8220e182913f1b0c59549573adfe8b0ed5225c291"
+      "at": "implements[0]"
     },
     {
       "from": "task/case-deletion-surface/case-detail-delete-control",
       "to": "constraints/a-successful-case-deletion-answers-with-no-content",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:7db4b8384a92fb0ea55c99b1c18263c24b1ab0d1fa855aaf7df6297f41388311"
+      "at": "implements[1]"
     },
     {
       "from": "task/case-deletion-surface/case-detail-delete-control",
       "to": "scenarios/knowledge/a-case-holding-no-version-is-deleted",
       "kind": "implements",
-      "at": "implements[2]",
-      "digest": "sha256:1c23060527070fcdba3d497afd10b1d4e617f26910eb1d962ac6456cfc6360b1"
+      "at": "implements[2]"
     },
     {
       "from": "task/case-deletion-surface/case-detail-delete-control",
       "to": "contracts/knowledge/case-lifecycle",
       "kind": "implements",
-      "at": "implements[3]",
-      "digest": "sha256:af4d5e25ab4eeeec77966fbdf4d758ed68fd4186273b72782ed229a18a4d1201"
+      "at": "implements[3]"
     },
     {
       "from": "task/case-deletion-surface/case-detail-delete-control",
       "to": "contracts/knowledge/case-query",
       "kind": "implements",
-      "at": "implements[4]",
-      "digest": "sha256:97874bda7c1b2ec6518b299bd669e3bac93b3628f2eddbd4bac95a86fe7eec26"
+      "at": "implements[4]"
     },
     {
       "from": "task/case-deletion-surface/case-detail-delete-control",
       "to": "domain/knowledge/case",
       "kind": "implements",
-      "at": "implements[5]",
-      "digest": "sha256:769751f90dcf33c0a2dbd1aa0fd92351584463ffc8a76b1e50d91eb9d4132780"
+      "at": "implements[5]"
     },
     {
       "from": "task/case-deletion-surface/case-detail-delete-control",
       "to": "rules/knowledge/a-case-deletion-takes-a-further-explicit-act-reproducing-the-cases-own-slug",
       "kind": "implements",
-      "at": "implements[6]",
-      "digest": "sha256:5cd2affa0b0dc3b3ad9ec74bbe40efcbf6b804c37ea301b24c5df28c6b076307"
+      "at": "implements[6]"
     },
     {
       "from": "task/case-deletion-surface/case-detail-delete-control",
       "to": "rules/knowledge/a-successful-case-deletion-lands-on-the-listing-of-every-case",
       "kind": "implements",
-      "at": "implements[7]",
-      "digest": "sha256:dd04c371c321f2f78a218e44ee8273ca93b970e8f103845adedbc0bc59f29e23"
+      "at": "implements[7]"
     },
     {
       "from": "task/case-deletion-surface/case-detail-delete-control",
       "to": "rules/knowledge/a-case-deletion-surface-states-which-refusal-answered-its-delete",
       "kind": "implements",
-      "at": "implements[8]",
-      "digest": "sha256:8aad6bc9ef0272e75145eabf96bf270656bce63c613f0fef9fabd5835c9c587b"
+      "at": "implements[8]"
     },
     {
       "from": "task/case-deletion-surface/case-holds-versions-error-state",
       "to": "rules/knowledge/a-case-deletion-surface-states-which-refusal-answered-its-delete",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:8aad6bc9ef0272e75145eabf96bf270656bce63c613f0fef9fabd5835c9c587b"
+      "at": "implements[0]"
     },
     {
       "from": "task/case-deletion-surface/case-holds-versions-error-state",
       "to": "rules/knowledge/a-case-deletion-refusal-the-surface-cannot-name-is-told-as-an-unrecognised-failure",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:219369a817f8f3131c34b5248527a27444328f63e5384b5b7cf3134cc5e7b79c"
+      "at": "implements[1]"
     },
     {
       "from": "task/case-deletion-surface/delete-case-mutation",
       "to": "contracts/knowledge/case-lifecycle",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:af4d5e25ab4eeeec77966fbdf4d758ed68fd4186273b72782ed229a18a4d1201"
+      "at": "implements[0]"
     },
     {
       "from": "task/case-deletion-surface/delete-case-mutation",
       "to": "domain/knowledge/case",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:769751f90dcf33c0a2dbd1aa0fd92351584463ffc8a76b1e50d91eb9d4132780"
+      "at": "implements[1]"
     },
     {
       "from": "task/case-deletion-surface/delete-case-mutation",
       "to": "constraints/a-successful-case-deletion-answers-with-no-content",
       "kind": "implements",
-      "at": "implements[2]",
-      "digest": "sha256:7db4b8384a92fb0ea55c99b1c18263c24b1ab0d1fa855aaf7df6297f41388311"
+      "at": "implements[2]"
     },
     {
       "from": "task/case-deletion-surface/delete-case-mutation",
       "to": "rules/knowledge/a-case-holding-no-version-may-be-deleted",
       "kind": "implements",
-      "at": "implements[3]",
-      "digest": "sha256:a778266bd7d28b2174b5f9c8220e182913f1b0c59549573adfe8b0ed5225c291"
+      "at": "implements[3]"
     },
     {
       "from": "task/case-deletion-surface/delete-case-mutation",
       "to": "rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused",
       "kind": "implements",
-      "at": "implements[4]",
-      "digest": "sha256:dafe2beaea64e45544258706b58cb93136b1395c74f636e5e0ac6ba987f232d6"
+      "at": "implements[4]"
     },
     {
       "from": "task/case-deletion-surface/delete-case-mutation",
       "to": "scenarios/knowledge/a-case-holding-no-version-is-deleted",
       "kind": "implements",
-      "at": "implements[5]",
-      "digest": "sha256:1c23060527070fcdba3d497afd10b1d4e617f26910eb1d962ac6456cfc6360b1"
+      "at": "implements[5]"
     }
   ]
 }
