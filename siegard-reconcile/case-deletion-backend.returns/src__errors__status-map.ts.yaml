@@ -1,0 +1,225 @@
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: >-
+      the fallback return of statusForError
+    evidence: |-
+      return undefined;
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: the CapabilityIdentityNotFoundError entry of STATUS_BY_ERROR_CLASS, line 55
+    evidence: |-
+      [CapabilityIdentityNotFoundError, 404],
+  - node: rules/glossary/a-concept-declares-its-description
+    held_at: the ConceptDescriptionRequiredError entry, line 86
+    evidence: |-
+      [ConceptDescriptionRequiredError, 422],
+  - node: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused
+    held_at: the VocabularyTermNotHeldError and ConceptNotHeldError entries, lines 51-52
+    evidence: |-
+      [ConceptNotHeldError, 404],
+      [VocabularyTermNotHeldError, 404],
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: the ConceptInUseError entry, line 66
+    evidence: |-
+      [ConceptInUseError, 409],
+  - node: rules/glossary/a-vocabulary-holds-each-name-once
+    held_at: the DuplicateGlossaryNameError entry, line 91
+    evidence: |-
+      [DuplicateGlossaryNameError, 500],
+  - node: rules/integration/a-capability-input-schema-holds-a-well-formed-object
+    held_at: the MalformedCapabilityInputSchemaError entry, line 77
+    evidence: |-
+      [MalformedCapabilityInputSchemaError, 422],
+  - node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+    held_at: the ConnectorConfigurationNotWellFormedError and IncompleteConnectorConfigurationError entries
+    evidence: |-
+      [ConnectorConfigurationNotWellFormedError, 422],
+      [IncompleteConnectorConfigurationError, 422],
+  - node: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability
+    held_at: the CapabilityNotRegisteredForTestError, CapabilityConnectorMismatchError entries
+    evidence: |-
+      [CapabilityNotRegisteredForTestError, 404],
+      [CapabilityConnectorMismatchError, 409],
+  - node: rules/integration/a-connector-configuration-names-its-connector
+    held_at: the IncompleteConnectorConfigurationError entry
+    evidence: |-
+      [IncompleteConnectorConfigurationError, 422],
+  - node: rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
+    held_at: the ConnectorConfigurationNotFoundError entry, line 53
+    evidence: |-
+      [ConnectorConfigurationNotFoundError, 404],
+  - node: contracts/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: |-
+      [ConnectorConfigurationNotFoundError, 404],
+      [ConnectorConfigurationNotWellFormedError, 422],
+  - node: contracts/investigation/diagnosis
+    held_at: nowhere
+    evidence: |-
+      [SubjectDoesNotCoverCaseInputsError, 422],
+      [HypothesisNotInManifestError, 404],
+  - node: contracts/knowledge/case-lifecycle
+    held_at: >-
+      the CaseHoldsVersionsError, CaseAlreadyHasDraftError, CaseHoldsNoDraftError and
+      CaseVersionNotDraftError/CaseVersionNotDraftAtReleaseError entries, one per operation this
+      contract publishes
+    evidence: |-
+      [CaseHoldsVersionsError, 409],
+      [CaseAlreadyHasDraftError, 409],
+      [CaseHoldsNoDraftError, 409],
+  - node: rules/integration/a-connector-placeholder-is-declared-by-its-capability
+    held_at: nowhere for this node's own refusal condition
+    evidence: |-
+      [ConnectorPlaceholderOutsideInputSchemaError, 422],
+  - node: rules/integration/a-draft-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: the OpenApiDocumentNotFetchedError and OpenApiDocumentNotReadableError entries
+    evidence: |-
+      [OpenApiDocumentNotFetchedError, 422],
+      [OpenApiDocumentNotReadableError, 422],
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: nowhere
+    evidence: |-
+      [OpenApiDocumentNotReadableError, 422],
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+    held_at: nowhere
+    evidence: |-
+      [OpenApiDocumentNotReadableError, 422],
+  - node: rules/integration/a-registered-capability-cited-by-evidence-is-never-removed
+    held_at: the CapabilityCitedByEvidenceError entry
+    evidence: |-
+      [CapabilityCitedByEvidenceError, 409],
+  - node: rules/integration/an-openapi-document-declaring-no-such-operation-refuses-the-draft
+    held_at: the OpenApiOperationNotFoundError entry
+    evidence: |-
+      [OpenApiOperationNotFoundError, 422],
+  - node: rules/integration/an-operations-read-refusal-distinguishes-a-fetch-failure-from-an-unreadable-document
+    held_at: the OpenApiDocumentNotFetchedError and OpenApiDocumentNotReadableError entries
+    evidence: |-
+      [OpenApiDocumentNotFetchedError, 422],
+      [OpenApiDocumentNotReadableError, 422],
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read
+    held_at: nowhere
+    evidence: |-
+      [OpenApiDocumentNotFetchedError, 422],
+  - node: rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes
+    held_at: the SubjectDoesNotCoverCaseInputsError entry
+    evidence: |-
+      [SubjectDoesNotCoverCaseInputsError, 422],
+  - node: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
+    held_at: the HypothesisNotInManifestError entry
+    evidence: |-
+      [HypothesisNotInManifestError, 404],
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: the SubjectCarriesNoAttributeError entry
+    evidence: |-
+      [SubjectCarriesNoAttributeError, 422],
+  - node: rules/investigation/no-stage-aborts-on-its-deadline
+    held_at: the InvestigationWriteDeadlineExceededError entry
+    evidence: |-
+      [InvestigationWriteDeadlineExceededError, 500],
+  - node: rules/knowledge/a-case-has-at-least-one-hypothesis
+    held_at: the ManifestWouldHoldNoHypothesisError entry
+    evidence: |-
+      [ManifestWouldHoldNoHypothesisError, 422],
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: the CaseHoldsVersionsError entry, line 69
+    evidence: |-
+      [CaseHoldsVersionsError, 409],
+  - node: rules/knowledge/a-case-version-failing-validation-at-a-read-is-refused-by-name
+    held_at: the CaseVersionNotValidError entry
+    evidence: |-
+      [CaseVersionNotValidError, 409],
+  - node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+    held_at: the ConceptRefusesSubjectTypeError entry
+    evidence: |-
+      [ConceptRefusesSubjectTypeError, 422],
+  - node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+    held_at: the HypothesisRevisionCollectsNoConceptError entry
+    evidence: |-
+      [HypothesisRevisionCollectsNoConceptError, 422],
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: the CaseHoldsNoDraftError entry
+    evidence: |-
+      [CaseHoldsNoDraftError, 409],
+  - node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+    held_at: the ManifestPositionOccupiedError entry
+    evidence: |-
+      [ManifestPositionOccupiedError, 409],
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: the HypothesisRevisionNotDraftAtReleaseError entry
+    evidence: |-
+      [HypothesisRevisionNotDraftAtReleaseError, 409],
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: the ReleasedHypothesisRevisionNotAlterableError entry
+    evidence: |-
+      [ReleasedHypothesisRevisionNotAlterableError, 409],
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: the ConceptNotInGlossaryError entry
+    evidence: |-
+      [ConceptNotInGlossaryError, 404],
+  - node: scenarios/glossary/a-concept-with-no-description-is-refused
+    held_at: the ConceptDescriptionRequiredError entry
+    evidence: |-
+      [ConceptDescriptionRequiredError, 422],
+  - node: scenarios/investigation/a-diagnose-refuses-a-subject-missing-a-required-attribute
+    held_at: nowhere directly
+    evidence: |-
+      [SubjectDoesNotCoverCaseInputsError, 422],
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: nowhere
+    evidence: |-
+      export function statusForError(error: unknown): number | undefined {
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: nowhere
+    evidence: |-
+      export function statusForError(error: unknown): number | undefined {
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: the whole import block — every import is a domain error class
+    evidence: |-
+      import { CaseHoldsVersionsError } from './case-holds-versions.error.js';
+  - node: domain/knowledge/case
+    held_at: nowhere
+    evidence: |-
+      [CaseNotFoundError, 404],
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: |-
+      [CaseVersionNotValidError, 409],
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: |-
+      [HypothesisNotInManifestError, 404],
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: |-
+      [ReleasedHypothesisRevisionNotAlterableError, 409],
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: the CaseNotFoundError entry, line 49
+    evidence: |-
+      [CaseNotFoundError, 404],
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      export function statusForError(error: unknown): number | undefined {
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: nowhere
+    evidence: |-
+      [CaseHoldsVersionsError, 409],
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: nowhere
+    evidence: |-
+      export function statusForError(error: unknown): number | undefined {
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: |-
+      export function statusForError(error: unknown): number | undefined {
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: |-
+      if (!(error instanceof Error)) {
+        return undefined;
+      }
+looked_past: >-
+  STATUS_BY_ERROR_CLASS also maps many pre-existing errors unrelated to this batch's trace; their
+  conformance is another delegation's to answer for.
+candidates_opened:
+  - rules/integration/a-connector-placeholder-refusal-reports-every-orphaned-placeholder

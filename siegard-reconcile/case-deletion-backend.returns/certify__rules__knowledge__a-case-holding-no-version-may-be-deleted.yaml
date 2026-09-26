@@ -1,0 +1,32 @@
+certified:
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    state: partial
+    tests:
+      - file: src/__tests__/integration/http/delete-case.routes.spec.ts
+        name: >-
+          accepts an HTTP delete of a case holding no version — removing it together with every hypothesis and every hypothesis-revision (released included) and collect it held — and refuses that same HTTP delete, through 409 reporting CaseHoldsVersionsError whose message names the case slug in Brazilian Portuguese and whose details carry exactly that slug and no other field, for a case holding a draft version and, identically, for one holding a released version, leaving each still held
+      - file: src/__tests__/integration/http/delete-case.routes.spec.ts
+        name: >-
+          given a case whose only draft version was discarded so it currently holds no version at all, when a curator deletes that case through this HTTP route, the deletion is accepted with 204 and an empty body, the case no longer appears in the case listing, and a later create-draft naming that same slug creates a new case under it as though the deleted one had never existed — a version numbered 1, that case's next_version left standing at 2, and the listing holding exactly one entry for it
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: >-
+          accepts deleting a case holding no version — removing it together with every hypothesis, every hypothesis-revision (draft and released) and every collect those revisions held — and refuses deleting a case holding a draft or a released version through CaseHoldsVersionsError naming that slug, leaving it and everything it holds untouched
+    why: >-
+      The accept half is exercised. A delete of a case with no version answers 204, and the case,
+      its hypotheses, its hypothesis-revisions (released in the HTTP test, released and draft in the
+      store test) and the collect the released revision held are all read back as gone. The refusal
+      half is exercised for a case holding a draft and for a case holding a released version: 409,
+      error code CaseHoldsVersionsError, details equal to exactly { slug }, and the case still held.
+      One part goes unexercised: that the refusal's message names the case slug. The HTTP test
+      checks the message only against /\bcaso\b/ and against the absence of /\bcase\b/i. Nothing in
+      the set checks that the message contains the slug. The store test checks the error's
+      context, not its message. A refusal whose message left the slug out would pass every named
+      test, even though the HTTP test's own name says the message names the slug. Separately, as a
+      finding for a reader to route and not as extra coverage: the HTTP test's message assertions
+      (the Portuguese word "caso" present, the English "case" absent) check a message language this
+      node does not state.
+    remainder: testable
+    remainder_why: >-
+      One input against one result, for each refusal: an HTTP DELETE of a case holding a draft
+      version, and one of a case holding a released version, each asserting that
+      body.error.message contains that case's slug.

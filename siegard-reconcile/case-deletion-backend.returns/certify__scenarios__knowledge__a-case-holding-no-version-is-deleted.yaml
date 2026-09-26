@@ -1,0 +1,10 @@
+certified:
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    state: covered
+    tests:
+      - file: src/__tests__/integration/http/delete-case.routes.spec.ts
+        name: >-
+          given a case whose only draft version was discarded so it currently holds no version at all, when a curator deletes that case through this HTTP route, the deletion is accepted with 204 and an empty body, the case no longer appears in the case listing, and a later create-draft naming that same slug creates a new case under it as though the deleted one had never existed — a version numbered 1, that case's next_version left standing at 2, and the listing holding exactly one entry for it
+      - file: src/__tests__/integration/http/delete-case.routes.spec.ts
+        name: >-
+          accepts an HTTP delete of a case holding no version — removing it together with every hypothesis and every hypothesis-revision (released included) and collect it held — and refuses that same HTTP delete, through 409 reporting CaseHoldsVersionsError whose message names the case slug in Brazilian Portuguese and whose details carry exactly that slug and no other field, for a case holding a draft version and, identically, for one holding a released version, leaving each still held

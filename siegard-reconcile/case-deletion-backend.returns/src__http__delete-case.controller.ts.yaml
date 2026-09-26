@@ -1,0 +1,77 @@
+read:
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: nowhere
+    evidence: >-
+      await dependencies.delete(params.slug);
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: nowhere
+    evidence: >-
+      await dependencies.delete(params.slug);
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: nowhere
+    evidence: >-
+      await dependencies.delete(params.slug);
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: >-
+      import type { CaseLifecycleOperations } from '../factories/case-lifecycle.factory.js';
+      import type { DeleteCaseParamsDto } from './dto/delete-case.dto.js';
+  - node: domain/knowledge/case
+    held_at: nowhere
+    evidence: >-
+      export async function handleDeleteCaseRequest(dependencies: DeleteCaseControllerDependencies, params: DeleteCaseParamsDto): Promise<void> {
+        await dependencies.delete(params.slug);
+      }
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: >-
+      export async function handleDeleteCaseRequest(dependencies: DeleteCaseControllerDependencies, params: DeleteCaseParamsDto): Promise<void> {
+        await dependencies.delete(params.slug);
+      }
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: >-
+      export async function handleDeleteCaseRequest(dependencies: DeleteCaseControllerDependencies, params: DeleteCaseParamsDto): Promise<void> {
+        await dependencies.delete(params.slug);
+      }
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: >-
+      export async function handleDeleteCaseRequest(dependencies: DeleteCaseControllerDependencies, params: DeleteCaseParamsDto): Promise<void> {
+        await dependencies.delete(params.slug);
+      }
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: nowhere
+    evidence: >-
+      await dependencies.delete(params.slug);
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      export async function handleDeleteCaseRequest(dependencies: DeleteCaseControllerDependencies, params: DeleteCaseParamsDto): Promise<void> {
+        await dependencies.delete(params.slug);
+      }
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: nowhere
+    evidence: >-
+      await dependencies.delete(params.slug);
+  - node: contracts/knowledge/case-lifecycle
+    held_at: >-
+      the delegation call, line 9
+    evidence: >-
+      await dependencies.delete(params.slug);
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: nowhere
+    evidence: >-
+      export async function handleDeleteCaseRequest(dependencies: DeleteCaseControllerDependencies, params: DeleteCaseParamsDto): Promise<void> {
+        await dependencies.delete(params.slug);
+      }
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: >-
+      await dependencies.delete(params.slug);
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      export async function handleDeleteCaseRequest(dependencies: DeleteCaseControllerDependencies, params: DeleteCaseParamsDto): Promise<void> {
+        await dependencies.delete(params.slug);
+      }

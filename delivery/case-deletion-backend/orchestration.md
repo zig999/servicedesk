@@ -73,3 +73,40 @@ warranted, is a separate deliver-scope run under case-deletion-frontend).
   initiative now hold implementation + proof; delivery.json: 3/3 tasks, 0 criteria unmet, 0
   unproven. Commit: 28d7ef13 "deliver-scope case-deletion-backend: deliver+prove
   delete-case-over-case-lifecycle".
+
+- Invoked /review-change over the 3 delivered tasks, target backend, slug case-deletion-backend,
+  reviewed set: the 23 files the 3 tasks' implementation/proof records wrote, plus
+  src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts (named by
+  delete-case-over-case-lifecycle's proof as demonstrating
+  constraints/the-domain-depends-on-no-infrastructure). Captured a clean whole-suite run at
+  run/case-deletion-backend (install, typecheck, lint, secret-scan, unit, full suite — all
+  green), so the failures pass has nothing to diagnose. Staged the conformance pass via
+  trace.py --stage --review over the 23 files plus 3 certifications (rules/knowledge/a-case-holding-no-version-may-be-deleted,
+  scenarios/knowledge/a-case-holding-no-version-is-deleted, constraints/the-domain-depends-on-no-infrastructure);
+  delegated 23 specification-conformance-reviewer passes (one per file), 1 standard-conformance-reviewer
+  pass, 3 coverage-auditor certifications and 1 coverage-auditor pass over the 3 tasks' 28
+  criteria — batched across the 20-concurrent-subagent ceiling in several waves across this
+  session (interrupted once by a context compaction; resumed by re-checking which returns were
+  already saved and re-launching only what had not completed).
+  Findings: conformance pass found 6 (2 over-asserted test wording in
+  case-holds-versions.error.spec.ts beyond what the specification states; 2 against
+  case-query.service.spec.ts — a pre-existing English-language coherence-violation message and
+  an English domain noun, both contradicting fixed-vocabulary/Portuguese-message constraints,
+  pre-existing and not introduced by this delivery; 2 against
+  relational-case-store.repository.ts — an unstated hypotheses-listing order, and
+  overwriteRevision missing the same requireCaseHoldsDraft guard insertRevision already applies).
+  Standard pass found 3 (no resource-level authorization on any route, SEC-01; the repository
+  constructor coupled directly to pg.Pool rather than a narrow port, ARC-01; the "case holds a
+  version" business refusal raised from inside the repository rather than the operation layer,
+  COR-03 — all three pre-existing patterns this delivery followed rather than introduced).
+  Coverage: 28 criteria — 20 covered, 7 partial, 1 uncovered (no test reads the delete
+  operation's own module for infra-free imports); 203 unpaired tests, almost all pre-existing
+  tests of sibling behavior caught only because their files were widened to satisfy the
+  ICaseStore interface change. Certifications: a-case-holding-no-version-is-deleted covered;
+  a-case-holding-no-version-may-be-deleted and the-domain-depends-on-no-infrastructure both
+  partial (decided by reading, each with a stated testable remainder). Folded via trace.py
+  --fold into siegard-reconcile/case-deletion-backend.md (68 nodes cleared, 14 not), bound via
+  trace.py --bind-record (68 bindings written). Composed
+  delivery/case-deletion-backend/review/case-deletion-backend.md; deliver.py --check passed and
+  delivery.json re-derived (7 nodes, 25 edges, 9 findings, 5 criteria recorded unproven, 0
+  unmet).

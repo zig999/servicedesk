@@ -1,0 +1,140 @@
+read:
+  - node: contracts/glossary/glossary-authoring
+    held_at: >-
+      the routePluginFactories array entries wiring register-concept and remove-concept into the
+      app
+    evidence: >-
+      (dependencies) => createRegisterConceptRoutesPlugin(dependencies.registerConcept),
+      (dependencies) => createRemoveConceptRoutesPlugin(dependencies.removeConcept),
+  - node: contracts/integration/capability-registry
+    held_at: >-
+      the routePluginFactories array entries wiring read-capability, read-capability-by-identity,
+      list-capabilities, register-capability and remove-capability into the app
+    evidence: >-
+      (dependencies) => createReadCapabilityRoutesPlugin(dependencies.readCapability),
+      (dependencies) => createReadCapabilityByIdentityRoutesPlugin(dependencies.readCapabilityByIdentity),
+      (dependencies) => createListCapabilitiesRoutesPlugin(dependencies.listCapabilities),
+      (dependencies) => createRegisterCapabilityRoutesPlugin(dependencies.registerCapability),
+      (dependencies) => createRemoveCapabilityRoutesPlugin(dependencies.removeCapability),
+  - node: contracts/integration/capability-schema-draft
+    held_at: the routePluginFactories array entry wiring draft-capability-schema-from-openapi
+    evidence: >-
+      (dependencies) => createDraftCapabilitySchemaFromOpenApiRoutesPlugin(dependencies.draftCapabilitySchemaFromOpenApi),
+  - node: contracts/integration/connector-configuration-draft
+    held_at: the routePluginFactories array entry wiring draft-connector-configuration-from-openapi
+    evidence: >-
+      (dependencies) => createDraftConnectorConfigurationFromOpenApiRoutesPlugin(dependencies.draftConnectorConfigurationFromOpenApi),
+  - node: contracts/integration/connector-configuration-registry
+    held_at: >-
+      the routePluginFactories array entries wiring read-connector-configuration,
+      list-connector-configurations, register-connector and remove-connector into the app
+    evidence: >-
+      (dependencies) => createReadConnectorConfigurationRoutesPlugin(dependencies.readConnectorConfiguration),
+      (dependencies) => createListConnectorConfigurationsRoutesPlugin(dependencies.listConnectorConfigurations),
+      (dependencies) => createRegisterConnectorRoutesPlugin(dependencies.registerConnector),
+      (dependencies) => createRemoveConnectorRoutesPlugin(dependencies.removeConnector),
+  - node: contracts/integration/openapi-document-operations
+    held_at: the routePluginFactories array entry wiring read-openapi-document-operations
+    evidence: >-
+      (dependencies) => createReadOpenApiDocumentOperationsRoutesPlugin(dependencies.readOpenApiDocumentOperations),
+  - node: contracts/knowledge/case-input-requirements
+    held_at: the routePluginFactories array entry wiring read-case-input-requirements
+    evidence: >-
+      (dependencies) => createCaseInputRequirementsRoutesPlugin(dependencies.readCaseInputRequirements),
+  - node: contracts/knowledge/case-lifecycle
+    held_at: >-
+      the routePluginFactories array entries wiring all nine operations — create-draft,
+      update-draft, release, release-hypothesis, discard, delete, revise-hypothesis,
+      place-hypothesis and remove-hypothesis — into the app
+    evidence: >-
+      (dependencies) => createCreateDraftRoutesPlugin(dependencies.createDraft),
+      (dependencies) => createUpdateDraftRoutesPlugin(dependencies.updateDraft),
+      (dependencies) => createReleaseRoutesPlugin(dependencies.release),
+      (dependencies) => createReleaseHypothesisRevisionRoutesPlugin(dependencies.releaseHypothesisRevision),
+      (dependencies) => createDiscardRoutesPlugin(dependencies.discard),
+      (dependencies) => createDeleteCaseRoutesPlugin(dependencies.deleteCase),
+      (dependencies) => createReviseHypothesisRoutesPlugin(dependencies.reviseHypothesis),
+      (dependencies) => createPlaceHypothesisRoutesPlugin(dependencies.placeHypothesis),
+      (dependencies) => createRemoveHypothesisRoutesPlugin(dependencies.removeHypothesis),
+  - node: domain/integration/connector-configuration-registry
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createRegisterConnectorRoutesPlugin(dependencies.registerConnector),
+      (dependencies) => createRemoveConnectorRoutesPlugin(dependencies.removeConnector),
+      — this only wires the HTTP route plugins through to controller dependencies.
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createDeleteCaseRoutesPlugin(dependencies.deleteCase),
+      — the file only registers the delete-case plugin; states no acceptance/refusal condition.
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: nowhere
+    evidence: >-
+      app.setErrorHandler(handleUnexpectedError);
+      — error handling delegated wholesale; no message text of any language appears here.
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: nowhere
+    evidence: >-
+      app.setErrorHandler(handleUnexpectedError);
+      — no domain noun or refusal text is written anywhere in this file.
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: >-
+      import Fastify, { type FastifyInstance, type FastifyPluginAsync } from 'fastify';
+      — this is the HTTP composition root, not the domain layer the node constrains.
+  - node: domain/knowledge/case
+    held_at: nowhere
+    evidence: >-
+      readonly deleteCase: DeleteCaseControllerDependencies;
+      readonly createDraft: CreateDraftControllerDependencies;
+      — only controller-dependency types and route wiring.
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createUpdateDraftRoutesPlugin(dependencies.updateDraft),
+      (dependencies) => createReleaseRoutesPlugin(dependencies.release),
+      — only route wiring.
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createReviseHypothesisRoutesPlugin(dependencies.reviseHypothesis),
+      — only route wiring.
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createReleaseHypothesisRevisionRoutesPlugin(dependencies.releaseHypothesisRevision),
+      — only route wiring.
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createReadCaseVersionRoutesPlugin(dependencies.readCase),
+      — only wiring, reusing the readCase dependency object.
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createDeleteCaseRoutesPlugin(dependencies.deleteCase),
+      — only wiring; no response status or body is stated in this file.
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createDeleteCaseRoutesPlugin(dependencies.deleteCase),
+      — only wiring; no given/when/then behavior is expressed here.
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createCreateDraftRoutesPlugin(dependencies.createDraft),
+      — only wiring; no slug-creation or next_version logic stated here.
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: >-
+      (dependencies) => createCreateDraftRoutesPlugin(dependencies.createDraft),
+      — only wiring; no uniqueness rule over slug stated here.
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      const app = Fastify({ bodyLimit: dependencies.bodyLimit });
+      — the file declares no request schema and no per-route validation.
+looked_past: >-
+  createReadCaseVersionRoutesPlugin(dependencies.readCase) reuses the readCase dependency object
+  for the read-case-version route rather than a dependency named for that route — a code-shape
+  choice, not a domain fact.

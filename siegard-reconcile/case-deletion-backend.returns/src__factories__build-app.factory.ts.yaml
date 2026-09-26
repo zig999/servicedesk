@@ -1,0 +1,115 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      composeResources (lines 72–101), where the DatabaseConnection is threaded only into
+      factory calls that hand back typed ports
+    evidence: >-
+      const capabilitiesReader = createCapabilitiesReader(connection);
+      const capabilityRegistry = createCapabilityRegistry(connection, createConnectorConfigurationsReader(connection));
+  - node: constraints/the-openapi-document-is-fetched-by-the-backend
+    held_at: >-
+      draftConnectorConfigurationFromOpenApiDependencies, readOpenApiDocumentOperationsDependencies
+      and draftCapabilitySchemaFromOpenApiDependencies
+    evidence: >-
+      documentFetcher: new OpenApiDocumentFetcher(),
+  - node: contracts/glossary/glossary-authoring
+    held_at: composeResources / registrationDependencies / removeConceptDependencies
+    evidence: >-
+      registerConcept: (registration) => glossary.registerConcept(registration), removeConcept: (name) => glossary.removeConcept(name),
+  - node: contracts/integration/capability-registry
+    held_at: readDependencies / listDependencies / registrationDependencies / removeCapabilityDependencies
+    evidence: >-
+      readCapability: { capabilityQuery: resources.capabilityQuery },
+      listCapabilities: { capabilityQuery: resources.caseQuery ? undefined : resources.capabilityQuery, ...pagination },
+  - node: contracts/integration/connector-configuration-registry
+    held_at: readDependencies / listDependencies / registrationDependencies / removeConnectorDependencies
+    evidence: >-
+      listConnectorConfigurations: (pagination) => connectorConfigurationRegistry.listConnectorConfigurations(pagination),
+  - node: contracts/integration/openapi-document-operations
+    held_at: readOpenApiDocumentOperationsDependencies
+    evidence: >-
+      function readOpenApiDocumentOperationsDependencies(): Pick<BuildAppDependencies, 'readOpenApiDocumentOperations'> {
+        const dependencies: ReadOpenApiDocumentOperationsControllerDependencies = { documentFetcher: new OpenApiDocumentFetcher() };
+  - node: contracts/knowledge/case-input-requirements
+    held_at: readDependencies
+    evidence: >-
+      readCaseInputRequirements: { caseInputRequirementsQuery: resources.caseInputRequirementsQuery },
+  - node: contracts/knowledge/case-lifecycle
+    held_at: lifecycleDependencies, wiring all nine of the contract's operations
+    evidence: >-
+      createDraft: { createDraft: caseLifecycle.createDraft },
+      release: { release: caseLifecycle.release, caseQuery },
+      deleteCase: { delete: caseLifecycle.delete },
+  - node: domain/integration/capability-registry
+    held_at: composeResources / registrationDependencies / removeCapabilityDependencies
+    evidence: >-
+      const conceptUsageReader = createConceptUsageReader(connection, capabilityRegistry);
+  - node: domain/integration/connector-configuration-registry
+    held_at: registrationDependencies / removeConnectorDependencies
+    evidence: >-
+      registerConnector: (registration) => connectorConfigurationRegistry.registerConnector(registration),
+      removeConnector: (connector) => connectorConfigurationRegistry.removeConnector(connector),
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      removeConcept: (name) => glossary.removeConcept(name), — a bare delegation
+  - node: rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
+    held_at: nowhere
+    evidence: >-
+      readConnectorConfiguration: { readConnectorConfiguration: resources.readConnectorConfigurationOrThrow },
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: nowhere
+    evidence: >-
+      deleteCase: { delete: caseLifecycle.delete }, — the whole delete operation is delegated
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: nowhere
+    evidence: >-
+      export function buildAppDependencies(inputs: BuildAppDependenciesInputs): BuildAppDependencies {
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: nowhere
+    evidence: >-
+      export function buildAppDependencies(inputs: BuildAppDependenciesInputs): BuildAppDependencies {
+  - node: domain/knowledge/case
+    held_at: nowhere
+    evidence: >-
+      readCase: { caseQuery: resources.caseQuery },
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: >-
+      listCaseVersions: { caseQuery: resources.caseQuery, ...pagination },
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: >-
+      listHypotheses: { caseQuery: resources.caseQuery, ...pagination },
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: >-
+      releaseHypothesisRevision: { releaseHypothesisRevision: caseLifecycle.releaseHypothesisRevision },
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: nowhere
+    evidence: >-
+      readCase: { caseQuery: resources.caseQuery },
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      deleteCase: { delete: caseLifecycle.delete },
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: nowhere
+    evidence: >-
+      deleteCase: { delete: caseLifecycle.delete },
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: nowhere
+    evidence: >-
+      createDraft: { createDraft: caseLifecycle.createDraft },
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: >-
+      createDraft: { createDraft: caseLifecycle.createDraft },
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      export function buildAppDependencies(inputs: BuildAppDependenciesInputs): BuildAppDependencies {
+looked_past: >-
+  Two style matters that carry no domain fact of their own: two object properties packed onto
+  one line, and readCapabilityByIdentity naming both a dependency-injection field and the
+  resource method it wraps.

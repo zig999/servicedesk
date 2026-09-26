@@ -1,0 +1,105 @@
+read:
+  - node: contracts/knowledge/case-lifecycle
+    held_at: >-
+      the CaseLifecycleOperations type (lines 22-31) and the object createCaseLifecycle returns
+      (lines 41-51) — eight of the contract's nine operations are wired here (create-draft,
+      revise-hypothesis, place-hypothesis, remove-hypothesis, release, release-hypothesis,
+      discard, delete); update-draft is composed through a separate controller
+      (src/http/update-draft.controller.ts, src/http/update-draft.routes.ts) and was never part
+      of this factory's surface
+    evidence: |-
+      export type CaseLifecycleOperations = {
+        readonly createDraft: (input: CreateDraftInput) => Promise<CreatedDraft>;
+        readonly reviseHypothesis: (input: ReviseHypothesisInput) => Promise<RevisedHypothesis>;
+        readonly placeHypothesis: (input: PlaceHypothesisInput) => Promise<void>;
+        readonly removeHypothesis: (input: RemoveHypothesisInput) => Promise<void>;
+        readonly release: (slug: string, version: number) => Promise<void>;
+        readonly releaseHypothesisRevision: (slug: string, hypothesisName: string, revision: number) => Promise<void>;
+        readonly discard: (slug: string, version: number) => Promise<void>;
+        readonly delete: (slug: string) => Promise<void>;
+      };
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: >-
+      nowhere — the factory only forwards the call, the accept/refuse logic (409,
+      CaseHoldsVersionsError) is not present in this file
+    evidence: "delete: (slug) => deleteCase(caseStore, slug),"
+  - node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+    held_at: >-
+      nowhere — the factory forwards to releaseHypothesisRevisionOperation without stating the
+      draft-to-released transition or its refusal itself
+    evidence: |-
+      releaseHypothesisRevision: (slug, hypothesisName, revision) =>
+            releaseHypothesisRevisionOperation.releaseHypothesisRevision(slug, hypothesisName, revision),
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: >-
+      nowhere — same delegation as the rule above; the scenario's acceptance, listing and
+      slug-reuse effects are not stated in this file
+    evidence: "delete: (slug) => deleteCase(caseStore, slug),"
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: nowhere — no message text of any kind appears in this file
+    evidence: >-
+      the file contains no string literal beyond import specifiers, e.g. from
+      '../case/delete-case.operation.js'; no domain message is composed here
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: nowhere — no refusal or noun vocabulary appears in this file
+    evidence: >-
+      the file contains no string literal beyond import specifiers, e.g. from
+      '../case/delete-case.operation.js'; no domain vocabulary is composed here
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the import list — a persistence connection type and domain factory modules only, no
+      framework, driver or provider-client package
+    evidence: |-
+      import type { DatabaseConnection } from '../persistence/database-connection.js';
+      import { createCapabilityQuery } from './capability-registry.factory.js';
+      import { createCaseStore } from './case-store.factory.js';
+      import { createGlossaryQuery } from './glossary.factory.js';
+  - node: domain/knowledge/case
+    held_at: the createDraft and delete fields of the returned object, lines 42 and 50
+    evidence: |-
+      createDraft: (input) => createDraftOperation.createDraft(input),
+      delete: (slug) => deleteCase(caseStore, slug),
+  - node: domain/knowledge/case-version
+    held_at: >-
+      the placeHypothesis, removeHypothesis, release and discard fields, lines 44-46 and 49
+    evidence: |-
+      placeHypothesis: (input) => placeHypothesis(caseStore, input),
+      removeHypothesis: (input) => removeHypothesis(caseStore, input),
+      release: (slug, version) => releaseOperation.release(slug, version),
+      discard: (slug, version) => discardCaseVersion(caseStore, slug, version),
+  - node: domain/knowledge/hypothesis
+    held_at: the reviseHypothesis field, line 43
+    evidence: "reviseHypothesis: (input) => reviseHypothesisOperation.reviseHypothesis(input),"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: the releaseHypothesisRevision field, lines 47-48
+    evidence: |-
+      releaseHypothesisRevision: (slug, hypothesisName, revision) =>
+            releaseHypothesisRevisionOperation.releaseHypothesisRevision(slug, hypothesisName, revision),
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: >-
+      nowhere — this factory exposes only lifecycle mutations, no read/query operation and no
+      refusal logic
+    evidence: >-
+      the returned object exposes only createDraft, reviseHypothesis, placeHypothesis,
+      removeHypothesis, release, releaseHypothesisRevision, discard, delete — no read
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: nowhere — delete resolves Promise<void>, no HTTP status is set in this file
+    evidence: "readonly delete: (slug: string) => Promise<void>;"
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: >-
+      the createDraft field, line 42, which forwards to CreateDraftOperation without stating the
+      creation-vs-next-draft rule itself
+    evidence: "createDraft: (input) => createDraftOperation.createDraft(input),"
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere — no uniqueness check is present in this file
+    evidence: "const createDraftOperation: ICreateDraft = new CreateDraftOperation(caseStore);"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere — this file performs no request validation
+    evidence: "export function createCaseLifecycle(connection: DatabaseConnection): CaseLifecycleOperations {"
+looked_past: >-
+  Noticed the CaseLifecycleOperations type omits update-draft, one of the nine operations
+  contracts/knowledge/case-lifecycle publishes, and traced it before reporting anything: the
+  operation is composed through a separate, already-existing controller
+  (src/http/update-draft.controller.ts and src/http/update-draft.routes.ts) rather than through
+  this factory, so the omission is this factory's existing architecture rather than a fact this
+  file states wrongly; not reported as a finding.

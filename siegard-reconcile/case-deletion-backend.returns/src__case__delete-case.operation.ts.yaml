@@ -1,0 +1,100 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the single import at the top of the file
+    evidence: |
+      import type { ICaseStore } from './case-store.port.js';
+  - node: domain/knowledge/case
+    held_at: >-
+      the deleteCase function, which is the file's whole content and invokes the case's
+      delete operation through the store port
+    evidence: |
+      export async function deleteCase(store: ICaseStore, slug: string): Promise<void> {
+        await store.delete(slug);
+      }
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: nowhere
+    evidence: |
+      export async function deleteCase(store: ICaseStore, slug: string): Promise<void> {
+        await store.delete(slug);
+      }
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: nowhere
+    evidence: |
+      export async function deleteCase(store: ICaseStore, slug: string): Promise<void> {
+        await store.delete(slug);
+      }
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: nowhere
+    evidence: |
+      await store.delete(slug);
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: nowhere
+    evidence: |
+      await store.delete(slug);
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: |
+      import type { ICaseStore } from './case-store.port.js';
+
+      export async function deleteCase(store: ICaseStore, slug: string): Promise<void> {
+        await store.delete(slug);
+      }
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: |
+      import type { ICaseStore } from './case-store.port.js';
+
+      export async function deleteCase(store: ICaseStore, slug: string): Promise<void> {
+        await store.delete(slug);
+      }
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: |
+      import type { ICaseStore } from './case-store.port.js';
+
+      export async function deleteCase(store: ICaseStore, slug: string): Promise<void> {
+        await store.delete(slug);
+      }
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: nowhere
+    evidence: |
+      export async function deleteCase(store: ICaseStore, slug: string): Promise<void> {
+        await store.delete(slug);
+      }
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: nowhere
+    evidence: |
+      export async function deleteCase(store: ICaseStore, slug: string): Promise<void> {
+        await store.delete(slug);
+      }
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: |
+      export async function deleteCase(store: ICaseStore, slug: string): Promise<void> {
+        await store.delete(slug);
+      }
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: nowhere
+    evidence: |
+      export async function deleteCase(store: ICaseStore, slug: string): Promise<void> {
+        await store.delete(slug);
+      }
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: |
+      export async function deleteCase(store: ICaseStore, slug: string): Promise<void> {
+        await store.delete(slug);
+      }
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: |
+      export async function deleteCase(store: ICaseStore, slug: string): Promise<void> {
+        await store.delete(slug);
+      }
+looked_past: >-
+  The accept/refuse branching, the cascading removal of hypotheses, hypothesis-revisions and
+  collects, the 404/409 refusals, the Portuguese message vocabulary and the 204-no-content
+  response are all absent from this file by design — it only delegates to `store.delete(slug)`
+  through the ICaseStore port — and their conformance is the persistence-repository and route
+  files' own reading, not this one's.

@@ -1,0 +1,152 @@
+findings:
+  - file: src/__tests__/unit/case/case-query.service.spec.ts
+    where: >-
+      the violations arrays pinned for a coherence refusal of CaseVersionNotValidError, at the
+      concept-violation assertion (line 533), the joined action-and-concept assertion (lines
+      547-550), and the readCaseInputRequirements coherence assertion (lines 750-754)
+    evidence: |-
+      violations: [`the concept "${CONCEPT}" does not exist in the glossary`],
+      violations: [
+        `the action "${ACTION}" does not exist in the glossary`,
+        `the concept "${CONCEPT}" does not exist in the glossary`,
+      ],
+    cost: >-
+      The same CaseVersionNotValidError whose message this file elsewhere pins in Brazilian
+      Portuguese for a missing-hypothesis violation ('o caso não declara nenhuma hipótese', line
+      502, and asserted via .message at lines 850-853) is pinned here, by three separate
+      assertions, to carry an English sentence for a coherence violation. An operator reading a
+      refusal that happens to fail on a concept or action coherence rule is handed wording the
+      specification's own constraint says a domain refusal never carries, while the sibling
+      structural refusal in the same file is correctly Portuguese — the file itself is the
+      inconsistency's only record.
+    kind: contradicts
+    correction: >-
+      The pinned violation text for a missing concept or action would have to read in Brazilian
+      Portuguese, the same as the missing-hypothesis and blank-title violations already pinned
+      elsewhere in this file.
+    node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  - file: src/__tests__/unit/case/case-query.service.spec.ts
+    where: >-
+      the same three violations assertions (lines 533, 549 and 753), specifically the word
+      naming the concept noun
+    evidence: 'the concept "${CONCEPT}" does not exist in the glossary'
+    cost: >-
+      This file fixes, by hard equality, the exact string the error's message carries — and that
+      string names the noun this specification reserves one fixed Portuguese word for
+      ("conceito") by its English word instead. A reader comparing this refusal against another
+      that correctly says "conceito" has no way to tell whether the two speak of the same thing,
+      which is exactly the confusion the fixed-vocabulary rule exists to close off.
+    kind: contradicts
+    correction: >-
+      The pinned violation text would have to name the noun "conceito", never "concept", to
+      match the fixed Portuguese vocabulary this file already uses correctly for "caso" and
+      "hipótese".
+    node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+read:
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: nowhere
+    evidence: |-
+      public async delete(_slug: string): Promise<void> {
+          return;
+        }
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: >-
+      the missing-hypothesis violation and its .message assertion, lines 499-503 and 850-853
+    evidence: |-
+      violations: ['o caso não declara nenhuma hipótese'],
+      expect(message).toContain('o caso não declara nenhuma hipótese');
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: 'the missing-hypothesis violation, lines 499-503, using "caso" and "hipótese"'
+    evidence: "violations: ['o caso não declara nenhuma hipótese'],"
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: |-
+      import { expect, it } from 'vitest';
+      import { CaseQueryService, replayCase } from '../../../case/case-query.service.js';
+  - node: domain/knowledge/case
+    held_at: the ICaseRecord fixture shape and createDraft's counter logic, lines 68-72 and 141-142
+    evidence: |-
+      interface ICaseRecord {
+        nextVersion: number;
+        draftVersion?: number;
+        readonly versions: Map<number, IStoredVersion>;
+      }
+  - node: domain/knowledge/case-version
+    held_at: the IStoredVersion fixture interface, lines 56-66
+    evidence: |-
+      interface IStoredVersion {
+        readonly title: string;
+        readonly when_to_use: string;
+        readonly authored_at: string;
+        readonly subject: string;
+        readonly fallback: Resolution;
+        readonly consolidation_register?: ConsolidationRegister;
+        state: CaseVersionState;
+        released_at?: string;
+        manifest: ManifestEntry[];
+      }
+  - node: domain/knowledge/hypothesis
+    held_at: "the hypothesis fixture and manifest entry's hypothesis.name, lines 241-247 and 264-265"
+    evidence: |-
+      hypothesis_revision: {
+              hypothesis: { name: hypothesis.name },
+  - node: domain/knowledge/hypothesis-revision
+    held_at: insertHypothesisRevision and expectedDefaultManifest, lines 165-178 and 259-273
+    evidence: |-
+      byRevision.set(revision, {
+            hypothesis_name: input.hypothesis_name,
+            revision,
+            criterion: input.criterion,
+            collects: input.collects,
+            resolution: input.resolution,
+          });
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: the never-authored slug/version test, lines 482-489
+    evidence: |-
+      const refusal = await readAsError(service.readCase('never-authored', 7));
+
+        expect(refusal).toBeInstanceOf(CaseNotFoundError);
+        expect((refusal as CaseNotFoundError).context).toEqual({ slug: 'never-authored', version: 7 });
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      public async delete(_slug: string): Promise<void> {
+          return;
+        }
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: nowhere
+    evidence: |-
+      public async delete(_slug: string): Promise<void> {
+          return;
+        }
+  - node: contracts/knowledge/case-lifecycle
+    held_at: >-
+      the FakeCaseStore's operation methods, lines 136-238 (createDraft, insertHypothesisRevision,
+      placeHypothesis, removeManifestEntry, release, discard, updateDraft, delete)
+    evidence: |-
+      public async createDraft(input: CreateDraftInput): Promise<number> {
+      public async insertHypothesisRevision(input: HypothesisRevisionInput): Promise<number> {
+      public async placeHypothesis(input: PlaceHypothesisInput): Promise<void> {
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: "createDraft's slug lookup and counter increment, lines 136-142"
+    evidence: |-
+      const record = this.cases.get(input.slug) ?? { nextVersion: 1, versions: new Map<number, IStoredVersion>() };
+        if (record.draftVersion !== undefined) {
+          throw new CaseAlreadyHasDraftError(input.slug);
+        }
+        const version = record.nextVersion;
+        record.nextVersion += 1;
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: 'the cases map keyed by slug, line 75'
+    evidence: 'private readonly cases = new Map<string, ICaseRecord>();'
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: |-
+      import { CaseQueryService, replayCase } from '../../../case/case-query.service.js';
+looked_past: >-
+  Several it() descriptions carry long prose citing "the derivation node's own carve-out" or a
+  "specification's own stated replay exception" as the reason for the asserted behavior; whether
+  that citation-heavy test-naming style belongs in source at all is a comment-discipline question
+  for another pass, not a domain-fact question, so it is not reported here.
+candidates_opened:
+  - rules/knowledge/a-case-has-at-least-one-hypothesis

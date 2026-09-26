@@ -1,0 +1,86 @@
+read:
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: >-
+      nowhere — the only place delete-case appears is the wiring table and its shared
+      not-404 assertion.
+    evidence: >-
+      { description: 'delete-case', method: 'DELETE', url: '/v1/cases/a-slug' },
+      ... expect(response.statusCode).not.toBe(404);
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: nowhere
+    evidence: >-
+      No assertion in this file inspects any refusal's message text; the delete-case route
+      is exercised only through expect(response.statusCode).not.toBe(404);.
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: nowhere
+    evidence: >-
+      No assertion in this file inspects any refusal's message text for a domain noun.
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: >-
+      the only import-dependency check in this file is scoped to HTTP_LAYER_RELATIVE_PATHS,
+      not the domain layer.
+  - node: domain/knowledge/case
+    held_at: nowhere
+    evidence: >-
+      createDraft: { createDraft: async () => ({ slug: 'a-slug', version: 1 }) },
+      — only a slug/version pair crosses the HTTP wiring layer.
+  - node: domain/knowledge/case-version
+    held_at: the minimalCase() fixture, lines 30-44
+    evidence: >-
+      return { slug: 'a-case', title: 'a title', when_to_use: 'a when-to-use', version: 1,
+      authored_at: '2024-01-01T00:00:00.000Z', subject: 'a-subject-type', fallback: {...},
+      state: 'released', manifest: [], hypotheses: [...] }
+  - node: domain/knowledge/hypothesis
+    held_at: the hypotheses entry inside minimalCase(), and reviseHypothesis's stub result
+    evidence: >-
+      { name: 'h1', criterion: 'h1 criterion', collects: ['a-concept'], resolution: {...} }
+      ... reviseHypothesis: async () => ({ hypothesis_name: 'a-hypothesis', revision: 1 })
+  - node: domain/knowledge/hypothesis-revision
+    held_at: the release-hypothesis-revision route and reviseHypothesis's revision field
+    evidence: >-
+      { description: 'release-hypothesis-revision', method: 'POST', url:
+      '/v1/cases/a-slug/hypotheses/a-hypothesis/revisions/1/release' } ...
+      reviseHypothesis: async () => ({ hypothesis_name: 'a-hypothesis', revision: 1 })
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: nowhere
+    evidence: >-
+      { description: 'read-case', method: 'GET', url: '/v1/cases/a-slug/versions/1' } is
+      exercised only through expect(response.statusCode).not.toBe(404);, never with an
+      unknown slug or version.
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the delete-case entry in REGISTERED_ROUTE_REQUESTS is checked only by
+      expect(response.statusCode).not.toBe(404); inside the shared it.each — no test in
+      this file asserts 204 or an empty body for delete-case, unlike the sibling
+      expect(deleteResponse.statusCode).toBe(204); assertions written for
+      remove-capability, remove-connector and remove-concept.
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: nowhere
+    evidence: >-
+      No test in this file builds the given/when/then of this scenario.
+  - node: contracts/knowledge/case-lifecycle
+    held_at: REGISTERED_ROUTE_REQUESTS and the it.each reaches-controller test, lines 537-602
+    evidence: >-
+      the array lists an entry for every one of the contract's operations, each proven via
+      expect(response.statusCode).not.toBe(404);.
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: nowhere
+    evidence: >-
+      create-draft is exercised only through expect(response.statusCode).not.toBe(404);,
+      never asserting a case is created.
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: >-
+      No assertion in this file names two cases under one slug.
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: the two 400-refusal tests, lines 604-628 — status code only
+    evidence: >-
+      expect(response.statusCode).toBe(400); expect(built.runDiagnose).not.toHaveBeenCalled();
+      (twice) — neither test reads the error code, message or details list.
+
+looked_past: >-
+  This file's bulk (diagnose's response-shaping, capability/connector/glossary CRUD wiring,
+  no-authentication and body-limit assertions) answers node sets outside this pack and is
+  left to whichever pass those nodes belong to.

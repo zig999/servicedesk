@@ -1,0 +1,81 @@
+read:
+  - node: domain/knowledge/hypothesis-revision
+    held_at: >-
+      the RULE's guard on the revision's own released state, before it is let through to a delete
+    evidence: >-
+      AND hr.state = 'released'
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: >-
+      the RULE's second EXISTS clause narrowing the block to a case that still holds a version,
+      and the DO INSTEAD NOTHING that otherwise lets the delete through
+    evidence: >-
+      AND EXISTS (
+          SELECT 1
+          FROM case_versions cv
+          WHERE cv.slug = OLD.case_slug
+        )
+        DO INSTEAD NOTHING;
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: nowhere
+    evidence: >-
+      CREATE OR REPLACE RULE hypothesis_revision_collects_no_delete_when_released AS
+        ON DELETE TO hypothesis_revision_collects
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: nowhere
+    evidence: >-
+      CREATE OR REPLACE RULE hypothesis_revision_collects_no_delete_when_released AS
+        ON DELETE TO hypothesis_revision_collects
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: >-
+      -- Reconciles hypothesis_revision_collects_no_delete_when_released (0021)
+      -- with rules/knowledge/a-case-holding-no-version-may-be-deleted
+  - node: domain/knowledge/case
+    held_at: nowhere
+    evidence: >-
+      WHERE cv.slug = OLD.case_slug
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: >-
+      FROM case_versions cv
+          WHERE cv.slug = OLD.case_slug
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: >-
+      hr.hypothesis_name = OLD.hypothesis_name
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: nowhere
+    evidence: >-
+      ON DELETE TO hypothesis_revision_collects
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      CREATE OR REPLACE RULE hypothesis_revision_collects_no_delete_when_released AS
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: nowhere
+    evidence: >-
+      -- (task/case-deletion/store-deletes-a-versionless-case), which the rule as
+      -- 0021 left it silently defeats.
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: >-
+      CREATE OR REPLACE RULE hypothesis_revision_collects_no_delete_when_released AS
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: nowhere
+    evidence: >-
+      CREATE OR REPLACE RULE hypothesis_revision_collects_no_delete_when_released AS
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: >-
+      OLD.case_slug
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      CREATE OR REPLACE RULE hypothesis_revision_collects_no_delete_when_released AS
+        ON DELETE TO hypothesis_revision_collects
+looked_past: >-
+  The file carries a long prose comment (lines 1-46) walking through the migration's own history
+  and reasoning; a source commenting convention, not a domain fact this pass judges.
+candidates_opened:
+  - rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  - rules/knowledge/a-released-revisions-collect-removal-is-accepted-with-no-effect

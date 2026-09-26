@@ -1,0 +1,88 @@
+read:
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: nowhere
+    evidence: >-
+      public async delete(): Promise<void> {
+          throw new Error('FakeReleaseStore.delete is not scripted for this file');
+        }
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: >-
+      the Portuguese-wording assertions in both it() blocks, over the violation strings a
+      release refusal carries
+    evidence: >-
+      expect(violations[0]).toMatch(/\bliberada\b/); ... expect(violations.some((violation) =>
+      violation.includes('o título') && violation.includes('em branco'))).toBe(true)
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: the first test's three assertions on the released-state wording
+    evidence: >-
+      expect(violations[0]).toMatch(/\bliberada\b/);
+          expect(violations[0]).not.toMatch(/\breleased\b/i);
+          expect(violations[0]).not.toMatch(/\bdraft\b/i);
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the operation built only against port interfaces, via locally defined fakes, with no
+      framework or driver import anywhere in the file
+    evidence: >-
+      const operation = new ReleaseOperation(store, new AlwaysCoherentGlossary(), new
+      AlwaysCoherentCapabilities());
+  - node: domain/knowledge/case
+    held_at: nowhere
+    evidence: >-
+      const SLUG = 'a-case-under-release'; — used only as an opaque identifier
+  - node: domain/knowledge/case-version
+    held_at: assembledFixture(), lines 141-165
+    evidence: >-
+      return { slug: SLUG, version: VERSION, title: 'A case', when_to_use: '...', authored_at:
+      '2024-01-01T00:00:00.000Z', subject: 'a-subject', fallback: resolution, state: 'draft',
+      manifest: [ ... ] }
+  - node: domain/knowledge/hypothesis
+    held_at: the manifest entry's hypothesis_name field in assembledFixture()
+    evidence: "hypothesis_name: 'h1',"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: the manifest entry's hypothesis_revision object in assembledFixture()
+    evidence: >-
+      hypothesis_revision: { hypothesis_name: 'h1', revision: 1, criterion: 'a criterion',
+      collects: ['a-concept'], resolution, },
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: nowhere
+    evidence: >-
+      public async assembleVersion(): Promise<AssembledCaseVersion | undefined> {
+          return this.assembled;
+        } — always resolves; the unknown-slug-or-version path is never exercised
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      public async delete(): Promise<void> {
+          throw new Error('FakeReleaseStore.delete is not scripted for this file');
+        }
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: nowhere
+    evidence: >-
+      public async delete(): Promise<void> {
+          throw new Error('FakeReleaseStore.delete is not scripted for this file');
+        }
+  - node: contracts/knowledge/case-lifecycle
+    held_at: >-
+      the second test's assertion that a structural violation and a manifest-own-state violation
+      are reported together, in one refusal
+    evidence: "expect(violations).toHaveLength(2);"
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: nowhere
+    evidence: >-
+      public async createDraft(_input: CreateDraftInput): Promise<number> {
+          throw new Error('FakeReleaseStore.createDraft is not scripted for this file');
+        }
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: >-
+      const SLUG = 'a-case-under-release'; — one fixed slug used throughout
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      const refusal = await operation.release(SLUG, VERSION).catch((error: unknown) => error); —
+      the operation is invoked directly, never through an HTTP request/response
+looked_past: >-
+  The fixture classes' many stub methods throwing "is not scripted for this file", and the second
+  test's exact Portuguese substrings ("o título", "em branco"), test phrasing that
+  constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word's own
+  Description leaves free, so it is not reported as a finding.

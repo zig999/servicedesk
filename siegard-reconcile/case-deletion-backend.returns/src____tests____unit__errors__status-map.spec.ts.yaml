@@ -1,0 +1,111 @@
+read:
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: >-
+      the `resolves CaseHoldsVersionsError to 409` test, lines 199-205
+    evidence: |
+      it('resolves CaseHoldsVersionsError to 409', () => {
+        const error = new CaseHoldsVersionsError('a-slug');
+
+        const status = statusForError(error);
+
+        expect(status).toBe(409);
+      });
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: nowhere
+    evidence: >-
+      const error = new CaseHoldsVersionsError('a-slug');
+
+      const status = statusForError(error);
+
+      expect(status).toBe(409); — the test reads only the numeric status returned by
+      `statusForError`; nothing in the file reads `error.message`.
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: nowhere
+    evidence: >-
+      const error = new CaseHoldsVersionsError('a-slug');
+
+      const status = statusForError(error);
+
+      expect(status).toBe(409); — no assertion in the file inspects the error's message text
+      for any noun.
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: >-
+      import { expect, it } from 'vitest'; — this file is test scaffolding exercising
+      `statusForError`, not a domain module.
+  - node: domain/knowledge/case
+    held_at: nowhere
+    evidence: >-
+      const error = new CaseNotFoundError('a-slug', 1); — 'a-slug' is a literal constructor
+      argument; the file never reads or asserts the case aggregate's own attributes.
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: >-
+      const error = new CaseVersionNotDraftError('a-slug', 1, 'released'); — literal
+      constructor arguments; no case-version attribute is asserted here.
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: >-
+      const error = new HypothesisNotInManifestError('a-slug', 1, 'an-absent-hypothesis');
+      — literal constructor argument; the file never reads the hypothesis aggregate itself.
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: >-
+      const error = new ReleasedHypothesisRevisionNotAlterableError('a-slug', 'a-hypothesis', 3);
+      — literal constructor argument; no hypothesis-revision attribute is read or asserted.
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: >-
+      the `resolves CaseNotFoundError to 404` test, lines 35-41
+    evidence: |
+      it('resolves CaseNotFoundError to 404', () => {
+        const error = new CaseNotFoundError('a-slug', 1);
+
+        const status = statusForError(error);
+
+        expect(status).toBe(404);
+      });
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      expect(status).toBe(404); ... expect(status).toBe(409); ... expect(status).toBe(422);
+      ... expect(status).toBe(500); ... expect(status).toBeUndefined(); — the file's complete
+      set of asserted outcomes never includes 204 or an empty-body case.
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: nowhere
+    evidence: >-
+      import { CaseNotFoundError } from '../../../errors/case-not-found.error.js'; — the file
+      exercises only error classes and `statusForError`, never the scenario's listing/create-draft
+      behavior.
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: >-
+      import { statusForError } from '../../../errors/status-map.js'; — the file exercises only
+      the status-mapping function, never any published operation directly.
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: nowhere
+    evidence: |
+      it('resolves CaseAlreadyHasDraftError to 409', () => {
+        const error = new CaseAlreadyHasDraftError('a-slug');
+      — the file asserts only the status this error resolves to, never anything about how a
+      case or its first version comes into existence.
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: >-
+      'a-slug' appears repeatedly purely as a fixture string passed to error constructors; no
+      assertion here concerns slug uniqueness.
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: |
+      it('returns undefined for a thrown value that is not an Error at all', () => {
+        const status = statusForError('a plain string');
+
+        expect(status).toBeUndefined();
+      });
+      — the file's only "malformed input" case is a non-Error thrown value to `statusForError`,
+      distinct from a route's own shape-validation refusal.
+looked_past: >-
+  The file's remaining ~30 assertions map pre-existing domain errors (unrelated to this node
+  pack) to their status codes; each is bound in the candidate index to its own governing node
+  outside this set.
+candidates_opened:
+  - rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft

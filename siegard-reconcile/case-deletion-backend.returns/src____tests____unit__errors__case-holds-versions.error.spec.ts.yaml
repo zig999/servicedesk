@@ -1,0 +1,115 @@
+findings:
+  - file: src/__tests__/unit/errors/case-holds-versions.error.spec.ts
+    where: >-
+      line 18, inside the test "names the case slug in a Brazilian-Portuguese message that calls
+      the case \"caso\" and never the English word \"case\""
+    evidence: |-
+      expect(error.message).toMatch(/exclu[ií]do/i);
+    cost: >-
+      The node this test otherwise draws from requires only that the refusal name the case slug,
+      write it in Brazilian Portuguese, and use "caso" rather than "case" — and its own Description
+      states plainly that "how each message is built around these words stays free to be written
+      and rewritten for clarity". A future message satisfying every one of those requirements but
+      phrasing the refusal without the literal word "excluído"/"excluido" would fail this assertion
+      though nothing the specification states would be violated — the suite polices a wording
+      choice the specification explicitly leaves open.
+    kind: contradicts
+    correction: >-
+      Remove the exclu[ií]do assertion, or narrow it to only the facts the node states: the
+      slug present, the fixed noun "caso" present, and the English word "case" absent.
+    node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  - file: src/__tests__/unit/errors/case-holds-versions.error.spec.ts
+    where: >-
+      line 36, inside the test "names the remaining version by its fixed Portuguese noun
+      \"versão\"..."
+    evidence: |-
+      expect(error.message).toMatch(/\bversão\b/);
+    cost: >-
+      rules/knowledge/a-case-holding-no-version-may-be-deleted states only that the refusal's
+      message "names the case slug" — it says nothing about the message needing to also name the
+      version. A refusal message that names the slug alone, in Portuguese, without "case", "draft"
+      or "version" — fully satisfying every stated requirement — would fail this positive
+      assertion, so the suite requires content the rule that governs the message never asked for.
+    kind: contradicts
+    correction: >-
+      Drop the requirement that "versão" be present, keeping the negative checks that guard
+      against the English word "version" and the raw "draft" token wherever the message does name
+      the version.
+    node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+read:
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: >-
+      the error-name assertion at line 7, the slug-in-message assertion at line 16, and the
+      details/context assertion at line 26
+    evidence: |-
+      expect(error.name).toBe('CaseHoldsVersionsError');
+      expect(error.message).toContain('cliente-sem-internet');
+      expect(error.context).toEqual({ slug: 'a-slug' });
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: lines 17 and 19, requiring the Portuguese noun and forbidding the English one
+    evidence: |-
+      expect(error.message).toMatch(/\bcaso\b/);
+      expect(error.message).not.toMatch(/\bcase\b/i);
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: >-
+      lines 17 and 19 (the "caso"/"case" pair) and lines 37-38 (forbidding the English
+      "versions"/raw "draft" token)
+    evidence: |-
+      expect(error.message).toMatch(/\bcaso\b/);
+      expect(error.message).not.toMatch(/\bcase\b/i);
+      expect(error.message).not.toMatch(/\bversions?\b/i);
+      expect(error.message).not.toMatch(/\bdraft\b/i);
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: lines 49-50, asserting the error class is framework-independent
+    evidence: |-
+      expect(Object.getPrototypeOf(CaseHoldsVersionsError)).toBe(Error);
+      expect('statusCode' in error).toBe(false);
+  - node: domain/knowledge/case
+    held_at: line 26, the slug carried in the error's own context
+    evidence: |-
+      expect(error.context).toEqual({ slug: 'a-slug' });
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: |-
+      import { CaseHoldsVersionsError } from '../../../errors/case-holds-versions.error.js';
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: |-
+      import { CaseHoldsVersionsError } from '../../../errors/case-holds-versions.error.js';
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: |-
+      import { CaseHoldsVersionsError } from '../../../errors/case-holds-versions.error.js';
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: nowhere
+    evidence: |-
+      import { CaseHoldsVersionsError } from '../../../errors/case-holds-versions.error.js';
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: nowhere
+    evidence: |-
+      import { CaseHoldsVersionsError } from '../../../errors/case-holds-versions.error.js';
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: nowhere
+    evidence: |-
+      import { CaseHoldsVersionsError } from '../../../errors/case-holds-versions.error.js';
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: |-
+      import { CaseHoldsVersionsError } from '../../../errors/case-holds-versions.error.js';
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: nowhere
+    evidence: |-
+      import { CaseHoldsVersionsError } from '../../../errors/case-holds-versions.error.js';
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: |-
+      import { CaseHoldsVersionsError } from '../../../errors/case-holds-versions.error.js';
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: |-
+      import { CaseHoldsVersionsError } from '../../../errors/case-holds-versions.error.js';
+looked_past: >-
+  The test description on line 29-32 cites "criteria 6-8" from what reads as an external
+  task/plan numbering rather than from any node in this set; whether a test's own prose should
+  reference plan artifacts at all is a different judgment than whether the assertions state a
+  domain fact the specification doesn't hold.

@@ -1,0 +1,82 @@
+read:
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: >-
+      the sixth it(...) block, "removes a released hypothesis-revision's own collects
+      through an ordinary DELETE, once its case holds no case-version at all" (no
+      insertCaseVersion call for that slug)
+    evidence: >-
+      await client.query(
+        'DELETE FROM hypothesis_revision_collects WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1',
+        [slug, 'the-hypothesis'],
+      );
+
+      const collects = await readRevisionCollects(client, { slug, hypothesisName: 'the-hypothesis', revision: 1 });
+      expect(collects).toEqual([]);
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: nowhere
+    evidence: >-
+      message: expect.stringContaining('ReleasedHypothesisRevisionNotAlterableError'),
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: nowhere
+    evidence: >-
+      message: expect.stringContaining('ReleasedHypothesisRevisionNotAlterableError'),
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import { Client } from 'pg';"
+  - node: domain/knowledge/case
+    held_at: nowhere
+    evidence: "await client.query('INSERT INTO cases (slug) VALUES ($1)', [slug]);"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: >-
+      await client.query(
+        `INSERT INTO case_versions
+           (slug, version, title, when_to_use, authored_at, subject, fallback_outcome, fallback_action, fallback_recipient, state, released_at)
+         VALUES ($1, $2, 'A stored case title', 'When to use it', now(), $3, $4, $5, $6, $7, $8)`,
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "await client.query('INSERT INTO hypotheses (case_slug, name) VALUES ($1, $2)', [options.slug, options.name]);"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: >-
+      the first, second and third it(...) blocks (lines 167-238) — refusing an update
+      against a released revision and permitting it against a draft revision
+    evidence: >-
+      ).rejects.toMatchObject({
+        code: 'P0001',
+        message: expect.stringContaining('ReleasedHypothesisRevisionNotAlterableError'),
+      });
+      ...
+      const criterion = await readRevisionCriterion(client, { slug, hypothesisName: 'the-hypothesis', revision: 1 });
+      expect(criterion).toBe('A criterion a draft revision must have been free to accept.');
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: nowhere
+    evidence: >-
+      'SELECT criterion FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3'
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      'DELETE FROM hypothesis_revision_collects WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1'
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: nowhere
+    evidence: >-
+      'DELETE FROM hypothesis_revision_collects WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1'
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: >-
+      import { Client } from 'pg';
+      import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: nowhere
+    evidence: "await client.query('INSERT INTO cases (slug) VALUES ($1)', [slug]);"
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: "async function insertCase(client: Client, slug: string): Promise<void> {"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: "client = new Client({ connectionString: requireDatabaseUrl() });"
+looked_past: >-
+  Incidental fixture literals — the concept ttl of 60 in insertRevisionCollect, the fixed
+  glossary strings, the P0001 postgres error code — are arbitrary values satisfying schema
+  constraints rather than asserted domain facts.
+candidates_opened:
+  - rules/knowledge/a-released-hypothesis-revision-is-never-altered

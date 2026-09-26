@@ -1,0 +1,83 @@
+read:
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: nowhere
+    evidence: >-
+      delete: vi.fn(),
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: nowhere
+    evidence: >-
+      expect(responseBody.error.code).toBe('CaseVersionNotDraftError');
+      expect(responseBody.error.details).toEqual({ slug: 'a-slug', version: 1, state: 'released' });
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: nowhere
+    evidence: >-
+      expect(responseBody.error.details).toEqual({ slug: 'a-slug', version: 1, state: 'released' });
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: "import Fastify, { type FastifyInstance } from 'fastify';"
+  - node: domain/knowledge/case
+    held_at: nowhere
+    evidence: >-
+      const response = await app.inject({ method: 'PATCH', url: '/v1/cases/a-slug/versions/3', payload: body });
+  - node: domain/knowledge/case-version
+    held_at: >-
+      the response-body assertion of the first test (lines 101-107)
+    evidence: |-
+      expect(response.json()).toEqual({
+        title: attributes.title,
+        when_to_use: attributes.when_to_use,
+        subject: attributes.subject,
+        fallback: attributes.fallback,
+        consolidation_register: attributes.consolidation_register,
+      });
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: >-
+      import type { Resolution } from '../../../case/case.js';
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: >-
+      import type { Resolution } from '../../../case/case.js';
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: >-
+      the fourth test (lines 141-153)
+    evidence: >-
+      built.updateDraft.mockRejectedValueOnce(new CaseNotFoundError('an-absent-slug', 9));
+      expect(response.statusCode).toBe(404);
+      expect(responseBody.error.code).toBe('CaseNotFoundError');
+      expect(responseBody.error.details).toEqual({ slug: 'an-absent-slug', version: 9 });
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      delete: vi.fn(),
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: nowhere
+    evidence: >-
+      delete: vi.fn(),
+  - node: contracts/knowledge/case-lifecycle
+    held_at: >-
+      the plugin registration and update-draft invocation assertions (lines 79, 108)
+    evidence: >-
+      app.register(createUpdateDraftRoutesPlugin(dependencies));
+      expect(built.updateDraft).toHaveBeenCalledWith('a-slug', 3, body);
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: nowhere
+    evidence: >-
+      createDraft: vi.fn(),
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: >-
+      const response = await app.inject({ method: 'PATCH', url: '/v1/cases/a-slug/versions/3', payload: body });
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: >-
+      the validation-refusal tests (lines 155-199)
+    evidence: >-
+      expect(responseBody.error.code).toBe('VALIDATION_ERROR');
+      expect(responseBody.error.message).toContain('body');
+      expect(responseBody.error.details.length).toBeGreaterThan(0);
+looked_past: >-
+  The node pack handed to this file is dominated by delete-case and creation-lineage nodes that
+  this update-draft routes spec never exercises; whether that node set was assigned to the right
+  file is the caller's routing to settle, not a source-conformance finding.
+candidates_opened:
+  - rules/knowledge/a-case-version-moves-through-its-declared-lifecycle

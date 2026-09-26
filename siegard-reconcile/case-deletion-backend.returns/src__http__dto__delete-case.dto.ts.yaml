@@ -1,0 +1,88 @@
+read:
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: nowhere
+    evidence: |-
+      export const deleteCaseParamsSchema = z.object({
+        slug: z.string().min(1),
+      });
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: nowhere
+    evidence: |-
+      import { z } from 'zod';
+
+      export const deleteCaseParamsSchema = z.object({
+        slug: z.string().min(1),
+      });
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: nowhere
+    evidence: |-
+      export const deleteCaseParamsSchema = z.object({
+        slug: z.string().min(1),
+      });
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: >-
+      import { z } from 'zod';
+  - node: domain/knowledge/case
+    held_at: the `slug` field of `deleteCaseParamsSchema`
+    evidence: >-
+      slug: z.string().min(1),
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: >-
+      export const deleteCaseParamsSchema = z.object({
+        slug: z.string().min(1),
+      });
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: >-
+      export const deleteCaseParamsSchema = z.object({
+        slug: z.string().min(1),
+      });
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: >-
+      export const deleteCaseParamsSchema = z.object({
+        slug: z.string().min(1),
+      });
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: nowhere
+    evidence: >-
+      export const deleteCaseParamsSchema = z.object({
+        slug: z.string().min(1),
+      });
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      export type DeleteCaseParamsDto = z.infer<typeof deleteCaseParamsSchema>;
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: nowhere
+    evidence: >-
+      export const deleteCaseParamsSchema = z.object({
+        slug: z.string().min(1),
+      });
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: >-
+      export const deleteCaseParamsSchema = z.object({
+        slug: z.string().min(1),
+      });
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: nowhere
+    evidence: >-
+      export const deleteCaseParamsSchema = z.object({
+        slug: z.string().min(1),
+      });
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: >-
+      export const deleteCaseParamsSchema = z.object({
+        slug: z.string().min(1),
+      });
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: the `deleteCaseParamsSchema` zod object, which declares the route's path shape
+    evidence: |-
+      export const deleteCaseParamsSchema = z.object({
+        slug: z.string().min(1),
+      });
+looked_past: The file's only real content is a single path-parameter schema requiring a non-empty `slug`; whether `.min(1)` is the right technical shape for that parameter is a shape-validation judgment, not a domain fact this pass adjudicates.

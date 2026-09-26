@@ -1,0 +1,96 @@
+read:
+  - node: domain/knowledge/hypothesis-revision
+    held_at: >-
+      the overwrite-in-place test, lines 1829-1854
+    evidence: >-
+      await store.overwriteHypothesisRevision({ slug, hypothesis_name: 'a-hypothesis', revision, criterion:
+      'the replaced criterion', collects: [], resolution: aResolution(glossary) });
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: >-
+      the draft/released state-reading tests, lines 592-658
+    evidence: >-
+      expect(page.data.every((item) => item.state === 'draft')).toBe(true);
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: >-
+      the overwrite-against-released-revision test, lines 2119-2154
+    evidence: >-
+      await expect(rejection).rejects.toBeInstanceOf(ReleasedHypothesisRevisionNotAlterableError);
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: >-
+      the combined accept/refuse delete test, lines 2228-2256
+    evidence: >-
+      const acceptedSlug = await aCaseHoldingNoVersionWithHypotheses(store, glossary, concept); ...
+      await store.delete(acceptedSlug); await assertCaseFullyRemoved(acceptedSlug); ...
+      await expect(draftRejection).rejects.toBeInstanceOf(CaseHoldsVersionsError);
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: nowhere
+    evidence: >-
+      no assertion in the file ever reads .message.
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: nowhere
+    evidence: >-
+      no assertion in the file inspects message text for any of the nine fixed nouns.
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: >-
+      import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js';
+  - node: domain/knowledge/case
+    held_at: >-
+      the version-counter test, lines 765-782
+    evidence: >-
+      const version1 = await store.createDraft(...); await store.release(slug, version1);
+      expect([version1, version2, version3]).toEqual([1, 2, 3]);
+  - node: domain/knowledge/case-version
+    held_at: >-
+      the updateDraft attribute test, lines 1228-1255
+    evidence: >-
+      await store.updateDraft(slug, version, { title: 'A corrected title', ... });
+  - node: domain/knowledge/hypothesis
+    held_at: >-
+      the hypothesis-identity-once test, lines 874-887
+    evidence: >-
+      await store.insertHypothesisRevision(input); await store.insertHypothesisRevision(input);
+      expect(rows).toEqual([{ name: 'a-hypothesis' }]);
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: >-
+      the listCaseVersions-against-unknown-slug test, lines 331-339
+    evidence: >-
+      await expect(rejection).rejects.toBeInstanceOf(CaseNotFoundError);
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      await store.delete(acceptedSlug); is the only observation of a successful delete; its
+      resolved value is never asserted.
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: >-
+      the accepted branch of the combined delete test, lines 2228-2242
+    evidence: >-
+      const acceptedSlug = await aCaseHoldingNoVersionWithHypotheses(store, glossary, concept); ...
+      await store.delete(acceptedSlug); await assertCaseFullyRemoved(acceptedSlug);
+  - node: contracts/knowledge/case-lifecycle
+    held_at: >-
+      the draft-discard test, lines 1082-1102
+    evidence: >-
+      const version = await store.createDraft(aCreateDraftInput(slug, glossary)); ...
+      await store.discard(slug, version);
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: >-
+      the version-counter test, lines 765-782, and the first-draft-empty-manifest test
+    evidence: >-
+      const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+      expect(assembled?.manifest).toEqual([]);
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: >-
+      every test slug is minted with randomUUID(); the file never attempts a second case under a
+      slug already held.
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      the file drives RelationalCaseStore methods directly and never constructs an HTTP request.
+looked_past: >-
+  assembleVersion and readHighestRevisionReleaseState resolve to undefined for an unknown
+  slug/version rather than throwing CaseNotFoundError the way other methods do elsewhere in this
+  same file; left for whichever pass can see the calling layer.
+candidates_opened:
+  - contracts/knowledge/case-query

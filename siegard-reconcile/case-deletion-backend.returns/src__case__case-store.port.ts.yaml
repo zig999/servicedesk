@@ -1,0 +1,185 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: >-
+      the return shape of assembleVersion, which yields one fully assembled AssembledCaseVersion
+      or nothing, alongside separate methods for hypothesis/manifest-entry operations
+    evidence: |-
+      assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined>;
+  - node: contracts/knowledge/case-lifecycle
+    held_at: >-
+      the ICaseStore method set, carrying most of the published operations
+    evidence: |-
+      createDraft(input: CreateDraftInput): Promise<number>;
+        insertHypothesisRevision(input: HypothesisRevisionInput): Promise<number>;
+        placeHypothesis(input: PlaceHypothesisInput): Promise<void>;
+        removeManifestEntry(slug: string, version: number, hypothesisName: string): Promise<void>;
+        release(slug: string, version: number): Promise<void>;
+        discard(slug: string, version: number): Promise<void>;
+        updateDraft(slug: string, version: number, attributes: UpdateDraftInput): Promise<void>;
+        delete(slug: string): Promise<void>;
+  - node: contracts/knowledge/case-query
+    held_at: >-
+      the four listing methods and assembleVersion for the validated whole read
+    evidence: |-
+      assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined>;
+        findDraftVersion(slug: string): Promise<DraftVersion | undefined>;
+        listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>>;
+        listCaseVersions(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<CaseVersionListItem>>;
+        listHypotheses(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<HypothesisIdentity>>;
+        listHypothesisRevisions(slug: string, hypothesisName: string, pagination: PaginationRequest): Promise<PaginatedResponse<HypothesisRevisionListItem>>;
+  - node: domain/knowledge/case
+    held_at: >-
+      CaseIdentity carries the slug; next_version is not represented by any type in this file
+    evidence: |-
+      export type CaseIdentity = {
+        readonly slug: string;
+      };
+  - node: domain/knowledge/case-summary
+    held_at: the CaseSummary type
+    evidence: |-
+      export type CaseSummary = {
+        readonly current_state?: CaseVersionState;
+        readonly version_count: number;
+        readonly last_updated?: string;
+        readonly title?: string;
+        readonly when_to_use?: string;
+        readonly released_version?: number;
+      };
+  - node: domain/knowledge/case-version
+    held_at: the AssembledCaseVersion type
+    evidence: |-
+      export type AssembledCaseVersion = {
+        readonly slug: string;
+        readonly version: number;
+        readonly title: string;
+        readonly when_to_use: string;
+        readonly authored_at: string;
+        readonly subject: string;
+        readonly fallback: Resolution;
+        readonly consolidation_register?: ConsolidationRegister;
+        readonly state: CaseVersionState;
+        readonly released_at?: string;
+        readonly manifest: readonly ManifestEntry[];
+      };
+  - node: domain/knowledge/case-version-state
+    held_at: the CaseVersionState type alias
+    evidence: |-
+      export type CaseVersionState = 'draft' | 'released';
+  - node: domain/knowledge/hypothesis
+    held_at: the HypothesisIdentity type
+    evidence: |-
+      export type HypothesisIdentity = {
+        readonly name: string;
+      };
+  - node: domain/knowledge/hypothesis-revision
+    held_at: the HypothesisRevisionContent type
+    evidence: |-
+      export type HypothesisRevisionContent = {
+        readonly hypothesis_name: string;
+        readonly revision: number;
+        readonly criterion: string;
+        readonly collects: readonly string[];
+        readonly resolution: Resolution;
+      };
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: the HYPOTHESIS_REVISION_STATES constant and HypothesisRevisionState type
+    evidence: |-
+      export const HYPOTHESIS_REVISION_STATES = ['draft', 'released'] as const;
+      export type HypothesisRevisionState = (typeof HYPOTHESIS_REVISION_STATES)[number];
+  - node: domain/knowledge/manifest-entry
+    held_at: the ManifestEntry type
+    evidence: |-
+      export type ManifestEntry = {
+        readonly position: number;
+        readonly hypothesis_revision: HypothesisRevisionContent;
+      };
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: nowhere
+    evidence: |-
+      delete(slug: string): Promise<void>;
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: nowhere
+    evidence: |-
+      release(slug: string, version: number): Promise<void>;
+        discard(slug: string, version: number): Promise<void>;
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: >-
+      findDraftVersion and DraftVersion
+    evidence: |-
+      findDraftVersion(slug: string): Promise<DraftVersion | undefined>;
+      export type DraftVersion = {
+        readonly version: number;
+        readonly subject: string;
+      };
+  - node: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state
+    held_at: the HypothesisRevisionListItem type
+    evidence: |-
+      export type HypothesisRevisionListItem = {
+        readonly revision: number;
+        readonly criterion: string;
+        readonly collects: readonly string[];
+        readonly resolution: Resolution;
+        readonly state: HypothesisRevisionState;
+      };
+  - node: rules/knowledge/every-case-version-remains-readable
+    held_at: >-
+      listCaseVersions and assembleVersion, accepting any version number
+    evidence: |-
+      listCaseVersions(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<CaseVersionListItem>>;
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: nowhere
+    evidence: |-
+      delete(slug: string): Promise<void>;
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: nowhere
+    evidence: |-
+      delete(slug: string): Promise<void>;
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: the file's own imports, all type-only, none a framework/driver/client
+    evidence: |-
+      import type { ConsolidationRegister } from '../investigation/consolidation-register.js';
+      import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
+      import type { Resolution } from './case.js';
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: >-
+      assembleVersion's | undefined return
+    evidence: |-
+      assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined>;
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: "delete's Promise<void> return"
+    evidence: |-
+      delete(slug: string): Promise<void>;
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: "the delete(slug: string) signature, accepting a slug alone with no version"
+    evidence: |-
+      delete(slug: string): Promise<void>;
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: "CreateDraftInput and createDraft"
+    evidence: |-
+      export type CreateDraftInput = {
+        readonly slug: string;
+        readonly title: string;
+        readonly when_to_use: string;
+        readonly subject: string;
+        readonly fallback: Resolution;
+        readonly consolidation_register?: ConsolidationRegister;
+        readonly source_version?: number;
+      };
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: |-
+      export type CaseIdentity = {
+        readonly slug: string;
+      };
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: |-
+      export interface ICaseStore {
+        assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined>;
+looked_past: >-
+  ICaseStore has no dedicated method for case-lifecycle's release-hypothesis operation or
+  case-query's unvalidated read-case-version operation, and OverwriteHypothesisRevisionInput is
+  declared but never referenced by the interface; these are coverage/design questions for another
+  pass.
+candidates_opened:
+  - rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version

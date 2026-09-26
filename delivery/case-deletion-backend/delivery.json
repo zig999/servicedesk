@@ -48,6 +48,26 @@
       "title": "Case-store deletion of a versionless case — integration proof",
       "summary": "One combined integration test decides the store's whole accept-and-cascade/refuse policy against real PostgreSQL, and a second decides the unknown-slug refusal; four aggregate nodes this task only reads or cascades into are left untested with why.",
       "task": "task/case-deletion/store-deletes-a-versionless-case"
+    },
+    {
+      "id": "review/case-deletion-backend",
+      "kind": "review",
+      "file": "review/case-deletion-backend.md",
+      "title": "Review of case-deletion-backend",
+      "summary": "Coverage, conformance, standard and failures passes over the case-deletion-backend delivery: case deletion for a versionless case, cascading through hypotheses, hypothesis-revisions and their collects, refused for any case holding a version.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A delete the case store refuses leaves every hypothesis referencing that slug, and every revision and collect of those hypotheses, still held.",
+        "A delete the case store refuses leaves the case still held under its slug.",
+        "Deleting through the case store a case that holds no case version leaves the store holding no collect of those hypothesis-revisions.",
+        "The delete operation's domain module imports no framework, driver or provider client package.",
+        "The message of a CaseHoldsVersionsError is written in Brazilian Portuguese."
+      ],
+      "findings": 9
     }
   ],
   "edges": [
@@ -182,6 +202,24 @@
       "to": "implementation/case-deletion/store-deletes-a-versionless-case",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/case-deletion-backend",
+      "to": "task/case-deletion/case-holds-versions-refusal",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/case-deletion-backend",
+      "to": "task/case-deletion/store-deletes-a-versionless-case",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/case-deletion-backend",
+      "to": "task/case-deletion/delete-case-over-case-lifecycle",
+      "kind": "reviews",
+      "at": "tasks[2]"
     }
   ]
 }

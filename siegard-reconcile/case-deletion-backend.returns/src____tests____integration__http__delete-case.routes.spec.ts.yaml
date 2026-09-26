@@ -1,0 +1,94 @@
+read:
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: >-
+      the accepted-delete assertion and the two draft/released refusal assertions in the first
+      it block (lines 237-247), backed by assertRefusedByCaseHoldsVersions (lines 184-194)
+    evidence: >-
+      expect(acceptedResponse.statusCode).toBe(204);
+      await assertCaseFullyRemoved(acceptedSlug); ... expect(response.statusCode).toBe(409);
+      const body = response.json() as JsonErrorResponse;
+      expect(body.error.code).toBe('CaseHoldsVersionsError');
+      expect(body.error.details).toEqual({ slug });
+      await assertCaseStillHeld(slug);
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: the message assertions inside assertRefusedByCaseHoldsVersions (lines 190-191)
+    evidence: >-
+      expect(body.error.message).toMatch(/\bcaso\b/);
+      expect(body.error.message).not.toMatch(/\bcase\b/i);
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: the same message assertions inside assertRefusedByCaseHoldsVersions (lines 190-191)
+    evidence: >-
+      expect(body.error.message).toMatch(/\bcaso\b/);
+      expect(body.error.message).not.toMatch(/\bcase\b/i);
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: >-
+      import Fastify, { type FastifyInstance } from 'fastify';
+      import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js';
+  - node: domain/knowledge/case
+    held_at: the next_version query assertion in the third it block (lines 286-287)
+    evidence: >-
+      const { rows } = await pool.query<{ next_version: number }>('SELECT next_version FROM cases WHERE slug = $1', [slug]);
+      expect(rows[0]?.next_version).toBe(2);
+  - node: domain/knowledge/case-version
+    held_at: the draft/release/discard calls building fixture cases (lines 217-221, 273-274)
+    evidence: >-
+      const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+      await store.release(slug, version);
+  - node: domain/knowledge/hypothesis
+    held_at: the hypothesis-removal assertion inside assertCaseFullyRemoved (lines 150-151)
+    evidence: >-
+      const hypotheses = await pool.query('SELECT name FROM hypotheses WHERE case_slug = $1', [slug]);
+      expect(hypotheses.rows).toEqual([]);
+  - node: domain/knowledge/hypothesis-revision
+    held_at: the revision and collect removal assertions inside assertCaseFullyRemoved (lines 152-155)
+    evidence: >-
+      const revisions = await pool.query('SELECT revision FROM hypothesis_revisions WHERE case_slug = $1', [slug]);
+      expect(revisions.rows).toEqual([]);
+      const collects = await pool.query('SELECT concept_name FROM hypothesis_revision_collects WHERE case_slug = $1', [slug]);
+      expect(collects.rows).toEqual([]);
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: the second it block (lines 251-260)
+    evidence: >-
+      expect(response.statusCode).toBe(404);
+      const body = response.json() as { error: { code: string; details: unknown } };
+      expect(body.error.code).toBe('CaseNotFoundError');
+      expect(body.error.details).toMatchObject({ slug });
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: the status/body assertions in the third it block (lines 278-279)
+    evidence: >-
+      expect(response.statusCode).toBe(204);
+      expect(response.body).toBe('');
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: the third it block as a whole (lines 262-291)
+    evidence: >-
+      expect(response.statusCode).toBe(204);
+      expect(response.body).toBe('');
+      expect(await allCasesNamed(slug)).toEqual([]);
+      const recreatedVersion = await store.createDraft(aCreateDraftInput(slug, glossary));
+      expect(recreatedVersion).toBe(1);
+  - node: contracts/knowledge/case-lifecycle
+    held_at: the store and HTTP calls exercising create-draft, discard, release and delete
+    evidence: >-
+      await store.createDraft(aCreateDraftInput(slug, glossary));
+      await store.discard(slug, draftVersion);
+      const response = await app.inject({ method: 'DELETE', url: `/v1/cases/${slug}` });
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: the recreate assertions in the third it block (lines 283-287)
+    evidence: >-
+      const recreatedVersion = await store.createDraft(aCreateDraftInput(slug, glossary));
+      expect(recreatedVersion).toBe(1);
+      const { rows } = await pool.query<{ next_version: number }>('SELECT next_version FROM cases WHERE slug = $1', [slug]);
+      expect(rows[0]?.next_version).toBe(2);
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: the final listing-length assertion in the third it block (line 289)
+    evidence: "expect(await allCasesNamed(slug)).toHaveLength(1);"
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      the file's three it blocks (lines 224-291) cover the accepted delete, the draft/released
+      409 refusals, the unknown-slug 404 refusal and the recreate-after-delete scenario; none
+      of them sends a malformed path, query or body.
+looked_past: >-
+  Two comment blocks (lines 13-15 and 163-167) explain the test's own wiring choices and its
+  pagination workaround against a long-lived database; a code-structure note, not a domain fact.

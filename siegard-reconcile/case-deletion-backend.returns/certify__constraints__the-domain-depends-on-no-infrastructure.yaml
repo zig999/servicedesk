@@ -1,0 +1,65 @@
+certified:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    state: partial
+    tests:
+      - file: src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts
+        name: >-
+          the case, glossary, capability-registry and investigation modules import no driver and no framework
+      - file: src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts
+        name: >-
+          none of these modules imports the LLM provider client directly, except the two adapters that implement a published port against it
+      - file: src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts
+        name: none of these modules imports an HTTP client package
+      - file: src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts
+        name: none of these modules imports the connection module directly, by any relative path
+      - file: src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts
+        name: >-
+          none of these modules imports the connector-configuration store or its relational adapter, by any relative path
+      - file: src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts
+        name: >-
+          none of these modules imports the connector-request-resolver module or its call-descriptor vocabulary, by any relative path, except this epic's own legitimate HTTP adapter
+      - file: src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts
+        name: >-
+          none of these modules imports either error the connector-request-resolver raises, by any relative path, except this epic's own legitimate HTTP adapter
+      - file: src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts
+        name: >-
+          none of these modules holds any mention of the http-connector module or its exports outside a static import — a dynamic lookup, a global registry, or a string-keyed service locator would not show up as an import specifier at all, which is exactly the gap this task's own Notes call out — except this epic's own legitimate HTTP adapter, and except a citation of a specification-node identity that merely contains the "http-connector" substring in its own slug
+      - file: src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts
+        name: >-
+          none of these modules imports the http-declarative-observation-source adapter directly, by any relative path — it is reached only through the unchanged IObservationSource port
+    why: >-
+      The package half of the fact is exercised. The tests read every .ts file in case/, glossary/,
+      capability-registry/ and investigation/. None of those directories has subdirectories, and an
+      empty read makes the test throw rather than pass. The forbidden lists hold every
+      infrastructure package the target depends on (fastify, pg, @anthropic-ai/sdk), so a direct
+      import of any of them from a domain module fails.
+
+      The second half, "infrastructure reaches it only through ports", is guarded only over a fixed
+      list of named modules: the connection module, the connector-configuration store and its
+      relational repository, the connector-request-resolver and call-descriptor, the resolver's two
+      errors, and the HTTP declarative adapter. A domain module that imported any other concrete
+      infrastructure module would pass every test in the set, and through it could reach pg or
+      fastify transitively. Examples are a relational *.repository under persistence/ other than
+      the connector-configuration one, anything under factories/ or http/, or
+      http-connector/connector-http-issuer.
+
+      The provider-client check exempts two files in investigation/ by filename alone. A file with
+      either name is exempt whatever it holds, so whether those files stay infrastructure rather
+      than domain is not asserted.
+
+      The connector-configuration-store test goes further than the node. It forbids importing
+      connector-configuration-store.port, which is a port, and the node allows infrastructure to
+      reach the domain through ports.
+
+      The test "the connection module sits under persistence/, beside the relational store
+      repositories, rather than under any of the four audited domain directories" asserts only
+      that two files exist in persistence/. It cannot fail when a domain module imports
+      infrastructure, so it bears on nothing here.
+    remainder: testable
+    remainder_why: >-
+      A test over the four domain directories that resolves every relative import specifier of
+      every file, and asserts that each one lands on a domain module or a *.port file, would close
+      it. No specifier may resolve into persistence/, factories/, http/ or http-connector/. The
+      input is the current tree and the expected result is an empty offender list. Whatever
+      infrastructure adapters are still allowed to sit in these directories should be declared as
+      infrastructure by that test rather than skipped by filename.

@@ -1,0 +1,86 @@
+read:
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: >-
+      the accepted-delete test (204) and the two 409 CaseHoldsVersionsError tests, which check the
+      status, error code and slug in details for both a draft-holding and a released-holding case
+    evidence: >-
+      expect(response.statusCode).toBe(204); ... built.delete.mockRejectedValueOnce(new
+      CaseHoldsVersionsError('a-slug-holding-a-draft')); ... expect(response.statusCode).toBe(409);
+      expect(body.error.code).toBe('CaseHoldsVersionsError'); expect(body.error.details).toMatchObject({
+      slug: 'a-slug-holding-a-draft' })
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: the CaseNotFoundError forwarding test's message assertions
+    evidence: >-
+      expect(body.error.message).toMatch(/\bcaso\b/); expect(body.error.message).not.toMatch(/\bcase\b/i)
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: the same CaseNotFoundError forwarding test, checking "caso" and rejecting the English "case"
+    evidence: >-
+      expect(body.error.message).toMatch(/\bcaso\b/); expect(body.error.message).not.toMatch(/\bcase\b/i)
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: nowhere
+    evidence: >-
+      import Fastify, { type FastifyInstance } from 'fastify'; ... import { createDeleteCaseRoutesPlugin }
+      from '../../../http/delete-case.routes.js'; — this file exercises the HTTP route layer against a
+      mocked delete dependency; it makes no claim about the domain layer's own imports
+  - node: domain/knowledge/case
+    held_at: the slug used as the case's identity across the route path and the mocked delete call
+    evidence: >-
+      const response = await app.inject({ method: 'DELETE', url: '/v1/cases/a-slug' }); ...
+      expect(built.delete).toHaveBeenCalledWith('a-slug')
+  - node: domain/knowledge/case-version
+    held_at: >-
+      the two symmetric 409 tests naming a case "holding a draft version" and one "holding a released
+      version instead of a draft one"
+    evidence: >-
+      built.delete.mockRejectedValueOnce(new CaseHoldsVersionsError('a-slug-holding-a-draft')); ...
+      built.delete.mockRejectedValueOnce(new CaseHoldsVersionsError('a-slug-holding-a-released-version'))
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: >-
+      the file's imports and assertions name only CaseHoldsVersionsError, CaseNotFoundError and the
+      delete route/controller — no hypothesis is named or exercised anywhere in this file
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: >-
+      the file's imports and assertions name only CaseHoldsVersionsError, CaseNotFoundError and the
+      delete route/controller — no hypothesis-revision is named or exercised anywhere in this file
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: the CaseNotFoundError test for an unknown slug
+    evidence: >-
+      built.delete.mockRejectedValueOnce(new CaseNotFoundError('an-absent-slug', 0)); ...
+      expect(response.statusCode).toBe(404); expect(body.error.code).toBe('CaseNotFoundError');
+      expect(body.error.details).toMatchObject({ slug: 'an-absent-slug' })
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: the first test's 204/empty-body assertions
+    evidence: >-
+      expect(response.statusCode).toBe(204); expect(response.body).toBe(''); expect(response.rawPayload.length).toBe(0)
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: >-
+      the first test, "removes the named case through delete and answers 204 with a wholly empty body"
+    evidence: >-
+      built.delete.mockResolvedValueOnce(undefined); const response = await app.inject({ method: 'DELETE',
+      url: '/v1/cases/a-slug' }); expect(response.statusCode).toBe(204)
+  - node: contracts/knowledge/case-lifecycle
+    held_at: the plugin registration exercising the published delete operation over HTTP
+    evidence: "app.register(createDeleteCaseRoutesPlugin(dependencies));"
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: nowhere
+    evidence: >-
+      the file's five tests cover only delete's outcomes (204, 409, 404, 400) — create-draft is never
+      invoked or referenced
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: >-
+      each test uses a single slug per case as a bare identifier; no test exercises two cases
+      contending for one slug
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: the empty-:slug-segment test's 400/VALIDATION_ERROR assertions
+    evidence: >-
+      expect(response.statusCode).toBe(400); expect(body.error.code).toBe('VALIDATION_ERROR');
+      expect(body.error.message).toContain('path'); expect(body.error.details.length).toBeGreaterThan(0)
+looked_past: >-
+  Several assertions under-verify what their governing node states in full — toMatchObject on the
+  409 and 404 details never checks that details carry the slug "and nothing else" or that they
+  also carry the version, and the two 409 tests never assert the message text at all — but a test
+  under-covering a fact its own node states, without stating a competing fact of its own, is a
+  test-completeness question rather than a domain-fact conformance finding.

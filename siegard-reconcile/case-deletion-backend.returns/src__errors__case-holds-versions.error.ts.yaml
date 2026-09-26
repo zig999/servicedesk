@@ -1,0 +1,83 @@
+read:
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: >-
+      the message template passed to `super()` in the constructor
+    evidence: >-
+      super(`o caso "${slug}" ainda possui versão, e só um caso sem nenhuma versão pode ser excluído`);
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: >-
+      the same message template passed to `super()`
+    evidence: >-
+      super(`o caso "${slug}" ainda possui versão, e só um caso sem nenhuma versão pode ser excluído`);
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      nowhere to correct — the constraint is upheld by what the file omits: it carries no import
+      statement anywhere and extends only the language's built-in Error
+    evidence: >-
+      export class CaseHoldsVersionsError extends Error {
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: >-
+      the constructor body — the message names the case slug and the context object carries
+      that slug alone
+    evidence: |-
+      super(`o caso "${slug}" ainda possui versão, e só um caso sem nenhuma versão pode ser excluído`);
+      this.name = 'CaseHoldsVersionsError';
+      this.context = { slug };
+  - node: domain/knowledge/case
+    held_at: nowhere
+    evidence: >-
+      public constructor(slug: string) { — the case aggregate itself is not held here; slug
+      arrives as a bare string parameter, not the case entity
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: >-
+      the file's only reference to a case version is the fixed noun "versão" inside the message
+      literal; no case-version fact or attribute is held here
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: >-
+      export class CaseHoldsVersionsError extends Error { — the file makes no reference to
+      hypothesis anywhere in its nine lines
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: >-
+      export class CaseHoldsVersionsError extends Error { — the file makes no reference to
+      hypothesis-revision anywhere in its nine lines
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: nowhere
+    evidence: >-
+      this.name = 'CaseHoldsVersionsError'; — this file names a different refusal than the one
+      that rule governs (CaseNotFoundError), and states nothing about an unknown-slug read
+  - node: constraints/a-successful-case-deletion-answers-with-no-content
+    held_at: nowhere
+    evidence: >-
+      the file holds only the refusal path (a thrown error); the accepted-deletion response
+      this constraint governs is not present here
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: nowhere
+    evidence: >-
+      the file's message states the opposite condition — "ainda possui versão" (still holds a
+      version) — the scenario's own given (a case holding none) is not reached here
+  - node: contracts/knowledge/case-lifecycle
+    held_at: nowhere
+    evidence: >-
+      export class CaseHoldsVersionsError extends Error { — no operation of the contract is
+      named or enumerated in this file
+  - node: rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug
+    held_at: nowhere
+    evidence: >-
+      public constructor(slug: string) { — the file only receives a slug value; it states
+      nothing about how a case comes into existence
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: >-
+      public readonly context: Readonly<{ slug: string }>; — slug is carried through as data,
+      with no uniqueness fact asserted or checked here
+  - node: constraints/a-malformed-request-is-refused-with-a-validation-error
+    held_at: nowhere
+    evidence: >-
+      export class CaseHoldsVersionsError extends Error { — the file defines a domain refusal,
+      not the shape-validation refusal this constraint governs
+looked_past: >-
+  the TypeScript typing choice (Readonly<{ slug: string }>) is a style/construction detail with
+  no domain fact of its own, so it is not reported here.
