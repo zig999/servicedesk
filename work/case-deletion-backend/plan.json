@@ -135,29 +135,25 @@
       "from": "task/case-deletion/case-holds-versions-refusal",
       "to": "rules/knowledge/a-case-holding-no-version-may-be-deleted",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:a778266bd7d28b2174b5f9c8220e182913f1b0c59549573adfe8b0ed5225c291"
+      "at": "implements[0]"
     },
     {
       "from": "task/case-deletion/case-holds-versions-refusal",
       "to": "constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:ac0edd8fbfb9505a66e6f7be8c319be2e8c82f527daa1e0848603e0f06ff229e"
+      "at": "implements[1]"
     },
     {
       "from": "task/case-deletion/case-holds-versions-refusal",
       "to": "constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word",
       "kind": "implements",
-      "at": "implements[2]",
-      "digest": "sha256:ebd00c9d23b08bee16739e4b6766a71bc2b8de9c18ef8431e05fdcb98daf45db"
+      "at": "implements[2]"
     },
     {
       "from": "task/case-deletion/case-holds-versions-refusal",
       "to": "constraints/the-domain-depends-on-no-infrastructure",
       "kind": "implements",
-      "at": "implements[3]",
-      "digest": "sha256:05cf4c66d374126874156a4aa0ef90d3bc1191d4a60150d38a2000e3deee9f2c"
+      "at": "implements[3]"
     },
     {
       "from": "task/case-deletion/delete-case-over-case-lifecycle",
@@ -169,106 +165,91 @@
       "from": "task/case-deletion/delete-case-over-case-lifecycle",
       "to": "rules/knowledge/a-case-holding-no-version-may-be-deleted",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:a778266bd7d28b2174b5f9c8220e182913f1b0c59549573adfe8b0ed5225c291"
+      "at": "implements[0]"
     },
     {
       "from": "task/case-deletion/delete-case-over-case-lifecycle",
       "to": "rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused",
       "kind": "implements",
-      "at": "implements[10]",
-      "digest": "sha256:dafe2beaea64e45544258706b58cb93136b1395c74f636e5e0ac6ba987f232d6"
+      "at": "implements[10]"
     },
     {
       "from": "task/case-deletion/delete-case-over-case-lifecycle",
       "to": "constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word",
       "kind": "implements",
-      "at": "implements[11]",
-      "digest": "sha256:ebd00c9d23b08bee16739e4b6766a71bc2b8de9c18ef8431e05fdcb98daf45db"
+      "at": "implements[11]"
     },
     {
       "from": "task/case-deletion/delete-case-over-case-lifecycle",
       "to": "constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese",
       "kind": "implements",
-      "at": "implements[12]",
-      "digest": "sha256:ac0edd8fbfb9505a66e6f7be8c319be2e8c82f527daa1e0848603e0f06ff229e"
+      "at": "implements[12]"
     },
     {
       "from": "task/case-deletion/delete-case-over-case-lifecycle",
       "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
       "kind": "implements",
-      "at": "implements[13]",
-      "digest": "sha256:684d6f2f9eb53d8d64a6303c243f4789ec08c1145a369829bbb2dda83fa4c05a"
+      "at": "implements[13]"
     },
     {
       "from": "task/case-deletion/delete-case-over-case-lifecycle",
       "to": "constraints/the-domain-depends-on-no-infrastructure",
       "kind": "implements",
-      "at": "implements[14]",
-      "digest": "sha256:05cf4c66d374126874156a4aa0ef90d3bc1191d4a60150d38a2000e3deee9f2c"
+      "at": "implements[14]"
     },
     {
       "from": "task/case-deletion/delete-case-over-case-lifecycle",
       "to": "constraints/a-successful-case-deletion-answers-with-no-content",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:7db4b8384a92fb0ea55c99b1c18263c24b1ab0d1fa855aaf7df6297f41388311"
+      "at": "implements[1]"
     },
     {
       "from": "task/case-deletion/delete-case-over-case-lifecycle",
       "to": "scenarios/knowledge/a-case-holding-no-version-is-deleted",
       "kind": "implements",
-      "at": "implements[2]",
-      "digest": "sha256:1c23060527070fcdba3d497afd10b1d4e617f26910eb1d962ac6456cfc6360b1"
+      "at": "implements[2]"
     },
     {
       "from": "task/case-deletion/delete-case-over-case-lifecycle",
       "to": "contracts/knowledge/case-lifecycle",
       "kind": "implements",
-      "at": "implements[3]",
-      "digest": "sha256:af4d5e25ab4eeeec77966fbdf4d758ed68fd4186273b72782ed229a18a4d1201"
+      "at": "implements[3]"
     },
     {
       "from": "task/case-deletion/delete-case-over-case-lifecycle",
       "to": "domain/knowledge/case",
       "kind": "implements",
-      "at": "implements[4]",
-      "digest": "sha256:769751f90dcf33c0a2dbd1aa0fd92351584463ffc8a76b1e50d91eb9d4132780"
+      "at": "implements[4]"
     },
     {
       "from": "task/case-deletion/delete-case-over-case-lifecycle",
       "to": "domain/knowledge/case-version",
       "kind": "implements",
-      "at": "implements[5]",
-      "digest": "sha256:ecc240f94dd4b0877e9d8870288c8167c5d54df3b4464c30d2c67c28fa4c31b6"
+      "at": "implements[5]"
     },
     {
       "from": "task/case-deletion/delete-case-over-case-lifecycle",
       "to": "domain/knowledge/hypothesis",
       "kind": "implements",
-      "at": "implements[6]",
-      "digest": "sha256:9c2a6f292f38981003b4d824912245fcee1c1427e6d875c2d0eab1f0ccfaccbf"
+      "at": "implements[6]"
     },
     {
       "from": "task/case-deletion/delete-case-over-case-lifecycle",
       "to": "domain/knowledge/hypothesis-revision",
       "kind": "implements",
-      "at": "implements[7]",
-      "digest": "sha256:b588f7696f72c6b26c55359e903883d02cbc06e242568ffd626d45c2f36ac7fe"
+      "at": "implements[7]"
     },
     {
       "from": "task/case-deletion/delete-case-over-case-lifecycle",
       "to": "rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug",
       "kind": "implements",
-      "at": "implements[8]",
-      "digest": "sha256:a90b3cc19fe992b76bd2f45805d9ee24db437067ed2db9a9188094ced92b47a0"
+      "at": "implements[8]"
     },
     {
       "from": "task/case-deletion/delete-case-over-case-lifecycle",
       "to": "rules/knowledge/a-slug-identifies-one-case",
       "kind": "implements",
-      "at": "implements[9]",
-      "digest": "sha256:bc6ffc904481c844734fcfa5b6857576ef885ef4049883f030494ac66762c596"
+      "at": "implements[9]"
     },
     {
       "from": "task/case-deletion/store-deletes-a-versionless-case",
@@ -280,43 +261,37 @@
       "from": "task/case-deletion/store-deletes-a-versionless-case",
       "to": "rules/knowledge/a-case-holding-no-version-may-be-deleted",
       "kind": "implements",
-      "at": "implements[0]",
-      "digest": "sha256:a778266bd7d28b2174b5f9c8220e182913f1b0c59549573adfe8b0ed5225c291"
+      "at": "implements[0]"
     },
     {
       "from": "task/case-deletion/store-deletes-a-versionless-case",
       "to": "domain/knowledge/case",
       "kind": "implements",
-      "at": "implements[1]",
-      "digest": "sha256:769751f90dcf33c0a2dbd1aa0fd92351584463ffc8a76b1e50d91eb9d4132780"
+      "at": "implements[1]"
     },
     {
       "from": "task/case-deletion/store-deletes-a-versionless-case",
       "to": "domain/knowledge/case-version",
       "kind": "implements",
-      "at": "implements[2]",
-      "digest": "sha256:ecc240f94dd4b0877e9d8870288c8167c5d54df3b4464c30d2c67c28fa4c31b6"
+      "at": "implements[2]"
     },
     {
       "from": "task/case-deletion/store-deletes-a-versionless-case",
       "to": "domain/knowledge/hypothesis",
       "kind": "implements",
-      "at": "implements[3]",
-      "digest": "sha256:9c2a6f292f38981003b4d824912245fcee1c1427e6d875c2d0eab1f0ccfaccbf"
+      "at": "implements[3]"
     },
     {
       "from": "task/case-deletion/store-deletes-a-versionless-case",
       "to": "domain/knowledge/hypothesis-revision",
       "kind": "implements",
-      "at": "implements[4]",
-      "digest": "sha256:b588f7696f72c6b26c55359e903883d02cbc06e242568ffd626d45c2f36ac7fe"
+      "at": "implements[4]"
     },
     {
       "from": "task/case-deletion/store-deletes-a-versionless-case",
       "to": "rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused",
       "kind": "implements",
-      "at": "implements[5]",
-      "digest": "sha256:dafe2beaea64e45544258706b58cb93136b1395c74f636e5e0ac6ba987f232d6"
+      "at": "implements[5]"
     }
   ]
 }
