@@ -72,3 +72,30 @@ human's /siegard:deliver-scope invocation).
   tasks of this initiative now hold implementation + proof; delivery.json: 4/4 tasks, 0 criteria
   unmet, 0 unproven.
   Commit: b0539dfd "deliver-scope case-deletion-frontend: deliver+prove case-delete-refusal-presentation".
+
+- Invoked /review-change over the 4 delivered tasks, target frontend, slug case-deletion-frontend,
+  reviewed set: the 11 files the 4 tasks' implementation/proof records wrote. Captured a clean
+  whole-suite run at run/case-deletion-frontend (install, typecheck, lint, style, build, a11y,
+  secret-scan, test — all green), so the failures pass has nothing to diagnose. Staged the
+  conformance pass via trace.py --stage --review over the 11 files plus 2 certifications
+  (rules/knowledge/a-case-deletion-refusal-the-surface-cannot-name-is-told-as-an-unrecognised-failure,
+  rules/knowledge/a-successful-case-deletion-lands-on-the-listing-of-every-case, both auto-composed
+  from the proofs' own `demonstrates` claims); delegated 11 specification-conformance-reviewer
+  passes, 1 standard-conformance-reviewer pass, 1 coverage-auditor pass over the 4 tasks' 18
+  criteria, and the 2 certifications — all in one batch, under the 20-concurrent-subagent ceiling.
+  Findings: conformance pass found 2 (case-delete-dialog.tsx hard-codes a near-restatement of
+  rules/knowledge/a-case-holding-no-version-may-be-deleted's own enumeration of what delete
+  removes; case-detail-screen.tsx's New-draft-control hiding is an unstated fact, a client-side
+  gate rules/knowledge/a-case-has-at-most-one-draft does not itself state). Standard pass found 1
+  (ARC-03, the same hasDraft derivation computed inline rather than in a hook/service). Coverage:
+  18 criteria — 13 covered, 5 partial, each partial traced to a listing-fixture root cause (a test
+  asserting a post-act fact against a stub never read beforehand). Certifications: both partial —
+  the unrecognised-failure notice untested against a 409/404 status carrying an unnamed code, and
+  the listing-landing rule's destination bound to a stub route rather than the real listing.
+  Folded via trace.py --fold into siegard-reconcile/case-deletion-frontend.md (23 nodes cleared,
+  6 not — including rules/knowledge/a-case-holding-no-version-may-be-deleted, held back
+  specifically by the case-delete-dialog.tsx finding), bound via trace.py --bind-record (23
+  bindings written). Composed delivery/case-deletion-frontend/review/case-deletion-frontend.md;
+  deliver.py --check passed and delivery.json re-derived (9 nodes, 32 edges, 3 findings, 6 criteria
+  recorded unproven, 0 unmet).
+  Commit: eddc1c04 "deliver-scope case-deletion-frontend: review".
