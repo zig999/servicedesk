@@ -2,6 +2,7 @@ import type { ApiError } from "./api-client";
 
 export type UiErrorStateKind =
   | "case-not-found"
+  | "case-holds-versions"
   | "concept-not-answered"
   | "concept-not-held"
   | "vocabulary-term-not-held"
@@ -32,6 +33,7 @@ const GENERIC_ERROR_STATE: UiErrorState = { kind: "generic-error" };
 const UI_STATE_BY_ERROR_CODE: Readonly<Record<string, UiErrorState>> = {
 
   CaseNotFoundError: { kind: "case-not-found" },
+  CaseHoldsVersionsError: { kind: "case-holds-versions" },
   ConceptNotAnsweredError: { kind: "concept-not-answered" },
   ConceptNotHeldError: { kind: "concept-not-held" },
   VocabularyTermNotHeldError: { kind: "vocabulary-term-not-held" },

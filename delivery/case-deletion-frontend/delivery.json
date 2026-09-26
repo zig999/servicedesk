@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/case-deletion-surface/case-holds-versions-error-state",
+      "kind": "implementation",
+      "file": "implementation/case-deletion-surface/case-holds-versions-error-state.md",
+      "title": "CaseHoldsVersionsError gains its own UI error-state kind",
+      "summary": "UiErrorStateKind and UI_STATE_BY_ERROR_CODE in error-ui-state.ts gain a case-holds-versions member so uiStateForApiError no longer folds CaseHoldsVersionsError into the generic fallback.",
+      "task": "task/case-deletion-surface/case-holds-versions-error-state"
+    },
+    {
+      "id": "proof/case-deletion-surface/case-holds-versions-error-state",
+      "kind": "proof",
+      "file": "proof/case-deletion-surface/case-holds-versions-error-state.md",
+      "title": "CaseHoldsVersionsError gets a distinct, non-generic UI error-state kind",
+      "summary": "Proves that uiStateForApiError now answers CaseHoldsVersionsError with a kind of its own, distinct from every other code the map names (including case-not-found) and from the generic fallback, while the case-not-found and unnamed-code paths remain exactly as they answered before.",
+      "task": "task/case-deletion-surface/case-holds-versions-error-state"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/case-deletion-surface/case-holds-versions-error-state",
+      "to": "rules/knowledge/a-case-deletion-surface-states-which-refusal-answered-its-delete",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-deletion-surface/case-holds-versions-error-state",
+      "to": "rules/knowledge/a-case-deletion-refusal-the-surface-cannot-name-is-told-as-an-unrecognised-failure",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-deletion-surface/case-holds-versions-error-state",
+      "to": "task/case-deletion-surface/case-holds-versions-error-state",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-deletion-surface/case-holds-versions-error-state",
+      "to": "implementation/case-deletion-surface/case-holds-versions-error-state",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

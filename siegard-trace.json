@@ -9166,6 +9166,26 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-case-deletion-refusal-the-surface-cannot-name-is-told-as-an-unrecognised-failure",
+      "digest": "sha256:219369a817f8f3131c34b5248527a27444328f63e5384b5b7cf3134cc5e7b79c",
+      "files": [
+        {
+          "path": "frontend/app/src/services/error-ui-state.ts",
+          "digest": "sha256:4c7e65c34a1fd4cb483dc246446a3a4a17d5b04540a0b5201d2942f85a4def83"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-case-deletion-surface-states-which-refusal-answered-its-delete",
+      "digest": "sha256:8aad6bc9ef0272e75145eabf96bf270656bce63c613f0fef9fabd5835c9c587b",
+      "files": [
+        {
+          "path": "frontend/app/src/services/error-ui-state.ts",
+          "digest": "sha256:4c7e65c34a1fd4cb483dc246446a3a4a17d5b04540a0b5201d2942f85a4def83"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-case-has-at-least-one-hypothesis",
       "digest": "sha256:a889a60c2211b10397260d58cf75b583413631c7af825dd0d9c16079ec2eab56",
       "files": [

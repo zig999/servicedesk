@@ -3,58 +3,90 @@ import { describe, it, expect } from "vitest";
 import { ApiError } from "./api-client";
 import { uiStateForApiError } from "./error-ui-state";
 
+const stateFor = (code: string, message = "message") =>
+  uiStateForApiError(new ApiError(code, message));
+
+const kindFor = (code: string, message = "message"): string => stateFor(code, message).kind;
+
+const expectDistinctKind = (code: string, message: string, otherCodes: string[]): void => {
+  const targetKind = kindFor(code, message);
+  const otherKinds = otherCodes.map((otherCode) => kindFor(otherCode));
+  expect(otherKinds).not.toContain(targetKind);
+  expect(targetKind).not.toBe("generic-error");
+};
+
 describe("the error-code mapping resolves an API error's own code to a user-facing state", () => {
   it("resolves CaseNotFoundError to the case-not-found state", () => {
-    const state = uiStateForApiError(new ApiError("CaseNotFoundError", "not found"));
-    expect(state.kind).toBe("case-not-found");
+    expect(kindFor("CaseNotFoundError", "not found")).toBe("case-not-found");
+  });
+
+  it("resolves CaseHoldsVersionsError to a kind no other named code resolves to, distinct from the generic fallback", () => {
+    expectDistinctKind("CaseHoldsVersionsError", "holds versions", [
+      "CaseNotFoundError",
+      "ConceptNotAnsweredError",
+      "ConceptNotHeldError",
+      "VocabularyTermNotHeldError",
+      "CaseAlreadyHasDraftError",
+      "ManifestPositionOccupiedError",
+      "CaseVersionNotDraftError",
+      "CaseVersionNotDraftAtReleaseError",
+      "HypothesisRevisionNotDraftAtReleaseError",
+      "ConceptAlreadyAnsweredError",
+      "ConceptInUseError",
+      "CaseVersionNotReleasableError",
+      "ManifestWouldHoldNoHypothesisError",
+      "IncompleteCapabilityContractError",
+      "CapabilityNotReadOnlyError",
+      "CapabilitySchemaNotWellFormedError",
+      "CapabilityCitedByEvidenceError",
+      "ConnectorConfigurationNotWellFormedError",
+      "ConceptDescriptionRequiredError",
+      "CaseVersionNotValidError",
+    ]);
   });
 
   it("resolves ConceptNotAnsweredError to the concept-not-answered state", () => {
-    const state = uiStateForApiError(new ApiError("ConceptNotAnsweredError", "not answered"));
-    expect(state.kind).toBe("concept-not-answered");
+    expect(kindFor("ConceptNotAnsweredError", "not answered")).toBe("concept-not-answered");
   });
 
   it("resolves ConceptNotHeldError to the concept-not-held state", () => {
-    const state = uiStateForApiError(new ApiError("ConceptNotHeldError", "not held"));
-    expect(state.kind).toBe("concept-not-held");
+    expect(kindFor("ConceptNotHeldError", "not held")).toBe("concept-not-held");
   });
 
   it("resolves VocabularyTermNotHeldError to the vocabulary-term-not-held state", () => {
-    const state = uiStateForApiError(new ApiError("VocabularyTermNotHeldError", "not held"));
-    expect(state.kind).toBe("vocabulary-term-not-held");
+    expect(kindFor("VocabularyTermNotHeldError", "not held")).toBe("vocabulary-term-not-held");
   });
 
   it("resolves CaseAlreadyHasDraftError to the case-already-has-draft state", () => {
-    const state = uiStateForApiError(new ApiError("CaseAlreadyHasDraftError", "already has draft"));
-    expect(state.kind).toBe("case-already-has-draft");
+    expect(kindFor("CaseAlreadyHasDraftError", "already has draft")).toBe(
+      "case-already-has-draft",
+    );
   });
 
   it("resolves ManifestPositionOccupiedError to the manifest-position-occupied state", () => {
-    const state = uiStateForApiError(new ApiError("ManifestPositionOccupiedError", "position occupied"));
-    expect(state.kind).toBe("manifest-position-occupied");
+    expect(kindFor("ManifestPositionOccupiedError", "position occupied")).toBe(
+      "manifest-position-occupied",
+    );
   });
 
   it("resolves CaseVersionNotDraftError to the case-version-not-draft state", () => {
-    const state = uiStateForApiError(new ApiError("CaseVersionNotDraftError", "not draft"));
-    expect(state.kind).toBe("case-version-not-draft");
+    expect(kindFor("CaseVersionNotDraftError", "not draft")).toBe("case-version-not-draft");
   });
 
   it("resolves CaseVersionNotDraftAtReleaseError to the case-version-not-draft-at-release state", () => {
-    const state = uiStateForApiError(
-      new ApiError("CaseVersionNotDraftAtReleaseError", "not draft at release"),
+    expect(kindFor("CaseVersionNotDraftAtReleaseError", "not draft at release")).toBe(
+      "case-version-not-draft-at-release",
     );
-    expect(state.kind).toBe("case-version-not-draft-at-release");
   });
 
   it("resolves HypothesisRevisionNotDraftAtReleaseError to the hypothesis-revision-not-draft-at-release state", () => {
-    const state = uiStateForApiError(
-      new ApiError("HypothesisRevisionNotDraftAtReleaseError", "not draft at release"),
+    expect(kindFor("HypothesisRevisionNotDraftAtReleaseError", "not draft at release")).toBe(
+      "hypothesis-revision-not-draft-at-release",
     );
-    expect(state.kind).toBe("hypothesis-revision-not-draft-at-release");
   });
 
   it("resolves HypothesisRevisionNotDraftAtReleaseError to a kind no other listed code resolves to, distinct from the generic fallback", () => {
-    const otherCodes = [
+    expectDistinctKind("HypothesisRevisionNotDraftAtReleaseError", "not draft at release", [
       "CaseNotFoundError",
       "ConceptNotAnsweredError",
       "ConceptNotHeldError",
@@ -75,27 +107,19 @@ describe("the error-code mapping resolves an API error's own code to a user-faci
       "ConceptNotInGlossaryError",
       "ConceptRefusesSubjectTypeError",
       "CaseVersionNotValidError",
-    ];
-
-    const targetKind = uiStateForApiError(
-      new ApiError("HypothesisRevisionNotDraftAtReleaseError", "not draft at release"),
-    ).kind;
-    const otherKinds = otherCodes.map((code) => uiStateForApiError(new ApiError(code, "message")).kind);
-
-    expect(otherKinds).not.toContain(targetKind);
-    expect(targetKind).not.toBe("generic-error");
+    ]);
   });
 
   it("resolves CaseVersionNotReleasableError to the case-version-not-releasable state", () => {
-    const state = uiStateForApiError(new ApiError("CaseVersionNotReleasableError", "not releasable"));
-    expect(state.kind).toBe("case-version-not-releasable");
+    expect(kindFor("CaseVersionNotReleasableError", "not releasable")).toBe(
+      "case-version-not-releasable",
+    );
   });
 
   it("resolves ManifestWouldHoldNoHypothesisError to the manifest-would-hold-no-hypothesis state", () => {
-    const state = uiStateForApiError(
-      new ApiError("ManifestWouldHoldNoHypothesisError", "would hold no hypothesis"),
+    expect(kindFor("ManifestWouldHoldNoHypothesisError", "would hold no hypothesis")).toBe(
+      "manifest-would-hold-no-hypothesis",
     );
-    expect(state.kind).toBe("manifest-would-hold-no-hypothesis");
   });
 
   it("gives each of the ten mapped classes a kind distinct from every other one", () => {
@@ -112,56 +136,49 @@ describe("the error-code mapping resolves an API error's own code to a user-faci
       "ManifestWouldHoldNoHypothesisError",
     ];
 
-    const kinds = codes.map((code) => uiStateForApiError(new ApiError(code, "message")).kind);
-
-    expect(new Set(kinds).size).toBe(10);
+    expect(new Set(codes.map((code) => kindFor(code))).size).toBe(10);
   });
 
   it("resolves CaseHoldsNoDraftError to the shared generic-error state", () => {
-    const state = uiStateForApiError(new ApiError("CaseHoldsNoDraftError", "holds no draft"));
-    expect(state.kind).toBe("generic-error");
+    expect(kindFor("CaseHoldsNoDraftError", "holds no draft")).toBe("generic-error");
   });
 
   it("resolves ConceptNotInGlossaryError to the shared generic-error state", () => {
-    const state = uiStateForApiError(new ApiError("ConceptNotInGlossaryError", "not in glossary"));
-    expect(state.kind).toBe("generic-error");
+    expect(kindFor("ConceptNotInGlossaryError", "not in glossary")).toBe("generic-error");
   });
 
   it("resolves ConceptRefusesSubjectTypeError to the shared generic-error state", () => {
-    const state = uiStateForApiError(
-      new ApiError("ConceptRefusesSubjectTypeError", "refuses subject type"),
+    expect(kindFor("ConceptRefusesSubjectTypeError", "refuses subject type")).toBe(
+      "generic-error",
     );
-    expect(state.kind).toBe("generic-error");
   });
 
   it("resolves CaseVersionNotValidError, the name the backend's refusal actually carries, to its own distinct case-not-valid state, not the shared generic-error fallback", () => {
-    const state = uiStateForApiError(new ApiError("CaseVersionNotValidError", "not valid"));
-    expect(state.kind).toBe("case-not-valid");
-    expect(state.kind).not.toBe("generic-error");
+    const kind = kindFor("CaseVersionNotValidError", "not valid");
+    expect(kind).toBe("case-not-valid");
+    expect(kind).not.toBe("generic-error");
   });
 
   it("resolves CaseNotValidError, the retired name the mapping no longer keys on, to the shared generic-error state rather than case-not-valid", () => {
-    const state = uiStateForApiError(new ApiError("CaseNotValidError", "not valid"));
-    expect(state.kind).toBe("generic-error");
+    expect(kindFor("CaseNotValidError", "not valid")).toBe("generic-error");
   });
 
   it("resolves a code the table does not name to the generic-error state rather than throwing", () => {
-    const state = uiStateForApiError(new ApiError("SomeFutureBackendError", "unrecognized"));
-    expect(state.kind).toBe("generic-error");
+    expect(kindFor("SomeFutureBackendError", "unrecognized")).toBe("generic-error");
   });
 
   it("resolves ConceptAlreadyAnsweredError to the concept-already-answered state", () => {
-    const state = uiStateForApiError(new ApiError("ConceptAlreadyAnsweredError", "already answered"));
-    expect(state.kind).toBe("concept-already-answered");
+    expect(kindFor("ConceptAlreadyAnsweredError", "already answered")).toBe(
+      "concept-already-answered",
+    );
   });
 
   it("resolves ConceptInUseError to a state kind other than the shared generic-error fallback", () => {
-    const state = uiStateForApiError(new ApiError("ConceptInUseError", "concept in use"));
-    expect(state.kind).not.toBe("generic-error");
+    expect(kindFor("ConceptInUseError", "concept in use")).not.toBe("generic-error");
   });
 
   it("resolves ConceptInUseError to a kind no other named code resolves to, distinct from the generic fallback", () => {
-    const otherCodes = [
+    expectDistinctKind("ConceptInUseError", "concept in use", [
       "CaseNotFoundError",
       "ConceptNotAnsweredError",
       "ConceptNotHeldError",
@@ -183,32 +200,25 @@ describe("the error-code mapping resolves an API error's own code to a user-faci
       "ConceptNotInGlossaryError",
       "ConceptRefusesSubjectTypeError",
       "CaseVersionNotValidError",
-    ];
-
-    const targetKind = uiStateForApiError(new ApiError("ConceptInUseError", "concept in use")).kind;
-    const otherKinds = otherCodes.map((code) => uiStateForApiError(new ApiError(code, "message")).kind);
-
-    expect(otherKinds).not.toContain(targetKind);
-    expect(targetKind).not.toBe("generic-error");
+    ]);
   });
 
   it("resolves IncompleteCapabilityContractError to the incomplete-capability-contract state", () => {
-    const state = uiStateForApiError(
-      new ApiError("IncompleteCapabilityContractError", "incomplete contract"),
+    expect(kindFor("IncompleteCapabilityContractError", "incomplete contract")).toBe(
+      "incomplete-capability-contract",
     );
-    expect(state.kind).toBe("incomplete-capability-contract");
   });
 
   it("resolves CapabilityNotReadOnlyError to the capability-not-read-only state", () => {
-    const state = uiStateForApiError(new ApiError("CapabilityNotReadOnlyError", "not read-only"));
-    expect(state.kind).toBe("capability-not-read-only");
+    expect(kindFor("CapabilityNotReadOnlyError", "not read-only")).toBe(
+      "capability-not-read-only",
+    );
   });
 
   it("resolves CapabilitySchemaNotWellFormedError to the capability-schema-not-well-formed state", () => {
-    const state = uiStateForApiError(
-      new ApiError("CapabilitySchemaNotWellFormedError", "not well-formed"),
+    expect(kindFor("CapabilitySchemaNotWellFormedError", "not well-formed")).toBe(
+      "capability-schema-not-well-formed",
     );
-    expect(state.kind).toBe("capability-schema-not-well-formed");
   });
 
   it("gives each of these four newly mapped classes a kind distinct from the others and from the shared generic-error fallback", () => {
@@ -219,14 +229,14 @@ describe("the error-code mapping resolves an API error's own code to a user-faci
       "CapabilitySchemaNotWellFormedError",
     ];
 
-    const kinds = codes.map((code) => uiStateForApiError(new ApiError(code, "message")).kind);
+    const kinds = codes.map((code) => kindFor(code));
 
     expect(new Set(kinds).size).toBe(4);
     expect(kinds).not.toContain("generic-error");
   });
 
   it("resolves CapabilityCitedByEvidenceError to a kind no other named code resolves to, distinct from the generic fallback", () => {
-    const otherCodes = [
+    expectDistinctKind("CapabilityCitedByEvidenceError", "cited by evidence", [
       "CaseNotFoundError",
       "ConceptNotAnsweredError",
       "ConceptNotHeldError",
@@ -249,15 +259,7 @@ describe("the error-code mapping resolves an API error's own code to a user-faci
       "ConceptNotInGlossaryError",
       "ConceptRefusesSubjectTypeError",
       "CaseVersionNotValidError",
-    ];
-
-    const targetKind = uiStateForApiError(
-      new ApiError("CapabilityCitedByEvidenceError", "cited by evidence"),
-    ).kind;
-    const otherKinds = otherCodes.map((code) => uiStateForApiError(new ApiError(code, "message")).kind);
-
-    expect(otherKinds).not.toContain(targetKind);
-    expect(targetKind).not.toBe("generic-error");
+    ]);
   });
 
   it("leaves every error code named before CapabilityCitedByEvidenceError was added resolving to the exact kind it resolved to before", () => {
@@ -287,40 +289,31 @@ describe("the error-code mapping resolves an API error's own code to a user-faci
     };
 
     const resolvedKinds = Object.fromEntries(
-      Object.keys(previouslyNamedCodeKinds).map((code) => [
-        code,
-        uiStateForApiError(new ApiError(code, "message")).kind,
-      ]),
+      Object.keys(previouslyNamedCodeKinds).map((code) => [code, kindFor(code)]),
     );
 
     expect(resolvedKinds).toEqual(previouslyNamedCodeKinds);
   });
 
   it("resolves ConnectorConfigurationNotWellFormedError to its own distinct connector-configuration-not-well-formed state, not the shared generic-error fallback", () => {
-    const state = uiStateForApiError(
-      new ApiError("ConnectorConfigurationNotWellFormedError", "not well-formed"),
-    );
-    expect(state.kind).toBe("connector-configuration-not-well-formed");
-    expect(state.kind).not.toBe("generic-error");
+    const kind = kindFor("ConnectorConfigurationNotWellFormedError", "not well-formed");
+    expect(kind).toBe("connector-configuration-not-well-formed");
+    expect(kind).not.toBe("generic-error");
   });
 
   it("resolves ConceptDescriptionRequiredError to its own distinct concept-description-required state, not the shared generic-error fallback", () => {
-    const state = uiStateForApiError(
-      new ApiError("ConceptDescriptionRequiredError", "description required"),
-    );
-    expect(state.kind).toBe("concept-description-required");
-    expect(state.kind).not.toBe("generic-error");
+    const kind = kindFor("ConceptDescriptionRequiredError", "description required");
+    expect(kind).toBe("concept-description-required");
+    expect(kind).not.toBe("generic-error");
   });
 
   it("resolves ConceptDescriptionRequiredError to a state carrying only the kind, no wording of its own", () => {
-    const state = uiStateForApiError(
-      new ApiError("ConceptDescriptionRequiredError", "description required"),
-    );
+    const state = stateFor("ConceptDescriptionRequiredError", "description required");
     expect(Object.keys(state)).toEqual(["kind"]);
   });
 
   it("resolves a code the table does not name to a fallback state carrying only the kind, not the refusal's own message", () => {
-    const state = uiStateForApiError(new ApiError("SomeFutureBackendError", "some future message"));
+    const state = stateFor("SomeFutureBackendError", "some future message");
     expect(Object.keys(state)).toEqual(["kind"]);
   });
 
@@ -329,7 +322,7 @@ describe("the error-code mapping resolves an API error's own code to a user-faci
       "OpenApiDocumentNotFetchedError",
       "OpenApiDocumentNotReadableError",
       "OpenApiOperationNotFoundError",
-    ].map((code) => uiStateForApiError(new ApiError(code, "message")).kind);
+    ].map((code) => kindFor(code));
 
     expect(kinds).toEqual(["generic-error", "generic-error", "generic-error"]);
   });
