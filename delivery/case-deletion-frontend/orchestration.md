@@ -35,3 +35,12 @@ human's /siegard:deliver-scope invocation).
   error-ui-state.ts stale (this task restamped it under different nodes than earlier binds) —
   left for this initiative's own /review-change.
   Commit: dfe31037 "deliver-scope case-deletion-frontend: deliver case-holds-versions-error-state".
+
+- Invoked /implement-task over task/case-deletion-surface/delete-case-mutation, target frontend,
+  slug case-deletion-frontend. Added useDeleteCase(), a mutation hook DELETEing /v1/cases/:slug
+  and invalidating the cases-list query on success, leaving the wire error code unmapped for
+  every answer other than 204/409/404 so a later task can still tell an unrecognised refusal
+  apart from the two named ones. Build and suite both passed clean on the first attempt. 6 tests
+  (5 for the stated criteria, 1 for the task's own UNDERDETERMINED note), 5/5 criteria met. Trace
+  bound for 6 nodes; left 11 bindings on other frontend files stale — left for /review-change.
+  Commit: d983871c "deliver-scope case-deletion-frontend: deliver delete-case-mutation".
