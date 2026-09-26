@@ -1,0 +1,348 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/case-deletion-surface",
+      "kind": "epic",
+      "file": "epic/case-deletion-surface.md",
+      "title": "Case deletion surface",
+      "summary": "The frontend work that lets a curator delete a case holding no version, show what each delete answer means, and see the deleted case leave the cases listing."
+    },
+    {
+      "id": "inventory/case-deletion-frontend-error-code-gap",
+      "kind": "inventory",
+      "file": "inventory/case-deletion-frontend-error-code-gap.md",
+      "title": "CaseHoldsVersionsError has no UI error-state entry yet",
+      "summary": "The one new backend error code this initiative must surface (CaseHoldsVersionsError, 409) is absent from the sitewide error-code-to-message map, while CaseNotFoundError already has an entry."
+    },
+    {
+      "id": "inventory/case-deletion-frontend-survey",
+      "kind": "inventory",
+      "file": "inventory/case-deletion-frontend-survey.md",
+      "title": "Case deletion frontend — existing surface, lifecycle client, and sibling removal pattern",
+      "summary": "Where cases are listed and viewed, how the codebase already deletes a sibling resource (connector configuration, concept, draft case-version), and how HTTP error codes become user-facing messages."
+    },
+    {
+      "id": "task/case-deletion-surface/case-delete-refusal-presentation",
+      "kind": "task",
+      "file": "task/case-deletion-surface/case-delete-refusal-presentation.md",
+      "title": "A refused case delete tells the curator which refusal it met",
+      "summary": "How the case detail surface presents a delete answered with CaseHoldsVersionsError, with CaseNotFoundError, or with any other refusal.",
+      "epic": "case-deletion-surface"
+    },
+    {
+      "id": "task/case-deletion-surface/case-detail-delete-control",
+      "kind": "task",
+      "file": "task/case-deletion-surface/case-detail-delete-control.md",
+      "title": "Delete control on the detail surface of a case holding no version",
+      "summary": "A control on CaseDetailScreen that deletes a case whose versions read answers no version, after which the case is gone from the cases listing.",
+      "epic": "case-deletion-surface"
+    },
+    {
+      "id": "task/case-deletion-surface/case-holds-versions-error-state",
+      "kind": "task",
+      "file": "task/case-deletion-surface/case-holds-versions-error-state.md",
+      "title": "CaseHoldsVersionsError gets its own UI error state",
+      "summary": "The sitewide error-code map and its closed kind union gain an entry for CaseHoldsVersionsError.",
+      "epic": "case-deletion-surface"
+    },
+    {
+      "id": "task/case-deletion-surface/delete-case-mutation",
+      "kind": "task",
+      "file": "task/case-deletion-surface/delete-case-mutation.md",
+      "title": "Case-delete client mutation",
+      "summary": "A mutation hook that sends DELETE /v1/cases/:slug and invalidates the cases listing when the delete is accepted.",
+      "epic": "case-deletion-surface"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/case-deletion-surface",
+      "to": "rules/knowledge/a-case-holding-no-version-may-be-deleted",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-deletion-surface",
+      "to": "rules/knowledge/a-slug-identifies-one-case",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/case-deletion-surface",
+      "to": "constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/case-deletion-surface",
+      "to": "constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/case-deletion-surface",
+      "to": "rules/knowledge/a-case-deletion-takes-a-further-explicit-act-reproducing-the-cases-own-slug",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/case-deletion-surface",
+      "to": "rules/knowledge/a-successful-case-deletion-lands-on-the-listing-of-every-case",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/case-deletion-surface",
+      "to": "rules/knowledge/a-case-deletion-surface-states-which-refusal-answered-its-delete",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/case-deletion-surface",
+      "to": "rules/knowledge/a-case-deletion-refusal-the-surface-cannot-name-is-told-as-an-unrecognised-failure",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/case-deletion-surface",
+      "to": "constraints/a-successful-case-deletion-answers-with-no-content",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/case-deletion-surface",
+      "to": "scenarios/knowledge/a-case-holding-no-version-is-deleted",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/case-deletion-surface",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-deletion-surface",
+      "to": "contracts/knowledge/case-query",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/case-deletion-surface",
+      "to": "domain/knowledge/case",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/case-deletion-surface",
+      "to": "rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/case-deletion-surface",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/case-deletion-surface",
+      "to": "constraints/a-domain-error-unmapped-by-status-is-refused-generically",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/case-deletion-surface",
+      "to": "rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/case-deletion-surface/case-delete-refusal-presentation",
+      "to": "task/case-deletion-surface/case-holds-versions-error-state",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-deletion-surface/case-delete-refusal-presentation",
+      "to": "task/case-deletion-surface/case-detail-delete-control",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/case-deletion-surface/case-delete-refusal-presentation",
+      "to": "rules/knowledge/a-case-deletion-surface-states-which-refusal-answered-its-delete",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:8aad6bc9ef0272e75145eabf96bf270656bce63c613f0fef9fabd5835c9c587b"
+    },
+    {
+      "from": "task/case-deletion-surface/case-delete-refusal-presentation",
+      "to": "rules/knowledge/a-case-deletion-refusal-the-surface-cannot-name-is-told-as-an-unrecognised-failure",
+      "kind": "implements",
+      "at": "implements[1]",
+      "digest": "sha256:219369a817f8f3131c34b5248527a27444328f63e5384b5b7cf3134cc5e7b79c"
+    },
+    {
+      "from": "task/case-deletion-surface/case-delete-refusal-presentation",
+      "to": "rules/knowledge/a-case-holding-no-version-may-be-deleted",
+      "kind": "implements",
+      "at": "implements[2]",
+      "digest": "sha256:a778266bd7d28b2174b5f9c8220e182913f1b0c59549573adfe8b0ed5225c291"
+    },
+    {
+      "from": "task/case-deletion-surface/case-delete-refusal-presentation",
+      "to": "rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused",
+      "kind": "implements",
+      "at": "implements[3]",
+      "digest": "sha256:dafe2beaea64e45544258706b58cb93136b1395c74f636e5e0ac6ba987f232d6"
+    },
+    {
+      "from": "task/case-deletion-surface/case-delete-refusal-presentation",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[4]",
+      "digest": "sha256:af4d5e25ab4eeeec77966fbdf4d758ed68fd4186273b72782ed229a18a4d1201"
+    },
+    {
+      "from": "task/case-deletion-surface/case-delete-refusal-presentation",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[5]",
+      "digest": "sha256:97874bda7c1b2ec6518b299bd669e3bac93b3628f2eddbd4bac95a86fe7eec26"
+    },
+    {
+      "from": "task/case-deletion-surface/case-delete-refusal-presentation",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[6]",
+      "digest": "sha256:769751f90dcf33c0a2dbd1aa0fd92351584463ffc8a76b1e50d91eb9d4132780"
+    },
+    {
+      "from": "task/case-deletion-surface/case-detail-delete-control",
+      "to": "task/case-deletion-surface/delete-case-mutation",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-deletion-surface/case-detail-delete-control",
+      "to": "rules/knowledge/a-case-holding-no-version-may-be-deleted",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:a778266bd7d28b2174b5f9c8220e182913f1b0c59549573adfe8b0ed5225c291"
+    },
+    {
+      "from": "task/case-deletion-surface/case-detail-delete-control",
+      "to": "constraints/a-successful-case-deletion-answers-with-no-content",
+      "kind": "implements",
+      "at": "implements[1]",
+      "digest": "sha256:7db4b8384a92fb0ea55c99b1c18263c24b1ab0d1fa855aaf7df6297f41388311"
+    },
+    {
+      "from": "task/case-deletion-surface/case-detail-delete-control",
+      "to": "scenarios/knowledge/a-case-holding-no-version-is-deleted",
+      "kind": "implements",
+      "at": "implements[2]",
+      "digest": "sha256:1c23060527070fcdba3d497afd10b1d4e617f26910eb1d962ac6456cfc6360b1"
+    },
+    {
+      "from": "task/case-deletion-surface/case-detail-delete-control",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[3]",
+      "digest": "sha256:af4d5e25ab4eeeec77966fbdf4d758ed68fd4186273b72782ed229a18a4d1201"
+    },
+    {
+      "from": "task/case-deletion-surface/case-detail-delete-control",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[4]",
+      "digest": "sha256:97874bda7c1b2ec6518b299bd669e3bac93b3628f2eddbd4bac95a86fe7eec26"
+    },
+    {
+      "from": "task/case-deletion-surface/case-detail-delete-control",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[5]",
+      "digest": "sha256:769751f90dcf33c0a2dbd1aa0fd92351584463ffc8a76b1e50d91eb9d4132780"
+    },
+    {
+      "from": "task/case-deletion-surface/case-detail-delete-control",
+      "to": "rules/knowledge/a-case-deletion-takes-a-further-explicit-act-reproducing-the-cases-own-slug",
+      "kind": "implements",
+      "at": "implements[6]",
+      "digest": "sha256:5cd2affa0b0dc3b3ad9ec74bbe40efcbf6b804c37ea301b24c5df28c6b076307"
+    },
+    {
+      "from": "task/case-deletion-surface/case-detail-delete-control",
+      "to": "rules/knowledge/a-successful-case-deletion-lands-on-the-listing-of-every-case",
+      "kind": "implements",
+      "at": "implements[7]",
+      "digest": "sha256:dd04c371c321f2f78a218e44ee8273ca93b970e8f103845adedbc0bc59f29e23"
+    },
+    {
+      "from": "task/case-deletion-surface/case-detail-delete-control",
+      "to": "rules/knowledge/a-case-deletion-surface-states-which-refusal-answered-its-delete",
+      "kind": "implements",
+      "at": "implements[8]",
+      "digest": "sha256:8aad6bc9ef0272e75145eabf96bf270656bce63c613f0fef9fabd5835c9c587b"
+    },
+    {
+      "from": "task/case-deletion-surface/case-holds-versions-error-state",
+      "to": "rules/knowledge/a-case-deletion-surface-states-which-refusal-answered-its-delete",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:8aad6bc9ef0272e75145eabf96bf270656bce63c613f0fef9fabd5835c9c587b"
+    },
+    {
+      "from": "task/case-deletion-surface/case-holds-versions-error-state",
+      "to": "rules/knowledge/a-case-deletion-refusal-the-surface-cannot-name-is-told-as-an-unrecognised-failure",
+      "kind": "implements",
+      "at": "implements[1]",
+      "digest": "sha256:219369a817f8f3131c34b5248527a27444328f63e5384b5b7cf3134cc5e7b79c"
+    },
+    {
+      "from": "task/case-deletion-surface/delete-case-mutation",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:af4d5e25ab4eeeec77966fbdf4d758ed68fd4186273b72782ed229a18a4d1201"
+    },
+    {
+      "from": "task/case-deletion-surface/delete-case-mutation",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[1]",
+      "digest": "sha256:769751f90dcf33c0a2dbd1aa0fd92351584463ffc8a76b1e50d91eb9d4132780"
+    },
+    {
+      "from": "task/case-deletion-surface/delete-case-mutation",
+      "to": "constraints/a-successful-case-deletion-answers-with-no-content",
+      "kind": "implements",
+      "at": "implements[2]",
+      "digest": "sha256:7db4b8384a92fb0ea55c99b1c18263c24b1ab0d1fa855aaf7df6297f41388311"
+    },
+    {
+      "from": "task/case-deletion-surface/delete-case-mutation",
+      "to": "rules/knowledge/a-case-holding-no-version-may-be-deleted",
+      "kind": "implements",
+      "at": "implements[3]",
+      "digest": "sha256:a778266bd7d28b2174b5f9c8220e182913f1b0c59549573adfe8b0ed5225c291"
+    },
+    {
+      "from": "task/case-deletion-surface/delete-case-mutation",
+      "to": "rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused",
+      "kind": "implements",
+      "at": "implements[4]",
+      "digest": "sha256:dafe2beaea64e45544258706b58cb93136b1395c74f636e5e0ac6ba987f232d6"
+    },
+    {
+      "from": "task/case-deletion-surface/delete-case-mutation",
+      "to": "scenarios/knowledge/a-case-holding-no-version-is-deleted",
+      "kind": "implements",
+      "at": "implements[5]",
+      "digest": "sha256:1c23060527070fcdba3d497afd10b1d4e617f26910eb1d962ac6456cfc6360b1"
+    }
+  ]
+}

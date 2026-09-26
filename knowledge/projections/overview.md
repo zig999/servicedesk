@@ -9,7 +9,7 @@ Derived by spec.py from the specification files; never edited.
 | glossary | supporting | 5 | 11 | 2 | 1 |
 | integration | generic | 19 | 139 | 9 | 23 |
 | investigation | supporting | 16 | 50 | 7 | 19 |
-| knowledge | core | 12 | 85 | 5 | 15 |
+| knowledge | core | 12 | 89 | 5 | 15 |
 
 ## Aggregates
 

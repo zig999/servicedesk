@@ -7079,6 +7079,102 @@ entries:
     at that point. Keeping the no-effect answer unconditional would leave the delete rule unable
     to do what it already states, for exactly the data shape the health review that started this
     initiative was found holding.
+- location: rules/knowledge/a-case-deletion-takes-a-further-explicit-act-reproducing-the-cases-own-slug.md
+  field: statement
+  unstated: >-
+    No node states whether a curator's taking a surface's control to delete a case that holds no
+    case version issues the delete on that asking alone. Nor does any node state whether the
+    delete is issued only after a further explicit act, whether such an act must reproduce the
+    case's own slug, or what stands when the curator asks for the delete and does not confirm it.
+    a-case-holding-no-version-may-be-deleted states when the delete is accepted or refused and
+    what it removes, and a-successful-case-deletion-answers-with-no-content states what it
+    answers. Neither says how the curator's own act reaches the delete. The intake
+    (work/case-deletion-frontend/intake/scope.md) asks only that the frontend "offer a curator a
+    way to invoke this delete".
+  decided: >-
+    The delete is never issued on the asking alone. It is issued only where the curator, having
+    asked for it, states in a further, explicit act that it is to be performed and reproduces the
+    case's own slug in that act. An act reproducing no slug, or a slug that is not the case's,
+    issues no delete. Where the curator does not so state, the case stands exactly as it stood:
+    the same slug, the same next_version, and every hypothesis referencing it, every
+    hypothesis-revision of those hypotheses and every collect those revisions hold untouched.
+  why: >-
+    The delete destroys a whole case identity together with every hypothesis and every
+    hypothesis-revision that named it, released revisions included, plus every collect they hold.
+    Nothing published restores any of it, and a later create-draft under the same slug starts a
+    new case rather than recovering the old one. So the act must be one a curator cannot complete
+    without naming the case being destroyed. That is exactly what reproducing the slug requires,
+    and a plain statement of intent does not.
+- location: rules/knowledge/a-successful-case-deletion-lands-on-the-listing-of-every-case.md
+  field: statement
+  unstated: >-
+    No node stated where a curator is taken after a delete of a case holding no case version is
+    accepted with HTTP 204. constraints/a-successful-case-deletion-answers-with-no-content
+    explicitly left this open. rules/knowledge/a-case-holding-no-version-may-be-deleted and
+    scenarios/knowledge/a-case-holding-no-version-is-deleted state only the effect and that the
+    case leaves the listing. work/case-deletion-frontend/intake/scope.md asks only that the UI
+    reflect the case's disappearance and never names a destination.
+  decided: >-
+    The curator is taken to the surface presenting the listing of every case (list-cases). The
+    curator is never taken to any surface addressed by the deleted case's slug, whether alone or
+    with a version number.
+  why: >-
+    After an accepted delete, the deleted slug names no case, and
+    a-case-read-by-an-unknown-slug-or-version-is-refused answers any read of it with a 404
+    CaseNotFoundError. Landing there would show a refusal for the act that just succeeded. The
+    specification already answered this same question for the other removals, in
+    rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing, by sending
+    the operator to the removed entity's own listing. That precedent is taken again for a case.
+    The listing of every case is also where a-case-holding-no-version-is-deleted already places
+    the visible outcome, since the case no longer appears there.
+- location: rules/knowledge/a-case-deletion-surface-states-which-refusal-answered-its-delete.md
+  field: statement
+  unstated: >-
+    No node stated what a surface that issued a case delete tells the curator about the outcome.
+    rules/knowledge/a-case-holding-no-version-may-be-deleted and
+    rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused state the wire refusals
+    (HTTP 409 CaseHoldsVersionsError, HTTP 404 CaseNotFoundError).
+    constraints/a-successful-case-deletion-answers-with-no-content states the accepted answer.
+    None of them says how the surface tells each outcome, or whether the two refusals must be
+    told apart. The intake (work/case-deletion-frontend/intake/scope.md) asks the frontend only
+    to "present the same accepted/refused outcomes the specification already states".
+  decided: >-
+    The surface states that the case was deleted when the delete is accepted. When it is refused,
+    the surface states that the case was not deleted and which refusal answered.
+    CaseHoldsVersionsError is told as the case still holding at least one case version.
+    CaseNotFoundError is told as no case answering the slug the delete named. The two tellings
+    can be told apart from each other. Recorded as a new invariant over domain/knowledge/case.
+  why: >-
+    The two refusals are the only named outcomes the delete refuses with, and each points the
+    curator to a different next act. A case still holding a version needs its draft discarded
+    first, or can never be deleted because a version was released. For a slug no case answers
+    there is nothing left to delete. A telling that merges the two, or only says the case was not
+    deleted, leaves the curator unable to choose between those acts.
+- location: rules/knowledge/a-case-deletion-refusal-the-surface-cannot-name-is-told-as-an-unrecognised-failure.md
+  field: statement
+  unstated: >-
+    No node stated what a surface from which a curator issued a delete of a case tells the
+    curator when that delete is refused with an error code other than CaseHoldsVersionsError or
+    CaseNotFoundError. No node said whether that telling is told apart from the two named
+    refusals, or whether the surface discloses the refusal's error code, message or carried
+    values. a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete
+    covers only reads. The intake (work/case-deletion-frontend/intake/scope.md) names only the
+    204, the 409 CaseHoldsVersionsError and the 404 CaseNotFoundError.
+  decided: >-
+    The surface tells the curator the delete failed for a reason it does not recognise,
+    distinguishably from whatever it states for CaseHoldsVersionsError and for CaseNotFoundError,
+    and discloses nothing further about the refusal — not its error code, not its message, not
+    any value it carries. Recorded as a new invariant over domain/knowledge/case.
+  why: >-
+    A delete is a write the curator issued, so the read fallback does not apply. The
+    specification's precedent for refused writes,
+    a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for, already sends
+    the residue of a named-refusal set to the unrecognised-failure notice with nothing further
+    disclosed. releasing-an-already-released-revision-tells-the-curator-so gives the reason named
+    refusals must be told apart from that notice: an unknown outcome and a named condition lead
+    the curator to different acts. Disclosing nothing further matches
+    constraints/a-domain-error-unmapped-by-status-is-refused-generically, which already withholds
+    an unanticipated error's message and context from the caller.
 
 === domain/glossary/_context
 ---
@@ -13098,6 +13194,115 @@ There is nothing such a read could tell the surface that would change what it do
 
 Reading anyway would cost the surface a call whose answer changes nothing it does, and would put the surface in the business of judging a slug's availability — a judgment rules/knowledge/a-case-is-created-by-the-first-create-draft-naming-its-slug already places entirely on create-draft itself. This rule states only that no such read is issued; what the surface withholds while required content is absent, and how it withholds it, are rules/knowledge/a-case-authoring-surface-offers-no-submission-while-required-content-is-absent's own.
 
+=== rules/knowledge/a-case-deletion-refusal-the-surface-cannot-name-is-told-as-an-unrecognised-failure
+---
+type: invariant
+statement: >-
+  A surface from which a curator issued a delete of a case, meeting a refusal of that
+  delete whose error code is neither CaseHoldsVersionsError nor CaseNotFoundError,
+  tells the curator that the delete failed for a reason the surface does not recognise,
+  told apart from whatever that surface states for either of those two refusals, and
+  discloses nothing further about the refusal: neither its error code, nor its own
+  message, nor any value it carries.
+expression: >-
+  For a case c and a surface from which a curator issued a delete of c: where that
+  delete is refused and the error code the refusal carries is neither
+  CaseHoldsVersionsError nor CaseNotFoundError, the surface states to the curator that
+  the delete failed for a reason it does not recognise; that statement is
+  distinguishable from the statement the surface makes for a delete of c refused with
+  CaseHoldsVersionsError and from the statement it makes for a delete of c refused with
+  CaseNotFoundError; and the surface states nothing else about that refusal — not the
+  error code, not the refusal's message, not any value the refusal carries. Where the
+  refusal carries CaseHoldsVersionsError or CaseNotFoundError, this says nothing about
+  what the surface states.
+constrains:
+  - domain/knowledge/case
+---
+
+## Description
+
+`a-case-holding-no-version-may-be-deleted` refuses a delete of a case holding any version by name, as a CaseHoldsVersionsError, and `a-case-read-by-an-unknown-slug-or-version-is-refused` refuses a lifecycle operation naming a slug nothing answers by name, as a CaseNotFoundError. Those are the two conditions a delete can be refused under that this specification has named. Any other code reaching the surface is one nobody anticipated there. Over the wire that is usually the generic answer `constraints/a-domain-error-unmapped-by-status-is-refused-generically` gives an error the status map does not name, which already carries nothing about the error it stands in for.
+
+A delete is a write the curator issued, not a read, so `a-refusal-a-case-keyed-surface-cannot-name-is-presented-as-a-read-that-did-not-complete` does not reach it. The notice owed is the one `a-manifest-surface-names-the-composing-refusals-it-holds-a-presentation-for` already gives the refused writes that compose a manifest: the notice for a request that failed for a reason the surface does not recognise. `scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so` gives the reason the two named refusals may not share that notice. A curator shown an unrecognised failure learns the outcome is unknown, and retries, reloads or escalates. A curator told the case still holds a version, or that no case answers the slug, learns a condition and the act that follows from it. The three tellings lead to different acts, so each has to be told apart from the others.
+
+Nothing further is disclosed, for the reason the wire-side fallback discloses nothing. The surface cannot state what an unrecognised code means. Showing the raw code, the refusal's message or a value it carries would put a fact in front of the curator in a form no node holds and no act follows from, and a refusal's own message may describe internal state the fallback already keeps from the caller.
+
+This rule decides nothing about what the surface states for CaseHoldsVersionsError or for CaseNotFoundError. It requires only that whatever it states for each is distinguishable from this notice. It adds no attribute, moves no condition either refusal rule decides, and refuses no call. Which control carries the notice, how it is worded and where it sits are form and belong to the interface, as they do everywhere else this specification states what a surface tells a reader.
+
+=== rules/knowledge/a-case-deletion-surface-states-which-refusal-answered-its-delete
+---
+type: invariant
+statement: >-
+  A surface from which a curator issued a delete of a case states the outcome the case
+  lifecycle answered to that delete — that the case was deleted where the delete was
+  accepted, and where it was refused, that the case was not deleted together with which
+  refusal answered, a refusal carrying CaseHoldsVersionsError told as the case still
+  holding at least one case version and a refusal carrying CaseNotFoundError told as no
+  case answering the slug the delete named, each of those two told apart from the other.
+expression: >-
+  For a case slug s and a surface from which a curator issued a delete naming s: where
+  the case lifecycle accepts that delete, the surface states that the case s named was
+  deleted; where it refuses that delete carrying CaseHoldsVersionsError, the surface
+  states that the case was not deleted and that it still holds at least one case
+  version; where it refuses that delete carrying CaseNotFoundError, the surface states
+  that the case was not deleted and that no case answers s; the statement made for
+  CaseHoldsVersionsError and the statement made for CaseNotFoundError can be told apart
+  from one another.
+constrains:
+  - domain/knowledge/case
+---
+
+## Description
+
+`a-case-holding-no-version-may-be-deleted` lets the case lifecycle's delete answer in one of two named ways when it refuses. It refuses with CaseHoldsVersionsError where the case holds any version, draft or released. `a-case-read-by-an-unknown-slug-or-version-is-refused` refuses with CaseNotFoundError where no case answers the slug. `constraints/a-successful-case-deletion-answers-with-no-content` states what the delete answers when it is accepted. This rule states what the surface that issued the delete tells the curator about each of those outcomes.
+
+Neither refusal reports a breakage, and in both nothing was removed. They still send the curator to different next acts. A case still holding a version is one whose draft has to be discarded first, or one that was released and so will never reach zero versions, as `only-a-draft-case-version-may-be-discarded` already requires. A slug no case answers names a case that is already gone, or a slug that was never a case, and there is nothing left to delete. If the two tellings could not be told apart, the curator could not choose between those acts. That is the same indistinguishability `scenarios/knowledge/releasing-an-already-released-revision-tells-the-curator-so` refuses for a refusal that arrives unnamed.
+
+The rule adds no attribute, moves no pin and refuses no call. It says nothing about what the surface tells the curator for a refusal of the delete that carries any other error code. It also says nothing about where the curator is taken after an accepted delete, or how the deleted case leaves the surfaces that listed it. Which control carries each statement, how it is worded and where it sits are form and belong to the interface, as they do everywhere else this specification states what a surface tells a reader.
+
+=== rules/knowledge/a-case-deletion-takes-a-further-explicit-act-reproducing-the-cases-own-slug
+---
+type: policy
+statement: >-
+  Where a surface offers a curator a control to delete a case holding no case version,
+  taking that control asks whether the delete is to be performed and issues no delete on
+  that asking alone; the delete is issued only where the curator, having asked for it,
+  states in a further, explicit act that it is to be performed and reproduces the case's own
+  slug in that act, an act reproducing no slug or a slug that is not the case's issuing no
+  delete; and where the curator does not so state, the case stands exactly as it stood,
+  under the same slug and the same next_version, with every hypothesis referencing it, every
+  hypothesis-revision of those hypotheses and every collect those revisions hold untouched.
+expression: >-
+  For a case c holding no case version and a curator on a surface offering c's delete: the
+  curator's taking the delete control issues no delete. A delete of c is issued only where
+  the curator, having asked for it, states in a further act that the delete is to be
+  performed and reproduces c's own slug in that act; an act reproducing no slug, or
+  reproducing one that is not c's, issues no delete. Where the curator does not so state, no
+  delete of c is issued -- c answers to the same slug, its next_version holds the value it
+  held, every hypothesis referencing c still references it, every hypothesis-revision of
+  those hypotheses holds its number, state and content as it did, and every collect those
+  revisions hold is still held. This turns on nothing else -- not on which surface offers
+  the control, and not on how many hypotheses or hypothesis-revisions reference c.
+constrains:
+  - domain/knowledge/case
+  - domain/knowledge/hypothesis
+  - domain/knowledge/hypothesis-revision
+consistency: eventual
+---
+
+## Description
+
+`contracts/knowledge/case-lifecycle` publishes delete, and `a-case-holding-no-version-may-be-deleted` states when it is accepted and what it removes: the case itself, every hypothesis referencing it, every hypothesis-revision of those hypotheses, released ones included, and every collect those revisions hold.
+No operation that contract publishes restores any of it. Once the case is deleted its slug names no case, and a later create-draft naming that slug creates a new case rather than restoring the old one (`a-case-is-created-by-the-first-create-draft-naming-its-slug`).
+Without this rule, whether the curator's asking for the delete was itself the delete fell to whatever a surface happened to offer.
+
+The further act carries the case's own slug. That is because what the delete destroys is not a single registration: it is a whole identity together with everything that named it.
+It reaches further than the discard of a draft, which `a-draft-case-versions-discard-reproduces-the-cases-own-slug` already asks the curator to confirm by naming the case.
+Reproducing the slug makes the delete an act no curator completes without naming the case being destroyed.
+
+Nothing here moves what the delete evaluates or what it answers. A delete asked of a case holding any version is still refused as `a-case-holding-no-version-may-be-deleted` states. An accepted delete still answers as `a-successful-case-deletion-answers-with-no-content` states.
+This rule does not state which control carries the delete or the further act, how they are worded, where they sit, or how the surface asks for the slug. Those are form and belong to the interface. The rule states only what the further act requires of the curator.
+
 === rules/knowledge/a-case-has-at-least-one-hypothesis
 ---
 type: invariant
@@ -14903,6 +15108,23 @@ constrains:
 
 The slug is the case's identity, and it stopped being kept unique by the file system the moment the file stopped being the medium.
 Two cases under one slug would give every investigation that pinned it two procedures to have run, and no pin could tell which.
+
+=== rules/knowledge/a-successful-case-deletion-lands-on-the-listing-of-every-case
+---
+type: invariant
+statement: A curator whose delete of a case holding no case version is accepted is taken to the surface presenting the listing of every case, which list-cases answers, and never to any surface addressed by the deleted case's slug.
+expression: For every delete of case c that is accepted, the curator's destination is the surface presenting the listing of every case; that destination is never a surface keyed on c's slug, whether alone or together with a version number.
+constrains:
+  - domain/knowledge/case
+---
+
+## Description
+
+An accepted delete leaves nothing at the deleted slug. a-case-holding-no-version-may-be-deleted removes the case itself, and a-case-read-by-an-unknown-slug-or-version-is-refused refuses any read or lifecycle operation naming a slug that no case version answers with an HTTP 404 CaseNotFoundError. So a surface addressed by the deleted slug is one that no read answers. Landing the curator there would show a refusal right after the act that succeeded. a-successful-case-version-creation-lands-on-the-created-versions-own-surface sends a creation to the identity's own surface because the identity still resolves there. A delete leaves the identity resolving nowhere, so it cannot take that destination. rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing already gives the same answer for the removal of a concept, a capability and a connector configuration. This rule takes that answer again for a case.
+
+The listing of every case is where every remaining case still resolves. It is also where scenarios/knowledge/a-case-holding-no-version-is-deleted already says the deleted case no longer appears, so the curator lands where the outcome can be seen. a-case-listing-offers-a-route-to-author-a-new-case-on-every-reading gives that surface a route to author a new case. That matters because a-case-is-created-by-the-first-create-draft-naming-its-slug lets a future create-draft claim the freed slug.
+
+This rule states only the destination an accepted delete takes. constraints/listings-are-paged answers which page of the listing the curator lands on. A refused delete moves nobody, and this rule says nothing about it. This is an invariant over the case alone because the slug it is keyed on is that element's own declared attribute. It is written as a rule rather than in contracts/knowledge/case-lifecycle, because an api contract cannot declare a presentation. That is the same home the creation landing took. It adds no field, refuses no call and changes no listing.
 
 === rules/knowledge/a-successful-case-version-creation-lands-on-the-created-versions-own-surface
 ---
