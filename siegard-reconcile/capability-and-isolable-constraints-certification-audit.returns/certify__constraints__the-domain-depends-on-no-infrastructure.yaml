@@ -1,0 +1,78 @@
+certified:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    state: partial
+    tests:
+      - file: src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts
+        name: >-
+          the case, glossary, capability-registry and investigation modules import no driver and no framework
+      - file: src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts
+        name: >-
+          none of these modules imports the connection module directly, by any relative path
+      - file: src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts
+        name: >-
+          none of these modules imports the LLM provider client directly, except the two adapters that implement a published port against it
+      - file: src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts
+        name: >-
+          none of these modules imports the connector-configuration store or its relational adapter, by any relative path
+      - file: src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts
+        name: >-
+          none of these modules imports an HTTP client package
+      - file: src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts
+        name: >-
+          none of these modules imports the connector-request-resolver module or its call-descriptor vocabulary, by any relative path, except this epic's own legitimate HTTP adapter
+      - file: src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts
+        name: >-
+          none of these modules imports either error the connector-request-resolver raises, by any relative path, except this epic's own legitimate HTTP adapter
+      - file: src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts
+        name: >-
+          none of these modules holds any mention of the http-connector module or its exports outside a static import — a dynamic lookup, a global registry, or a string-keyed service locator would not show up as an import specifier at all, which is exactly the gap this task's own Notes call out — except this epic's own legitimate HTTP adapter, and except a citation of a specification-node identity that merely contains the "http-connector" substring in its own slug
+      - file: src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts
+        name: >-
+          none of these modules imports the http-declarative-observation-source adapter directly, by any relative path — it is reached only through the unchanged IObservationSource port
+    why: >-
+      These tests can fail. Each one collects the import specifiers read from the real
+      source files and asserts that the list of offenders is empty. There is also a guard
+      that throws if no module is found, so the audit cannot pass by finding nothing.
+      Three parts of the fact are still unexercised.
+      (1) "No framework, no driver and no provider client" is checked against fixed deny
+      lists: 23 framework and driver names, 7 HTTP clients, and only one provider client,
+      @anthropic-ai/sdk. A domain module that imported any other framework, driver or
+      provider client would pass. Examples are a scoped package such as @fastify/*, which
+      the prefix match on "fastify" does not catch, or another LLM provider's SDK.
+      (2) The audit reads only the top-level .ts files of case/, glossary/,
+      capability-registry/ and investigation/, because readdir is not recursive. Any domain
+      module in a subdirectory is outside it. The node names "evaluation" as part of the
+      domain, but the test never says where evaluation lives. If evaluation modules sit
+      outside those four directories, nothing audits them.
+      (3) "Infrastructure reaches it only through ports" is checked only against a few
+      named modules: database-connection, the connector-configuration store and its
+      relational repository, the connector-request-resolver and its call descriptor and
+      errors, and the http-declarative-observation-source adapter. A domain module that
+      imported any other infrastructure module by relative path would pass, and so would
+      any driver it reaches through that module. One example is a persistence/*.repository
+      other than the relational connector-configuration store.
+      The test also exempts three adapters that sit inside investigation/, matching them by
+      file name only: two Anthropic adapters and the HTTP observation-source adapter. That
+      treats files in the audited directories as not all being domain, but no test
+      establishes that boundary.
+      Two tests assert more than the node states, and are findings rather than coverage.
+      "the connection module sits under persistence/, beside the relational store
+      repositories, rather than under any of the four audited domain directories" checks
+      only that database-connection.ts and relational-case-store.repository.ts exist in
+      persistence/. It never checks that either file is absent from the domain directories,
+      so it does not bear on the fact and is not cited above.
+      The connector-configuration-store test forbids the domain from importing
+      connector-configuration-store.port. That is a ban on importing a port, which goes
+      beyond a node that lets infrastructure reach the domain through ports.
+    remainder: testable
+    remainder_why: >-
+      The remainder is closed by a finite audit over the domain modules' imports. Walk
+      every .ts file under each directory that holds case behavior, the investigation
+      factory, evaluation and vocabulary, recursively. Assert two things. First, every bare
+      specifier is either a node: built-in or on a declared allowlist of packages that are
+      not infrastructure; a deny list cannot close this. Second, every relative specifier
+      resolves either inside those directories or to a *.port module. Adapters placed
+      beside the domain should be identified by a declared marker rather than a file-name
+      list. With those assertions, adding a framework, driver or provider client import to
+      any domain module, or a direct import of any non-port infrastructure module, makes
+      the test fail.

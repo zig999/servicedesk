@@ -1,0 +1,29 @@
+read:
+  - node: constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+    held_at: >-
+      the template literal passed to `super(...)` in the constructor
+    evidence: >-
+      `o caso "${slug}" ainda possui versão, e só um caso sem nenhuma versão pode ser excluído`
+  - node: constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+    held_at: >-
+      the template literal passed to `super(...)` in the constructor
+    evidence: >-
+      `o caso "${slug}" ainda possui versão, e só um caso sem nenhuma versão pode ser excluído`
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the whole file — it declares only a class extending the native `Error`, with no import statement
+    evidence: >-
+      export class CaseHoldsVersionsError extends Error {
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: >-
+      the class name, the constructor's message and its `context` assignment
+    evidence: >-
+      public constructor(slug: string) {
+          super(`o caso "${slug}" ainda possui versão, e só um caso sem nenhuma versão pode ser excluído`);
+          this.name = 'CaseHoldsVersionsError';
+          this.context = { slug };
+        }
+looked_past: >-
+  The HTTP 409 status the rule pairs with this error is not stated anywhere in this file, but
+  mapping an error class to a status code is a status map's job elsewhere in the surface, not
+  this error class's constructor.

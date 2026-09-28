@@ -1,0 +1,17 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: >-
+      the file itself — a single additive statement, numbered 0025 immediately after its
+      sibling migrations/0024, applied once with no rollback and no manual step
+    evidence: |-
+      ALTER TABLE investigation_evidence
+        ADD COLUMN capability_payload_notes TEXT NOT NULL DEFAULT '';
+  - node: domain/investigation/evidence
+    held_at: the ADD COLUMN statement, line 46
+    evidence: |-
+      ALTER TABLE investigation_evidence
+        ADD COLUMN capability_payload_notes TEXT NOT NULL DEFAULT '';
+looked_past: >-
+  the file carries a long header comment quoting the node and citing prior migrations and a
+  task identifier verbatim, well past a directive a tool consumes or a suppression's rationale —
+  a comment-discipline question, not a domain fact this pass judges.

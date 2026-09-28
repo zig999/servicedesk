@@ -1,0 +1,30 @@
+read:
+  - node: constraints/the-consolidation-prompt-is-closed
+    held_at: >-
+      buildSystemPrompt() and buildDataBlock(), and the messages.create() call in consolidate()
+    evidence: |-
+      const data = { evaluations, evidence, consolidation_register: consolidationRegister };
+      return `<${CONSOLIDATION_DATA_TAG}>\n${JSON.stringify(data)}\n</${CONSOLIDATION_DATA_TAG}>`;
+
+      const response = await this.client.messages.create({
+        model: this.model,
+        max_tokens: this.maxTokens,
+        system: buildSystemPrompt(consolidationRegister),
+        messages: [{ role: 'user', content: prompt }],
+      });
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the file's own imports and class shape — the concrete `Anthropic` client is declared and
+      used only in this adapter, behind the type-only import of `IAssessmentConsolidator`
+    evidence: |-
+      import Anthropic from '@anthropic-ai/sdk';
+
+      import type { ConsolidationOutcome, IAssessmentConsolidator } from './assessment-consolidator.port.js';
+      ...
+      export class AnthropicAssessmentConsolidator implements IAssessmentConsolidator {
+        private readonly client: Anthropic;
+looked_past: >-
+  The exact wording hard-coded in REGISTER_STYLE_INSTRUCTIONS ('Write the assessment in a formal
+  register.' / '...plain register.'), the CONSOLIDATION_DATA_TAG literal, and the defensive throw
+  in textOf() for a response with no text block are prompt-phrasing and response-parsing
+  implementation choices rather than a stated domain fact, so they were not treated as findings.

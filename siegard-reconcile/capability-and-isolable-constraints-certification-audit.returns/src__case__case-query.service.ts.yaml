@@ -1,0 +1,88 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: >-
+      readCase, which assembles the whole version through heldVersion, validates it whole
+      through structuralCase and refuseIncoherence before returning, and refuses rather than
+      returning a partial case; assembledAsRawDocument likewise maps the whole manifest, never
+      a subset.
+    evidence: |-
+      const assembled = await heldVersion(this.caseStore, slug, version);
+      const theCase = structuralCase(assembled, slug, version);
+      await this.refuseIncoherence(theCase, version);
+      return { case: theCase };
+      ---
+      manifest: assembled.manifest.map((entry) => ({
+        position: entry.position,
+        hypothesis_name: entry.hypothesis_revision.hypothesis_name,
+        revision: entry.hypothesis_revision.revision,
+        criterion: entry.hypothesis_revision.criterion,
+        collects: entry.hypothesis_revision.collects,
+        resolution: entry.hypothesis_revision.resolution,
+      })),
+  - node: contracts/system/case-authoring
+    held_at: >-
+      readCaseVersion/attributesOf, which lets a draft's own attributes be read independent of
+      full validity (supporting free composition before release), and refuseViolations, which
+      collects every coherence violation before refusing so a release-time or read-time refusal
+      reports them together.
+    evidence: |-
+      public async readCaseVersion(slug: string, version: number): Promise<ReadCaseVersionResult> {
+        const assembled = await heldVersion(this.caseStore, slug, version);
+        return { version: attributesOf(assembled) };
+      }
+      ---
+      function refuseViolations(slug: string, version: number, violations: readonly string[]): void {
+        if (violations.length > 0) {
+          throw new CaseVersionNotValidError(slug, version, violations);
+        }
+      }
+  - node: rules/investigation/replay-is-pinned
+    held_at: replayCase, which pins the replay to the case by slug and version.
+    evidence: |-
+      export async function replayCase(slug: string, version: number, caseStore: ICaseStore): Promise<Case> {
+        const assembled = await heldVersion(caseStore, slug, version);
+        return trustedCaseOf(assembled);
+      }
+  - node: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
+    held_at: heldVersion, which refuses an assembly the store answered with nothing.
+    evidence: |-
+      async function heldVersion(store: ICaseStore, slug: string, version: number): Promise<AssembledCaseVersion> {
+        const assembled = await store.assembleVersion(slug, version);
+        if (assembled === undefined) {
+          throw new CaseNotFoundError(slug, version);
+        }
+        return assembled;
+      }
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: >-
+      heldVersion calls `await store.assembleVersion(slug, version)` and trusts a single
+      `AssembledCaseVersion` back; the file assumes rather than enforces that one slug names one
+      case — uniqueness itself is not stated or checked anywhere in this file.
+  - node: rules/knowledge/an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case
+    held_at: readCaseVersion/attributesOf.
+    evidence: |-
+      function attributesOf(assembled: AssembledCaseVersion): CaseVersionAttributes {
+        return {
+          title: assembled.title,
+          when_to_use: assembled.when_to_use,
+          subject: assembled.subject,
+          fallback: assembled.fallback,
+          ...(assembled.consolidation_register !== undefined
+            ? { consolidation_register: assembled.consolidation_register }
+            : {}),
+        };
+      }
+      ---
+      public async readCaseVersion(slug: string, version: number): Promise<ReadCaseVersionResult> {
+        const assembled = await heldVersion(this.caseStore, slug, version);
+        return { version: attributesOf(assembled) };
+      }
+looked_past: >-
+  readCaseInputRequirements checks only glossary coherence (refuseGlossaryIncoherence), not the
+  full case coherence readCase applies, before deriving input requirements; the governing nodes
+  for that derivation (contracts/knowledge/case-input-requirements,
+  rules/knowledge/a-case-versions-input-requirements-are-derived) are outside this delegation's
+  node set and candidate index, so whether that narrower check is correct is not this pass's
+  question to answer.
+candidates_opened: []

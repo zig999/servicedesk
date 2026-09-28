@@ -1,0 +1,12 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the file's only import statement, line 1 — a type-only import from the
+      sibling port file, with no framework, driver or client import anywhere else in the file
+    evidence: >-
+      import type { IObservationSource, ObservationOutcome, ObserveConceptOptions, Subject } from
+      './observation-source.port.js';
+looked_past: >-
+  the fake throws a plain `Error` rather than a domain-specific error type when a fixture is
+  unseeded, and `fixtureKey`'s attribute-flattening is unremarked test-matching machinery — both
+  are code-shape choices internal to a test double, not domain facts the specification would hold.

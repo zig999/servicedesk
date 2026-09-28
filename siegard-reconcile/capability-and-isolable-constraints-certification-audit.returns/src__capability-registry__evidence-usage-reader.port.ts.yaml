@@ -1,0 +1,27 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the whole file — an interface declaration with zero import statements, so nothing framework,
+      driver, or client-shaped reaches it
+    evidence: >-
+      export type CapabilityIdentityForEvidenceUsageCheck = {
+        readonly name: string;
+        readonly version: string;
+      };
+
+      export interface IEvidenceUsageReader {
+
+        isCapabilityNamedByEvidence(identity: CapabilityIdentityForEvidenceUsageCheck): Promise<boolean>;
+      }
+  - node: domain/integration/capability
+    held_at: >-
+      the CapabilityIdentityForEvidenceUsageCheck type, lines 1-4 — its two required fields mirror the
+      capability's own name and version attributes, the pair the node states the capability is
+      "identified by"
+    evidence: >-
+      readonly name: string;
+        readonly version: string;
+looked_past: >-
+  the port declares only a signature (isCapabilityNamedByEvidence returning a boolean) with no rule
+  about what makes a capability "named by evidence" embedded in this file — that judgment, if any,
+  belongs to whatever implements the port, not to this contract-only file.

@@ -1,0 +1,24 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the return statements of createInvestigationStore and createEvidenceUsageReader, lines
+      6-8 and 10-15, where the concrete persistence adapter and its driver-backed connection are
+      instantiated and handed back typed only as the domain's ports
+    evidence: |-
+      export function createInvestigationStore(connection: DatabaseConnection): IInvestigationStore {
+        return new RelationalInvestigationStore(connection);
+      }
+
+      export function createEvidenceUsageReader(connection: DatabaseConnection): IEvidenceUsageReader {
+        const store = new RelationalInvestigationStore(connection);
+        return {
+          isCapabilityNamedByEvidence: (identity) => store.isCapabilityNamedByEvidence(identity.name, identity.version),
+        };
+      }
+looked_past: >-
+  DatabaseConnection resolves to pg's Pool (src/persistence/database-connection.ts) and
+  RelationalInvestigationStore is a concrete adapter; both are confirmed infrastructure, but this
+  factory lives in src/factories/ rather than among the domain modules the node names (case
+  behavior, the investigation factory at src/investigation/investigation-factory.ts,
+  evaluation, vocabulary), so its own imports of them are the wiring the node's "only through
+  ports" describes rather than a departure from it — not a finding.

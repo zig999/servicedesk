@@ -1,0 +1,27 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: >-
+      the two ALTER TABLE statements themselves — a deterministic, numbered script with no
+      manual step, applied by migration-runner.ts in filename order
+    evidence: >-
+      ALTER TABLE hypothesis_revisions
+        ADD COLUMN state TEXT NOT NULL DEFAULT 'draft';
+
+      ALTER TABLE hypothesis_revisions
+        ADD CONSTRAINT hypothesis_revisions_state_check CHECK (state IN ('draft', 'released'));
+  - node: domain/knowledge/hypothesis-revision
+    held_at: >-
+      the ADD COLUMN state statement, paired with the CHECK constraint restricting it to
+      exactly the values domain/knowledge/hypothesis-revision-state declares
+    evidence: >-
+      ALTER TABLE hypothesis_revisions
+        ADD COLUMN state TEXT NOT NULL DEFAULT 'draft';
+
+      ALTER TABLE hypothesis_revisions
+        ADD CONSTRAINT hypothesis_revisions_state_check CHECK (state IN ('draft', 'released'));
+looked_past: >-
+  the migration's own header comment runs to roughly forty lines of provenance and rationale
+  (task citation, sibling-migration precedent for the DEFAULT, and an explicit list of what the
+  task deliberately leaves for two sibling tasks) — whether a SQL file should carry comments at
+  that length is a different rule from a different pass, not a domain-fact question, and every
+  specific conformance claim the comment makes checked out against the node it cited.

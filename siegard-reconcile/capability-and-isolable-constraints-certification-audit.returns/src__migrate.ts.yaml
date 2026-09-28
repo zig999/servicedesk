@@ -1,0 +1,16 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: >-
+      the invocation `await applyPendingMigrations(connection, MIGRATIONS_DIRECTORY, await
+      resolvedSchema(connection));` — this file supplies the migrations directory and drives the
+      replay unattended; the per-script numbering/order logic itself sits in migration-runner.ts,
+      not in this file
+    evidence: >-
+      const MIGRATIONS_DIRECTORY = fileURLToPath(new URL('../migrations', import.meta.url));
+      ...
+      await applyPendingMigrations(connection, MIGRATIONS_DIRECTORY, await resolvedSchema(connection));
+looked_past: >-
+  the pool-option values (maxConnections, idleTimeoutMs, statementTimeoutMs) and the migrations
+  directory's physical location are read straight from env/config rather than hardcoded here, and
+  the node's own description states location and form are the project's own arrangement, not a
+  fact this constraint holds — so neither is a conformance question for this file.

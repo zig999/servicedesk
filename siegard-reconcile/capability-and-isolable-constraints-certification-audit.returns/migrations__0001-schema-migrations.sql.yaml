@@ -1,0 +1,17 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: >-
+      the schema_migrations table this file creates, which the migration runner consults to
+      know which numbered scripts have already applied against a given database
+    evidence: |-
+      CREATE TABLE schema_migrations (
+        filename    TEXT NOT NULL,
+        applied_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+        CONSTRAINT schema_migrations_pkey PRIMARY KEY (filename)
+      );
+looked_past: >-
+  the header comment cites constraints/the-stored-schema-mirrors-the-declared-model and a
+  task identity as rationale for the table's shape — a comment-discipline question about
+  prose in source, not a domain fact this pass judges, and the cited node (opened at
+  knowledge/constraints/the-stored-schema-mirrors-the-declared-model.md) does state the same
+  exemption the comment claims, so the citation itself is accurate.

@@ -1,0 +1,27 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the file's import list, lines 1-13
+    evidence: >-
+      import { CaseHoldsNoDraftError } from '../errors/case-holds-no-draft.error.js';
+      import { ConceptNotInGlossaryError } from '../errors/concept-not-in-glossary.error.js';
+      import { ConceptRefusesSubjectTypeError } from '../errors/concept-refuses-subject-type.error.js';
+      import { HypothesisRevisionCollectsNoConceptError } from '../errors/hypothesis-revision-collects-no-concept.error.js';
+      import type { ConceptResolution, IGlossaryQuery } from '../glossary/glossary-query.port.js';
+      import type {
+        DraftVersion,
+        HypothesisRevisionInput,
+        ICaseStore,
+        OverwriteHypothesisRevisionInput,
+      } from './case-store.port.js';
+      import type { IHypothesisRevisionOverwrite } from './hypothesis-revision-overwrite.port.js';
+      import type { IHighestRevisionReleaseStateQuery } from './hypothesis-revision-release-state.port.js';
+      — every import is a domain error or a port/type; none names a framework, a driver or a provider client.
+looked_past: >-
+  The near-identical shape of isHeld/isUnheld and the two filter-map pipelines
+  (unknownConceptsOf, conceptsRefusingSubjectOf) is a code-structure duplication concern,
+  not a domain-fact one — left for a code review rather than this pass.
+candidates_opened:
+  - rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+  - rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  - domain/knowledge/hypothesis-revision

@@ -1,0 +1,56 @@
+read:
+  - node: constraints/hypotheses-are-judged-in-isolated-parallel-calls
+    held_at: >-
+      judgeHypotheses's per-hypothesis Promise.all combined with the CallPool acquire/release pair inside
+      judgeOneHypothesis
+    evidence: |-
+      const pool = new CallPool(poolSize);
+      ...
+      return Promise.all(
+          requiredNames.map((name) =>
+            judgeOneHypothesis({
+              name,
+              hypothesis: hypothesisNamed(theCase, name),
+              evidence: evidenceFor(name, evidenceByHypothesis),
+              evaluator,
+              pool,
+              deadlineGuard,
+              caseContext,
+            }),
+          ),
+        );
+      ...
+      if (!(await acquireSlotOrDeadline(pool, deadlineGuard))) {
+        return deadlineExceededEvaluation(name);
+      }
+      try {
+        return await runIsolatedCall({ name, hypothesis, evidence, evaluator, deadlineGuard, caseContext });
+      } finally {
+        pool.release();
+      }
+  - node: constraints/the-judgment-prompt-is-closed
+    held_at: >-
+      the arguments runIsolatedCall and retryOrFail pass to evaluator.evaluate — hypothesis.criterion,
+      evidenceItems built by toEvidenceItems, and caseContext alone
+    evidence: |-
+      const caseContext: CaseContext = { title: theCase.title, whenToUse: theCase.when_to_use };
+      ...
+      const evidenceItems = toEvidenceItems(evidence);
+      const first = await raceEvaluateAgainstDeadline(evaluator.evaluate(hypothesis.criterion, evidenceItems, caseContext), deadlineGuard);
+      ...
+      function toEvidenceItems(evidence: readonly Evidence[]): readonly EvidenceItem[] {
+        return evidence.map((item): EvidenceItem => ({
+          concept: item.concept,
+          result: 'ok',
+          observation: item.observation,
+          fields: item.fields,
+          concept_description: item.concept_description,
+          capability_payload_notes: item.capability_payload_notes,
+          observed_at: item.observed_at,
+          ttl: item.ttl,
+        }));
+      }
+looked_past: >-
+  judgeHypotheses's use of Promise.all means an evaluator.evaluate rejection for one hypothesis would reject the
+  whole batch rather than fail just that hypothesis, which is an error-handling robustness property, not a stated
+  domain fact, so it is left for a code review rather than reported as a finding here.

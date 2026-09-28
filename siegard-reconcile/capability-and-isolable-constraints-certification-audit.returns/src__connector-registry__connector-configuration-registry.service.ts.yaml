@@ -1,0 +1,54 @@
+findings:
+  - file: src/connector-registry/connector-configuration-registry.service.ts
+    where: "orphanedAcrossEveryCapability, line 101 — the intersection filter over perCapabilityOrphaned"
+    evidence: |-
+      const orphanedEverywhere = [...first].filter((placeholder) => rest.every((set) => set.has(placeholder)));
+    cost: >-
+      When a connector has more than one capability registered against it and only some of those
+      capabilities' input schemas declare a placeholder's Subject attribute, this intersection clears
+      the placeholder as soon as any one capability declares it. registerConnector then accepts a
+      configuration that rules/integration/a-connector-placeholder-is-declared-by-its-capability's own
+      per-capability check would refuse, so the gap the placeholder-declaration guard exists to close at
+      registration time stays open for any connector serving more than one capability — the failure
+      surfaces only later, at observation, where an operator has no reason left to look for it.
+    kind: contradicts
+    node: rules/integration/a-connector-placeholder-is-declared-by-its-capability
+    correction: >-
+      orphanedAcrossEveryCapability would need to flag a placeholder whenever any one of the connector's
+      currently registered capabilities omits it from its input schema properties — a union over each
+      capability's own orphaned set — rather than only when every capability's set agrees it is missing.
+  - file: src/connector-registry/connector-configuration-registry.service.ts
+    where: "orphanedAcrossEveryCapability's return mapping, line 102"
+    evidence: |-
+      return orphanedEverywhere.map((placeholder) => ({ placeholder, capabilities }));
+    cost: >-
+      The ConnectorPlaceholderOutsideInputSchemaError thrown from this carries, for every orphaned
+      placeholder, the entire list of capabilities checked against that connector rather than the one
+      capability that fails to declare it. An operator reading the refusal cannot tell, among several
+      capabilities sharing a connector, which one is missing the attribute — the very correction
+      rules/integration/a-connector-placeholder-refusal-reports-every-orphaned-placeholder exists to hand
+      them before they have to guess or retry.
+    kind: contradicts
+    node: rules/integration/a-connector-placeholder-refusal-reports-every-orphaned-placeholder
+    correction: >-
+      each reported OrphanedPlaceholder would need to carry only the capability (or capabilities) that
+      specifically fails to declare that placeholder, not the full set of capabilities checked.
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the constructor's dependency list and every read/write path, which reach infrastructure only
+      through IConnectorConfigurationStore and ICapabilitiesReader
+    evidence: |-
+      public constructor(
+          private readonly store: IConnectorConfigurationStore,
+          private readonly capabilitiesReader: ICapabilitiesReader = NO_REGISTERED_CAPABILITIES,
+        ) {}
+looked_past: >-
+  registrationProblems pushes the message 'configuration is not a plain object' for a value already
+  known not to be a string at that point (wellFormedConfiguration having already handled the
+  string/object/null/array cases) — a wording concern about an internal diagnostic string, not a domain
+  fact the specification holds differently, so it is left to a code-quality pass rather than reported here.
+candidates_opened:
+  - domain/integration/connector-configuration-registry
+  - rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
+  - rules/integration/a-connector-placeholder-is-declared-by-its-capability

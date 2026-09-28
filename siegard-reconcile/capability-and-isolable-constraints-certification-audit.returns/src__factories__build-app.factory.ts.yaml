@@ -1,0 +1,49 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the ComposedResources type (lines 48-70) and composeResources (lines 72-101), which type
+      every domain-facing dependency as a port — ICaseQuery, ICaseInputRequirementsQuery,
+      ICaseStore, ICapabilityQuery, IGlossaryQuery, ICapabilitiesReader, IEvidenceUsageReader,
+      IConceptUsageReader — while concrete infrastructure (DatabaseConnection,
+      OpenApiDocumentFetcher) is constructed only inside this factory, never exposed past the
+      port-typed fields
+    evidence: >-
+      readonly caseQuery: ICaseQuery;
+      readonly caseInputRequirementsQuery: ICaseInputRequirementsQuery;
+      readonly caseStore: ICaseStore;
+      readonly capabilityQuery: ICapabilityQuery;
+  - node: contracts/integration/connector-configuration-registry
+    held_at: >-
+      registrationDependencies (line 150), removeConnectorDependencies (line 156), readDependencies
+      (line 113) and listDependencies (line 127), each wiring one of the contract's four operations
+      to the composed connectorConfigurationRegistry
+    evidence: >-
+      registerConnector: { registerConnector: resources.registerConnector },
+      removeConnector: { removeConnector: resources.removeConnector },
+      readConnectorConfiguration: { readConnectorConfiguration: resources.readConnectorConfigurationOrThrow },
+      listConnectorConfigurations: { listConnectorConfigurations: resources.listConnectorConfigurations, ...pagination },
+  - node: domain/integration/connector-configuration-registry
+    held_at: >-
+      composeResources' construction of the registry and its plain delegating methods, lines 75
+      and 90-94
+    evidence: >-
+      const connectorConfigurationRegistry = createConnectorConfigurationRegistry(connection, capabilitiesReader);
+      registerConnector: (registration) => connectorConfigurationRegistry.registerConnector(registration),
+      removeConnector: (connector) => connectorConfigurationRegistry.removeConnector(connector),
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: >-
+      the removeConcept forwarding in composeResources (line 89), which delegates to
+      glossary.removeConcept(name) rather than restating the refusal conditions itself
+    evidence: >-
+      registerConcept: (registration) => glossary.registerConcept(registration), removeConcept: (name) => glossary.removeConcept(name),
+  - node: rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
+    held_at: >-
+      readDependencies (line 113), which wires the readConnectorConfiguration controller
+      dependency to the throwing form of the read rather than the resolution-returning one
+    evidence: >-
+      readConnectorConfiguration: { readConnectorConfiguration: resources.readConnectorConfigurationOrThrow },
+looked_past: >-
+  The file also wires a non-throwing readConnectorConfiguration (returning
+  ConnectorConfigurationResolution) into testConnector and draftConnectorConfigurationFromOpenApi
+  — neither operation is in this node set's contract, so whether that resolution-style read is
+  correct for those two consumers is another judgment's.

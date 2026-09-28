@@ -1,0 +1,19 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the two `it` blocks asserting the port file's own import specifiers contain
+      none of the forbidden driver/framework names and none of the provider client name
+    evidence: |-
+      const offenders = importSpecifiersOf(source).filter((specifier) => namesOneOf(specifier, FORBIDDEN_DRIVERS_AND_FRAMEWORKS));
+
+      expect(offenders).toEqual([]);
+      ...
+      const offenders = importSpecifiersOf(source).filter((specifier) => namesOneOf(specifier, [PROVIDER_CLIENT_PACKAGE]));
+
+      expect(offenders).toEqual([]);
+looked_past: >-
+  The FORBIDDEN_DRIVERS_AND_FRAMEWORKS list, PROVIDER_CLIENT_PACKAGE constant, IMPORT_SPECIFIER_PATTERN
+  and the namesOneOf/importSpecifiersOf helpers are duplicated verbatim in
+  src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts, which already audits every file under
+  src/case/ (including this port file) for the same forbidden imports; that duplication is a code-review
+  matter about the test suite's own construction, not a domain fact this file states outside the node.

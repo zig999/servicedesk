@@ -1,0 +1,12 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the type declaration itself, which carries no import statement of any kind
+    evidence: |-
+      export type Cost = {
+        readonly calls: number;
+        readonly input_tokens: number;
+        readonly output_tokens: number;
+      };
+candidates_opened:
+  - domain/investigation/cost

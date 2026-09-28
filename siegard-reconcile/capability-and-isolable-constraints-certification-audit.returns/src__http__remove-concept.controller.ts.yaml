@@ -1,0 +1,18 @@
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: >-
+      nowhere in this file — the node's own text places the fallback "once for the whole
+      surface so no route decides the shape of this fallback on its own," and this controller
+      carries no branch, catch, or status-code logic of its own.
+    evidence: |
+      export async function handleRemoveConceptRequest(
+        dependencies: RemoveConceptControllerDependencies,
+        params: RemoveConceptParamsDto,
+      ): Promise<void> {
+        await dependencies.removeConcept(params.name);
+      }
+looked_past: >-
+  The controller's unhandled rejection path (what catches an error `dependencies.removeConcept`
+  throws and turns it into the generic 500) is not visible in this file at all — it depends on
+  wiring outside the file set (e.g. status-map.ts, route registration), which this pass was not
+  asked to review.

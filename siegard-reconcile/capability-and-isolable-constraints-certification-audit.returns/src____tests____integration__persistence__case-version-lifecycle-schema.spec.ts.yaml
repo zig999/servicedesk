@@ -1,0 +1,105 @@
+findings:
+  - file: src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts
+    where: >-
+      the test "backfills every pre-existing case_versions row's state to 'released' when
+      migration 0009 adds the column", lines 539-566
+    evidence: |-
+      it("backfills every pre-existing case_versions row's state to 'released' when migration 0009 adds the column", async () => {
+      ...
+          expect(rows).toEqual([{ state: 'released', released_at: null }]);
+    cost: >-
+      Which state a case_versions row predating the state column is silently reclassified into
+      on migration is a fact with real consequences — `a-case-version-moves-through-its-declared-lifecycle`
+      makes `released` terminal and immutable, and only a released version is diagnosable — yet
+      the choice to backfill every such row to `released` rather than `draft` lives only in this
+      test and the migration script it exercises; a reader checking the specification for how
+      historical case versions were reclassified when the lifecycle was introduced will not find
+      it there.
+    kind: unstated
+    correction: >-
+      Record the backfill policy for pre-existing case_versions rows — that every row created
+      before migration 0009 is treated as released rather than draft — in a specification node
+      (for example a decision entry against domain/knowledge/case-version-state), so the
+      historical reclassification is a specification decision rather than the migration script's
+      own.
+  - file: src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts
+    where: >-
+      the test "defaults a newly-inserted case_versions row that does not name its own state to
+      'released' ... every currently-shipped write path that inserts without naming state depends
+      on this", lines 568-579
+    evidence: |-
+      it("defaults a newly-inserted case_versions row that does not name its own state to 'released', since the column's own DEFAULT is kept permanently rather than dropped after backfill — every currently-shipped write path that inserts without naming state depends on this", async () => {
+      ...
+        expect(result.rows[0].state).toBe('released');
+    cost: >-
+      `a-case-version-moves-through-its-declared-lifecycle` declares a case version's own initial
+      state `draft` (`initial: draft`), with `released` reached only through the `release`
+      transition. This test asserts, and the schema it exercises enforces, the opposite for any
+      insert that omits `state`: the row is born `released` — immutable from that moment, per
+      `domain/knowledge/case-version`'s "once released, it is never altered again" — and the test's
+      own title states that live write paths currently depend on this permanently. A reader who
+      trusts the lifecycle node would expect a name-omitting write to still begin in draft; instead
+      it silently produces a version that can never again be corrected or discarded, and the
+      specification never says so.
+    kind: contradicts
+    node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    correction: >-
+      Either bring the column default in line with the lifecycle's declared initial state
+      (draft), or, if existing write paths genuinely still rely on the omission meaning
+      "released", state that exception against the lifecycle node (or a decision it points to)
+      rather than leaving it to a migration's own default and this test's title.
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: >-
+      beforeAll, via migrationFilesInOrder/applyMigrationFiles applying every migration file
+      found under the migrations directory, in sorted (numbered) order, onto a freshly created
+      schema before any test runs
+    evidence: |-
+      async function migrationFilesInOrder(): Promise<string[]> {
+        const entries = await readdir(MIGRATIONS_DIR);
+        return entries.filter((name) => name.endsWith('.sql')).sort();
+      }
+
+      async function applyMigrationFiles(client: Client, files: readonly string[]): Promise<void> {
+        for (const file of files) {
+          const sql = await readFile(join(MIGRATIONS_DIR, file), 'utf8');
+          await client.query(sql);
+        }
+      }
+      ...
+      await client.query(`CREATE SCHEMA "${schemaName}"`);
+      await client.query(`SET search_path TO "${schemaName}"`);
+      await applyMigrationFiles(client, await migrationFilesInOrder());
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: |-
+      it("changes an already-stored hypothesis revision's own columns on an ordinary UPDATE while the revision's own state is still draft", async () => {
+        ...
+        await client.query(
+          "UPDATE hypothesis_revisions SET criterion = 'A revised criterion.' WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1",
+          [slug, 'the-hypothesis'],
+        );
+        ...
+        expect(rows[0]?.criterion).toBe('A revised criterion.');
+      });
+      This is the only UPDATE this file runs against hypothesis_revisions, and it exercises only
+      the draft-state, mutable case; no test in the file attempts to alter a released
+      hypothesis-revision or asserts an HTTP 409 ReleasedHypothesisRevisionNotAlterableError
+      refusal.
+looked_past: >-
+  Several tests assert immutability by wrapping an UPDATE or DELETE in a SAVEPOINT/try-catch that
+  swallows whatever error the database raises without inspecting its code or message (for
+  example the released-case_versions and released-manifest-entry tests), which is a weaker
+  assertion than the CHECK/UNIQUE/FK tests elsewhere in the same file that do assert on
+  `error.code` — a test-rigor question for a different pass, not a domain fact this file states
+  without the specification's backing.
+candidates_opened:
+  - domain/knowledge/hypothesis
+  - domain/knowledge/hypothesis-revision
+  - rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+  - rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+  - rules/knowledge/a-case-has-at-most-one-draft
+  - rules/knowledge/only-a-draft-case-version-may-be-discarded
+  - rules/knowledge/a-case-holding-no-version-may-be-deleted
+  - domain/knowledge/case-version
+  - domain/knowledge/case-version-state

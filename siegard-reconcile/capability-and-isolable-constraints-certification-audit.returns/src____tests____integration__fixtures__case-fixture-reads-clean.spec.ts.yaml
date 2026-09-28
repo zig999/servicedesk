@@ -1,0 +1,35 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: >-
+      the three `readCase` calls at lines 213-215, 244-246 and 398-400, each followed by an
+      assertion that the returned case's hypotheses are non-empty (and, in the latter two, that
+      every hypothesis collects at least one concept)
+    evidence: >-
+      const query = createCaseQuery(connection);
+
+        const result = await query.readCase(SLUG, VERSION);
+
+        expect(result.case.slug).toBe(SLUG);
+        expect(result.case.hypotheses.length).toBeGreaterThanOrEqual(1);
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: nowhere
+    evidence: >-
+      Both `reviseHypothesis` call sites in this file (`placeFixtureHypotheses`, lines 95-102, and
+      `releaseOwnedHypothesisRevision`, lines 279-289) are invoked before the revision they produce
+      is ever released, never against one already in released state; no test in this file attempts
+      to alter a released revision's criterion, resolution or state, or asserts the 409
+      ReleasedHypothesisRevisionNotAlterableError refusal this node states. The file's own
+      released-revision test at lines 318-343 —
+
+        await connection.query(
+          'DELETE FROM hypothesis_revision_collects WHERE case_slug = $1 AND hypothesis_name = $2',
+          [ownedSlug, hypothesisName],
+        );
+
+      — exercises a removal of the revision's own collects, which this node's own Description
+      names as answered instead by `a-released-revisions-collect-removal-is-accepted-with-no-effect`
+      (a node outside this file's given set), not by this node's alteration refusal.
+looked_past: >-
+  The duplicated DELETE-sequence scaffolding shared between cleanupFixtureSeeded and
+  cleanupOwnedInstance, and the FOREIGN_KEY_VIOLATION-tolerant deletion helper, are construct
+  concerns rather than domain-fact ones and are left for a code review rather than this pass.

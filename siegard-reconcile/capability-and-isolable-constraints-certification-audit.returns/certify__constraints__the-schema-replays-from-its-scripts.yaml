@@ -1,0 +1,44 @@
+certified:
+  - node: constraints/the-schema-replays-from-its-scripts
+    state: partial
+    tests:
+      - file: src/__tests__/integration/persistence/schema-migrations.spec.ts
+        name: applies every migration script, in the order their file names number them, to a fresh empty database and produces every relation the model needs and none it does not
+      - file: src/__tests__/integration/persistence/schema-migrations.spec.ts
+        name: gives hypothesis_revisions a state column after applying every migration script, in numbered order, to an empty database
+      - file: src/__tests__/integration/persistence/schema-migrations.spec.ts
+        name: gives capabilities exactly one column per attribute domain/integration/capability declares, payload_notes included, and no column pairing with none of them, after every migration script replays in numbered order on an empty database
+      - file: src/__tests__/integration/persistence/schema-migrations.spec.ts
+        name: holds every domain column NOT NULL except exactly the thirteen columns the model declares optional
+      - file: src/__tests__/integration/persistence/schema-migrations.spec.ts
+        name: shapes schema_migrations as exactly filename and applied_at, the one relation the model exempts
+    why: >-
+      The replay half is exercised. The replay test sorts every .sql file under
+      migrations by filename, runs each one in that order into a newly created
+      schema, and fails if any script errors. It also fails if the set of
+      relations produced differs from its hard-coded list of twenty tables. So a
+      script that no longer replays, or an order that breaks replay, is caught.
+      Two parts of the fact are not exercised. First, the "empty database" is a
+      new schema inside the existing lab database, reached through search_path.
+      Anything set up by hand at database level (an extension, a role, an object
+      in another schema that a script names explicitly) would still let replay
+      pass here but would fail on a truly empty database. So "with no step
+      performed by hand" is only half-checked. Second, "the schema the current
+      tree expects" is checked at column level for only a few tables: capabilities,
+      schema_migrations, the state column of hypothesis_revisions, and the list of
+      nullable columns. Columns elsewhere are asserted only incidentally, through
+      the insert helpers. Nothing compares the replayed schema with what the
+      tree's own queries use. A NOT NULL column that the tree reads, missing from
+      every script, would fail no test in the set unless a helper happened to
+      insert into it. The column-level tests also read the schema built in
+      beforeAll rather than one the test builds itself, so they rest on that
+      replay without being the replay's own assertion.
+    remainder: testable
+    remainder_why: >-
+      Input: every migration script, in filename order, replayed onto a newly
+      created database (CREATE DATABASE ... TEMPLATE template0) with nothing else
+      applied. Expected result: every script applies, and the resulting catalog
+      (tables, columns, types, nullability, constraints, indexes) equals the
+      schema the tree expects, stated whole. Either compare it with a declared
+      schema snapshot, or run each repository's own queries against it and
+      require every one to succeed.

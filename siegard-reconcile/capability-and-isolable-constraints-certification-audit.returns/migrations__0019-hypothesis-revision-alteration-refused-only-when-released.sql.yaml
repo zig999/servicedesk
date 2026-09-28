@@ -1,0 +1,45 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: >-
+      the whole file — a single, plainly-numbered DDL script (DROP RULE, then CREATE FUNCTION,
+      then CREATE TRIGGER) meant to run once, in filename order, by migration-runner.ts
+    evidence: >-
+      DROP RULE hypothesis_revisions_no_update ON hypothesis_revisions;
+
+
+      CREATE FUNCTION hypothesis_revisions_refuse_when_released()
+      RETURNS TRIGGER AS $$
+      BEGIN
+        IF EXISTS (
+          SELECT 1
+          FROM case_version_hypotheses cvh
+          JOIN case_versions cv
+            ON cv.slug = cvh.case_slug AND cv.version = cvh.case_version
+          WHERE cvh.case_slug = OLD.case_slug
+            AND cvh.hypothesis_name = OLD.hypothesis_name
+            AND cvh.revision = OLD.revision
+            AND cv.state = 'released'
+        ) THEN
+          RAISE EXCEPTION 'ReleasedHypothesisRevisionNotAlterableError';
+        END IF;
+        RETURN NEW;
+      END;
+      $$ LANGUAGE plpgsql;
+
+      CREATE TRIGGER hypothesis_revisions_no_update_when_released
+        BEFORE UPDATE ON hypothesis_revisions
+        FOR EACH ROW
+        EXECUTE FUNCTION hypothesis_revisions_refuse_when_released();
+looked_past: >-
+  0019's own refusal is grounded on a joined case_versions row's release state rather than the
+  hypothesis-revision's own state — the opposite of what domain/knowledge/hypothesis-revision
+  ("A case version's manifest may point at this revision in either state; pointing at it moves
+  neither") and rules/knowledge/a-released-hypothesis-revision-is-never-altered now decide — but
+  the decision log's own entry on that rule ("The schema already delivered and reviewed under
+  this exact node's own citation (migrations 0010 and 0021)") and 0021's own header ("the EXISTS
+  join against case_version_hypotheses/case_versions is gone; the condition is now OLD.state =
+  'released'") place responsibility for that node on migrations 0010/0021, not on this file; that
+  succession is a different file's finding, not this one's.
+candidates_opened:
+  - domain/knowledge/hypothesis-revision
+  - rules/knowledge/a-released-hypothesis-revision-is-never-altered

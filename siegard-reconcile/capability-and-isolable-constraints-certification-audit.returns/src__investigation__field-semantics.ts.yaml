@@ -1,0 +1,16 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the file's own import list — the only import the file declares is from a sibling domain
+      module, and nothing under `properties`/`items` walking touches a driver, framework or
+      provider client
+    evidence: >-
+      import { isPlainObject, parseJsonOrUndefined } from './citation-validation.js';
+candidates_opened:
+  - domain/investigation/field-semantics
+  - rules/investigation/a-field-semantics-name-is-its-path-through-the-output-schema
+  - rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+  - rules/integration/an-output-schema-entry-states-what-the-system-reads-from-it
+  - rules/integration/a-capability-declares-well-formed-schemas
+  - scenarios/investigation/a-citation-names-a-nested-output-schema-field
+  - domain/investigation/citation

@@ -1,0 +1,69 @@
+findings:
+  - file: src/http/read-capability-by-identity-rate-limit.middleware.ts
+    where: the window-tracking logic inside the returned hook (lines 19-27) and pruneExpiredWindows (lines 35-41)
+    evidence: |-
+      if (window === undefined) {
+        windows.set(sourceIp, { requestCount: 1, windowStartMs: now });
+        return;
+      }
+      ...
+      if (now - window.windowStartMs >= RATE_LIMIT_WINDOW_MS) {
+        windows.delete(sourceIp);
+      }
+    cost: >-
+      Anchoring the window to the caller's own first request and expiring it 60 seconds later —
+      rather than resetting on a fixed clock-minute boundary — decides when a caller already at
+      the limit may next succeed. That choice lives only in this file's window bookkeeping; the
+      node this route answers to stops at a count and an HTTP 429/Retry-After shape, so a reader
+      checking what "at most 60 requests per minute" means for a caller near a boundary will not
+      find the sliding-vs-fixed answer in the specification.
+    kind: unstated
+    correction: >-
+      State in constraints/the-capability-identity-read-is-rate-limited whether the minute is a
+      sliding window opened by the caller's own first request or a bucket that resets on a fixed
+      clock-minute boundary — as the sibling constraint for diagnose/simulate-case/simulate-hypothesis
+      already states for its own routes.
+    node: constraints/the-capability-identity-read-is-rate-limited
+  - file: src/http/read-capability-by-identity-rate-limit.middleware.ts
+    where: refuseOverLimit's response body, lines 48-53
+    evidence: |-
+      error: {
+        code: 'RATE_LIMIT_EXCEEDED',
+        message: 'too many requests from this source; retry after the given number of seconds',
+        details: { retryAfterSeconds },
+      },
+    cost: >-
+      The exact error code, the fixed message wording and the details object's shape are what a
+      caller of this route would program against to detect and handle this refusal, yet they are
+      decided only here. The node this file answers to states no more than "an HTTP 429 response
+      carrying a Retry-After value naming when the caller may retry" — a caller-facing contract
+      fact that lives only in this response body, where the next reader will not look for it
+      because they will look in the specification.
+    kind: unstated
+    correction: >-
+      State in constraints/the-capability-identity-read-is-rate-limited the refusal's error code,
+      message text and details shape, as the sibling constraint for diagnose, simulate-case and
+      simulate-hypothesis already does for its own routes.
+    node: constraints/the-capability-identity-read-is-rate-limited
+read:
+  - node: constraints/the-capability-identity-read-is-rate-limited
+    held_at: >-
+      the returned hook (createReadCapabilityByIdentityRateLimitHook), lines 19-32, and
+      refuseOverLimit, lines 43-55
+    evidence: |-
+      const sourceIp = request.ip;
+      ...
+      if (window.requestCount > RATE_LIMIT_MAX_REQUESTS_PER_WINDOW) {
+        await refuseOverLimit(reply, window, now);
+      }
+      ...
+      await reply
+        .header('Retry-After', String(retryAfterSeconds))
+        .code(429)
+        .send({ ... });
+looked_past: >-
+  The map of per-IP windows is pruned only by iterating every entry on every request rather than
+  being bounded or evicted proactively, which is a memory/performance shape rather than a domain
+  fact the specification states or omits.
+candidates_opened:
+  - constraints/the-diagnosis-and-simulation-routes-are-rate-limited

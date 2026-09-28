@@ -1,0 +1,8 @@
+certified:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    state: covered
+    tests:
+      - file: src/__tests__/unit/http/error-handler.middleware.spec.ts
+        name: still answers 500 with the unchanged generic envelope for a typed domain error the status map does not name
+      - file: src/__tests__/unit/http/error-handler.middleware.spec.ts
+        name: never lets an unmapped error's own message or context reach the client

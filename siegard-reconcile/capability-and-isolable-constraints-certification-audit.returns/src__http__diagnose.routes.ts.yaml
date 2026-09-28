@@ -1,0 +1,8 @@
+read:
+  - node: constraints/diagnosis-answers-synchronously
+    held_at: >-
+      the return statement of diagnoseHandler, where the assessment produced by the awaited
+      controller call is sent directly in the same response
+    evidence: >-
+      const assessment = await handleDiagnoseRequest(dependencies, parsed.data);
+        return reply.code(200).send(assessment);

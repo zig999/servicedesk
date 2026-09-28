@@ -1,0 +1,14 @@
+read:
+  - node: constraints/the-capability-identity-read-is-rate-limited
+    held_at: >-
+      the `onRequest` hook attached ahead of this route's registration, lines 15-18:
+      `app.addHook('onRequest', createReadCapabilityByIdentityRateLimitHook());` immediately
+      followed by `app.get(\`${API_PREFIX}/capabilities/:name/:version\`, ...)` — this file's
+      share of the constraint is binding the rate-limit hook to exactly this route; the hook's
+      own counting, the 429 status and the Retry-After value are declared in the sibling
+      `read-capability-by-identity-rate-limit.middleware.ts`, outside this file.
+    evidence: >-
+      app.addHook('onRequest', createReadCapabilityByIdentityRateLimitHook());
+      app.get(`${API_PREFIX}/capabilities/:name/:version`, (request, reply) =>
+        readCapabilityByIdentityHandler(dependencies, request, reply),
+      );

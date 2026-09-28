@@ -1,0 +1,25 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: >-
+      the whole file — a plain forward-only DDL script that runs in numeric
+      sequence after 0004-case-and-hypothesis.sql and 0005-investigation.sql,
+      with no manual step and no reverse script needed since it neither drops
+      nor rewrites any row
+    evidence: |-
+      CREATE RULE case_versions_no_update AS
+        ON UPDATE TO case_versions
+        DO INSTEAD NOTHING;
+looked_past: >-
+  The file's opening comments carry design rationale (declarative RULE chosen
+  over a trigger or a revoked privilege) and a citation to
+  rules/knowledge/a-case-version-is-written-once as the fact this rule
+  answers; I opened that node directly under the specification root (it is not
+  in my node set nor in candidates.txt) and confirmed it states "never altered
+  again" for a case version in released state — 0004/0005 give case_versions
+  no draft/released distinction at all at this point in the replay sequence
+  (migrations/0009-case-version-lifecycle-schema.sql adds `state` and later
+  narrows this same rule to `WHERE OLD.state = 'released'`), so the blanket
+  no-op this file installs is the correct interim shape and not a
+  contradiction of that node; whether the comment's own citation and design
+  rationale belong in source at all is a comment-discipline matter for another
+  pass, not a domain-fact conformance finding.

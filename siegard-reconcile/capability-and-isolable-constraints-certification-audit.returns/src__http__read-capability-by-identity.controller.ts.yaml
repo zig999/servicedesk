@@ -1,0 +1,18 @@
+read:
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: nowhere
+    evidence: >-
+      return dependencies.readCapabilityByIdentity(params.name, params.version);
+  - node: contracts/integration/capability-registry
+    held_at: >-
+      the dependency type and the function body — readCapabilityByIdentity(name, version) is
+      invoked with the request's name and version, matching the read-capability-by-identity
+      operation the contract lists
+    evidence: >-
+      readonly readCapabilityByIdentity: (name: string, version: string) => Promise<Capability>;
+      ... return dependencies.readCapabilityByIdentity(params.name, params.version);
+looked_past: >-
+  The file is a pure pass-through with no branching or error construction of its own; whether the
+  404/CapabilityIdentityNotFoundError refusal is correctly implemented is settled by whichever
+  file the injected readCapabilityByIdentity dependency and any surrounding error mapping live in,
+  neither of which is in this file set.

@@ -1,0 +1,17 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the module's own import list, lines 1-28, and the option type
+      `GenerateConnectorConfigurationDraftOptions` (lines 37-45)
+    evidence: >-
+      import { generateCredentialPlaceholders, parameterDisplacedByCredential } from
+      './generated-credential-placeholders.js'; ... import type { IOpenApiDocumentFetcher }
+      from './openapi-document-fetcher.port.js'; import type { ICapabilitiesReader } from
+      './capabilities-reader.port.js'; ... readonly documentFetcher: IOpenApiDocumentFetcher;
+      readonly capabilitiesReader: ICapabilitiesReader; readonly registry:
+      RegisteredConnectorConfigurationReader;
+looked_past: >-
+  The repeated `...(Object.keys(x).length > 0 ? { x } : {})` conditional-spread idiom used four
+  times in draftedConfigurationText to omit empty query/headers/body keys is a stylistic
+  duplication, not a domain fact in dispute, and is left to a code-quality reading rather than
+  this pass.

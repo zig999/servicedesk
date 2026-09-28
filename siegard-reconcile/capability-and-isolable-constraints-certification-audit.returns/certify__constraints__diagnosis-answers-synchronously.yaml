@@ -1,0 +1,29 @@
+certified:
+  - node: constraints/diagnosis-answers-synchronously
+    state: partial
+    tests:
+      - file: src/__tests__/unit/http/diagnose.routes.spec.ts
+        name: answers 200 with the resolved assessment narrowed to the response DTO's four fields, for a released-state pinned version
+      - file: src/__tests__/unit/http/diagnose.routes.spec.ts
+        name: answers 200 with the resolved assessment narrowed to the response DTO's four fields, when the subject covers every required attribute the derived requirements name
+    why: >-
+      Both named tests send one POST /v1/diagnose. Each expects a 200 whose body is the
+      assessment itself, so either would fail if the route answered with a job handle, a 202
+      or anything the attendant would have to poll. That means the fact is exercised at the
+      route. It is only exercised incidentally, though. Each test sets out to prove something
+      else, the narrowing to the response DTO in one and the released-state or input-coverage
+      gate in the other. The in-response answer is asserted along the way, and nothing marks it
+      as load-bearing, so it would be rewritten the day those assertions change. Both tests also
+      replace the wired diagnose runner with a mock that resolves at once. Nothing in the set
+      exercises the production diagnose path behind the route. A job, queue or wait placed
+      inside that path would pass every test in the file, as long as the runner still resolves
+      an assessment in the end. So "no job, no queue and no polling stand between the attendant
+      and the assessment" is unexercised past the route boundary. The rate-limit tests check
+      status codes only and never read the assessment, so they do not bear on this fact.
+    remainder: testable
+    remainder_why: >-
+      One input against one result, in a test that exists for this fact. The input is a single
+      POST /v1/diagnose through the production-wired diagnose path, with only the model client
+      stubbed to resolve. The expected result is that the same response answers 200 and carries
+      the assessment's outcome, referral and text, with no job identifier, Location or
+      poll-for-result body, and no further request needed to get the assessment.

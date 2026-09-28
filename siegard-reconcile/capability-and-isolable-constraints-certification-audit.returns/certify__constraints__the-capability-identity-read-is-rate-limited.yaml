@@ -1,0 +1,18 @@
+certified:
+  - node: constraints/the-capability-identity-read-is-rate-limited
+    state: covered
+    tests:
+      - file: src/__tests__/unit/http/read-capability-by-identity-rate-limit.middleware.spec.ts
+        name: answers the 61st request within one minute from the same source IP with HTTP 429
+      - file: src/__tests__/unit/http/read-capability-by-identity-rate-limit.middleware.spec.ts
+        name: names, in the 429 response, a Retry-After value the caller may retry after
+      - file: src/__tests__/unit/http/read-capability-by-identity-rate-limit.middleware.spec.ts
+        name: answers every one of the first 60 requests within a minute from one source IP with its ordinary response, none of them refused
+      - file: src/__tests__/unit/http/read-capability-by-identity-rate-limit.middleware.spec.ts
+        name: does not count a second source IP's requests against a first source IP's own limit
+      - file: src/__tests__/unit/http/read-capability-by-identity-rate-limit.middleware.spec.ts
+        name: refuses no route but read-capability-by-identity, even once that route's own limit is exhausted from the same source IP
+      - file: src/__tests__/unit/http/read-capability-by-identity-rate-limit.middleware.spec.ts
+        name: lets a source IP start a fresh window, with its ordinary response, once its prior window has fully elapsed
+      - file: src/__tests__/unit/http/read-capability-by-identity-rate-limit.middleware.spec.ts
+        name: never answers a Retry-After below one second, even when the refusal lands in the window's very last millisecond

@@ -1,0 +1,22 @@
+read:
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: >-
+      readCapabilityByIdentityOrThrow (lines 77–83), which resolves the identity via
+      readCapabilityByIdentity (lines 71–75, matching on both name and version) and throws
+      CapabilityIdentityNotFoundError when nothing is held at that identity; the HTTP-404 pairing
+      the node also names sits in the controller/status-map, not in this file.
+    evidence: |-
+      public async readCapabilityByIdentityOrThrow(name: string, version: string): Promise<Capability> {
+          const resolution = await this.readCapabilityByIdentity(name, version);
+          if (!resolution.held) {
+            throw new CapabilityIdentityNotFoundError(resolution.name, resolution.version);
+          }
+          return resolution.capability;
+        }
+looked_past: >-
+  registerCapability, readCapability, listCapabilities and removeCapability carry other domain
+  refusals and rules (contract completeness, schema well-formedness, input-schema shape, the
+  read-only nature check, orphaned-placeholder refusal, duplicate/answered-concept refusal,
+  pagination, citation-by-evidence refusal) that this delegation's node set — and this batch's
+  candidate index, which binds this file only to the identity-refusal constraint — do not cover;
+  their conformance is another pass's to judge.

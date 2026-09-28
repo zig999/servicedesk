@@ -1,0 +1,39 @@
+read:
+  - node: constraints/the-judgment-prompt-is-closed
+    held_at: >-
+      the `EvidenceItem`, `CaseContext` types and the `evaluate` signature, which together fix
+      what a judgment prompt may be assembled from: one criterion, evidence items carrying only
+      their own snapshotted semantics, and the pinned case's title/whenToUse — with no parameter
+      admitting a live glossary or capability-registry handle
+    evidence: |-
+      export type EvidenceItem = {
+        readonly concept: string;
+        readonly fields: readonly FieldSemantics[];
+        readonly concept_description: string;
+        readonly capability_payload_notes: string;
+        readonly observed_at: string;
+        readonly ttl: number;
+      } & ObservationOutcome;
+      ...
+      export type CaseContext = {
+        readonly title: string;
+        readonly whenToUse: string;
+      };
+
+      export interface IHypothesisEvaluator {
+
+        evaluate(
+          criterion: string,
+          evidence: readonly EvidenceItem[],
+          caseContext: CaseContext,
+        ): Promise<EvaluationOutcome>;
+      }
+looked_past: >-
+  the `Exclude<Verdict, 'confirmed' | 'refuted'>` discriminant and the hand-written 'confirmed'/'refuted'
+  literals used to shape the tuple-typed `citations` field are a type-design choice, not a domain-fact
+  disagreement, so it is left for a code review rather than reported here.
+candidates_opened:
+  - domain/investigation/evidence
+  - domain/investigation/evaluation
+  - domain/investigation/verdict
+  - rules/investigation/a-decided-evaluation-cites-evidence

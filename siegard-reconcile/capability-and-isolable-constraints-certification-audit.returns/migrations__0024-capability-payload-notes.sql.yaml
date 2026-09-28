@@ -1,0 +1,19 @@
+read:
+  - node: domain/integration/capability
+    held_at: >-
+      the ALTER TABLE statement adding the declared optional attribute's column
+    evidence: |-
+      ALTER TABLE capabilities
+        ADD COLUMN payload_notes TEXT;
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: >-
+      the file's own form — a single forward-only, additive statement in a plainly
+      numbered script that does not touch 0003
+    evidence: |-
+      ALTER TABLE capabilities
+        ADD COLUMN payload_notes TEXT;
+looked_past: >-
+  the header comment runs well past a directive a tool consumes or a suppression's
+  rationale — restating domain/integration/capability's own description and citing
+  migrations/0003, 0007 and 0012 by name — which is a comment-discipline question for
+  a different pass, not a domain fact stated or missing here.

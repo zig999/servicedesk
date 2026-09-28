@@ -1,0 +1,16 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the import list at the top of the file, all of which are local
+      type-only imports
+    evidence: >-
+      import type { ConsolidationOutcome, IAssessmentConsolidator } from './assessment-consolidator.port.js';
+      import type { ConsolidationRegister } from './consolidation-register.js';
+      import type { Evaluation } from './evaluation.js';
+      import type { Evidence } from './evidence.js';
+      import type { Usage } from './usage.js';
+looked_past: >-
+  The fixture-keying approach (JSON.stringify of the call) and the choice
+  of placeholder constants (ZEROED_USAGE, ZEROED_ELAPSED_MS, PLACEHOLDER_PROMPT)
+  are implementation choices of a test double, not domain facts, and are left
+  to a code review rather than this pass.

@@ -1,0 +1,34 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: >-
+      the whole file — four CREATE TABLE statements (cases, case_versions, hypotheses,
+      hypothesis_collects), each with straight-line dependencies on tables this same
+      migration or an earlier-numbered one creates, executed by the migration runner in
+      numeric order with no step performed by hand
+    evidence: >-
+      CREATE TABLE cases (
+        slug TEXT NOT NULL,
+        CONSTRAINT cases_pkey PRIMARY KEY (slug)
+      );
+      ...
+      CREATE TABLE case_versions (
+        slug                    TEXT NOT NULL REFERENCES cases (slug),
+        version                 INTEGER NOT NULL,
+        ...
+        CONSTRAINT case_versions_pkey PRIMARY KEY (slug, version),
+        CONSTRAINT case_versions_consolidation_register_check
+          CHECK (consolidation_register IN ('formal', 'plain'))
+      );
+looked_past: >-
+  The hypotheses table this file creates keys criterion, resolution and position directly
+  on (case_slug, case_version, name), with no revision number or state column, whereas
+  domain/knowledge/hypothesis-revision.md now models content (criterion, collects,
+  resolution, state) as its own aggregate root referenced by a manifest entry that carries
+  position — that gap is domain/knowledge/hypothesis-revision's candidate binding to
+  migrations/0020-hypothesis-revision-own-state.sql and
+  migrations/0021-refuse-altering-a-released-revision.sql to settle, not this file's, since
+  this migration predates that concept and the schema-replay property this file answers for
+  is a property of the whole numbered sequence rather than of any one script's intermediate
+  shape.
+candidates_opened:
+  - domain/knowledge/hypothesis-revision

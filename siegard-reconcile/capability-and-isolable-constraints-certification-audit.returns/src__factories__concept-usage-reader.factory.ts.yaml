@@ -1,0 +1,67 @@
+findings:
+  - file: src/factories/concept-usage-reader.factory.ts
+    where: the if/else-if chain in resolveConceptUsage, lines 27-38
+    evidence: >-
+      if (capability.held) {
+        return { named: true, reference: 'capability' };
+      }
+      if (await sources.investigationStore.isConceptNamedByEvidence(concept)) {
+        return { named: true, reference: 'evidence' };
+      }
+      if (await sources.investigationStore.isConceptNamedByCitation(concept)) {
+        return { named: true, reference: 'citation' };
+      }
+      if (await sources.caseStore.isConceptCollectedByHypothesisRevision(concept)) {
+        return { named: true, reference: 'hypothesis-revision-collects' };
+      }
+    cost: >-
+      rules/glossary/a-registered-concept-is-never-removed's own Description says the refusal "names
+      which of those conditions was found, so the person told to keep the concept knows what to look
+      at" — but its statement pairs each of the four conditions with a reference value one at a time and
+      never says which wins when a concept satisfies more than one at once. domain/integration/capability's
+      own Description ("It answers exactly one concept... its output schema... bounds every citation over
+      the evidence it produces") means a concept a capability answers routinely also has evidence naming it
+      and citations bounded by that evidence, so this is the ordinary case, not an edge one: for such a
+      concept this chain always reports 'capability' and never discloses that evidence or a citation also
+      names it. An operator who deregisters the capability believing that clears the concept meets the
+      removal refused again, now for a reference ('evidence' or 'citation') the first refusal never showed
+      them, because the priority that decided what to disclose first lives only in the order of these four
+      ifs.
+    kind: unstated
+    correction: >-
+      the precedence among the four conditions — which reference is reported when a concept satisfies more
+      than one — would have to be decided and recorded in rules/glossary/a-registered-concept-is-never-removed's
+      own statement (or a sibling node it points to), so the order this function encodes is read from a
+      decision rather than invented by whichever branch was written first.
+    node: rules/glossary/a-registered-concept-is-never-removed
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      createConceptUsageReader, lines 13-23 — the one place in this file that imports and instantiates the
+      concrete infrastructure and hands back only the port
+    evidence: >-
+      import { RelationalCaseStore } from '../persistence/relational-case-store.repository.js';
+      import { RelationalInvestigationStore } from '../persistence/relational-investigation-store.repository.js';
+      ...
+      const sources: ConceptUsageSources = {
+        capabilityQuery,
+        investigationStore: new RelationalInvestigationStore(connection),
+        caseStore: new RelationalCaseStore(connection),
+      };
+      return { readConceptUsage: (concept) => resolveConceptUsage(concept, sources) };
+  - node: domain/investigation/citation
+    held_at: >-
+      the citation branch of resolveConceptUsage, line 33-35 — the node's required `concept` attribute is
+      what this branch queries by; the node's `field` attribute is never touched here
+    evidence: >-
+      if (await sources.investigationStore.isConceptNamedByCitation(concept)) {
+        return { named: true, reference: 'citation' };
+      }
+looked_past: >-
+  resolveConceptUsage awaits each of its four checks in sequence rather than in parallel, so a concept
+  unnamed by any of them pays four round-trips before the negative answer — a performance shape, not a
+  domain fact, and not this pass's question.
+candidates_opened:
+  - rules/glossary/a-registered-concept-is-never-removed
+  - domain/integration/capability
+  - domain/investigation/evidence

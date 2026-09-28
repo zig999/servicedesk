@@ -1,0 +1,22 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the class declaration `export class RelationalConnectorConfigurationStore implements
+      IConnectorConfigurationStore` (line 14), which keeps every database-specific import —
+      `runInTransaction`, `runStatement`, `IStatement`, `DatabaseConnection` — confined to this
+      adapter behind the port, so nothing importing `IConnectorConfigurationStore` or
+      `ConnectorConfiguration` (the domain-facing types this file also imports) is made to carry
+      a driver.
+    evidence: >-
+      import { runInTransaction, runStatement, type IStatement } from './database-access.js';
+      import type { DatabaseConnection } from './database-connection.js';
+      ...
+      export class RelationalConnectorConfigurationStore implements IConnectorConfigurationStore {
+        public constructor(private readonly connection: DatabaseConnection) {}
+looked_past: >-
+  raiseReadFailure and raiseWriteFailure are near-identical error constructors differing only in
+  the operation label and message text — a shape duplication, not a domain fact, so it is left to
+  a code-review pass rather than reported here.
+candidates_opened:
+  - domain/integration/connector-configuration-registry
+  - contracts/integration/connector-configuration-registry

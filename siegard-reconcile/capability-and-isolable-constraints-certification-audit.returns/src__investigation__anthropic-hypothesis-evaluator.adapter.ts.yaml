@@ -1,0 +1,42 @@
+read:
+  - node: constraints/the-judgment-prompt-is-closed
+    held_at: >-
+      buildUserPrompt() (assembling the <judgment_input> block from only the criterion, the
+      evidence block, a freshly-computed current_instant, and the pinned case's title/when_to_use)
+      together with requestJudgment()'s call to the Anthropic API, which passes no tools parameter
+    evidence: |-
+      return [
+          '<judgment_input>',
+          '<criterion>',
+          escapeForXmlText(criterion),
+          '</criterion>',
+          '<evidence>',
+          evidenceBlock(evidence),
+          '</evidence>',
+          `<current_instant>${escapeForXmlText(currentInstant)}</current_instant>`,
+          '<case_title>',
+          escapeForXmlText(caseContext.title),
+          '</case_title>',
+          '<case_when_to_use>',
+          escapeForXmlText(caseContext.whenToUse),
+          '</case_when_to_use>',
+          '</judgment_input>',
+        ].join('\n');
+      ...
+      return await this.client.messages.create({
+              model: this.model,
+              max_tokens: this.maxTokens,
+              system: SYSTEM_PROMPT,
+              messages: [{ role: 'user', content: prompt }],
+            });
+looked_past: >-
+  The code-fence-stripping fallback in unwrapCodeFence(), and the default max_tokens/apiKey
+  wiring, are response-parsing robustness and infrastructure configuration rather than a domain
+  fact, so they are left for a code review rather than reported here.
+candidates_opened:
+  - rules/investigation/an-inconclusive-evaluation-declares-its-reason
+  - domain/investigation/evaluation-reason
+  - rules/investigation/judgment-reads-the-current-instant-fresh
+  - rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+  - rules/investigation/a-decided-evaluation-cites-evidence
+  - rules/investigation/judgment-does-not-infer

@@ -1,0 +1,11 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the file's own import statements, lines 1-6
+    evidence: |-
+      import { requiresEvaluationOf, resolveOutcome, type ResolvedOutcome, type Verdicts } from '../case/case-resolution.js';
+      import type { Case } from '../case/case.js';
+      import type { Citation } from './citation.js';
+      import type { Evaluation } from './evaluation.js';
+      import type { Evidence } from './evidence.js';
+      import type { Verdict } from './verdict.js';

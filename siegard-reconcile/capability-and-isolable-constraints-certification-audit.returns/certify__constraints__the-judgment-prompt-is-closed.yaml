@@ -1,0 +1,62 @@
+certified:
+  - node: constraints/the-judgment-prompt-is-closed
+    state: partial
+    tests:
+      - file: src/__tests__/unit/investigation/judgment-stage.spec.ts
+        name: >-
+          calls evaluate() with only the judged hypothesis's own criterion and its own matched evidence, never another hypothesis's
+      - file: src/__tests__/unit/investigation/judgment-stage.spec.ts
+        name: >-
+          passes each evidence item's own snapshotted field semantics and concept description to evaluate() — read straight from the evidence it was given, never resolved live — before the first call is ever made, never only after a decided answer
+      - file: src/__tests__/unit/investigation/judgment-stage.spec.ts
+        name: >-
+          passes the same pinned case's own title and when_to_use, grouped as CaseContext, to every hypothesis judged in one judgeHypotheses() call — never a different context per hypothesis
+      - file: src/__tests__/unit/investigation/judgment-stage.spec.ts
+        name: >-
+          passes the pinned case's own title and when_to_use, unchanged, to both the first evaluate() call and the retry it forces
+      - file: src/__tests__/unit/investigation/judgment-stage.spec.ts
+        name: >-
+          imports no ICapabilityQuery and reads no capability-registry port at all — judgeHypotheses takes only evidence already collected, never a registry to resolve live
+    why: >-
+      The tests check what the judgment stage hands to evaluate(), and only that.
+      Three parts are exercised. First, only the judged hypothesis's own criterion
+      and its own evidence are passed, never a sibling's. Second, each item's
+      snapshotted concept meaning, fields, observed_at and ttl pass through
+      unchanged, and exact toEqual means an extra attribute such as the subject's
+      inputs would fail the test. Third, the pinned case's title and when_to_use
+      are passed as CaseContext.
+
+      The prompt itself is never exercised. Every test uses a scripted evaluator,
+      so nothing checks the real evaluator's assembled prompt. Nothing checks that
+      the content sits in a delimited data block, and nothing checks that the
+      provider call grants no tools.
+
+      The current instant is also unexercised. Nothing checks that the prompt
+      carries it, read fresh in UTC at assembly. The retry-timing test ("issues a
+      retry as a genuinely separate evaluate() call happening only after real time
+      has elapsed since the first attempt ...") cannot fail on this fact. It only
+      compares the scripted evaluator's own clock readings, and its first answer
+      resolves 50ms late in every case.
+
+      "No live read of the glossary" is not exercised at all. The
+      capability-registry half is covered only by a text search of
+      judgment-stage.ts for import names. That binds the module's shape, not
+      behavior, and does not reach the file where the prompt is actually
+      assembled.
+
+      A detail for a reader to route: every evidence item passed to evaluate() also
+      carries result and capability_payload_notes. Two tests in the file assert
+      capability_payload_notes is passed, and the node's list of what an item
+      carries does not name it. Whether "its own evidence" admits it is not
+      settled here.
+    remainder: testable
+    remainder_why: >-
+      Call the real evaluator adapter with one criterion, evidence items whose
+      snapshotted fields (with type and description), concept meaning, observed_at
+      and ttl are set, a case context, and a fixed clock. Check four results.
+      First, the assembled prompt holds exactly those contents inside the delimited
+      data block, plus the fixed clock's instant as a UTC ISO string, and no
+      sibling criterion or subject attribute. Second, the provider request carries
+      no tools. Third, two separate judgment requests with the clock advanced
+      between them show two different instants. Fourth, with glossary and
+      capability-registry doubles that throw on any read, assembly still completes.

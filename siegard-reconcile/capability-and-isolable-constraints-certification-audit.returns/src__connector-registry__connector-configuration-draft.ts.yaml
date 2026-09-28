@@ -1,0 +1,45 @@
+findings:
+  - file: src/connector-registry/connector-configuration-draft.ts
+    where: line 25, the local type alias `ConnectorConfigurationDraftStatusReadingEnding`
+    evidence: |-
+      type ConnectorConfigurationDraftStatusReadingEnding = 'ok' | 'unavailable' | 'denied' | 'timeout';
+    cost: >-
+      the ending vocabulary already lives as `EvidenceResult` in src/investigation/evidence-result.ts
+      (`export const EVIDENCE_RESULTS = ['ok', 'unavailable', 'denied', 'timeout'] as const;`), the type
+      every other observation-facing module in the codebase reads its ending from; this file re-declares
+      the same four values as a private, unrelated alias, so a fifth ending added to the specification's
+      evidence-result enumeration can be reflected in `EvidenceResult` and this local copy will still
+      type-check against the old four, with nothing to catch the drift.
+    kind: contradicts
+    correction: >-
+      replace the local alias with `EvidenceResult` imported from src/investigation/evidence-result.ts
+      as the type of `ConnectorConfigurationDraftStatusReading.ending`.
+    node: domain/investigation/evidence-result
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the whole file — it declares only literal constants and structural types, and carries no import
+      statement of any kind.
+    evidence: |-
+      export const CONNECTOR_CONFIGURATION_DRAFT_UNRESOLVED_REASONS = [
+        'no-capability-registered',
+        'security-scheme-not-reducible-to-a-credential',
+        'drafted-key-occupied-by-another-security-scheme',
+      ] as const;
+looked_past: >-
+  the node domain/integration/connector-configuration-draft's `relationships` entry names a capability
+  reference (cardinality 0..*) that the `ConnectorConfigurationDraft` type carries no field for; whether
+  that association belongs on this value object or is carried elsewhere in the generation path is a
+  question about the file(s) that produce the draft, not about what this type declares, so it is left
+  for whichever pass reviews the generation code rather than reported here as a value-object mismatch.
+candidates_opened:
+  - domain/integration/connector-configuration-draft
+  - domain/integration/connector-configuration-draft-unresolved-reason
+  - domain/integration/connector-configuration-draft-unresolved-item
+  - domain/integration/connector-configuration-draft-generated-credential
+  - domain/integration/connector-configuration-draft-method-mismatch
+  - domain/integration/connector-configuration-draft-status-reading
+  - domain/integration/connector-configuration-draft-response-field
+  - domain/integration/connector-configuration-draft-reading-note
+  - domain/integration/connector-configuration-draft-reading-note-kind
+  - domain/investigation/evidence-result

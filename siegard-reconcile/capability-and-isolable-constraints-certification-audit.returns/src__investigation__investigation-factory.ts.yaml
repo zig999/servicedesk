@@ -1,0 +1,51 @@
+findings:
+  - file: src/investigation/investigation-factory.ts
+    where: "BuildInvestigationOptions.written_at (line 33) and the written_at field of the returned Investigation in buildInvestigation's return statement (line 54)"
+    evidence: |-
+      readonly written_at?: string;
+      ...
+      written_at: options.written_at!,
+    cost: >-
+      The factory assembles the Investigation record — including written_at, forced in from
+      whatever the caller supplied via a non-null assertion — before any write has settled
+      against the store. An audit reading written_at off a record built this way learns the
+      instant the factory ran (or whatever timestamp a caller chose to pass), not the instant
+      the store settled the write, which is the one fact the node says this attribute exists to
+      preserve; the record this factory hands onward already carries the value the node says
+      persistence alone may fix.
+    kind: contradicts
+    correction: >-
+      BuildInvestigationOptions should carry no written_at field, and buildInvestigation's
+      return should not populate one — the value the store settles onto the record is not part
+      of what is handed to it, per the node, so nothing pre-settle should carry it at all.
+    node: rules/investigation/written-at-records-when-the-write-settled
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the file's own import list — every import is a local domain module (case-resolution,
+      case, the investigation-not-buildable error, and the investigation/subject/evidence/
+      evaluation/assessment/cost/durations types), none a framework, driver or provider client.
+    evidence: |-
+      import { collectionPlan, requiresEvaluationOf } from '../case/case-resolution.js';
+      import type { Case } from '../case/case.js';
+      import { InvestigationNotBuildableError } from '../errors/investigation-not-buildable.error.js';
+      import type { Assessment } from './assessment.js';
+      import type { Cost } from './cost.js';
+      import type { Durations } from './durations.js';
+      import type { Evaluation } from './evaluation.js';
+      import type { Evidence } from './evidence.js';
+      import type { Investigation, PinnedCase } from './investigation.js';
+      import { buildSubject } from './subject.js';
+      import type { SubjectAttributeValue } from './subject-attribute-value.js';
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: >-
+      nowhere in this file — subject construction, and any check of how many attribute-values
+      subjectAttributes carries, is delegated whole to the imported buildSubject call; this file
+      states no branch, count or refusal of its own over subjectAttributes.
+    evidence: |-
+      const subject = buildSubject(subjectType, subjectAttributes);
+looked_past: >-
+  evidenceTotalityViolations and evaluationTotalityViolations repeat the same shape of loop
+  (count, compare to zero, compare to one, report an extra) twice over different collections;
+  that structural duplication is a code-shape matter, not a domain fact, and is outside this
+  judgment.

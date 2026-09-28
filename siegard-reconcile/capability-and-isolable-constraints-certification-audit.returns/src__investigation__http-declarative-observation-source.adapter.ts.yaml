@@ -1,0 +1,28 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the class declaration and its constructor, which confine the fetch-based HTTP dependency
+      to this adapter, reached only through the IObservationSource port the class implements
+    evidence: >-
+      export class HttpDeclarativeObservationSource implements IObservationSource {
+        private readonly capabilities: ICapabilityQuery;
+        private readonly connectorConfigurations: IConnectorConfigurationQuery;
+        private readonly httpClient: typeof fetch;
+looked_past: >-
+  parsedBodyOrUndefined() swallows a response.json() parse failure into undefined rather than
+  surfacing it, which is a defensive-coding choice consistent with the specification's
+  honest-empty reading of an unresolved responseMap path rather than a separate domain fact, so
+  it is left for a code-quality reading rather than reported here.
+candidates_opened:
+  - rules/integration/an-unclassified-status-ends-unavailable
+  - rules/integration/an-unreachable-connector-ends-unavailable
+  - rules/integration/an-unresolvable-observation-ends-unavailable
+  - rules/integration/an-http-connector-configuration-declares-its-call
+  - rules/integration/an-http-connector-configuration-declares-its-method-and-status-vocabulary
+  - rules/integration/an-incomplete-or-unresolvable-connector-call-descriptor-ends-unavailable
+  - rules/integration/an-observation-carries-only-the-output-schema-fields-its-response-map-reaches
+  - rules/investigation/no-stage-aborts-on-its-deadline
+  - domain/investigation/evidence-result
+  - domain/investigation/evidence
+  - contracts/investigation/observation-source
+  - constraints/the-deadline-is-an-absolute-propagated-instant

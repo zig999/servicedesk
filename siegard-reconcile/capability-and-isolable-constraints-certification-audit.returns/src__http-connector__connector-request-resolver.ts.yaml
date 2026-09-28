@@ -1,0 +1,37 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the module's own import list, lines 1-4 — only domain-side types and this
+      module's own error/type siblings are imported, and the connector adapter
+      depends on the domain (`Subject`) rather than the reverse
+    evidence: >-
+      import type { Subject } from '../investigation/subject.js';
+      import type { AssembledConnectorRequest, ConnectorCallDescriptor } from './connector-call-descriptor.js';
+  - node: rules/integration/a-connector-placeholder-is-declared-by-its-capability
+    held_at: >-
+      the exported `subjectAttributePlaceholderNamesIn` function, lines 125-130 —
+      this file supplies the placeholder-naming-a-Subject-attribute detector a
+      registration/edit-time check elsewhere compares against a capability's
+      declared properties; the comparison and the refusal themselves are not
+      enacted in this file
+    evidence: >-
+      export function subjectAttributePlaceholderNamesIn(configurationText: string): readonly string[] {
+        return [...configurationText.matchAll(PLACEHOLDER_PATTERN)]
+          .map((match) => splitPlaceholderToken(match[1]))
+          .filter(isSubjectAttributeToken)
+          .map(([, argument]) => argument);
+      }
+looked_past: >-
+  The descriptor-shape refusal (`descriptorProblems`, throwing
+  IncompleteConnectorCallDescriptorError for a missing address or a malformed
+  query/headers) and the placeholder-resolution failure modes (unrecognized
+  kind, missing argument, a subject-attribute or credential resolving to
+  nothing via ConnectorPlaceholderNotResolvedError) match
+  rules/integration/an-http-connector-configuration-declares-its-call and
+  rules/integration/an-incomplete-or-unresolvable-connector-call-descriptor-ends-unavailable
+  word for word once opened; those nodes are outside this delegation's own set
+  so no finding is reported against them here, only noted as checked to rule
+  out an unstated fact.
+candidates_opened:
+  - rules/integration/an-http-connector-configuration-declares-its-call
+  - rules/integration/an-incomplete-or-unresolvable-connector-call-descriptor-ends-unavailable

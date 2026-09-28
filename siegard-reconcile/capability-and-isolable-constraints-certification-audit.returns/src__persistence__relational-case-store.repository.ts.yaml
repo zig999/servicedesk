@@ -1,0 +1,25 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: >-
+      assembleVersion (delegating to assembleWholeVersion) — the case version row, its manifest
+      and every manifest entry's collects are all read inside one transaction and the whole
+      result is returned only if the version row exists, while insertRevision, overwriteRevision,
+      insertManifestEntry, deleteManifestEntry, releaseHypothesisRevisionRow and the other
+      hypothesis/manifest-entry operations each run their own separate transaction.
+    evidence: >-
+      public async assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion |
+      undefined> {
+          return runInTransaction(this.connection, raiseReadFailure, (tx) => assembleWholeVersion(tx, { slug, version }));
+        }
+
+        async function assembleWholeVersion(tx: IQueryable, key: ICaseVersionKey): Promise<AssembledCaseVersion | undefined> {
+          const versionRow = await queryOneOrAbsent<ICaseVersionRow>(tx, caseVersionSelect(key), raiseReadFailure);
+          if (versionRow === undefined) {
+            return undefined;
+          }
+          const manifest = await readManifest(tx, key);
+          return assembledCaseVersionOf(key, versionRow, manifest);
+        }
+candidates_opened:
+  - rules/knowledge/a-released-hypothesis-revision-is-never-altered
+  - rules/knowledge/a-case-holding-no-version-may-be-deleted

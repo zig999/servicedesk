@@ -1,0 +1,27 @@
+findings:
+  - file: src/glossary/concept-usage-reader.port.ts
+    where: "line 1, the ConceptUsageReference type declaration"
+    evidence: >-
+      export type ConceptUsageReference = 'capability' | 'evidence' | 'citation' | 'hypothesis-revision-collects';
+    cost: >-
+      The four reference values this type fixes are the exact vocabulary rules/glossary/a-registered-concept-is-never-removed
+      already decided for what a ConceptInUseError reports — "capability where a registered capability answers it,
+      evidence where a collected evidence item names it, citation where a citation names it, and
+      hypothesis-revision-collects where a hypothesis-revision's own collects lists it" — re-enumerated here as a
+      second, independent literal union. If the node's vocabulary is ever extended or a value renamed, nothing
+      ties this type back to that text; a reader who finds the two disagreeing has no way to tell which was
+      decided, because this file reads as its own authority for the values rather than as a projection of the node.
+    kind: contradicts
+    node: rules/glossary/a-registered-concept-is-never-removed
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the whole file — a pure type-and-interface declaration with no import statement at all
+    evidence: >-
+      export interface IConceptUsageReader {
+
+        readConceptUsage(concept: string): Promise<ConceptUsageResolution>;
+      }
+candidates_opened:
+  - domain/investigation/citation
+  - rules/glossary/a-registered-concept-is-never-removed

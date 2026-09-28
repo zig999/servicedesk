@@ -1,0 +1,30 @@
+certified:
+  - node: constraints/the-consolidation-prompt-is-closed
+    state: uncovered
+    why: >-
+      The offered file tests draftAssessment, which sits one layer above the prompt. Every
+      consolidator in it is a stand-in: FakeAssessmentConsolidator, keyed by the
+      {evaluations, evidence, consolidationRegister} it was seeded with, or ScriptedConsolidator,
+      which returns a fixed ConsolidationOutcome. No consolidation prompt is ever built, and no
+      provider is ever called. The prompt the Assessment carries is checked only in "copies
+      register, usage, elapsed_ms and prompt from the consolidator's own ConsolidationOutcome
+      onto the returned Assessment unchanged ...". There it is the literal 'the exact
+      consolidation prompt', copied from the scripted outcome and checked as that same literal.
+      So that assertion cannot fail if the prompt stops being closed. The tests that seed the
+      fake with narrowedInput's evaluations and evidence and the given register ("answers text
+      equal to what the consolidator returns ...", "answers the register-specific text ...",
+      "forwards empty evaluations and empty evidence ...") show what draftAssessment passes to
+      the port. They say nothing about what the prompt holds. Four parts of the fact go
+      unexercised. First, that the prompt holds only the required hypotheses' evaluations, the
+      evidence their citations name, and the register. Second, that evidence no citation names
+      stays out. Third, that the three sit inside a delimited data block. Fourth, that the
+      provider call grants the model no tools.
+    remainder: testable
+    remainder_why: >-
+      Two assertions would close it. First, the prompt-assembly function, which the fitness
+      says is pure: give it required evaluations, evidence where some items are cited and some
+      are not, and a register value. The assembled prompt should equal an expected string. That
+      string holds exactly those evaluations, only the cited evidence and the register, inside
+      the delimited data block, with nothing else interpolated. Second, the provider adapter:
+      give it a consolidation call and capture the outgoing request. The request should carry
+      no tools and no tool-choice grant.

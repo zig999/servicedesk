@@ -1,0 +1,34 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the seven `it` blocks auditing the `case`, `glossary`, `capability-registry` and
+      `investigation` modules' imports against forbidden drivers/frameworks, the connection
+      module, the LLM provider client (with the two adapters that implement a published port
+      excepted), the connector-configuration store, HTTP client packages, the
+      connector-request-resolver and its errors (with the epic's own HTTP adapter excepted), and
+      the http-declarative-observation-source adapter
+    evidence: >-
+      it('the case, glossary, capability-registry and investigation modules import no driver and
+      no framework', async () => {
+        const imports = await domainModuleImports();
+
+        const offenders: string[] = [];
+        for (const [file, specifiers] of imports) {
+          for (const specifier of specifiers.filter((s) => namesOneOf(s,
+      FORBIDDEN_DRIVERS_AND_FRAMEWORKS))) {
+            offenders.push(`${file} imports ${specifier}`);
+          }
+        }
+
+        expect(offenders).toEqual([]);
+      });
+looked_past: >-
+  The concrete enumeration of forbidden npm packages (drivers, frameworks, HTTP clients) and the
+  file-organisation assertion that database-connection.ts sits under persistence/ are
+  implementation choices operationalising the node's own abstract fitness function rather than
+  domain facts of their own, so no finding was raised over them; likewise the two named provider
+  adapters and the http-declarative-observation-source adapter's exception from the
+  connector-request-resolver ban match constraints/judgment-runs-behind-a-port,
+  constraints/consolidation-runs-behind-a-port, and the decision recorded at
+  rules/integration/an-http-connector-configuration-declares-its-call — all opened only to confirm
+  attribution, and all consistent with what this file states.

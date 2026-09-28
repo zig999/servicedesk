@@ -1,0 +1,48 @@
+findings:
+  - file: src/seed.ts
+    where: seedConcepts(), lines 74-84
+    evidence: >-
+      await connection.query(
+            `INSERT INTO concepts (name, ttl, description) VALUES ($1, $2, $3)
+             ON CONFLICT (name) DO UPDATE SET description = EXCLUDED.description`,
+            [concept.name, concept.ttl, concept.description],
+          );
+          for (const subjectType of concept.accepts) {
+            await connection.query(
+              'INSERT INTO concept_accepts (concept_name, subject_type_name) VALUES ($1, $2) ON CONFLICT DO NOTHING',
+              [concept.name, subjectType],
+            );
+          }
+    cost: >-
+      Re-seeding a fixture whose concept name already exists in the store leaves that concept's
+      ttl untouched (only description is written on conflict) and only adds new subject types to
+      its accepts (existing ones already recorded are never dropped, via ON CONFLICT DO NOTHING),
+      so a concept fixture edited to change a ttl or to narrow which subject types it accepts
+      silently fails to take effect on a store that already holds that name — the JSON on disk
+      and the row a diagnosis actually reads can disagree, and nothing here signals it.
+    kind: contradicts
+    correction: >-
+      seedConcepts should call the glossary store's own writeConcepts(concepts) — which already
+      updates both ttl and description on conflict and replaces a concept's accepts by deleting
+      its existing concept_accepts rows before reinserting the given ones — instead of composing
+      its own raw SQL that updates description only and unions rather than replaces accepts.
+    node: rules/glossary/a-registered-concept-is-never-removed
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: >-
+      The call sites in verifySeededCase() and alreadySeeded(): this file never assembles a case
+      version's attributes, manifest or hypothesis-revisions itself, only ever resolving one
+      through case-query's readCase or case-store's assembleVersion, and it authors a case's
+      manifest entry by entry via placeFixtureHypotheses/releaseManifestedRevisions before
+      releasing the case — matching the constraint's own carve-out for independent
+      creation/revision during authoring.
+    evidence: >-
+      const stored = await createCaseStore(connection).assembleVersion(CASE_SLUG, CASE_VERSION);
+      ... await createCaseQuery(connection).readCase(CASE_SLUG, CASE_VERSION);
+looked_past: >-
+  The script's own idempotency check (assembleVersion deciding whether to reseed) and its
+  write ordering (vocabularies, then concepts, then capabilities, then the case) are technical
+  sequencing choices with no domain content of their own, and are not reported here.
+candidates_opened:
+  - domain/glossary/concept
+  - rules/glossary/a-registered-concept-is-never-removed

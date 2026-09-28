@@ -1,0 +1,84 @@
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: >-
+      the fallback path of statusForError — the for-loop over STATUS_BY_ERROR_CLASS finding no
+      matching class and falling through to the final return, which signals "unnamed" to
+      whatever turns that signal into the fixed HTTP 500 INTERNAL_ERROR answer; the fixed message
+      text and error code themselves are not constructed in this file.
+    evidence: |-
+      for (const [errorClass, status] of STATUS_BY_ERROR_CLASS) {
+          if (error instanceof errorClass) {
+            return status;
+          }
+        }
+        return undefined;
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    held_at: the map entry pairing CapabilityIdentityNotFoundError with its status
+    evidence: "[CapabilityIdentityNotFoundError, 404],"
+  - node: contracts/integration/connector-configuration-registry
+    held_at: >-
+      the map entries covering this contract's own domain errors — the unregistered-name read
+      refusal and the malformed/incomplete registration refusals — each paired with the status
+      the specification's other rules give them; the contract itself names only the operations,
+      no status.
+    evidence: |-
+      [ConnectorConfigurationNotFoundError, 404],
+      ...
+      [ConnectorConfigurationNotWellFormedError, 422],
+      [IncompleteConnectorConfigurationError, 422],
+  - node: contracts/investigation/diagnosis
+    held_at: >-
+      the map entries covering diagnose's own refusals — an unreleased pinned version, a subject
+      missing a required attribute, and the write deadline — each paired with its status; the
+      contract itself names only the diagnose operation, no status.
+    evidence: |-
+      [CaseVersionNotReleasedError, 409],
+      ...
+      [SubjectDoesNotCoverCaseInputsError, 422],
+      [SubjectCarriesNoAttributeError, 422],
+      ...
+      [InvestigationWriteDeadlineExceededError, 500],
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: the map entry pairing ConceptInUseError with 409
+    evidence: "[ConceptInUseError, 409],"
+  - node: rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
+    held_at: the map entry pairing ConnectorConfigurationNotFoundError with 404
+    evidence: "[ConnectorConfigurationNotFoundError, 404],"
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-draft
+    held_at: >-
+      the map entries pairing OpenApiDocumentNotFetchedError and OpenApiDocumentNotReadableError
+      with 422 — the two error values this rule's own refusal (and its sibling
+      draft-refusal-distinguishing rule, outside this set) is answered under; this node's own
+      statement names no HTTP status itself.
+    evidence: |-
+      [OpenApiDocumentNotFetchedError, 422],
+      [OpenApiDocumentNotReadableError, 422],
+  - node: rules/integration/a-malformed-or-unsupported-openapi-document-refuses-the-operations-read
+    held_at: >-
+      the same two entries, reused, plus the entry pairing OpenApiOperationNotFoundError with
+      422 for the sibling path-and-method refusal; this node's own statement names no HTTP
+      status itself.
+    evidence: |-
+      [OpenApiDocumentNotFetchedError, 422],
+      [OpenApiDocumentNotReadableError, 422],
+      [OpenApiOperationNotFoundError, 422],
+  - node: rules/integration/an-unfetchable-openapi-link-refuses-the-operations-read
+    held_at: >-
+      the map entry pairing OpenApiDocumentNotFetchedError with 422, which is this file's part
+      of turning that fetch-failure refusal into a named response rather than the generic
+      fallback; the 60000-millisecond timeout this node also fixes is not this file's concern.
+    evidence: "[OpenApiDocumentNotFetchedError, 422],"
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: the map entry pairing CaseHoldsVersionsError with 409
+    evidence: "[CaseHoldsVersionsError, 409],"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: the map entry pairing CaseHoldsNoDraftError with 409
+    evidence: "[CaseHoldsNoDraftError, 409],"
+looked_past: >-
+  The file's remaining entries (the ~30 error-to-status pairings not governed by any node of
+  this set) were checked against the wider specification's decision log and full-text projection
+  for consistency and found to match what other, out-of-set nodes decide (e.g. CaseNotFoundError
+  → 404, DuplicateGlossaryNameError → 500, OpenApiOperationNotFoundError → 422); none contradicted
+  the specification, so none is reported here. The linear instanceof scan over
+  STATUS_BY_ERROR_CLASS, as opposed to a direct keyed lookup, is a construction choice with no
+  domain-fact content and is left to a code review rather than this pass.

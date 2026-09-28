@@ -1,0 +1,9 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the file's own import list, lines 1-4, and the absence of any other import in the file
+    evidence: >-
+      import type { ConsolidationRegister } from './consolidation-register.js';
+      import type { Evaluation } from './evaluation.js';
+      import type { Evidence } from './evidence.js';
+      import type { Usage } from './usage.js';

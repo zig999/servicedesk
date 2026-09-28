@@ -1,0 +1,17 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the file's own import statements, which pull in only local domain
+      types and declare a port interface with no framework, driver or
+      provider client reference
+    evidence: |-
+      import type { EvidenceResult } from './evidence-result.js';
+      import type { Subject } from './subject.js';
+looked_past: >-
+  the port's field shapes (ObservationOutcome's ok/non-ok split via
+  Exclude<EvidenceResult, 'ok'>, and ObserveConceptOptions' concept/subject/requester/
+  remainingBudgetMs fields) line up with contracts/investigation/observation-source
+  and contracts/integration/concept-observation and with domain/investigation/evidence's
+  own vocabulary, but this is a type-only interface declaration with no logic or values
+  of its own to hold a fact against, so there is nothing here for this node set to
+  answer for beyond the import discipline already read.

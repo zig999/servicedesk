@@ -1,0 +1,38 @@
+certified:
+  - node: constraints/hypotheses-are-judged-in-isolated-parallel-calls
+    state: partial
+    tests:
+      - file: src/__tests__/unit/investigation/judgment-stage.spec.ts
+        name: "calls evaluate() with only the judged hypothesis's own criterion and its own matched evidence, never another hypothesis's"
+      - file: src/__tests__/unit/investigation/judgment-stage.spec.ts
+        name: "answers exactly one evaluation per required hypothesis, in the case's declared order, none omitted or duplicated"
+      - file: src/__tests__/unit/investigation/judgment-stage.spec.ts
+        name: "never starts more evaluate() calls at once than the configured pool size, granting a queued hypothesis its call only once an earlier one frees a slot"
+      - file: src/__tests__/unit/investigation/judgment-stage.spec.ts
+        name: "keeps a hypothesis's retry under the same pool slot it already holds, never granting a queued sibling a slot while the retry is in flight"
+      - file: src/__tests__/unit/investigation/judgment-stage.spec.ts
+        name: "records deadline-exceeded for a hypothesis denied a pool slot before the deadline, and never calls evaluate() for it at all"
+      - file: src/__tests__/unit/investigation/run-diagnosis.spec.ts
+        name: "bounds judgment concurrency at exactly the given poolSize, rather than a hardcoded pool of its own"
+      - file: src/__tests__/unit/investigation/run-diagnosis.spec.ts
+        name: "counts cost.calls as one per hypothesis when every required hypothesis is actually judged, plus one for the consolidation call"
+    why: >-
+      Most of the fact is exercised. One call per hypothesis is covered: each evaluate() call carries only
+      its own hypothesis's criterion and evidence, with exactly two calls for two hypotheses. Parallel
+      calls under a bounded pool are covered in judgeHypotheses: with a pool of two, both h1 and h2 are
+      in flight at once while h3 waits. The pool-of-one tests keep a sibling queued, so judgeHypotheses
+      honors the pool size it is given, whether one or two. One provider call per hypothesis appearing
+      in the recorded cost is covered too: two judged hypotheses plus consolidation write cost.calls 3.
+      The part left unexercised is "the pool bound is configuration" at the composition. runDiagnosis
+      forwarding poolSize is exercised only at a pool of one, and the maxConcurrent 1 assertion holds
+      just as well if runDiagnosis passed a hardcoded 1 to the judgment stage. No run-diagnosis test
+      supplies a bound above one and checks that judgment actually runs that many calls at once. Nothing
+      in the offered proof shows the bound coming from configuration either. Every test sets poolSize
+      as a literal option, so how the running system gets its value from configuration is not exercised
+      by these files.
+    remainder: testable
+    remainder_why: >-
+      Two assertions would close it. First, run runDiagnosis on two hypotheses with poolSize 2 and an
+      evaluator whose calls overlap, and expect the most calls in flight at once to be 2 (with poolSize
+      1 it should be 1). Second, supply a configured pool-size value where the running system reads it,
+      and expect the diagnose pipeline to judge with exactly that bound, not a value of its own.

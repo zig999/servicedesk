@@ -1,0 +1,28 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: >-
+      the file's own form as a plain numbered migration (0023) containing
+      ordinary DDL, applied in sequence with its siblings and requiring no
+      manual step
+    evidence: |-
+      ALTER TABLE investigation_subject_attribute_values
+        DROP CONSTRAINT investigation_subject_attribute_values_attribute_fkey;
+
+      DROP TABLE subject_attributes;
+  - node: domain/investigation/subject-attribute-value
+    held_at: >-
+      the DROP CONSTRAINT statement, which removes the foreign key that had
+      held the attribute column to the retired vocabulary table, leaving
+      attribute free text as the node describes
+    evidence: >-
+      DROP CONSTRAINT investigation_subject_attribute_values_attribute_fkey;
+looked_past: >-
+  The block comment at the head of the file (lines 1-28) carries an extended
+  rationale, a third-node citation, and a Postgres default-naming explanation
+  that go well beyond a directive a tool consumes or a suppression's reason —
+  a comment-rule question rather than a domain-fact one, so it is left for
+  that judgment; I did verify the comment's citation of
+  constraints/the-stored-schema-mirrors-the-declared-model (outside my node
+  set) against the specification root and found it stated accurately, and the
+  decision log's projection corroborates the comment's claim that
+  domain/glossary/subject-attribute has left the specification.

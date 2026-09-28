@@ -1,0 +1,15 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the file's only import and its interface declaration, lines 1–6
+    evidence: |
+      import type { OverwriteHypothesisRevisionInput } from './case-store.port.js';
+
+      export interface IHypothesisRevisionOverwrite {
+
+        overwriteHypothesisRevision(input: OverwriteHypothesisRevisionInput): Promise<void>;
+      }
+looked_past: >-
+  nothing beyond the constraint's own reading — the file carries no domain fact of its own to
+  weigh against a node; it is a bare port interface with a single type import and one method
+  signature.

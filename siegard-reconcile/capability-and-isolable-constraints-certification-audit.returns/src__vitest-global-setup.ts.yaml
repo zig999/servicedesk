@@ -1,0 +1,46 @@
+findings:
+  - file: src/vitest-global-setup.ts
+    where: >-
+      the REPAIRED_CASE_SLUG/REPAIRED_CONCEPTS/REPAIRED_COLLECTS constants (lines 25-37) and the
+      ensureRepairedConceptsExist / backfillRepairedCollects functions (lines 39-66) that insert
+      them into `concepts`, `concept_accepts` and `hypothesis_revision_collects` on every suite run
+    evidence: |-
+      const REPAIRED_CONCEPTS: ReadonlyArray<{ readonly name: string; readonly ttl: number }> = [
+        { name: 'equipment-status', ttl: 300 },
+        { name: 'network-outage-flag', ttl: 60 },
+      ];
+
+      const REPAIRED_COLLECTS: ReadonlyArray<{ readonly hypothesisName: string; readonly concept: string }> = [
+        { hypothesisName: 'customer-equipment-fault', concept: 'equipment-status' },
+        { hypothesisName: 'area-network-outage', concept: 'network-outage-flag' },
+      ];
+    cost: >-
+      the specification's own scenarios (a-hypothesis-revision-is-released-independently-of-any-manifest,
+      a-draft-revision-is-overwritten-by-repeated-saves, and others) name the hypothesis
+      customer-equipment-fault, but none of them, nor any node under the specification root, says
+      that it collects a concept called equipment-status, that equipment-status carries a ttl of
+      300, that network-outage-flag exists at all, or that the hypothesis area-network-outage
+      collects it. Those associations and values are decided here, in a global test-setup file
+      titled "repair", so a reader who wants to know what customer-equipment-fault collects or what
+      equipment-status's ttl is will not find it in the glossary or the specification — only in
+      this harness script, which reasserts the pairing on every test run whether or not anything
+      still needs it repaired
+    kind: unstated
+    correction: >-
+      the concept identities, their ttls, the subject-type acceptance, and the hypothesis-collects
+      associations this backfill states would need to be decided into the specification (or curated
+      into the glossary through its own route) rather than authored as constants inside the vitest
+      global setup
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: >-
+      the call `await applyPendingMigrations(connection, MIGRATIONS_DIRECTORY, await
+      resolvedSchema(connection))` inside `setup()`
+    evidence: |-
+      await applyPendingMigrations(connection, MIGRATIONS_DIRECTORY, await resolvedSchema(connection));
+looked_past: >-
+  the DATABASE_URL preflight check and the HARNESS_POOL_OPTIONS connection-pool tuning
+  (maxConnections, idleTimeoutMs, statementTimeoutMs) are test-harness/infrastructure
+  configuration, not domain facts, and are not judged here.
+candidates_opened:
+  - domain/glossary/concept

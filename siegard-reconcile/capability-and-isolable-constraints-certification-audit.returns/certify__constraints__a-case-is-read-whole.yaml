@@ -1,0 +1,46 @@
+certified:
+  - node: constraints/a-case-is-read-whole
+    state: partial
+    tests:
+      - file: src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts
+        name: >-
+          reads the fixture case whole, with no coherence violation, through the real case-query wiring over the fixture's own glossary and capability data
+      - file: src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts
+        name: >-
+          reads every manifest entry's revision back collecting at least one concept
+      - file: src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts
+        name: >-
+          reads the shared canonical fixture case whole with no CaseVersionNotValidError, and with every hypothesis still collecting at least one concept, once this file's own collects-survive-DELETE test has already run
+      - file: src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts
+        name: >-
+          releases a freshly drafted case version without throwing CaseVersionNotReleasableError, once its own manifested hypothesis-revision has already been released through the lifecycle operation
+    why: >-
+      The three case-query tests only check that readCase returns the fixture's slug, at least one
+      hypothesis, and at least one collected concept per hypothesis they get back. Say the read
+      assembled only part of the manifest, and returned one entry out of several, or dropped an
+      entry whose hypothesis-revision failed to resolve. All three tests would still pass. So the
+      fact that a diagnosis read is assembled whole goes unexercised: no test compares the returned
+      hypotheses with the version's manifest entries, one for one, with each entry's own revision.
+      The "or not at all" half also goes unexercised. Nothing in the set reads a version whose
+      attributes, manifest or referenced revision is incomplete or invalid and then checks that
+      nothing comes back. The same goes for resolving it all in one transaction: no test puts a
+      write between reading the version and reading its revisions.
+      The second half says a hypothesis, its revisions and a draft's manifest entries may be handled
+      independently. The release-ordering test touches this only in passing. Its helper revises and
+      releases a hypothesis-revision before placing it, and the test asserts only that the release
+      order goes through. Reading, removing, and revising a revision that is already placed are not
+      exercised.
+      Three tests do not bear on this fact. The SQL test "reads back every hypothesis-revision the
+      released case version's manifest references with its own state released" queries tables
+      directly and never uses the case-query read. The collects-survive-DELETE test checks that a
+      released revision's collects cannot be changed. The second-release refusal test checks the
+      revision release lifecycle.
+    remainder: testable
+    remainder_why: >-
+      The first assertion: take a released case version whose manifest has N entries, read it
+      through case-query, and check that exactly N hypotheses come back. Each should carry the
+      criterion, collects and resolution of the revision its entry references, in the manifest's
+      order. The second: make one referenced revision fail to resolve or fail validation, and check
+      that the read refuses, with a CaseVersionNotValidError or no case, rather than returning the
+      other entries. The third: remove a draft's manifest entry, and revise a hypothesis on its own,
+      and check that each succeeds without touching the rest of the version.

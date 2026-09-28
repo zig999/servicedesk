@@ -1,0 +1,29 @@
+findings:
+  - file: src/investigation/evidence-result.ts
+    where: "line 1, the EVIDENCE_RESULTS const array and the EvidenceResult type derived from it"
+    evidence: "export const EVIDENCE_RESULTS = ['ok', 'unavailable', 'denied', 'timeout'] as const;"
+    cost: >-
+      domain/investigation/evidence-result already fixes this same closed vocabulary
+      (values: ok, unavailable, denied, timeout) as the enumeration's one home; this file
+      restates the identical four values as a literal array with nothing that reads them
+      from the specification. Should the node's vocabulary ever change — a value renamed,
+      added or retired — nothing here would follow from that edit, so the two lists can
+      drift apart silently, and a reader auditing what evidence results exist meets two
+      definitions with no way to tell which one the business actually decided.
+    kind: contradicts
+    correction: >-
+      derive EVIDENCE_RESULTS from domain/investigation/evidence-result rather than
+      hand-typing its four values a second time as an independent literal array.
+    node: domain/investigation/evidence-result
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the whole file — it declares only a const array and a type alias, with no import
+      statement anywhere in it
+    evidence: >-
+      export const EVIDENCE_RESULTS = ['ok', 'unavailable', 'denied', 'timeout'] as const;
+
+
+      export type EvidenceResult = (typeof EVIDENCE_RESULTS)[number];
+candidates_opened:
+  - domain/investigation/evidence

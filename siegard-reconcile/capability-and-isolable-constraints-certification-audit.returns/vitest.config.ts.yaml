@@ -1,0 +1,12 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: nowhere
+    evidence: |-
+      globalSetup: ['./src/vitest-global-setup.ts'],
+      fileParallelism: false,
+      testTimeout: 120000,
+looked_past: >-
+  fileParallelism: false and testTimeout: 120000 are test-runner tuning values with no
+  domain-fact reading in the specification (the knowledge base's timeout facts are about the
+  connection pool and per-capability answers, not the test suite), so they read as a tooling
+  choice for a code review to weigh, not a specification-conformance finding.

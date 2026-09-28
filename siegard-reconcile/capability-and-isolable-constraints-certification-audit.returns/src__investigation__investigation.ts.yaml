@@ -1,0 +1,18 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the file's only imports, all type-only and all from sibling domain modules
+    evidence: |-
+      import type { Assessment } from './assessment.js';
+      import type { Cost } from './cost.js';
+      import type { Durations } from './durations.js';
+      import type { Evaluation } from './evaluation.js';
+      import type { Evidence } from './evidence.js';
+      import type { Subject } from './subject.js';
+looked_past: >-
+  domain/investigation/investigation's schema (attributes id, requester, ticket_ref, narrative,
+  subject, prompt_version, model, evidence, evaluations, assessment, cost, durations, written_at,
+  and the pinned-case relationship) was opened to attribute the type's fields, but every field,
+  optionality and the readonly/immutable shape matches that node exactly, so nothing was found to
+  report against it — the file states no fact that node or the domain-purity constraint does not
+  already hold.

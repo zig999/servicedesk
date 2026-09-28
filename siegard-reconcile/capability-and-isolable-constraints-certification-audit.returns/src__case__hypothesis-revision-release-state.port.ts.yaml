@@ -1,0 +1,19 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the whole file — a port interface with only a type-only import from a sibling port,
+      declaring the query's shape rather than implementing anything infrastructural
+    evidence: >-
+      import type { HypothesisRevisionState } from './case-store.port.js';
+
+
+      export interface IHighestRevisionReleaseStateQuery {
+
+
+        readHighestRevisionReleaseState(slug: string, hypothesisName: string): Promise<HighestRevisionReleaseState>;
+      }
+looked_past: >-
+  the port's shape (revision undefined, or revision plus state) closely mirrors what
+  a-hypothesis-revision-is-overwritten-while-unreleased needs to decide overwrite-in-place versus
+  a next revision, but that policy's own logic is not implemented in this file, so there is
+  nothing here to hold that node to.

@@ -1,0 +1,46 @@
+findings:
+  - file: src/investigation/fake-hypothesis-evaluator.adapter.ts
+    where: the return statement of evaluate(), line 29
+    evidence: |-
+      return { ...outcome, usage: ZEROED_USAGE, elapsed_ms: ZEROED_ELAPSED_MS };
+    cost: >-
+      A test that seeds an inconclusive outcome with reason `no-data` — meaning judgment was
+      never called for that hypothesis at all — gets back usage and elapsed_ms populated
+      (zeroed) from this adapter regardless of that reason, because the override is
+      unconditional. Any assertion or downstream code that relies on "usage/elapsed_ms present
+      only when a call actually happened" can no longer distinguish a genuine zero-cost call
+      from a call that, by its own seeded reason, never ran — the shape the specification
+      calls invalid becomes the one every no-data fixture run through this fake actually
+      produces.
+    kind: contradicts
+    node: domain/investigation/evaluation
+    correction: >-
+      Attach usage and elapsed_ms only when the seeded outcome's reason is not `no-data` —
+      return the seeded outcome unchanged for a no-data fixture, and only merge in
+      `{ usage: ZEROED_USAGE, elapsed_ms: ZEROED_ELAPSED_MS }` for every other reason — so the
+      fake's returned shape matches the presence rule the node states.
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the import statements at the top of the file, lines 1-7 — both imports are type-only,
+      from the local port module and the local value-object module, with no framework, driver
+      or provider client
+    evidence: |-
+      import type {
+        CaseContext,
+        EvaluationOutcome,
+        EvidenceItem,
+        IHypothesisEvaluator,
+      } from './hypothesis-evaluator.port.js';
+      import type { Usage } from './usage.js';
+  - node: domain/investigation/evaluation
+    held_at: >-
+      the return statement of evaluate(), line 29 — usage and elapsed_ms are attached to every
+      returned outcome unconditionally, not only when the outcome's reason differs from
+      `no-data`
+    evidence: |-
+      return { ...outcome, usage: ZEROED_USAGE, elapsed_ms: ZEROED_ELAPSED_MS };
+looked_past: >-
+  The plain `Error` thrown for an unseeded criterion, and the Map-backed fixture store, are
+  test-scaffolding shape rather than a domain fact and are left to a code review rather than
+  reported here.

@@ -1,0 +1,22 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the file's only import and the interface it declares, lines 1-3
+    evidence: >-
+      import type { ConnectorConfiguration } from './connector-configuration.js';
+
+      export interface IConnectorConfigurationStore {
+  - node: domain/integration/connector-configuration-registry
+    held_at: >-
+      the three port methods declared on IConnectorConfigurationStore, lines 5-9
+    evidence: >-
+      readConnectorConfigurations(): Promise<readonly ConnectorConfiguration[]>;
+
+        writeConnectorConfigurations(configurations: readonly ConnectorConfiguration[]): Promise<void>;
+
+        deleteConnectorConfiguration(connector: string): Promise<void>;
+looked_past: >-
+  the refusal rules the node's Responsibility names — a malformed configuration or an
+  undeclared placeholder — are not this file's to hold, since it is a storage port with no
+  method bodies; that logic belongs to whatever implements this interface, a different
+  file's judgment.

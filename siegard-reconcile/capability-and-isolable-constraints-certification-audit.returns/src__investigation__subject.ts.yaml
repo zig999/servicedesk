@@ -1,0 +1,13 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the whole file — its only imports are the domain's own error type and the
+      domain's own attribute-value type, no framework, driver or provider client
+    evidence: >-
+      import { SubjectCarriesNoAttributeError } from '../errors/subject-carries-no-attribute.error.js';
+      import type { SubjectAttributeValue } from './subject-attribute-value.js';
+looked_past: >-
+  the defensive copy `[...attributes]` in buildSubject's return is a code-quality
+  construct with no domain fact behind it, and is left unreported.
+candidates_opened:
+  - rules/investigation/a-subject-carries-at-least-one-attribute

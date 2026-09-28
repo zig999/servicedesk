@@ -1,0 +1,33 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: >-
+      the file as a whole — a single numbered script (0021) that contains nothing but
+      CREATE OR REPLACE statements, replayable against an empty database in filename order
+      with no manual step
+    evidence: >-
+      CREATE OR REPLACE FUNCTION hypothesis_revisions_refuse_when_released()
+      RETURNS TRIGGER AS $$ ... CREATE OR REPLACE RULE
+      hypothesis_revision_collects_no_delete_when_released AS
+        ON DELETE TO hypothesis_revision_collects
+  - node: domain/knowledge/hypothesis-revision
+    held_at: >-
+      the trigger function's own guard, which reads only the row's OLD.state and consults
+      no case-version or manifest relation before refusing
+    evidence: |-
+      IF OLD.state = 'released' THEN
+        RAISE EXCEPTION 'ReleasedHypothesisRevisionNotAlterableError';
+      END IF;
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: >-
+      the same trigger guard grounds the refusal in the row's own released state exactly as
+      the rule requires; the message text is left as the bare sentinel this file's own
+      comment says relational-case-store.repository.ts matches to build the
+      ReleasedHypothesisRevisionNotAlterableError (hypothesis, revision, case slug) and
+      status-map.ts to answer with HTTP 409 — neither of those files is part of this change
+    evidence: >-
+      RAISE EXCEPTION 'ReleasedHypothesisRevisionNotAlterableError';
+looked_past: >-
+  the file carries an extensive explanatory comment citing several specification nodes and
+  two other source files by name; whether that much prose belongs in a migration file is a
+  question for the comment rule, not for whether the domain facts it narrates hold up, so it
+  is not reported here.

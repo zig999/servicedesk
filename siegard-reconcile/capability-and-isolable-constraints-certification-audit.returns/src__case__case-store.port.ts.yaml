@@ -1,0 +1,45 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: >-
+      the return type of assembleVersion, which yields either a fully populated
+      AssembledCaseVersion — manifest included, each entry's hypothesis_revision
+      resolved inline as HypothesisRevisionContent rather than a bare reference —
+      or undefined; and the separate, independent method signatures for
+      insertHypothesisRevision, placeHypothesis and removeManifestEntry
+    evidence: >-
+      assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined>;
+      ... export type ManifestEntry = {
+        readonly position: number;
+        readonly hypothesis_revision: HypothesisRevisionContent;
+      };
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: nowhere
+    evidence: >-
+      delete(slug: string): Promise<void>;
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: >-
+      the release and discard method signatures, and the CaseVersionState type
+      carried by AssembledCaseVersion.state
+    evidence: >-
+      release(slug: string, version: number): Promise<void>;
+      discard(slug: string, version: number): Promise<void>;
+      export type CaseVersionState = 'draft' | 'released';
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: >-
+      insertHypothesisRevision's signature, which carries no version or subject
+      type of its own, and findDraftVersion, which exposes only the draft's
+      version and its declared subject
+    evidence: >-
+      insertHypothesisRevision(input: HypothesisRevisionInput): Promise<number>;
+      findDraftVersion(slug: string): Promise<DraftVersion | undefined>;
+      export type DraftVersion = {
+        readonly version: number;
+        readonly subject: string;
+      };
+looked_past: >-
+  OverwriteHypothesisRevisionInput is declared here but no method of ICaseStore in this file
+  uses it — a shape question for whichever port consumes it, not a domain fact this file
+  states wrongly; likewise the CaseVersionState/HypothesisRevisionState literal unions mirror
+  the type each attribute is already declared to carry in case-version.md and
+  hypothesis-revision.md, so they were read as implementation of those attributes rather than
+  an independently invented vocabulary, and not reported.

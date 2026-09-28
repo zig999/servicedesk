@@ -1,0 +1,56 @@
+findings:
+  - file: migrations/0005-investigation.sql
+    where: the CHECK constraint on investigation_evaluations.reason, lines 84-86
+    evidence: |-
+      CONSTRAINT investigation_evaluations_reason_check
+        CHECK (reason IN ('no-data', 'judgment-failure', 'deadline-exceeded'))
+    cost: >-
+      A judgment call that completes within its deadline over evidence that collected ok, and
+      returns a well-formed inconclusive verdict grounded in nothing, must be recorded with
+      reason `not-grounded` — the value src/investigation/evaluation-reason.ts already declares
+      (`export const EVALUATION_REASONS = ['no-data', 'judgment-failure', 'deadline-exceeded',
+      'not-grounded'] as const;`) and src/investigation/anthropic-hypothesis-evaluator.adapter.ts
+      already produces. This constraint admits only the first three, so that exact write is
+      refused by the database at the moment the record most needs writing, and no later
+      migration in the tree ever widens this constraint to admit the fourth value.
+    kind: contradicts
+    correction: >-
+      A later migration must drop and recreate investigation_evaluations_reason_check to read
+      CHECK (reason IN ('no-data', 'judgment-failure', 'deadline-exceeded', 'not-grounded')) —
+      the same forward-correcting shape 0015, 0016 and 0023 already use for a constraint 0005
+      declared narrower than the node it governs.
+    node: domain/investigation/evaluation-reason
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: >-
+      the whole file — a plain numbered script (0005) beside its siblings (0001..0026), holding
+      only declarative CREATE TABLE and CONSTRAINT statements, replayable on an empty database
+      with no step performed by hand.
+    evidence: |-
+      CREATE TABLE investigations (
+        id                                  TEXT NOT NULL,
+      ...
+      CREATE TABLE investigation_subject_attribute_values (
+        investigation_id TEXT NOT NULL REFERENCES investigations (id),
+looked_past: >-
+  Every table in this file encodes a governed vocabulary or enumeration as a TEXT column with an
+  inline REFERENCES or CHECK, and several columns 0005 declares NOT NULL (durations_writing,
+  investigation_evaluation_citations.field) are later relaxed by 0015 and 0016, and a FK 0005
+  declares against subject_attributes is later dropped by 0023 — each of these is a domain fact
+  a later migration corrects forward and I found no live discrepancy in any of them, so none is
+  reported; the schema-style choice of TEXT-plus-constraint over a native enum type is a code-review
+  matter, not a domain fact, and is also not reported here.
+candidates_opened:
+  - domain/investigation/investigation
+  - domain/investigation/subject
+  - domain/investigation/assessment
+  - domain/knowledge/referral
+  - domain/investigation/cost
+  - domain/investigation/durations
+  - domain/investigation/evidence
+  - domain/investigation/evaluation
+  - domain/investigation/citation
+  - domain/investigation/subject-attribute-value
+  - domain/investigation/verdict
+  - domain/investigation/evidence-result
+  - domain/investigation/evaluation-reason

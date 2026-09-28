@@ -1,0 +1,26 @@
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: >-
+      applyPendingMigrations() together with orderedMigrationFiles(), lines 29-44
+    evidence: |-
+      async function orderedMigrationFiles(migrationsDirectory: string): Promise<readonly string[]> {
+        const entries = await readdir(migrationsDirectory);
+        return entries.filter((name) => name.endsWith('.sql')).sort();
+      }
+
+      export async function applyPendingMigrations(
+        connection: DatabaseConnection,
+        migrationsDirectory: string,
+        schema: string = DEFAULT_BOOKKEEPING_SCHEMA,
+      ): Promise<void> {
+        const files = await orderedMigrationFiles(migrationsDirectory);
+        const applied = await appliedFilenames(connection, schema);
+        for (const file of files.filter((candidate) => !applied.has(candidate))) {
+          await applyMigrationFile({ connection, migrationsDirectory, filename: file, schema });
+        }
+      }
+looked_past: >-
+  The bookkeeping table name, default schema fallback, and the comment/blank-line stripping in
+  applyMigrationFile are mechanical choices the node's own text leaves to "one project's own
+  arrangement" rather than domain facts, and stripping SQL comments before execution is a
+  code-correctness concern rather than a conformance one — neither is reported here.

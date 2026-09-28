@@ -1,0 +1,35 @@
+findings:
+  - file: src/case/delete-case.operation.ts
+    where: the body of deleteCase(), lines 3-5
+    evidence: |-
+      export async function deleteCase(store: ICaseStore, slug: string): Promise<void> {
+        await store.delete(slug);
+      }
+    cost: >-
+      A caller invoking deleteCase against a case that still holds a version gets whatever
+      store.delete(slug) happens to do — success, a generic driver error, or an unrelated
+      constraint violation — never the HTTP 409 reporting a CaseHoldsVersionsError naming the
+      slug that the rule requires, and nothing in this function removes the case's referencing
+      hypotheses, hypothesis-revisions or collects either; the next reader looking here for the
+      refusal or the cascade finds one unconditional delegated call.
+    kind: contradicts
+    correction: >-
+      deleteCase would need to check whether the case holds any version, refuse with a
+      CaseHoldsVersionsError naming the slug (surfaced as an HTTP 409 with details carrying only
+      that slug) when it does, and otherwise remove the case together with every hypothesis
+      referencing it, every hypothesis-revision of those hypotheses, and every collect a
+      released revision holds.
+    node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: the import statement, line 1
+    evidence: "import type { ICaseStore } from './case-store.port.js';"
+  - node: rules/knowledge/a-case-holding-no-version-may-be-deleted
+    held_at: nowhere
+    evidence: |-
+      export async function deleteCase(store: ICaseStore, slug: string): Promise<void> {
+        await store.delete(slug);
+      }
+  - node: scenarios/knowledge/a-case-holding-no-version-is-deleted
+    held_at: the call to store.delete(slug), line 4
+    evidence: "await store.delete(slug);"

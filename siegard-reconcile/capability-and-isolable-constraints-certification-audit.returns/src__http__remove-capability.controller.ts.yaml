@@ -1,0 +1,19 @@
+read:
+  - node: constraints/a-domain-error-unmapped-by-status-is-refused-generically
+    held_at: >-
+      nowhere in this file — the handler awaits the dependency call with no
+      try/catch and no status-shaping logic of its own, deferring the fallback
+      entirely to the system-wide handler (bound in the same batch to
+      src/errors/status-map.ts) rather than deciding it here, which is what
+      the node's "stated once for the whole surface" placement calls for.
+    evidence: |-
+      export async function handleRemoveCapabilityRequest(
+        dependencies: RemoveCapabilityControllerDependencies,
+        params: RemoveCapabilityParamsDto,
+      ): Promise<void> {
+        await dependencies.removeCapability(params.name, params.version);
+      }
+looked_past: >-
+  The file's extreme thinness — a single awaited delegation with no
+  validation or shaping of its own — reads as a style/thoroughness matter
+  rather than a domain-fact departure, so it is not reported as a finding.

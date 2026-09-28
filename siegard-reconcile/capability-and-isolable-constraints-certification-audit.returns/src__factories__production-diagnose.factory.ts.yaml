@@ -1,0 +1,12 @@
+read:
+  - node: constraints/diagnosis-answers-synchronously
+    held_at: >-
+      the arrow function returned by createProductionDiagnoseRunner (lines 45-48), which calls
+      and returns the runner's own promise directly rather than enqueuing or scheduling it
+    evidence: |-
+      return (call: ProductionDiagnoseCall): Promise<Assessment> => {
+          const now = Date.now();
+          return runner({ ...call, now, deadline: now + TOTAL_DEADLINE_BUDGET_MS });
+        };
+candidates_opened:
+  - rules/investigation/an-answer-arrives-within-the-declared-deadline

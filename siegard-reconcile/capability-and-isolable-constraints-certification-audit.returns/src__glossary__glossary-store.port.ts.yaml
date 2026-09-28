@@ -1,0 +1,28 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the whole file — a pure interface with only a type-only import, declaring the port
+      through which infrastructure is meant to reach the glossary domain
+    evidence: |-
+      import type { Concept, ConceptRegistration, GlossaryTerm, TermVocabulary } from './terms.js';
+
+      export interface IGlossaryStore {
+  - node: domain/glossary/concept
+    held_at: nowhere
+    evidence: >-
+      readConcepts(): Promise<readonly ConceptRegistration[]>;
+
+      writeConcepts(concepts: readonly Concept[]): Promise<void>;
+
+      The port operates over the imported `Concept`/`ConceptRegistration` types opaquely; it
+      does not itself declare or restate the value-object's attributes (name, accepts, ttl,
+      description) — those are defined in ./terms.js, outside this file.
+  - node: rules/glossary/a-registered-concept-is-never-removed
+    held_at: nowhere
+    evidence: >-
+      deleteConcept(name: string): Promise<void>;
+
+      The signature is an unconditional, keyed-by-name deletion with no refusal encoded; the
+      409/ConceptInUseError check this rule requires is not stated here (it is applied by the
+      consuming service, e.g. `await this.store.deleteConcept(name);` in
+      src/glossary/glossary.service.ts, before this port method is ever called).

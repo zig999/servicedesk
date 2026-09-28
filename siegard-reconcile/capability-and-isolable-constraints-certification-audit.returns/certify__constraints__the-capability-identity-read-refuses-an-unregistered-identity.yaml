@@ -1,0 +1,12 @@
+certified:
+  - node: constraints/the-capability-identity-read-refuses-an-unregistered-identity
+    state: partial
+    tests:
+      - file: src/__tests__/unit/http/read-capability-by-identity.routes.spec.ts
+        name: >-
+          answers 404 with CapabilityIdentityNotFoundError and the requested identity as details, when no capability is currently registered under the named (name, version) identity
+    why: >-
+      The named test checks one thing: when an error is raised, the route turns it into a 404. It asserts HTTP 404 and error.code 'CapabilityIdentityNotFoundError' only after the readCapabilityByIdentity dependency has been mocked to reject with a CapabilityIdentityNotFoundError built by hand. Nothing in the test makes a request for a name and version that no capability is registered at. No registry is consulted, so "no capability is currently registered" is never decided by the code under test. If the route's real resolution stopped raising CapabilityIdentityNotFoundError for an unregistered identity (for example it returned nothing, answered 200 with an empty body, or threw a generic error that becomes a 500), this test would still pass. The fact also says the refusal names CapabilityIdentityNotFoundError as its message. The test asserts only body.error.code and body.error.details and never reads body.error.message, so the message half is not exercised either. The test in the same file that checks CapabilityIdentityNotFoundError is not an instance of the other three not-found classes never exercises the route, so it does not bear on this fact.
+    remainder: testable
+    remainder_why: >-
+      One input: a GET to the read-capability-by-identity route for a name and version with no capability registered, resolved by the route's real identity lookup over a registry that holds no such capability (not a mocked rejection). One expected result: HTTP 404, a body whose error names CapabilityIdentityNotFoundError as its code, and a message that is CapabilityIdentityNotFoundError's own.

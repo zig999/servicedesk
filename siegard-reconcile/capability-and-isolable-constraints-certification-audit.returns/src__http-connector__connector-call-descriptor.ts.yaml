@@ -1,0 +1,27 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the whole file — two exported type aliases with no import statement at all, so the
+      domain-side descriptor of an HTTP connector call carries no framework, driver or provider
+      client reference
+    evidence: |-
+      export type ConnectorCallDescriptor = {
+        readonly address: string;
+        readonly query?: Readonly<Record<string, string>>;
+        readonly headers?: Readonly<Record<string, string>>;
+        readonly body?: unknown;
+      };
+
+      export type AssembledConnectorRequest = {
+        readonly address: string;
+        readonly query: Readonly<Record<string, string>>;
+        readonly headers: Readonly<Record<string, string>>;
+        readonly body?: unknown;
+      };
+looked_past: >-
+  rules/integration/an-http-connector-configuration-declares-its-call states the same shape
+  (address, query, headers, body) this file's ConnectorCallDescriptor type carries, but the type
+  alone asserts no value or threshold that could disagree with it and enforces no runtime
+  behavior (e.g. address's non-emptiness), so there is nothing here to weigh against that node —
+  any such check would live in the code that actually resolves or validates a call, which this
+  file is not.

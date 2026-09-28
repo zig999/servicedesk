@@ -1,0 +1,14 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the whole file — it carries no import statement at all, so nothing framework-, driver- or
+      provider-specific reaches the durations type.
+    evidence: |-
+      export type Durations = {
+        readonly collection: number;
+        readonly judgment: number;
+        readonly writing?: number;
+        readonly total: number;
+      };
+candidates_opened:
+  - domain/investigation/durations

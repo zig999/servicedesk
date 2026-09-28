@@ -1,0 +1,66 @@
+read:
+  - node: constraints/diagnosis-answers-synchronously
+    held_at: >-
+      the body of runDiagnosis itself: the pipeline, the investigation build and the store write
+      are all awaited in sequence and the assessment is handed back in the same call, with no job
+      enqueued and no poll performed.
+    evidence: |-
+      export async function runDiagnosis(options: RunDiagnosisOptions): Promise<Assessment> {
+        const pipelineStartedAtMs = readClockMs();
+        const { evidence, evaluations, assessment, cost, durations } = await runInvestigationPipeline(options);
+        const investigation = await buildInvestigation(
+          buildInvestigationOptions({ options, evidence, evaluations, assessment, cost, durations }),
+        );
+        const elapsedBeforePersistenceMs = readClockMs() - pipelineStartedAtMs;
+        await writeWithinDeadline({
+          store: options.store,
+          investigation,
+          now: options.now,
+          deadline: options.deadline,
+          elapsedBeforePersistenceMs,
+        });
+        return investigation.assessment;
+      }
+  - node: constraints/hypotheses-are-judged-in-isolated-parallel-calls
+    held_at: >-
+      not in this file — the per-hypothesis isolated parallel judgment is delegated whole to
+      runInvestigationPipeline; this file only awaits its single combined result.
+    evidence: >-
+      const { evidence, evaluations, assessment, cost, durations } = await
+      runInvestigationPipeline(options);
+  - node: contracts/investigation/case-source
+    held_at: >-
+      not in this file — the case is neither read nor pinned here; it is forwarded unchanged from
+      the caller's options into the investigation build, so the pinning this contract requires is
+      whatever happened before runDiagnosis was called.
+    evidence: |-
+      case: options.case,
+  - node: domain/investigation/cost
+    held_at: >-
+      the cost value forwarded unchanged from the pipeline's result into buildInvestigationOptions,
+      typed as the value object and passed through without recomputation.
+    evidence: |-
+      readonly cost: Cost;
+      ...
+      cost,
+  - node: domain/investigation/durations
+    held_at: >-
+      the durations value forwarded from the pipeline into buildInvestigation before persistence
+      is ever entered — buildInvestigation (which receives durations) runs and completes before
+      writeWithinDeadline is called, so total is already fixed when the investigation record is
+      assembled and before persistence reads or stores it.
+    evidence: |-
+      const investigation = await buildInvestigation(
+        buildInvestigationOptions({ options, evidence, evaluations, assessment, cost, durations }),
+      );
+      const elapsedBeforePersistenceMs = readClockMs() - pipelineStartedAtMs;
+      await writeWithinDeadline({
+looked_past: >-
+  The promise-racing shape of persistWithinBound/raceWriteAttempt/stageTimeout (a shared Symbol
+  sentinel, a single mutable timerId closed over by cancel()) is a code-structure choice, not a
+  domain fact, and is left to whatever pass judges code quality.
+candidates_opened:
+  - rules/investigation/no-stage-aborts-on-its-deadline
+  - rules/investigation/an-investigation-is-written-once
+  - rules/investigation/an-answer-arrives-within-the-declared-deadline
+  - constraints/the-deadline-is-an-absolute-propagated-instant

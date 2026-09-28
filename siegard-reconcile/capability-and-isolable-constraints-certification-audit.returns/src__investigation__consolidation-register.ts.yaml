@@ -1,0 +1,8 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the whole file — a bare vocabulary declaration with no import statement at all
+    evidence: |
+      export const CONSOLIDATION_REGISTERS = ['formal', 'plain'] as const;
+
+      export type ConsolidationRegister = (typeof CONSOLIDATION_REGISTERS)[number];

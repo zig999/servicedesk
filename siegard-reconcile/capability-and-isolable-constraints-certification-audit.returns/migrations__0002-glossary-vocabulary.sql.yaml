@@ -1,0 +1,75 @@
+findings:
+  - file: migrations/0002-glossary-vocabulary.sql
+    where: >-
+      the header comment, line 7 (`domain/glossary/subject-attribute -- subject_attributes`),
+      naming what the `subject_attributes` table (lines 22-25) implements
+    evidence: |-
+      --   domain/glossary/subject-attribute -- subject_attributes
+      ...
+      CREATE TABLE subject_attributes (
+        name TEXT NOT NULL,
+        CONSTRAINT subject_attributes_pkey PRIMARY KEY (name)
+      );
+    cost: >-
+      A reader tracing `subject_attributes` back to the specification to learn what governs it
+      finds no `domain/glossary/subject-attribute` node anywhere in the tree — the vocabulary was
+      retired (`domain/glossary/_context.md` now names only four vocabularies — subject types,
+      outcomes, actions, recipients — and `domain/investigation/subject-attribute-value.md` states
+      the attribute's name "is free text rather than a governed vocabulary term"). The citation
+      points at a retired identity and gives the reader no path to the migration that already
+      drops this table, so the file reads as still governed by a rule the business undid.
+    kind: contradicts
+    correction: >-
+      remove the stale citation to `domain/glossary/subject-attribute`, or note plainly that the
+      vocabulary this table once held was retired and the table itself is later dropped
+    node: domain/investigation/subject-attribute-value
+  - file: migrations/0002-glossary-vocabulary.sql
+    where: >-
+      the header comment, lines 13-15, and the `concepts` table it describes, lines 42-46
+    evidence: |-
+      -- Every one of these elements declares only "name" (plus, for concept, "accepts" and
+      -- "ttl") as required, so every column below is required
+      -- (constraints/the-stored-schema-mirrors-the-declared-model).
+      ...
+      CREATE TABLE concepts (
+        name TEXT NOT NULL,
+        ttl  INTEGER NOT NULL,
+        CONSTRAINT concepts_pkey PRIMARY KEY (name)
+      );
+    cost: >-
+      `domain/glossary/concept` declares a fourth required attribute, `description` (string,
+      required) — "its description states what the named observation means, which is exactly
+      what a published language owes the speakers who read it" — and no column of `concepts`
+      holds it. The comment's own recitation of what concept "declares... as required" omits
+      description and then uses that incomplete recitation to claim every column below is
+      required, i.e. that nothing is missing; a required attribute the specification states is
+      left with nowhere to be recorded, which is invisible from the schema alone.
+    kind: contradicts
+    correction: >-
+      add the column that records a concept's description, and correct the comment's recitation
+      of `domain/glossary/concept`'s required attributes to include it
+    node: domain/glossary/concept
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: >-
+      the whole file — a sequence of plain `CREATE TABLE` statements with no manual or
+      conditional step, each depending only on tables the file itself creates earlier in the
+      same pass
+    evidence: |-
+      CREATE TABLE subject_types (
+        name TEXT NOT NULL,
+        CONSTRAINT subject_types_pkey PRIMARY KEY (name)
+      );
+      ...
+      CREATE TABLE concept_accepts (
+        concept_name      TEXT NOT NULL REFERENCES concepts (name),
+        subject_type_name TEXT NOT NULL REFERENCES subject_types (name),
+        CONSTRAINT concept_accepts_pkey PRIMARY KEY (concept_name, subject_type_name)
+      );
+looked_past: >-
+  The header comment's broader narrative — routing each table to its vocabulary and describing
+  the accepts join table — is accurate and not reported; whether this file's extensive prose
+  comment is itself permitted under the project's comment rule is a different judgment's, not
+  this pass's.
+candidates_opened:
+  - domain/investigation/subject-attribute-value

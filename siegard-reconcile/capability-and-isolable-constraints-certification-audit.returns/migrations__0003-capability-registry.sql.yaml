@@ -1,0 +1,75 @@
+findings:
+  - file: migrations/0003-capability-registry.sql
+    where: header comment, lines 1-2
+    evidence: |-
+      -- domain/integration/capability: one registered read-only observation the
+      -- system can perform, identified by name and version
+    cost: >-
+      This copies domain/integration/capability's own Description ("One registered
+      read-only observation the system can perform, identified by name and version") into a
+      migration comment. Migration scripts already applied are never edited in this project
+      (0007 and 0024 both state the convention explicitly), so if the node's wording is later
+      revised, this comment cannot follow it — a reader of the migration is left holding a copy
+      of the specification that has silently drifted from the node it was copied from.
+    kind: contradicts
+    node: domain/integration/capability
+    correction: remove the restated description from the comment; the fact lives in the node, not in migration prose.
+  - file: migrations/0003-capability-registry.sql
+    where: header comment, lines 3-4
+    evidence: |-
+      -- (domain/integration/capability-nature enumerates what it may do to the
+      -- world, restricted below to exactly its two declared values).
+    cost: >-
+      The comment independently asserts the enum's cardinality ("exactly its two declared
+      values") rather than letting the CHECK constraint alone carry that fact. Because an
+      applied migration is never edited here, if capability-nature ever gains a third value
+      this fixed count stays behind as a second, unsynchronized statement of what the node
+      currently enumerates.
+    kind: contradicts
+    node: domain/integration/capability-nature
+    correction: drop the cardinality claim from the comment; let the CHECK constraint below be the only place the enumeration is enforced.
+  - file: migrations/0003-capability-registry.sql
+    where: header comment, lines 6-7
+    evidence: |-
+      -- Every attribute of capability is required, so every column below is
+      -- NOT NULL (constraints/the-stored-schema-mirrors-the-declared-model).
+    cost: >-
+      domain/integration/capability.md's own attribute list marks `payload_notes` as
+      `required: false` — one attribute of the aggregate is explicitly optional. A reader of
+      this migration who takes the comment at face value concludes capability has no optional
+      attribute at all, which the node currently governing capability's attributes denies.
+    kind: contradicts
+    node: domain/integration/capability
+    correction: >-
+      narrow the claim to the columns this script itself creates (all required at the time),
+      or drop the universal "every attribute of capability" wording now that the node lists an
+      optional one.
+read:
+  - node: constraints/the-schema-replays-from-its-scripts
+    held_at: >-
+      the file as a whole — a plain, numbered script containing one self-contained
+      CREATE TABLE statement with no manual step and no forward reference to a table not yet
+      created, so it replays cleanly in filename order alongside its siblings
+    evidence: |-
+      CREATE TABLE capabilities (
+        name          TEXT NOT NULL,
+        version       TEXT NOT NULL,
+        nature        TEXT NOT NULL,
+        input_schema  TEXT NOT NULL,
+        output_schema TEXT NOT NULL,
+        timeout       INTEGER NOT NULL,
+        connector     TEXT NOT NULL,
+        CONSTRAINT capabilities_pkey PRIMARY KEY (name, version),
+        CONSTRAINT capabilities_nature_check CHECK (nature IN ('read-only', 'mutating'))
+      );
+looked_past: >-
+  The file's header carries explanatory prose throughout (citing node identities, paraphrasing
+  their content) rather than only a directive a tool consumes or a suppression's reason — that is
+  the project's own comment-placement discipline rather than a domain-fact question, and is
+  reported here only where a comment states or misstates a domain fact, not for carrying prose
+  at all.
+candidates_opened:
+  - domain/integration/capability
+  - domain/integration/capability-nature
+  - constraints/the-stored-schema-mirrors-the-declared-model
+  - domain/integration/capability-registry

@@ -1,0 +1,29 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: >-
+      the whole file — the module declares no import at all and extends only the native
+      `Error`, so this error carries no framework, driver or provider client into the domain
+    evidence: |-
+      export class InvestigationNotBuildableError extends Error {
+        public readonly context: Readonly<{ slug: string; violations: readonly string[] }>;
+
+        public constructor(slug: string, violations: readonly string[]) {
+          super(`the investigation for case "${slug}" cannot be built: ${violations.join('; ')}`);
+          this.name = 'InvestigationNotBuildableError';
+          this.context = { slug, violations };
+        }
+      }
+looked_past: >-
+  the message text is written in English and names "case" by its English word, which would
+  matter under constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese and
+  constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word if this
+  class's message reaches an HTTP caller, but the decision log entry for those two constraints
+  and their fitness scope both name only the case-and-hypothesis backend error classes (the work
+  item's own scope: "erro/recusa do domínio de case e hypothesis"), and no node or decision-log
+  entry anywhere under the specification root names investigation-not-buildable.error.ts or
+  InvestigationNotBuildableError, so I found no basis to bind that fact to this file or to either
+  candidate.
+candidates_opened:
+  - constraints/a-domain-refusals-message-is-written-in-brazilian-portuguese
+  - constraints/a-domain-refusal-names-each-domain-noun-by-one-fixed-portuguese-word
+  - constraints/a-domain-error-unmapped-by-status-is-refused-generically
