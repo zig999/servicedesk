@@ -2085,13 +2085,14 @@ it('resolves without raising, leaving no new row behind, when the named revision
 
 it(
   "does not refuse an overwrite attempt against a hypothesis-revision whose own state is draft, even " +
-    "though a released case version's manifest still references that revision",
+    "though a released case version's manifest still references that revision, so long as the case " +
+    'currently holds a draft version of its own — isolating the manifest reference from the case-holds-a-draft precondition',
   async () => {
     const slug = `case-lifecycle-store-overwrite-draft-referenced-${randomUUID()}`;
     slugsWrittenByThisTest.push(slug);
     const glossary = await freshGlossary();
     const store = new RelationalCaseStore(pool);
-    const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+    const releasedVersion = await store.createDraft(aCreateDraftInput(slug, glossary));
     const revision = await store.insertHypothesisRevision({
       slug,
       hypothesis_name: 'a-hypothesis',
@@ -2099,8 +2100,9 @@ it(
       collects: [],
       resolution: aResolution(glossary),
     });
-    await store.placeHypothesis({ slug, version, hypothesis_name: 'a-hypothesis', revision, position: 1 });
-    await store.release(slug, version);
+    await store.placeHypothesis({ slug, version: releasedVersion, hypothesis_name: 'a-hypothesis', revision, position: 1 });
+    await store.release(slug, releasedVersion);
+    await store.createDraft(aCreateDraftInput(slug, glossary));
 
     await store.overwriteHypothesisRevision({
       slug,
@@ -2152,6 +2154,91 @@ it(
     expect(statusForError(caught)).toBe(409);
   },
 );
+
+it(
+  "refuses overwriteHypothesisRevision through CaseHoldsNoDraftError whose message names the slug and whose " +
+    'details carry that slug and nothing else, leaving the revision\'s stored criterion, collects and ' +
+    'resolution unchanged, when the case currently holds no draft version',
+  async () => {
+    const glossary = await freshGlossary();
+    const concept = await freshConcept();
+    const store = new RelationalCaseStore(pool);
+    const { slug, revision } = await aCaseHoldingNoDraftWithARevision(store, glossary, concept);
+    slugsWrittenByThisTest.push(slug);
+    const otherGlossary = await freshGlossary();
+
+    const rejection = store.overwriteHypothesisRevision({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      revision,
+      criterion: 'a criterion nothing should have stored',
+      collects: [],
+      resolution: aResolution(otherGlossary),
+    });
+
+    await expect(rejection).rejects.toBeInstanceOf(CaseHoldsNoDraftError);
+    const caught = (await rejection.catch((error: unknown) => error)) as CaseHoldsNoDraftError;
+    expect(caught.message).toContain(slug);
+    expect(caught.context).toEqual({ slug });
+    const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
+    expect(page.data).toEqual([
+      { revision, criterion: 'the original criterion', collects: [concept], resolution: aResolution(glossary), state: 'draft' },
+    ]);
+  },
+);
+
+it(
+  'refuses an overwrite attempt against a revision whose own state is released through CaseHoldsNoDraftError, ' +
+    'never through ReleasedHypothesisRevisionNotAlterableError alone or alongside it, when the case currently ' +
+    'holds no draft version',
+  async () => {
+    const slug = `case-lifecycle-store-overwrite-no-draft-released-revision-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+    const revision = await store.insertHypothesisRevision({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      criterion: 'the original criterion',
+      collects: [],
+      resolution: aResolution(glossary),
+    });
+    await store.releaseHypothesisRevision(slug, 'a-hypothesis', revision);
+    await store.release(slug, version);
+
+    const rejection = store.overwriteHypothesisRevision({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      revision,
+      criterion: 'a criterion the case-holds-no-draft guard should have refused before any release check',
+      collects: [],
+      resolution: aResolution(glossary),
+    });
+
+    await expect(rejection).rejects.toBeInstanceOf(CaseHoldsNoDraftError);
+    await expect(rejection).rejects.not.toBeInstanceOf(ReleasedHypothesisRevisionNotAlterableError);
+    await expect(rejection).rejects.toMatchObject({ context: { slug } });
+  },
+);
+
+async function aCaseHoldingNoDraftWithARevision(
+  store: RelationalCaseStore,
+  glossary: IGlossary,
+  concept: string,
+): Promise<{ slug: string; revision: number }> {
+  const slug = `case-lifecycle-store-overwrite-no-draft-${randomUUID()}`;
+  const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+  const revision = await store.insertHypothesisRevision({
+    slug,
+    hypothesis_name: 'a-hypothesis',
+    criterion: 'the original criterion',
+    collects: [concept],
+    resolution: aResolution(glossary),
+  });
+  await store.release(slug, version);
+  return { slug, revision };
+}
 
 async function aCaseHoldingNoVersionWithHypotheses(
   store: RelationalCaseStore,

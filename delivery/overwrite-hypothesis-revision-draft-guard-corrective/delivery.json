@@ -1,0 +1,53 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/overwrite-revision-draft-guard/overwrite-revision-refuses-without-a-draft",
+      "kind": "implementation",
+      "file": "implementation/overwrite-revision-draft-guard/overwrite-revision-refuses-without-a-draft.md",
+      "title": "overwriteRevision refuses without a draft",
+      "summary": "overwriteHypothesisRevision now runs the same requireCaseHoldsDraft guard insertRevision already applies, refusing with CaseHoldsNoDraftError before any write when the case holds no draft.",
+      "task": "task/overwrite-revision-draft-guard/overwrite-revision-refuses-without-a-draft"
+    },
+    {
+      "id": "proof/overwrite-revision-draft-guard/overwrite-revision-refuses-without-a-draft",
+      "kind": "proof",
+      "file": "proof/overwrite-revision-draft-guard/overwrite-revision-refuses-without-a-draft.md",
+      "title": "overwriteRevision refuses without a draft — proof",
+      "summary": "Two integration tests against the real Postgres instance prove overwriteHypothesisRevision now refuses with CaseHoldsNoDraftError (message and details exact) and leaves stored content unchanged when the case holds no draft, and that this refusal preempts ReleasedHypothesisRevisionNotAlterableError even when the targeted revision is itself released; a pre-existing test in the same file, whose premise the new guard invalidated, was rewritten whole to isolate the manifest-reference condition it always meant to test from the case-holds-a-draft condition this task's guard now enforces; the pre-existing overwrite-while-drafted behavior (criterion 3) is otherwise unchanged by this task and already carries evidence in the same file, so no further new test was written for it.",
+      "task": "task/overwrite-revision-draft-guard/overwrite-revision-refuses-without-a-draft"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/overwrite-revision-draft-guard/overwrite-revision-refuses-without-a-draft",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/overwrite-revision-draft-guard/overwrite-revision-refuses-without-a-draft",
+      "to": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/overwrite-revision-draft-guard/overwrite-revision-refuses-without-a-draft",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/overwrite-revision-draft-guard/overwrite-revision-refuses-without-a-draft",
+      "to": "task/overwrite-revision-draft-guard/overwrite-revision-refuses-without-a-draft",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/overwrite-revision-draft-guard/overwrite-revision-refuses-without-a-draft",
+      "to": "implementation/overwrite-revision-draft-guard/overwrite-revision-refuses-without-a-draft",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

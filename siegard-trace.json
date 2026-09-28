@@ -5794,8 +5794,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:c01c0fbd74282d7b730b79818638159bdd861129870549b86f19fe19d4f789aa",
-          "judged": true
+          "digest": "sha256:7418790e3ac947412312421bb339c2f5970e18049197576cbfad0c7e0196bf76"
         },
         {
           "path": "src/src/seed.ts",
@@ -10000,7 +9999,7 @@
     },
     {
       "node": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
-      "digest": "sha256:803ce8968d5895eea4a818139ed6787da9aa99f1ccc475e0aab5e3abde9eb0b7",
+      "digest": "sha256:b29b66aa8eaac175a2bc4436925d628193d3a3bb484d57a93a28f06f0613960a",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -10025,7 +10024,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:baff382044d3e10df9ed6aa6ec8a65529b4a86cd079501dfe56753b9bc483b82"
+          "digest": "sha256:7418790e3ac947412312421bb339c2f5970e18049197576cbfad0c7e0196bf76"
         }
       ]
     },
@@ -10136,8 +10135,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:c01c0fbd74282d7b730b79818638159bdd861129870549b86f19fe19d4f789aa",
-          "judged": true
+          "digest": "sha256:7418790e3ac947412312421bb339c2f5970e18049197576cbfad0c7e0196bf76"
         }
       ]
     },

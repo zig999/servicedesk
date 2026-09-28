@@ -795,6 +795,7 @@ function revisionCollectStatement(key: IRevisionKey, conceptName: string): IStat
 }
 
 async function overwriteRevision(tx: IQueryable, input: OverwriteHypothesisRevisionInput): Promise<void> {
+  await requireCaseHoldsDraft(tx, input.slug);
   const key: IRevisionKey = { slug: input.slug, hypothesis_name: input.hypothesis_name, revision: input.revision };
   await runStatement(tx, revisionOverwriteStatement(input), raiseOverwriteFailure(input));
   await runStatement(tx, revisionCollectsDeleteStatement(key), raiseWriteFailure);
