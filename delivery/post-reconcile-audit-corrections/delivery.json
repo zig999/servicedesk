@@ -18,6 +18,14 @@
       "task": "task/fake-hypothesis-evaluator-no-data-usage/no-usage-or-elapsed-for-no-data"
     },
     {
+      "id": "implementation/seed-concept-upsert/replace-ttl-and-accepts-whole",
+      "kind": "implementation",
+      "file": "implementation/seed-concept-upsert/replace-ttl-and-accepts-whole.md",
+      "title": "seedConcepts re-seeds through the glossary store's own write path",
+      "summary": "Replaces seedConcepts' hand-rolled INSERT/ON CONFLICT upsert with a call to IGlossaryStore.writeConcepts, so re-seeding a concept already held under a name replaces its ttl and its accepted subject types whole instead of only touching description and only adding new accepts.",
+      "task": "task/seed-concept-upsert/replace-ttl-and-accepts-whole"
+    },
+    {
       "id": "proof/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence",
       "kind": "proof",
       "file": "proof/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence.md",
@@ -32,6 +40,14 @@
       "title": "Fake hypothesis-evaluator no-data usage/elapsed_ms/prompt withholding",
       "summary": "Proves the no-data guard withholds usage, elapsed_ms and prompt as criterion 1 and both UNDERDETERMINED entries state, and updates the seven pre-existing tests the same file already carried so they match the now-widened invariant that every non-no-data outcome also carries a prompt.",
       "task": "task/fake-hypothesis-evaluator-no-data-usage/no-usage-or-elapsed-for-no-data"
+    },
+    {
+      "id": "proof/seed-concept-upsert/replace-ttl-and-accepts-whole",
+      "kind": "proof",
+      "file": "proof/seed-concept-upsert/replace-ttl-and-accepts-whole.md",
+      "title": "Re-seeding replaces a concept's ttl, accepts and description whole, through seedConcepts' delegation to IGlossaryStore.writeConcepts",
+      "summary": "Rewrites seed.spec.ts's stale, now-false raw-SQL assertion into a genuine behavioral test of description replacement through IGlossaryStore.writeConcepts, and shows criteria 1-3 and the three UNDERDETERMINED entries are already decided, whole where a finite test can decide them, by the pre-existing RelationalGlossaryStore.writeConcepts test suite that seed.ts's rearrangement now reuses rather than duplicates.",
+      "task": "task/seed-concept-upsert/replace-ttl-and-accepts-whole"
     }
   ],
   "edges": [
@@ -72,6 +88,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/seed-concept-upsert/replace-ttl-and-accepts-whole",
+      "to": "domain/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/seed-concept-upsert/replace-ttl-and-accepts-whole",
+      "to": "rules/glossary/a-registered-concept-is-never-removed",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/seed-concept-upsert/replace-ttl-and-accepts-whole",
+      "to": "task/seed-concept-upsert/replace-ttl-and-accepts-whole",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence",
       "to": "implementation/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence",
       "kind": "proves",
@@ -80,6 +114,12 @@
     {
       "from": "proof/fake-hypothesis-evaluator-no-data-usage/no-usage-or-elapsed-for-no-data",
       "to": "implementation/fake-hypothesis-evaluator-no-data-usage/no-usage-or-elapsed-for-no-data",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/seed-concept-upsert/replace-ttl-and-accepts-whole",
+      "to": "implementation/seed-concept-upsert/replace-ttl-and-accepts-whole",
       "kind": "proves",
       "at": "the path"
     }

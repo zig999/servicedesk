@@ -9,7 +9,7 @@ import { createCaseLifecycle, type CaseLifecycleOperations } from './factories/c
 import { createCaseQuery } from './factories/case-query.factory.js';
 import { createCaseStore } from './factories/case-store.factory.js';
 import type { IGlossaryStore } from './glossary/glossary-store.port.js';
-import { NON_CONCLUSION_OUTCOMES, type GlossaryTerm } from './glossary/terms.js';
+import { NON_CONCLUSION_OUTCOMES, type Concept, type GlossaryTerm } from './glossary/terms.js';
 import type { ConsolidationRegister } from './investigation/consolidation-register.js';
 import {
   createDatabaseConnection,
@@ -40,13 +40,6 @@ async function seedRemainingVocabularies(store: IGlossaryStore): Promise<void> {
   await store.insertMissingTerms('recipient', await fixtureTerms('recipient.json'));
 }
 
-type ConceptFixture = {
-  readonly name: string;
-  readonly accepts: readonly string[];
-  readonly ttl: number;
-  readonly description: string;
-};
-
 type CaseFixtureManifestEntry = {
   readonly position: number;
   readonly hypothesis_name: string;
@@ -67,22 +60,10 @@ type CaseFixture = {
   readonly manifest: readonly CaseFixtureManifestEntry[];
 };
 
-async function seedConcepts(connection: DatabaseConnection): Promise<void> {
+async function seedConcepts(store: IGlossaryStore): Promise<void> {
   const raw = await readFile(join(FIXTURES_ROOT, 'glossary', 'concept.json'), 'utf8');
-  const concepts = JSON.parse(raw) as readonly ConceptFixture[];
-  for (const concept of concepts) {
-    await connection.query(
-      `INSERT INTO concepts (name, ttl, description) VALUES ($1, $2, $3)
-       ON CONFLICT (name) DO UPDATE SET description = EXCLUDED.description`,
-      [concept.name, concept.ttl, concept.description],
-    );
-    for (const subjectType of concept.accepts) {
-      await connection.query(
-        'INSERT INTO concept_accepts (concept_name, subject_type_name) VALUES ($1, $2) ON CONFLICT DO NOTHING',
-        [concept.name, subjectType],
-      );
-    }
-  }
+  const concepts = JSON.parse(raw) as readonly Concept[];
+  await store.writeConcepts(concepts);
 }
 
 async function seedCapabilities(connection: DatabaseConnection): Promise<void> {
@@ -177,7 +158,7 @@ try {
   const glossary = new RelationalGlossaryStore(connection);
   await seedOutcomes(glossary);
   await seedRemainingVocabularies(glossary);
-  await seedConcepts(connection);
+  await seedConcepts(glossary);
   await seedCapabilities(connection);
   if (!(await alreadySeeded(connection))) {
     await seedCase(connection);

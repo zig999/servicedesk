@@ -1,7 +1,9 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { expect, it } from 'vitest';
+import { expect, it, vi } from 'vitest';
+import type { IConnectableQueryable } from '../../persistence/database-access.js';
+import { RelationalGlossaryStore } from '../../persistence/relational-glossary-store.repository.js';
 
 const SEED_SOURCE_PATH = fileURLToPath(new URL('../../seed.ts', import.meta.url));
 const PACKAGE_ROOT = fileURLToPath(new URL('../../../', import.meta.url));
@@ -58,12 +60,32 @@ async function readConceptDescriptions(): Promise<readonly string[]> {
   return concepts.map((concept) => concept.description);
 }
 
-it(
-  "passes each concept's description straight through, as the INSERT's third bound parameter, to the concepts table",
-  async () => {
-    const source = await readSeedSource();
+function fakeUpsertConnection(
+  handleQuery: (text: string, params?: readonly unknown[]) => Promise<{ rows: unknown[] }>,
+): IConnectableQueryable {
+  const client = { query: vi.fn(handleQuery), release: vi.fn() };
+  return { connect: vi.fn().mockResolvedValue(client) } as unknown as IConnectableQueryable;
+}
 
-    expect(source).toMatch(/INSERT INTO concepts[\s\S]*?\[concept\.name, concept\.ttl, concept\.description\]/);
+it(
+  "replaces a concept's held description with the fixture's own value in the same upsert that replaces its ttl, writing through IGlossaryStore.writeConcepts -- the write path seedConcepts now delegates the whole fixture to, instead of seed.ts's own removed hand-rolled INSERT",
+  async () => {
+    const recorded: { text: string; params?: readonly unknown[] }[] = [];
+    const connection = fakeUpsertConnection(async (text, params) => {
+      recorded.push({ text, params });
+      return { rows: [] };
+    });
+    const store = new RelationalGlossaryStore(connection);
+
+    await store.writeConcepts([
+      { name: 're-seeded-concept', accepts: [], ttl: 120, description: "the fixture's current description" },
+    ]);
+
+    const conceptUpsert = recorded.find((entry) => entry.text.includes('INSERT INTO concepts'));
+    expect(conceptUpsert?.text.replace(/\s+/g, ' ').trim()).toBe(
+      'INSERT INTO concepts (name, ttl, description) VALUES ($1, $2, $3) ON CONFLICT (name) DO UPDATE SET ttl = EXCLUDED.ttl, description = EXCLUDED.description',
+    );
+    expect(conceptUpsert?.params).toEqual(['re-seeded-concept', 120, "the fixture's current description"]);
   },
 );
 

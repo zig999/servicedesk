@@ -2542,7 +2542,7 @@
     },
     {
       "node": "domain/glossary/concept",
-      "digest": "sha256:3d67d2df55f4442a50e5ff3740b7229e0b34059033d27903dff72c5de61a5dd1",
+      "digest": "sha256:eb6eb7bb599f29da80964908f5087da07b22223642b01ce44bf4f2d1b4e92f84",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-concept-form.ts",
@@ -2660,7 +2660,7 @@
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:3eade14cff90d3331df48304574c163446728ff28a6e17e8c88a3a3282bd34d1"
+          "digest": "sha256:ef83e78ff984b0038a95461d77fcca0c58d43a4f4ee63d39f22bf14e6f1108ce"
         }
       ]
     },
@@ -6268,6 +6268,10 @@
         {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
           "digest": "sha256:797a57e5d937b6ee05c8d6a78e3dd401d8adb49ee0ed19e7fa34cac62417eeaa"
+        },
+        {
+          "path": "src/src/seed.ts",
+          "digest": "sha256:ef83e78ff984b0038a95461d77fcca0c58d43a4f4ee63d39f22bf14e6f1108ce"
         }
       ]
     },
