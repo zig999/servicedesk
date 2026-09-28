@@ -1,0 +1,130 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/connector-placeholder-orphan-union",
+      "kind": "epic",
+      "file": "epic/connector-placeholder-orphan-union.md",
+      "title": "Orphaned-connector-placeholder refusal checks any capability, not every capability",
+      "summary": "Corrects the registration-time orphaned-placeholder check to refuse a placeholder absent from any one currently-registered capability sharing the connector."
+    },
+    {
+      "id": "epic/fake-hypothesis-evaluator-no-data-usage",
+      "kind": "epic",
+      "file": "epic/fake-hypothesis-evaluator-no-data-usage.md",
+      "title": "Fake hypothesis evaluator carries no usage or elapsed time for a no-data outcome",
+      "summary": "Stops the fake hypothesis-evaluator test double from attaching a placeholder usage and elapsed duration to a seeded outcome whose reason is no-data."
+    },
+    {
+      "id": "epic/seed-concept-upsert",
+      "kind": "epic",
+      "file": "epic/seed-concept-upsert.md",
+      "title": "Re-seeding a concept replaces its ttl and its accepted subject types",
+      "summary": "Fixes seedConcepts to replace a concept's ttl and accepted subject types whole on re-seed, matching how the glossary registers a concept."
+    },
+    {
+      "id": "task/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence",
+      "kind": "task",
+      "file": "task/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence.md",
+      "title": "Orphaned-connector-placeholder check refuses on any capability, not every capability",
+      "summary": "Fixes the registration-time orphaned-placeholder check to refuse when a placeholder naming a Subject attribute is absent from any one currently-registered capability sharing the connector, not only when it is absent from every one of them.",
+      "epic": "connector-placeholder-orphan-union"
+    },
+    {
+      "id": "task/fake-hypothesis-evaluator-no-data-usage/no-usage-or-elapsed-for-no-data",
+      "kind": "task",
+      "file": "task/fake-hypothesis-evaluator-no-data-usage/no-usage-or-elapsed-for-no-data.md",
+      "title": "Fake hypothesis evaluator carries no usage or elapsed time for a seeded no-data outcome",
+      "summary": "Stops the fake hypothesis-evaluator adapter from attaching a usage and an elapsed duration to an outcome seeded with reason no-data, where no call was ever made.",
+      "epic": "fake-hypothesis-evaluator-no-data-usage"
+    },
+    {
+      "id": "task/seed-concept-upsert/replace-ttl-and-accepts-whole",
+      "kind": "task",
+      "file": "task/seed-concept-upsert/replace-ttl-and-accepts-whole.md",
+      "title": "Re-seeding a concept replaces its ttl and its accepted subject types",
+      "summary": "Fixes seedConcepts to write a concept's ttl and accepted subject types the way the glossary store's own write path does, instead of an independent upsert that only updates description and only adds accepted subject types.",
+      "epic": "seed-concept-upsert"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/connector-placeholder-orphan-union",
+      "to": "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/connector-placeholder-orphan-union",
+      "to": "scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/connector-placeholder-orphan-union",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/fake-hypothesis-evaluator-no-data-usage",
+      "to": "domain/investigation/evaluation",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/seed-concept-upsert",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/seed-concept-upsert",
+      "to": "rules/glossary/a-registered-concept-is-never-removed",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "task/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence",
+      "to": "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:f6d7da28d12a44a55f0237cccc5c282d4065ca0d822449e767bd00b2199c232c"
+    },
+    {
+      "from": "task/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence",
+      "to": "scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused",
+      "kind": "implements",
+      "at": "implements[1]",
+      "digest": "sha256:0ccd819c9d992e54d1eb47918f43e196236d61b4ea19e000b459eec726c5e435"
+    },
+    {
+      "from": "task/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[2]",
+      "digest": "sha256:a9bc779a71c2ed1b42d217d454e15446ad1fd3685955411bafc23b6423d9a527"
+    },
+    {
+      "from": "task/fake-hypothesis-evaluator-no-data-usage/no-usage-or-elapsed-for-no-data",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:0655535de663d589fa71f7c931783e5256be604060122ae37865482c111e3957"
+    },
+    {
+      "from": "task/seed-concept-upsert/replace-ttl-and-accepts-whole",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[0]",
+      "digest": "sha256:eb6eb7bb599f29da80964908f5087da07b22223642b01ce44bf4f2d1b4e92f84"
+    },
+    {
+      "from": "task/seed-concept-upsert/replace-ttl-and-accepts-whole",
+      "to": "rules/glossary/a-registered-concept-is-never-removed",
+      "kind": "implements",
+      "at": "implements[1]",
+      "digest": "sha256:091ca19540ec1a66521d63462a8bcc84b8bdca7d8985a078ea3fb409779f1735"
+    }
+  ]
+}

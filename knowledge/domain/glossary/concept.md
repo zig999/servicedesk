@@ -25,3 +25,4 @@ Deliberately thin on shape — the shape of the data it names belongs to the pro
 ## Responsibility
 
 Publish the name every collection, evidence and citation uses, and the two constraints the glossary must guarantee for it.
+Hold them by name, and replace them whole whenever a concept is registered under a name the glossary already holds, as rules/glossary/a-registered-concept-is-never-removed states. The ttl and the set of subject types accepted are both taken from what is registered: a subject type it no longer names stops being accepted, and nothing is merged with what stood before.
