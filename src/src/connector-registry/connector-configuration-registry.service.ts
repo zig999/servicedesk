@@ -80,26 +80,27 @@ export class ConnectorConfigurationRegistryService {
     const capabilities = (await this.capabilitiesReader.readCapabilities()).filter(
       (capability) => capability.connector === configuration.connector,
     );
-    const orphaned = orphanedAcrossEveryCapability(configuration.configuration, capabilities);
+    const orphaned = orphanedAcrossAnyCapability(configuration.configuration, capabilities);
     if (orphaned.length > 0) {
       throw new ConnectorPlaceholderOutsideInputSchemaError(orphaned);
     }
   }
 }
 
-function orphanedAcrossEveryCapability(
+function orphanedAcrossAnyCapability(
   configurationText: string,
   capabilities: readonly RegisteredCapabilityForPlaceholderCheck[],
 ): readonly OrphanedPlaceholder[] {
   if (capabilities.length === 0) {
     return [];
   }
-  const perCapabilityOrphaned = capabilities.map(
-    (capability) => new Set(orphanedPlaceholders(configurationText, capability.input_schema)),
-  );
-  const [first, ...rest] = perCapabilityOrphaned;
-  const orphanedEverywhere = [...first].filter((placeholder) => rest.every((set) => set.has(placeholder)));
-  return orphanedEverywhere.map((placeholder) => ({ placeholder, capabilities }));
+  const orphanedByAnyCapability = new Set<string>();
+  for (const capability of capabilities) {
+    for (const placeholder of orphanedPlaceholders(configurationText, capability.input_schema)) {
+      orphanedByAnyCapability.add(placeholder);
+    }
+  }
+  return [...orphanedByAnyCapability].map((placeholder) => ({ placeholder, capabilities }));
 }
 
 function pageCountOf(total: number, limit: number): number {

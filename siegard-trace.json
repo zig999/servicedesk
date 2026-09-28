@@ -3660,7 +3660,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:d281fd39d1aa170b1d364f2c86781d989d1643478a7cfc9d3617c8e733d0605c"
+          "digest": "sha256:86d0829ff16494179c2d937f521293e1c4e2277a3843ae4627887fb90c0e90ad"
         },
         {
           "path": "src/src/connector-registry/connector-configuration-store.port.ts",
@@ -7136,7 +7136,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:d281fd39d1aa170b1d364f2c86781d989d1643478a7cfc9d3617c8e733d0605c"
+          "digest": "sha256:86d0829ff16494179c2d937f521293e1c4e2277a3843ae4627887fb90c0e90ad"
         },
         {
           "path": "src/src/connector-registry/connector-placeholder-declaration-check.ts",
@@ -11300,7 +11300,7 @@
       "files": [
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:d281fd39d1aa170b1d364f2c86781d989d1643478a7cfc9d3617c8e733d0605c"
+          "digest": "sha256:86d0829ff16494179c2d937f521293e1c4e2277a3843ae4627887fb90c0e90ad"
         },
         {
           "path": "src/src/connector-registry/connector-placeholder-declaration-check.ts",

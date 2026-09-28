@@ -607,10 +607,29 @@ it('names a failing capability by exactly the connector and input_schema attribu
   expect(Object.keys(entry.capabilities[0]).sort()).toEqual(['connector', 'input_schema']);
 });
 
-it('succeeds when at least one capability registered against the connector declares the placeholder attribute, even though another fails to', async () => {
+it("refuses a registration when a placeholder naming a Subject attribute is present in one capability registered against the connector and absent from another's", async () => {
   const declares = registeredCapability({ input_schema: JSON.stringify({ properties: { customer_document: {} } }) });
   const doesNotDeclare = registeredCapability();
   const reader: ICapabilitiesReader = { readCapabilities: async () => [doesNotDeclare, declares] };
+  const registry = new ConnectorConfigurationRegistryService(new InMemoryConnectorConfigurationStore(), reader);
+
+  const refusal = await registry
+    .registerConnector(
+      completeRegistration({ connector: 'erp-http', configuration: '{"address":"${subject:customer_document}"}' }),
+    )
+    .catch((error: unknown) => error);
+
+  expect(refusal).toBeInstanceOf(ConnectorPlaceholderOutsideInputSchemaError);
+});
+
+it('succeeds when every placeholder naming a Subject attribute is present in every capability registered against the connector', async () => {
+  const capabilityA = registeredCapability({
+    input_schema: JSON.stringify({ properties: { customer_document: {} } }),
+  });
+  const capabilityB = registeredCapability({
+    input_schema: JSON.stringify({ properties: { customer_document: {}, contract_number: {} } }),
+  });
+  const reader: ICapabilitiesReader = { readCapabilities: async () => [capabilityA, capabilityB] };
   const registry = new ConnectorConfigurationRegistryService(new InMemoryConnectorConfigurationStore(), reader);
 
   const registered = await registry.registerConnector(

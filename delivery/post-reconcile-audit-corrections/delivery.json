@@ -1,0 +1,53 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence",
+      "kind": "implementation",
+      "file": "implementation/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence.md",
+      "title": "Orphaned-connector-placeholder check refuses on any capability's absence",
+      "summary": "Rewrites the connector-configuration registration's orphaned-placeholder computation from an intersection over every currently-registered capability's own orphaned set to a union, so a placeholder absent from any one capability sharing the connector is refused.",
+      "task": "task/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence"
+    },
+    {
+      "id": "proof/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence",
+      "kind": "proof",
+      "file": "proof/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence.md",
+      "title": "Any-one-capability orphan refusal, proven and the reversed intersection test rewritten",
+      "summary": "Tests that the orphaned-placeholder check refuses on a placeholder absent from any one capability sharing the connector and succeeds only when every capability declares it, rewriting the one pre-existing test that pinned the old intersection semantics this task reverses.",
+      "task": "task/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence",
+      "to": "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence",
+      "to": "scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence",
+      "to": "task/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence",
+      "to": "implementation/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
