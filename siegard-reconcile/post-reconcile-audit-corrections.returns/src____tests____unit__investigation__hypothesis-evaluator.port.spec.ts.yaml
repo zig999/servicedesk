@@ -1,0 +1,50 @@
+read:
+- node: rules/integration/a-connector-placeholder-is-declared-by-its-capability
+  held_at: nowhere
+  evidence: 'import { FakeHypothesisEvaluator } from ''../../../investigation/fake-hypothesis-evaluator.adapter.js'';
+
+    import type { Citation } from ''../../../investigation/citation.js'';
+
+    import type { CaseContext, EvidenceItem, IHypothesisEvaluator } from ''../../../investigation/hypothesis-evaluator.port.js'';
+
+    import type { Usage } from ''../../../investigation/usage.js'';
+
+    — the file''s whole import surface and every test in it concern hypothesis judgment outcomes; nothing
+    names a connector, a connector configuration, a capability''s input schema, or a placeholder.'
+- node: scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused
+  held_at: nowhere
+  evidence: the same import block above is the file's only external surface, and no test body references
+    a connector configuration, erp-http, or a registration refusal of any kind.
+- node: domain/integration/connector-configuration-registry
+  held_at: nowhere
+  evidence: no test constructs, seeds, or asserts against a connector-configuration-registry; the only
+    fake under test is `FakeHypothesisEvaluator`.
+- node: domain/investigation/evaluation
+  held_at: the `toEqual`/`toHaveProperty` assertions against the awaited `evaluate(...)` outcome, e.g.
+    line 42 and lines 178-179
+  evidence: 'expect(outcome).toEqual({ verdict: ''confirmed'', citations, usage: ZEROED_USAGE, elapsed_ms:
+    ZEROED_ELAPSED_MS, prompt: PLACEHOLDER_PROMPT });
+
+    ...
+
+    expect(outcome).not.toHaveProperty(''usage'');
+
+    expect(outcome).not.toHaveProperty(''elapsed_ms'');'
+- node: domain/glossary/concept
+  held_at: nowhere
+  evidence: 'the string ''a-concept'' and ''another-concept'' appear only as opaque fixture values inside
+    `SOME_EVIDENCE` and `citations` (e.g. `concept: ''a-concept''`, line 17); no test registers, reads,
+    or asserts a concept''s name, accepted subject types, ttl or description.'
+- node: rules/glossary/a-registered-concept-is-never-removed
+  held_at: nowhere
+  evidence: no test in this file registers or removes a concept, and no assertion mentions a ConceptInUseError
+    or a removal refusal.
+looked_past: Several test titles paraphrase the specification's own rationale in prose (e.g. "since a
+  no-data outcome means judgment was never called at all", closely echoing domain/investigation/evaluation's
+  description) and the file re-declares the same `ZEROED_USAGE`/`ZEROED_ELAPSED_MS`/`PLACEHOLDER_PROMPT`
+  literals already defined in fake-hypothesis-evaluator.adapter.ts — both are naming/duplication choices
+  about how the test documents and mirrors its fixture, not a domain fact the source states on its own
+  authority, so they are left to a different pass.
+candidates_opened:
+- constraints/judgment-runs-behind-a-port
+- domain/investigation/usage

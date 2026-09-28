@@ -1,0 +1,63 @@
+read:
+- node: rules/integration/a-connector-placeholder-is-declared-by-its-capability
+  held_at: the orphaned-placeholder registration tests, e.g. "refuses a registration whose call text embeds
+    a Subject-attribute placeholder no capability currently registered against that connector declares,
+    as ConnectorPlaceholderOutsideInputSchemaError" and "refuses a registration when a placeholder naming
+    a Subject attribute is present in one capability registered against the connector and absent from
+    another's"
+  evidence: "const capability = registeredCapability({ input_schema: JSON.stringify({ properties: { contract_number:\
+    \ {} } }) });\nconst reader: ICapabilitiesReader = { readCapabilities: async () => [capability] };\n\
+    const registry = new ConnectorConfigurationRegistryService(new InMemoryConnectorConfigurationStore(),\
+    \ reader);\n\nconst refusal = await registry\n  .registerConnector(\n    completeRegistration({\n\
+    \      connector: 'erp-http',\n      configuration: '{\"address\":\"https://api.example.test/records/${subject:customer_document}\"\
+    }',\n    }),\n  )\n  .catch((error: unknown) => error);\n\nexpect(refusal).toBeInstanceOf(ConnectorPlaceholderOutsideInputSchemaError);"
+- node: scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused
+  held_at: the "names the orphaned placeholder together with the capability that fails to declare it"
+    test, reproducing the scenario's own given/when/then (an erp-http capability declaring only contract_number,
+    a registration embedding customer_document)
+  evidence: "const capability = registeredCapability({ input_schema: JSON.stringify({ properties: { contract_number:\
+    \ {} } }) });\n...\nconst refusal = await registry\n  .registerConnector(\n    completeRegistration({\n\
+    \      connector: 'erp-http',\n      configuration: '{\"address\":\"https://api.example.test/records/${subject:customer_document}\"\
+    }',\n    }),\n  )\n  .catch((error: unknown) => error);\n\nexpect((refusal as ConnectorPlaceholderOutsideInputSchemaError).context.orphaned).toEqual([\n\
+    \  { placeholder: 'customer_document', capabilities: [capability] },\n]);"
+- node: domain/integration/connector-configuration-registry
+  held_at: the register-connector and remove-connector operation tests — "persists an accepted registration
+    through the store" and "removes the configuration registered under the name, so a subsequent read
+    of the registry no longer returns it" — together with the well-formed and orphaned-placeholder refusal
+    tests that exercise the same responsibility
+  evidence: 'const registered = await registry.registerConnector(completeRegistration());
+
+    expect(store.held()).toEqual([registered]);
+
+    ...
+
+    await registry.removeConnector(''a-connector'');
+
+    const resolution = await registry.readConnectorConfiguration(''a-connector'');
+
+    expect(resolution).toEqual({ held: false, connector: ''a-connector'' });'
+- node: domain/investigation/evaluation
+  held_at: nowhere
+  evidence: "import {\n  ConnectorConfigurationRegistryService,\n  parsedConnectorConfiguration,\n} from\
+    \ '../../../connector-registry/connector-configuration-registry.service.js';"
+- node: domain/glossary/concept
+  held_at: nowhere
+  evidence: "import {\n  ConnectorConfigurationRegistryService,\n  parsedConnectorConfiguration,\n} from\
+    \ '../../../connector-registry/connector-configuration-registry.service.js';"
+- node: rules/glossary/a-registered-concept-is-never-removed
+  held_at: nowhere
+  evidence: "import {\n  ConnectorConfigurationRegistryService,\n  parsedConnectorConfiguration,\n} from\
+    \ '../../../connector-registry/connector-configuration-registry.service.js';"
+looked_past: The service's readConnectorConfiguration (data-returning) versus readConnectorConfigurationOrThrow
+  (throwing ConnectorConfigurationNotFoundError, tested at "throws ConnectorConfigurationNotFoundError
+  naming the requested connector...") split, and the test title's framing that "capability-naming being
+  the only condition about a connector's use this domain declares", are architecture and rationale commentary
+  rather than an asserted domain value contradicting or omitted from a node, so they are not reported
+  as findings here.
+candidates_opened:
+- contracts/integration/connector-configuration-registry
+- domain/integration/connector-configuration
+- constraints/listings-are-paged
+- rules/integration/a-connector-configuration-holds-a-well-formed-object
+- rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
+- rules/integration/removing-a-connector-configuration-is-unconditional

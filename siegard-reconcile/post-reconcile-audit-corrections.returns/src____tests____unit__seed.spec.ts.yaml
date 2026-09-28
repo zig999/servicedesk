@@ -1,0 +1,49 @@
+read:
+- node: rules/integration/a-connector-placeholder-is-declared-by-its-capability
+  held_at: nowhere
+  evidence: 'import type { IConnectableQueryable } from ''../../persistence/database-access.js'';
+
+    import { RelationalGlossaryStore } from ''../../persistence/relational-glossary-store.repository.js'';
+
+    — the file''s only production imports are the persistence/database-access and glossary-store modules;
+    no connector configuration or capability registration is named anywhere in the file.'
+- node: scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused
+  held_at: nowhere
+  evidence: 'import type { IConnectableQueryable } from ''../../persistence/database-access.js'';
+
+    import { RelationalGlossaryStore } from ''../../persistence/relational-glossary-store.repository.js'';
+
+    — the same imports; the file exercises RelationalGlossaryStore.writeConcepts only, and never a connector
+    configuration registration or refusal.'
+- node: domain/integration/connector-configuration-registry
+  held_at: nowhere
+  evidence: 'import type { IConnectableQueryable } from ''../../persistence/database-access.js'';
+
+    import { RelationalGlossaryStore } from ''../../persistence/relational-glossary-store.repository.js'';
+
+    — no reference to a connector-configuration-registry service appears in the file.'
+- node: domain/investigation/evaluation
+  held_at: nowhere
+  evidence: 'import type { IConnectableQueryable } from ''../../persistence/database-access.js'';
+
+    import { RelationalGlossaryStore } from ''../../persistence/relational-glossary-store.repository.js'';
+
+    — the file never constructs or references a hypothesis evaluation, verdict, citation or usage record.'
+- node: domain/glossary/concept
+  held_at: the SQL assertion in the upsert test (lines 84-88)
+  evidence: "expect(conceptUpsert?.text.replace(/\\s+/g, ' ').trim()).toBe(\n  'INSERT INTO concepts (name,\
+    \ ttl, description) VALUES ($1, $2, $3) ON CONFLICT (name) DO UPDATE SET ttl = EXCLUDED.ttl, description\
+    \ = EXCLUDED.description',\n);\nexpect(conceptUpsert?.params).toEqual(['re-seeded-concept', 120, \"\
+    the fixture's current description\"]);"
+- node: rules/glossary/a-registered-concept-is-never-removed
+  held_at: nowhere
+  evidence: "await store.writeConcepts([\n  { name: 're-seeded-concept', accepts: [], ttl: 120, description:\
+    \ \"the fixture's current description\" },\n]);\n— the file exercises only the registration/replace\
+    \ path through writeConcepts; no removal call (deleteConcept, a 409 refusal, or a ConceptInUseError)\
+    \ appears anywhere in it."
+looked_past: The FIXTURES_ROOT build-path-resolution test and the hard-coded exact-SQL-string assertions
+  are test-fragility/engineering concerns rather than domain facts, so they are left to a code review
+  rather than reported here.
+candidates_opened:
+- rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+- domain/knowledge/hypothesis-revision-state

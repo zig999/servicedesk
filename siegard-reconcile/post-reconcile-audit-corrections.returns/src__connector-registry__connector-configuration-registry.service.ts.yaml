@@ -1,0 +1,78 @@
+read:
+- node: constraints/listings-are-paged
+  held_at: listConnectorConfigurations(), lines 60-73
+  evidence: "const held = await this.store.readConnectorConfigurations();\nconst total = held.length;\n\
+    const data = held.slice(pagination.offset, pagination.offset + pagination.limit);\nreturn {\n  data,\n\
+    \  total,\n  limit: pagination.limit,\n  offset: pagination.offset,\n  pageCount: pageCountOf(total,\
+    \ pagination.limit),\n};"
+- node: constraints/the-domain-depends-on-no-infrastructure
+  held_at: the import list, lines 1-15
+  evidence: 'import { ConnectorConfigurationNotFoundError } from ''../errors/connector-configuration-not-found.error.js'';
+
+    ... import type { IConnectorConfigurationStore } from ''./connector-configuration-store.port.js'';
+
+    — every import is a local error type, a local port type, or a local domain module; none is a framework,
+    driver or provider client package.'
+- node: contracts/integration/connector-configuration-registry
+  held_at: 'the class''s four public operations: registerConnector (31-40), removeConnector (42-44), readConnectorConfiguration/readConnectorConfigurationOrThrow
+    (46-58), listConnectorConfigurations (60-73)'
+  evidence: 'public async registerConnector(registration: ConnectorConfigurationRegistration): Promise<ConnectorConfiguration>
+
+    public async removeConnector(connector: string): Promise<void>
+
+    public async readConnectorConfigurationOrThrow(connector: string): Promise<ConnectorConfiguration>
+
+    public async listConnectorConfigurations(pagination: PaginationRequest): Promise<PaginatedResponse<ConnectorConfiguration>>'
+- node: domain/integration/connector-configuration
+  held_at: heldConfiguration(), lines 115-122, and the ConnectorConfiguration shape it returns
+  evidence: 'return { connector: resolved.connector, configuration: resolved.configuration };'
+- node: domain/integration/connector-configuration-registry
+  held_at: registerConnector(), lines 31-40
+  evidence: 'const kept = held.filter((candidate) => candidate.connector !== configuration.connector);
+
+    await this.store.writeConnectorConfigurations([...kept, configuration]);'
+- node: rules/integration/a-connector-configuration-holds-a-well-formed-object
+  held_at: wellFormedConfiguration() and textConfigurationOrThrow(), lines 124-148, and registrationProblems(),
+    lines 169-178
+  evidence: "if (configuration === null || Array.isArray(configuration)) {\n  throw new ConnectorConfigurationNotWellFormedError('configuration\
+    \ is not a JSON object');\n}\n...\nif (typeof registration.configuration !== 'string') {\n  problems.push('configuration\
+    \ is not a plain object');\n}"
+- node: rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused
+  held_at: readConnectorConfigurationOrThrow(), lines 52-58
+  evidence: "if (!resolution.held) {\n  throw new ConnectorConfigurationNotFoundError(resolution.connector);\n\
+    }"
+- node: rules/integration/a-connector-placeholder-is-declared-by-its-capability
+  held_at: refuseOrphanedPlaceholders() (79-87) and orphanedAcrossAnyCapability() (90-104)
+  evidence: "const capabilities = (await this.capabilitiesReader.readCapabilities()).filter(\n  (capability)\
+    \ => capability.connector === configuration.connector,\n);\nconst orphaned = orphanedAcrossAnyCapability(configuration.configuration,\
+    \ capabilities);\nif (orphaned.length > 0) {\n  throw new ConnectorPlaceholderOutsideInputSchemaError(orphaned);\n\
+    }"
+- node: rules/integration/removing-a-connector-configuration-is-unconditional
+  held_at: removeConnector(), lines 42-44
+  evidence: "public async removeConnector(connector: string): Promise<void> {\n  await this.store.deleteConnectorConfiguration(connector);\n\
+    }"
+- node: scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused
+  held_at: refuseOrphanedPlaceholders() and orphanedAcrossAnyCapability(), lines 79-104 — the same path
+    as rules/integration/a-connector-placeholder-is-declared-by-its-capability
+  evidence: "for (const placeholder of orphanedPlaceholders(configurationText, capability.input_schema))\
+    \ {\n  orphanedByAnyCapability.add(placeholder);\n}"
+- node: domain/investigation/evaluation
+  held_at: nowhere
+  evidence: export class ConnectorConfigurationRegistryService { ... registerConnector ... removeConnector
+    ... readConnectorConfiguration ... listConnectorConfigurations ... } — the whole file's operations
+    concern connector configuration registration, lookup, listing and removal; none constructs, carries
+    or reads a hypothesis, verdict, citation, usage or elapsed_ms.
+- node: domain/glossary/concept
+  held_at: nowhere
+  evidence: the same class body as above — no concept, accepts list, ttl or description is declared, held
+    or read anywhere in this file.
+- node: rules/glossary/a-registered-concept-is-never-removed
+  held_at: nowhere
+  evidence: 'the same class body as above — the file''s only removal operation is removeConnector(connector:
+    string), which removes a connector configuration by name, not a glossary concept; nothing here registers,
+    replaces or refuses removal of a concept.'
+looked_past: registrationProblems() reports the incomplete-configuration case with the string 'configuration
+  is not a plain object' even though the check that produces it is `typeof registration.configuration
+  !== 'string'` and the case it actually guards (post-normalization) includes absent, boolean and number
+  values as well as plain objects — a message-wording clarity concern, not a domain-fact deviation, since
+  no node specifies the error's message text.

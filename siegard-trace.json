@@ -26,7 +26,8 @@
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:3eade14cff90d3331df48304574c163446728ff28a6e17e8c88a3a3282bd34d1"
+          "digest": "sha256:ef83e78ff984b0038a95461d77fcca0c58d43a4f4ee63d39f22bf14e6f1108ce",
+          "judged": true
         }
       ]
     },
@@ -486,7 +487,8 @@
         },
         {
           "path": "src/src/investigation/fake-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:bea520100d95b091dd84e2ad3040bdd426b69c7b8b8420b7160524a3b735f96d"
+          "digest": "sha256:e41e1c65f59132d54909c0dd9d343f0b5c5f550b483f00060ff1a9500ed58e5f",
+          "judged": true
         },
         {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
@@ -516,7 +518,8 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:d281fd39d1aa170b1d364f2c86781d989d1643478a7cfc9d3617c8e733d0605c"
+          "digest": "sha256:86d0829ff16494179c2d937f521293e1c4e2277a3843ae4627887fb90c0e90ad",
+          "judged": true
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
@@ -655,7 +658,8 @@
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:3eade14cff90d3331df48304574c163446728ff28a6e17e8c88a3a3282bd34d1"
+          "digest": "sha256:ef83e78ff984b0038a95461d77fcca0c58d43a4f4ee63d39f22bf14e6f1108ce",
+          "judged": true
         }
       ]
     },
@@ -792,7 +796,8 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:d281fd39d1aa170b1d364f2c86781d989d1643478a7cfc9d3617c8e733d0605c"
+          "digest": "sha256:86d0829ff16494179c2d937f521293e1c4e2277a3843ae4627887fb90c0e90ad",
+          "judged": true
         },
         {
           "path": "src/src/connector-registry/connector-configuration-store.port.ts",
@@ -866,7 +871,8 @@
         },
         {
           "path": "src/src/investigation/fake-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:bea520100d95b091dd84e2ad3040bdd426b69c7b8b8420b7160524a3b735f96d"
+          "digest": "sha256:e41e1c65f59132d54909c0dd9d343f0b5c5f550b483f00060ff1a9500ed58e5f",
+          "judged": true
         },
         {
           "path": "src/src/investigation/fake-observation-source.adapter.ts",
@@ -1579,7 +1585,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:d281fd39d1aa170b1d364f2c86781d989d1643478a7cfc9d3617c8e733d0605c",
+          "digest": "sha256:86d0829ff16494179c2d937f521293e1c4e2277a3843ae4627887fb90c0e90ad",
           "judged": true
         },
         {
@@ -2660,7 +2666,8 @@
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:ef83e78ff984b0038a95461d77fcca0c58d43a4f4ee63d39f22bf14e6f1108ce"
+          "digest": "sha256:ef83e78ff984b0038a95461d77fcca0c58d43a4f4ee63d39f22bf14e6f1108ce",
+          "judged": true
         }
       ]
     },
@@ -2728,7 +2735,8 @@
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:3eade14cff90d3331df48304574c163446728ff28a6e17e8c88a3a3282bd34d1"
+          "digest": "sha256:ef83e78ff984b0038a95461d77fcca0c58d43a4f4ee63d39f22bf14e6f1108ce",
+          "judged": true
         }
       ]
     },
@@ -3311,7 +3319,8 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:d281fd39d1aa170b1d364f2c86781d989d1643478a7cfc9d3617c8e733d0605c"
+          "digest": "sha256:86d0829ff16494179c2d937f521293e1c4e2277a3843ae4627887fb90c0e90ad",
+          "judged": true
         },
         {
           "path": "src/src/connector-registry/connector-configuration.ts",
@@ -3660,7 +3669,8 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:86d0829ff16494179c2d937f521293e1c4e2277a3843ae4627887fb90c0e90ad"
+          "digest": "sha256:86d0829ff16494179c2d937f521293e1c4e2277a3843ae4627887fb90c0e90ad",
+          "judged": true
         },
         {
           "path": "src/src/connector-registry/connector-configuration-store.port.ts",
@@ -4138,7 +4148,8 @@
         },
         {
           "path": "src/src/investigation/fake-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:e41e1c65f59132d54909c0dd9d343f0b5c5f550b483f00060ff1a9500ed58e5f"
+          "digest": "sha256:e41e1c65f59132d54909c0dd9d343f0b5c5f550b483f00060ff1a9500ed58e5f",
+          "judged": true
         },
         {
           "path": "src/src/investigation/investigation-pipeline.ts",
@@ -4732,7 +4743,8 @@
         },
         {
           "path": "src/src/investigation/fake-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:bea520100d95b091dd84e2ad3040bdd426b69c7b8b8420b7160524a3b735f96d"
+          "digest": "sha256:e41e1c65f59132d54909c0dd9d343f0b5c5f550b483f00060ff1a9500ed58e5f",
+          "judged": true
         },
         {
           "path": "src/src/investigation/usage.ts",
@@ -5799,7 +5811,8 @@
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:3eade14cff90d3331df48304574c163446728ff28a6e17e8c88a3a3282bd34d1"
+          "digest": "sha256:ef83e78ff984b0038a95461d77fcca0c58d43a4f4ee63d39f22bf14e6f1108ce",
+          "judged": true
         },
         {
           "path": "src/src/vitest-global-setup.ts",
@@ -5865,7 +5878,8 @@
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:3eade14cff90d3331df48304574c163446728ff28a6e17e8c88a3a3282bd34d1"
+          "digest": "sha256:ef83e78ff984b0038a95461d77fcca0c58d43a4f4ee63d39f22bf14e6f1108ce",
+          "judged": true
         }
       ]
     },
@@ -6271,7 +6285,8 @@
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:ef83e78ff984b0038a95461d77fcca0c58d43a4f4ee63d39f22bf14e6f1108ce"
+          "digest": "sha256:ef83e78ff984b0038a95461d77fcca0c58d43a4f4ee63d39f22bf14e6f1108ce",
+          "judged": true
         }
       ]
     },
@@ -6321,7 +6336,8 @@
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:3eade14cff90d3331df48304574c163446728ff28a6e17e8c88a3a3282bd34d1"
+          "digest": "sha256:ef83e78ff984b0038a95461d77fcca0c58d43a4f4ee63d39f22bf14e6f1108ce",
+          "judged": true
         }
       ]
     },
@@ -6844,7 +6860,8 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:d281fd39d1aa170b1d364f2c86781d989d1643478a7cfc9d3617c8e733d0605c"
+          "digest": "sha256:86d0829ff16494179c2d937f521293e1c4e2277a3843ae4627887fb90c0e90ad",
+          "judged": true
         },
         {
           "path": "src/src/errors/connector-configuration-not-well-formed.error.ts",
@@ -6936,7 +6953,7 @@
       "files": [
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:d281fd39d1aa170b1d364f2c86781d989d1643478a7cfc9d3617c8e733d0605c",
+          "digest": "sha256:86d0829ff16494179c2d937f521293e1c4e2277a3843ae4627887fb90c0e90ad",
           "judged": true
         },
         {
@@ -7140,7 +7157,8 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:86d0829ff16494179c2d937f521293e1c4e2277a3843ae4627887fb90c0e90ad"
+          "digest": "sha256:86d0829ff16494179c2d937f521293e1c4e2277a3843ae4627887fb90c0e90ad",
+          "judged": true
         },
         {
           "path": "src/src/connector-registry/connector-placeholder-declaration-check.ts",
@@ -8258,7 +8276,8 @@
       "files": [
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:d281fd39d1aa170b1d364f2c86781d989d1643478a7cfc9d3617c8e733d0605c"
+          "digest": "sha256:86d0829ff16494179c2d937f521293e1c4e2277a3843ae4627887fb90c0e90ad",
+          "judged": true
         },
         {
           "path": "src/src/connector-registry/connector-configuration-store.port.ts",
@@ -9640,7 +9659,8 @@
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:3eade14cff90d3331df48304574c163446728ff28a6e17e8c88a3a3282bd34d1"
+          "digest": "sha256:ef83e78ff984b0038a95461d77fcca0c58d43a4f4ee63d39f22bf14e6f1108ce",
+          "judged": true
         }
       ]
     },
@@ -9931,7 +9951,7 @@
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:3eade14cff90d3331df48304574c163446728ff28a6e17e8c88a3a3282bd34d1",
+          "digest": "sha256:ef83e78ff984b0038a95461d77fcca0c58d43a4f4ee63d39f22bf14e6f1108ce",
           "judged": true
         },
         {
@@ -10235,7 +10255,8 @@
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:3eade14cff90d3331df48304574c163446728ff28a6e17e8c88a3a3282bd34d1"
+          "digest": "sha256:ef83e78ff984b0038a95461d77fcca0c58d43a4f4ee63d39f22bf14e6f1108ce",
+          "judged": true
         }
       ]
     },
@@ -10619,7 +10640,8 @@
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:3eade14cff90d3331df48304574c163446728ff28a6e17e8c88a3a3282bd34d1"
+          "digest": "sha256:ef83e78ff984b0038a95461d77fcca0c58d43a4f4ee63d39f22bf14e6f1108ce",
+          "judged": true
         }
       ]
     },
@@ -11230,7 +11252,8 @@
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:3eade14cff90d3331df48304574c163446728ff28a6e17e8c88a3a3282bd34d1"
+          "digest": "sha256:ef83e78ff984b0038a95461d77fcca0c58d43a4f4ee63d39f22bf14e6f1108ce",
+          "judged": true
         }
       ]
     },
@@ -11304,7 +11327,8 @@
       "files": [
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:86d0829ff16494179c2d937f521293e1c4e2277a3843ae4627887fb90c0e90ad"
+          "digest": "sha256:86d0829ff16494179c2d937f521293e1c4e2277a3843ae4627887fb90c0e90ad",
+          "judged": true
         },
         {
           "path": "src/src/connector-registry/connector-placeholder-declaration-check.ts",
@@ -11313,6 +11337,14 @@
         {
           "path": "src/src/errors/connector-placeholder-outside-input-schema.error.ts",
           "digest": "sha256:3d5386fbcfca6a633fd873eb363c5ffeff6d5f233f92314fa6b7a87fa1e69b05"
+        }
+      ],
+      "decided_by": "test",
+      "step": "test",
+      "proof": [
+        {
+          "path": "src/src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts",
+          "digest": "sha256:06969c003af270c994933842bfed5b2f7faa9def814f5643c5e30cfc1d1a9a04"
         }
       ]
     },

@@ -1,0 +1,83 @@
+read:
+- node: constraints/a-case-is-read-whole
+  held_at: nowhere — the file only calls into case-query, it does not itself assemble or validate a case
+    version
+  evidence: await createCaseQuery(connection).readCase(CASE_SLUG, CASE_VERSION);
+- node: constraints/the-connection-pool-is-bounded-by-configuration
+  held_at: the return statement of databasePoolOptionsFrom(), lines 147-151
+  evidence: "return {\n    maxConnections: env.DATABASE_POOL_MAX_CONNECTIONS,\n    idleTimeoutMs: env.DATABASE_POOL_IDLE_TIMEOUT_MS,\n\
+    \    statementTimeoutMs: env.DATABASE_POOL_STATEMENT_TIMEOUT_MS,\n  };"
+- node: domain/glossary/concept
+  held_at: nowhere — seedConcepts() parses the fixture and forwards it whole, it does not itself declare
+    or check the concept's shape
+  evidence: 'const concepts = JSON.parse(raw) as readonly Concept[];
+
+    await store.writeConcepts(concepts);'
+- node: domain/glossary/outcome
+  held_at: seedOutcomes(), lines 30-35
+  evidence: 'const known = new Set(fixtureOutcomes.map((outcome) => outcome.name));
+
+    const missing = NON_CONCLUSION_OUTCOMES.filter((outcome) => !known.has(outcome.name));
+
+    await store.insertMissingTerms(''outcome'', [...fixtureOutcomes, ...missing]);'
+- node: domain/knowledge/hypothesis-revision
+  held_at: nowhere — the fixture's revision content is forwarded to lifecycle.reviseHypothesis, which
+    is where the revision is actually held
+  evidence: "const revised = await lifecycle.reviseHypothesis({\n    slug: fixture.slug,\n    hypothesis_name:\
+    \ entry.hypothesis_name,\n    criterion: entry.criterion,\n    collects: entry.collects,\n    resolution:\
+    \ entry.resolution,\n    subject: fixture.subject,\n  });"
+- node: domain/knowledge/hypothesis-revision-state
+  held_at: nowhere — the transition is triggered through lifecycle.releaseHypothesisRevision, not performed
+    here
+  evidence: await lifecycle.releaseHypothesisRevision(slug, revision.hypothesis_name, revision.revision);
+- node: rules/glossary/a-registered-concept-is-never-removed
+  held_at: nowhere — the file's only concept-mutating call is a write, no removal path exists here to
+    hold or violate the refusal
+  evidence: 'const concepts = JSON.parse(raw) as readonly Concept[];
+
+    await store.writeConcepts(concepts);'
+- node: rules/glossary/the-non-conclusion-outcomes-precede-the-first-case
+  held_at: seedOutcomes(), lines 30-35
+  evidence: 'const missing = NON_CONCLUSION_OUTCOMES.filter((outcome) => !known.has(outcome.name));
+
+    await store.insertMissingTerms(''outcome'', [...fixtureOutcomes, ...missing]);'
+- node: rules/knowledge/a-case-version-is-written-once
+  held_at: nowhere — alreadySeeded() only guards this script's own run against reseeding, the invariant
+    itself is enforced by case-lifecycle's own create/release
+  evidence: "if (!(await alreadySeeded(connection))) {\n    await seedCase(connection);\n  }"
+- node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+  held_at: nowhere — collects is forwarded from the fixture into reviseHypothesis without any count check
+    in this file
+  evidence: 'collects: entry.collects,'
+- node: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle
+  held_at: nowhere — release is only invoked, the transition lives in the lifecycle service
+  evidence: await lifecycle.releaseHypothesisRevision(slug, revision.hypothesis_name, revision.revision);
+- node: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions
+  held_at: nowhere — seedCase()'s call order happens to satisfy the rule (every placed revision is released
+    before the case version is), but the refusal itself is enforced inside lifecycle.release, not here
+  evidence: 'const placed = await placeFixtureHypotheses(lifecycle, fixture, draft.version);
+
+    await releaseManifestedRevisions(lifecycle, fixture.slug, placed);
+
+    await lifecycle.release(fixture.slug, draft.version);'
+- node: rules/knowledge/validation-runs-at-every-read
+  held_at: nowhere — the read is only invoked, validation runs inside case-query
+  evidence: await createCaseQuery(connection).readCase(CASE_SLUG, CASE_VERSION);
+- node: rules/integration/a-connector-placeholder-is-declared-by-its-capability
+  held_at: nowhere — the file registers capabilities but never touches connector configuration; the candidate
+    index binds this node to connector-configuration-registry.service.ts, not this file
+  evidence: import type { CapabilityRegistration } from './capability-registry/capability.js';
+- node: scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused
+  held_at: nowhere — no connector-configuration registration or refusal path appears anywhere in this
+    file
+  evidence: import type { CapabilityRegistration } from './capability-registry/capability.js';
+- node: domain/integration/connector-configuration-registry
+  held_at: nowhere — this file never imports or calls a connector-configuration registry
+  evidence: import { createCapabilityRegistry } from './factories/capability-registry.factory.js';
+- node: domain/investigation/evaluation
+  held_at: nowhere — this file performs no hypothesis evaluation; it only seeds fixtures
+  evidence: import type { ConsolidationRegister } from './investigation/consolidation-register.js';
+looked_past: Whether the delegated factories and stores (capability-registry, case-lifecycle, case-query,
+  case-store, relational-glossary-store) themselves correctly enforce the constrained rules is outside
+  this file's set and not judged here; likewise the relative-path construction of FIXTURES_ROOT and the
+  doubled src/src directory layout are a build/tooling concern, not a domain-fact one.

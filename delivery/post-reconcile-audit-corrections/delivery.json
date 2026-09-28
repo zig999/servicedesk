@@ -48,6 +48,25 @@
       "title": "Re-seeding replaces a concept's ttl, accepts and description whole, through seedConcepts' delegation to IGlossaryStore.writeConcepts",
       "summary": "Rewrites seed.spec.ts's stale, now-false raw-SQL assertion into a genuine behavioral test of description replacement through IGlossaryStore.writeConcepts, and shows criteria 1-3 and the three UNDERDETERMINED entries are already decided, whole where a finite test can decide them, by the pre-existing RelationalGlossaryStore.writeConcepts test suite that seed.ts's rearrangement now reuses rather than duplicates.",
       "task": "task/seed-concept-upsert/replace-ttl-and-accepts-whole"
+    },
+    {
+      "id": "review/post-reconcile-audit-corrections",
+      "kind": "review",
+      "file": "review/post-reconcile-audit-corrections.md",
+      "title": "Review of post-reconcile-audit-corrections",
+      "summary": "Four passes over the three corrective tasks delivered under post-reconcile-audit-corrections: the orphaned-placeholder union fix, the fake evaluator no-data guard, and the seed-concept whole-replace fix.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Re-seeding a concept whose fixture names a subject type the store does not yet record as accepted leaves the store accepting that subject type.",
+        "Re-seeding a concept whose fixture no longer names a subject type the store already records as accepted leaves the store not accepting that subject type.",
+        "Re-seeding a concept whose ttl differs from the value the store already holds under that name leaves the store holding the fixture's ttl.",
+        "Registering a connector configuration whose placeholder names the requester or a credential, present or absent from any capability's input schema, is not refused on that account."
+      ],
+      "findings": 4
     }
   ],
   "edges": [
@@ -122,6 +141,24 @@
       "to": "implementation/seed-concept-upsert/replace-ttl-and-accepts-whole",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/post-reconcile-audit-corrections",
+      "to": "task/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/post-reconcile-audit-corrections",
+      "to": "task/fake-hypothesis-evaluator-no-data-usage/no-usage-or-elapsed-for-no-data",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/post-reconcile-audit-corrections",
+      "to": "task/seed-concept-upsert/replace-ttl-and-accepts-whole",
+      "kind": "reviews",
+      "at": "tasks[2]"
     }
   ]
 }

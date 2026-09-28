@@ -1,0 +1,9 @@
+certified:
+- node: scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused
+  state: covered
+  tests:
+  - file: src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts
+    name: refuses a registration whose call text embeds a Subject-attribute placeholder no capability
+      currently registered against that connector declares, as ConnectorPlaceholderOutsideInputSchemaError
+  - file: src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts
+    name: names the orphaned placeholder together with the capability that fails to declare it

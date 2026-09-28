@@ -1,0 +1,42 @@
+read:
+- node: constraints/judgment-runs-behind-a-port
+  held_at: the class declaration implementing the port, with no LLM-client import anywhere in the file
+  evidence: export class FakeHypothesisEvaluator implements IHypothesisEvaluator {
+- node: constraints/the-domain-depends-on-no-infrastructure
+  held_at: the import block, which names only the port's own types and the usage value-object
+  evidence: "import type {\n  CaseContext,\n  EvaluationOutcome,\n  EvidenceItem,\n  IHypothesisEvaluator,\n\
+    } from './hypothesis-evaluator.port.js';\nimport type { Usage } from './usage.js';"
+- node: domain/investigation/evaluation
+  held_at: the two return statements of evaluate(), one for reason `no-data` and one for a decided outcome
+  evidence: "if ('reason' in outcome && outcome.reason === 'no-data') {\n  return { verdict: outcome.verdict,\
+    \ reason: outcome.reason, citations: outcome.citations };\n}\nreturn {\n  ...outcome,\n  usage: ZEROED_USAGE,\n\
+    \  elapsed_ms: ZEROED_ELAPSED_MS,\n  prompt: outcome.prompt ?? PLACEHOLDER_PROMPT,\n};"
+- node: domain/investigation/usage
+  held_at: the ZEROED_USAGE constant assigned the Usage shape
+  evidence: 'const ZEROED_USAGE: Usage = { input_tokens: 0, output_tokens: 0 };'
+- node: rules/integration/a-connector-placeholder-is-declared-by-its-capability
+  held_at: nowhere
+  evidence: export class FakeHypothesisEvaluator implements IHypothesisEvaluator { — the whole file's
+    only export; nothing in it names a connector, a capability or a placeholder
+- node: scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused
+  held_at: nowhere
+  evidence: export class FakeHypothesisEvaluator implements IHypothesisEvaluator { — the file has no registration
+    or refusal path of any kind
+- node: domain/integration/connector-configuration-registry
+  held_at: nowhere
+  evidence: export class FakeHypothesisEvaluator implements IHypothesisEvaluator { — no connector configuration
+    state is held or registered here
+- node: domain/glossary/concept
+  held_at: nowhere
+  evidence: export class FakeHypothesisEvaluator implements IHypothesisEvaluator { — no concept, subject
+    type or ttl is named anywhere in the file
+- node: rules/glossary/a-registered-concept-is-never-removed
+  held_at: nowhere
+  evidence: export class FakeHypothesisEvaluator implements IHypothesisEvaluator { — the file has no glossary
+    registration or removal logic
+looked_past: The private fixtures map, the seed() helper and the thrown "no fixture seeded" error are
+  test-double plumbing with no domain content of their own, so they carry nothing for this pass to weigh;
+  separately, five of the nine nodes in this file's pack (the connector-placeholder, connector-configuration-registry
+  and glossary-concept nodes) are, per the candidate index, bound elsewhere in this batch to src/connector-registry/connector-configuration-registry.service.ts
+  and src/seed.ts rather than to this file — they are read above as `nowhere` because this file states
+  nothing about them either way, not because the file was found wanting against them.

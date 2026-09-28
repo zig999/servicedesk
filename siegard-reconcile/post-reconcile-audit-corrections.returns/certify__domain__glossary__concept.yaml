@@ -1,0 +1,62 @@
+certified:
+- node: domain/glossary/concept
+  state: partial
+  tests:
+  - file: src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts
+    name: answers each concept with its name, the subject types it accepts, its ttl and its description,
+      exactly as the real tables hold them
+  - file: src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts
+    name: creates a concept at a brand-new name without failing, and leaves a different, already-held
+      concept — permanently referenced by a capability — exactly as it was, even though that referenced
+      concept is not named anywhere in this call
+  - file: src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts
+    name: updates two already-held concepts in one call — each one's own row permanently referenced by
+      its own capability — replacing each one's ttl, description and accepts exactly with the given values,
+      without failing and without breaking either capability's own foreign key
+  - file: src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts
+    name: reconciles one concept's own concept_accepts rows through writeConcepts without ever touching
+      a different concept's own rows, even though that other concept is not named anywhere in this call
+      and shares the very same subject type
+  - file: src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts
+    name: never ends up holding one concept name in two rows, even when the given array names it twice
+      in one call — concepts.name's own primary key resolves it to exactly one row, carrying the second
+      entry's own values
+  why: 'Four things are exercised. A concept carries name, accepts, ttl and description. It is held by
+    name: two writes under one name leave one row. Writing under a name already held replaces ttl, description
+    and accepts whole. The update test and the reconcile test each start from one accepted subject type
+    and write a different one, and both check the full accepts array, so a subject type no longer named
+    would show up if it were merged back in.
+
+
+    Several stated parts are not exercised. First, the node declares name, accepts, ttl and description
+    as required, and no test offers a concept missing one of them and expects it to be refused. The test
+    "answers a concept with an empty accepts array when it currently accepts no subject type" goes the
+    other way: it stores a concept with no description and no accepted subject type, and asserts the store
+    returns it with description '''' and accepts []. So if required-ness stopped holding, nothing here
+    would fail.
+
+
+    Second, ttl is declared an integer, and no test offers a non-integer ttl.
+
+
+    Third, the node says replacement happens "whenever a concept is registered". The offered proof only
+    exercises the store''s writeConcepts. Whatever registration path sits above the store is not in the
+    offered proof, so a path that merged before writing would pass these tests.
+
+
+    One ambiguity I did not settle: whether accepts being required and many means at least one subject
+    type. The node''s own Responsibility allows a subject type to stop being accepted, and nothing says
+    whether the last one may go.
+
+
+    Two tests prove nothing about this node. "answers no concepts, not a rejection, when no row was ever
+    stored under a given name" cannot fail: it checks for a fresh random name that was never written.
+    And "removes the named concept and its own accepts declaration..." asserts a concept is deleted. That
+    concerns rules/glossary/a-registered-concept-is-never-removed, which this node cites, not this node.'
+  remainder: testable
+  remainder_why: Each remaining part is one input against one expected result. Register a concept with
+    no description, then with no ttl, then with a non-integer ttl, and each time expect a refusal that
+    leaves the glossary as it was. Register a concept under a name already held, through the registration
+    entry point rather than the store, and expect the ttl and accepts that are read back to be exactly
+    what was registered. The accepts required-ness half becomes testable only once someone decides whether
+    "required, many" means at least one subject type.

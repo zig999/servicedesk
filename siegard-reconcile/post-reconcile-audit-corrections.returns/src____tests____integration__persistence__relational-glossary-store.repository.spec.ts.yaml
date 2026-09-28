@@ -1,0 +1,72 @@
+findings:
+- file: src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts
+  where: the duplicate-name test, lines 319-334 ("never ends up holding one concept name in two rows,
+    even when the given array names it twice in one call")
+  evidence: '"never ends up holding one concept name in two rows, even when the given array names it twice
+    in one call — concepts.name''s own primary key resolves it to exactly one row, carrying the second
+    entry''s own values"
+
+    ...
+
+    expect(rows).toEqual([{ ttl: 20, description: ''second entry, in the same call'' }]);'
+  cost: Which of two entries naming the same concept in one writeConcepts call survives is a decision
+    about how ambiguous input is resolved — a decision the specification makes explicitly elsewhere for
+    other ambiguities (first-recorded-value-wins for subject attributes, a refused 500 for a name already
+    held twice on read) but never makes for a concept named twice within one registration call. As written,
+    "the second entry's own values win" lives only in this test and in whatever SQL upsert produces it;
+    the next reader who wants to know what a batch registration guarantees for a repeated name will not
+    find the answer in the specification, only in this assertion.
+  kind: unstated
+  correction: State, in domain/glossary/concept's Responsibility (or a policy node constraining it), what
+    a registration call that names one concept more than once resolves to.
+  node: domain/glossary/concept
+read:
+- node: rules/integration/a-connector-placeholder-is-declared-by-its-capability
+  held_at: nowhere
+  evidence: "'INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector,\
+    \ concept) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',\n    [capability.name, capability.version, 'read-only',\
+    \ 'an-input-schema', 'an-output-schema', 5000, 'a-connector', conceptName],\nthe file never registers\
+    \ or edits a connector configuration, embeds a placeholder, or checks a capability's input-schema\
+    \ properties against one — the capability rows it inserts exist only to give `concepts` a foreign-key\
+    \ referent, with `connector` a fixed literal string."
+- node: scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused
+  held_at: nowhere
+  evidence: "'INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector,\
+    \ concept) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',\n    [capability.name, capability.version, 'read-only',\
+    \ 'an-input-schema', 'an-output-schema', 5000, 'a-connector', conceptName],\nthe file never registers\
+    \ a connector configuration or a capability pairing that this refusal scenario exercises; the same\
+    \ static capability-insert helper is all that touches the `capabilities` table here."
+- node: domain/integration/connector-configuration-registry
+  held_at: nowhere
+  evidence: "'INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector,\
+    \ concept) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',\n    [capability.name, capability.version, 'read-only',\
+    \ 'an-input-schema', 'an-output-schema', 5000, 'a-connector', conceptName],\nno connector-configuration\
+    \ table, register-connector or remove-connector operation is touched anywhere in the file."
+- node: domain/investigation/evaluation
+  held_at: nowhere
+  evidence: 'import { GlossaryStoreError } from ''../../../errors/glossary-store.error.js'';
+
+    import { createDatabaseConnection, type DatabaseConnection } from ''../../../persistence/database-connection.js'';
+
+    import { RelationalGlossaryStore } from ''../../../persistence/relational-glossary-store.repository.js'';
+
+    the file''s whole import surface and every test in it concern the glossary store (terms and concepts)
+    only; no hypothesis, verdict, citation, usage or evaluation construct appears anywhere.'
+- node: domain/glossary/concept
+  held_at: the readConcepts assertions (line 156, and the empty-accepts and no-such-concept tests following
+    it) and the writeConcepts tests' held-shape assertions (lines 258-259, 282-283, 313-314)
+  evidence: 'expect(answered).toContainEqual({ name: concept.name, accepts: [subjectA.name, subjectB.name],
+    ttl: 120, description });'
+- node: rules/glossary/a-registered-concept-is-never-removed
+  held_at: the writeConcepts tests asserting an unnamed, capability-referenced concept survives untouched
+    (lines 239-262, 264-292) and the deleteConcept test removing an unreferenced concept while leaving
+    a sibling exactly as it was (lines 336-359)
+  evidence: 'expect(held).toContainEqual({ name: referencedConcept.name, accepts: [], ttl: 45, description:
+    ''a permanently referenced concept'' });'
+looked_past: The three foreign-key-violation tests (lines 187-224) each name, in their own title, a "real
+  effect" they say "stays unprovable for this vocabulary until that pinning is lifted" and then assert
+  only the foreign-key rejection, not the named effect itself; that is a testing-fixture limitation the
+  tests disclose honestly, not a domain-fact conformance question, so it is left unreported here.
+candidates_opened:
+- domain/glossary/outcome
+- rules/glossary/the-non-conclusion-outcomes-precede-the-first-case
