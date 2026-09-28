@@ -24,6 +24,14 @@
       "title": "Any-one-capability orphan refusal, proven and the reversed intersection test rewritten",
       "summary": "Tests that the orphaned-placeholder check refuses on a placeholder absent from any one capability sharing the connector and succeeds only when every capability declares it, rewriting the one pre-existing test that pinned the old intersection semantics this task reverses.",
       "task": "task/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence"
+    },
+    {
+      "id": "proof/fake-hypothesis-evaluator-no-data-usage/no-usage-or-elapsed-for-no-data",
+      "kind": "proof",
+      "file": "proof/fake-hypothesis-evaluator-no-data-usage/no-usage-or-elapsed-for-no-data.md",
+      "title": "Fake hypothesis-evaluator no-data usage/elapsed_ms/prompt withholding",
+      "summary": "Proves the no-data guard withholds usage, elapsed_ms and prompt as criterion 1 and both UNDERDETERMINED entries state, and updates the seven pre-existing tests the same file already carried so they match the now-widened invariant that every non-no-data outcome also carries a prompt.",
+      "task": "task/fake-hypothesis-evaluator-no-data-usage/no-usage-or-elapsed-for-no-data"
     }
   ],
   "edges": [
@@ -66,6 +74,12 @@
     {
       "from": "proof/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence",
       "to": "implementation/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/fake-hypothesis-evaluator-no-data-usage/no-usage-or-elapsed-for-no-data",
+      "to": "implementation/fake-hypothesis-evaluator-no-data-usage/no-usage-or-elapsed-for-no-data",
       "kind": "proves",
       "at": "the path"
     }
