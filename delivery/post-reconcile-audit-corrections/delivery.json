@@ -10,6 +10,14 @@
       "task": "task/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence"
     },
     {
+      "id": "implementation/fake-hypothesis-evaluator-no-data-usage/no-usage-or-elapsed-for-no-data",
+      "kind": "implementation",
+      "file": "implementation/fake-hypothesis-evaluator-no-data-usage/no-usage-or-elapsed-for-no-data.md",
+      "title": "Fake hypothesis-evaluator's call record matches the specification's all-or-nothing rule",
+      "summary": "Revises FakeHypothesisEvaluator.evaluate() so a no-data outcome is stripped of usage, elapsed_ms and prompt regardless of what the seed carried, and every other outcome always gets a complete placeholder call record -- usage, elapsed_ms and prompt together.",
+      "task": "task/fake-hypothesis-evaluator-no-data-usage/no-usage-or-elapsed-for-no-data"
+    },
+    {
       "id": "proof/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence",
       "kind": "proof",
       "file": "proof/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence.md",
@@ -40,6 +48,18 @@
     {
       "from": "implementation/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence",
       "to": "task/connector-placeholder-orphan-union/refuse-on-any-capabilitys-absence",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/fake-hypothesis-evaluator-no-data-usage/no-usage-or-elapsed-for-no-data",
+      "to": "domain/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/fake-hypothesis-evaluator-no-data-usage/no-usage-or-elapsed-for-no-data",
+      "to": "task/fake-hypothesis-evaluator-no-data-usage/no-usage-or-elapsed-for-no-data",
       "kind": "implements",
       "at": "the path"
     },

@@ -10,6 +10,8 @@ const ZEROED_USAGE: Usage = { input_tokens: 0, output_tokens: 0 };
 
 const ZEROED_ELAPSED_MS = 0;
 
+const PLACEHOLDER_PROMPT = 'the fake evaluator materializes no real judgment prompt';
+
 export class FakeHypothesisEvaluator implements IHypothesisEvaluator {
   private readonly fixtures = new Map<string, EvaluationOutcome>();
 
@@ -26,6 +28,14 @@ export class FakeHypothesisEvaluator implements IHypothesisEvaluator {
     if (outcome === undefined) {
       throw new Error(`FakeHypothesisEvaluator has no fixture seeded for criterion ${JSON.stringify(criterion)}`);
     }
-    return { ...outcome, usage: ZEROED_USAGE, elapsed_ms: ZEROED_ELAPSED_MS };
+    if ('reason' in outcome && outcome.reason === 'no-data') {
+      return { verdict: outcome.verdict, reason: outcome.reason, citations: outcome.citations };
+    }
+    return {
+      ...outcome,
+      usage: ZEROED_USAGE,
+      elapsed_ms: ZEROED_ELAPSED_MS,
+      prompt: outcome.prompt ?? PLACEHOLDER_PROMPT,
+    };
   }
 }

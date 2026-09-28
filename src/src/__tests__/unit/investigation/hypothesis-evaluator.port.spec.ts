@@ -10,6 +10,8 @@ const ZEROED_USAGE: Usage = { input_tokens: 0, output_tokens: 0 };
 
 const ZEROED_ELAPSED_MS = 0;
 
+const PLACEHOLDER_PROMPT = 'the fake evaluator materializes no real judgment prompt';
+
 const SOME_EVIDENCE: readonly EvidenceItem[] = [
   {
     concept: 'a-concept',
@@ -37,7 +39,7 @@ it('answers the confirmed verdict with exactly the citations seeded for it, plus
 
   const outcome = await evaluator.evaluate(A_CRITERION, SOME_EVIDENCE, A_CASE_CONTEXT);
 
-  expect(outcome).toEqual({ verdict: 'confirmed', citations, usage: ZEROED_USAGE, elapsed_ms: ZEROED_ELAPSED_MS });
+  expect(outcome).toEqual({ verdict: 'confirmed', citations, usage: ZEROED_USAGE, elapsed_ms: ZEROED_ELAPSED_MS, prompt: PLACEHOLDER_PROMPT });
 });
 
 it('answers the refuted verdict with exactly the citations seeded for it, plus the deterministic zero-valued usage and elapsed_ms every answer now carries', async () => {
@@ -48,7 +50,7 @@ it('answers the refuted verdict with exactly the citations seeded for it, plus t
 
   const outcome = await evaluator.evaluate(A_CRITERION, SOME_EVIDENCE, A_CASE_CONTEXT);
 
-  expect(outcome).toEqual({ verdict: 'refuted', citations, usage: ZEROED_USAGE, elapsed_ms: ZEROED_ELAPSED_MS });
+  expect(outcome).toEqual({ verdict: 'refuted', citations, usage: ZEROED_USAGE, elapsed_ms: ZEROED_ELAPSED_MS, prompt: PLACEHOLDER_PROMPT });
 });
 
 it('answers the inconclusive verdict with exactly the reason seeded for it, judgment-failure carrying no citations, plus the deterministic zero-valued usage and elapsed_ms every answer now carries', async () => {
@@ -58,7 +60,7 @@ it('answers the inconclusive verdict with exactly the reason seeded for it, judg
 
   const outcome = await evaluator.evaluate(A_CRITERION, SOME_EVIDENCE, A_CASE_CONTEXT);
 
-  expect(outcome).toEqual({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [], usage: ZEROED_USAGE, elapsed_ms: ZEROED_ELAPSED_MS });
+  expect(outcome).toEqual({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [], usage: ZEROED_USAGE, elapsed_ms: ZEROED_ELAPSED_MS, prompt: PLACEHOLDER_PROMPT });
 });
 
 it('accepts a fixture reasoned no-data with an empty citations list, answering only that the verdict is inconclusive and a reason is present', async () => {
@@ -86,7 +88,7 @@ it('answers by criterion alone, ignoring the evidence a call carries, even when 
 
   const outcome = await evaluator.evaluate(A_CRITERION, [], A_CASE_CONTEXT);
 
-  expect(outcome).toEqual({ verdict: 'confirmed', citations, usage: ZEROED_USAGE, elapsed_ms: ZEROED_ELAPSED_MS });
+  expect(outcome).toEqual({ verdict: 'confirmed', citations, usage: ZEROED_USAGE, elapsed_ms: ZEROED_ELAPSED_MS, prompt: PLACEHOLDER_PROMPT });
 });
 
 it('answers the outcome seeded for this criterion, not the one seeded for a different criterion, plus the deterministic zero-valued usage and elapsed_ms every answer now carries', async () => {
@@ -108,6 +110,7 @@ it('answers the outcome seeded for this criterion, not the one seeded for a diff
     citations: [{ concept: 'a-concept', field: 'a-field' }],
     usage: ZEROED_USAGE,
     elapsed_ms: ZEROED_ELAPSED_MS,
+    prompt: PLACEHOLDER_PROMPT,
   });
 });
 
@@ -129,7 +132,7 @@ it('overrides a seeded non-zero usage and elapsed_ms with the deterministic zero
   });
 });
 
-it('attaches the deterministic zero-valued usage and elapsed_ms even where a seeded outcome carries no prompt at all, leaving the answered outcome without a prompt key of its own', async () => {
+it('attaches the deterministic zero-valued usage and elapsed_ms plus the placeholder prompt where a seeded outcome carries no prompt of its own', async () => {
   const fake = new FakeHypothesisEvaluator();
   const citations: readonly [Citation, ...Citation[]] = [{ concept: 'a-concept', field: 'a-field' }];
   fake.seed(A_CRITERION, { verdict: 'confirmed', citations });
@@ -139,7 +142,7 @@ it('attaches the deterministic zero-valued usage and elapsed_ms even where a see
 
   expect(outcome.usage).toEqual(ZEROED_USAGE);
   expect(outcome.elapsed_ms).toBe(ZEROED_ELAPSED_MS);
-  expect(outcome).not.toHaveProperty('prompt');
+  expect(outcome).toHaveProperty('prompt', PLACEHOLDER_PROMPT);
 });
 
 it('a later seed for the same criterion replaces the earlier one, plus the deterministic zero-valued usage and elapsed_ms every answer now carries', async () => {
@@ -161,5 +164,47 @@ it('a later seed for the same criterion replaces the earlier one, plus the deter
     citations: [{ concept: 'another-concept', field: 'another-field' }],
     usage: ZEROED_USAGE,
     elapsed_ms: ZEROED_ELAPSED_MS,
+    prompt: PLACEHOLDER_PROMPT,
   });
+});
+
+it('withholds usage and elapsed_ms from an outcome seeded with reason no-data and no usage or elapsed_ms of its own', async () => {
+  const fake = new FakeHypothesisEvaluator();
+  fake.seed(A_CRITERION, { verdict: 'inconclusive', reason: 'no-data', citations: [] });
+  const evaluator = evaluatorOver(fake);
+
+  const outcome = await evaluator.evaluate(A_CRITERION, SOME_EVIDENCE, A_CASE_CONTEXT);
+
+  expect(outcome).not.toHaveProperty('usage');
+  expect(outcome).not.toHaveProperty('elapsed_ms');
+});
+
+it('strips a no-data outcome down to no usage, elapsed_ms or prompt even where the seed itself already carried them, since a no-data outcome means judgment was never called at all', async () => {
+  const fake = new FakeHypothesisEvaluator();
+  fake.seed(A_CRITERION, {
+    verdict: 'inconclusive',
+    reason: 'no-data',
+    citations: [],
+    usage: { input_tokens: 12, output_tokens: 34 },
+    elapsed_ms: 567,
+    prompt: 'a prompt the seed already carried',
+  });
+  const evaluator = evaluatorOver(fake);
+
+  const outcome = await evaluator.evaluate(A_CRITERION, SOME_EVIDENCE, A_CASE_CONTEXT);
+
+  expect(outcome).not.toHaveProperty('usage');
+  expect(outcome).not.toHaveProperty('elapsed_ms');
+  expect(outcome).not.toHaveProperty('prompt');
+});
+
+it('adds a placeholder prompt alongside the placeholder usage and elapsed_ms for a non-no-data seed that carries no prompt of its own', async () => {
+  const fake = new FakeHypothesisEvaluator();
+  const citations: readonly [Citation, ...Citation[]] = [{ concept: 'a-concept', field: 'a-field' }];
+  fake.seed(A_CRITERION, { verdict: 'confirmed', citations });
+  const evaluator = evaluatorOver(fake);
+
+  const outcome = await evaluator.evaluate(A_CRITERION, SOME_EVIDENCE, A_CASE_CONTEXT);
+
+  expect(outcome).toHaveProperty('prompt');
 });
