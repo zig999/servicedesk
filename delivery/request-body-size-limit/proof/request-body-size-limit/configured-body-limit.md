@@ -8,7 +8,7 @@ implementation: sha256:6ae873b34a938a64dfac1c9c549521e98fe816bef6552a7d1a71fa6d4
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6dc3f326700eb86729e65441753fce536074c26be978d4948db4c483dd73f32d
-run: run/request-body-size-limit-configured-body-limit-suite
+run: run/request-body-size-limit-configured-body-limit-suite-2
 tests:
 - file: src/__tests__/unit/config/env.spec.ts
   name: defaults MAX_REQUEST_BODY_BYTES to 1048576 when the given environment names none
@@ -71,15 +71,20 @@ not_applicable:
     it
   why: Neither concept applies to a request-body size ceiling, enforced identically regardless of any
     resource's existence or state.
+- edge_case: FakeHypothesisEvaluator's/FakeAssessmentConsolidator's own no-data evaluation shape, corrected
+    in diagnose-e2e.spec.ts and diagnose-persistence-deadline-e2e.spec.ts by this proof-only re-delivery
+  why: This task's own criteria govern only env.ts's field, the factory's wiring, and build-app.ts's 413
+    refusal; the two files' evaluation fixtures are e2e specs for the diagnose route as a whole, touched
+    by this task only to add MAX_REQUEST_BODY_BYTES to their placeholderEnv() literals. No criterion of
+    this task states anything about an evaluation's usage/elapsed_ms/prompt fields, so no test of this
+    task's own is written over the correction; it is a fixture-consistency fix, not a behavior this task's
+    criteria assert.
 ---
 
 ## What it is
 
-The proof for task/request-body-size-limit/configured-body-limit: env.ts's new field, the
-factory's wiring, and buildApp()'s 413 refusal, each pinned by a test.
+The proof for task/request-body-size-limit/configured-body-limit: env.ts's new field, the factory's wiring, and buildApp()'s 413 refusal, each pinned by a test.
 
 ## Notes
 
-Suite ran clean over all six registry steps (install, typecheck, lint, secret-scan, test-unit,
-test) before this record was written. This task implements no specification node, so no test here
-carries a `demonstrates`.
+This is a proof-only re-delivery answering to the sibling delivery task/fake-hypothesis-evaluator-no-data-usage/no-usage-or-elapsed-for-no-data (initiative post-reconcile-audit-corrections). That delivery changed FakeHypothesisEvaluator so that a no-data EvaluationOutcome no longer carries usage, elapsed_ms or prompt, per domain/investigation/evaluation's own stated rule. Two integration fixtures this task's own implementation record lists under files -- because this task added MAX_REQUEST_BODY_BYTES to their placeholderEnv()/baseEnv() literals -- had seeded FakeAssessmentConsolidator with a no-data evaluation that still carried usage/elapsed_ms, which no longer matched what FakeHypothesisEvaluator now actually answers; FakeAssessmentConsolidator's fixture-matching throw ("has no fixture seeded for this evaluations/evidence/register call") fired before the investigation was ever persisted. This re-delivery corrected exactly the seeded/expected evaluation shape in the two files -- EXPECTED_NARROWED_EVALUATIONS in src/__tests__/integration/http/diagnose-e2e.spec.ts (around lines 57-60) and buildFakes()'s consolidator seed in src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts (around lines 231-242), dropping usage/elapsed_ms from each no-data entry -- touching no assertion about the 413/body-limit behavior itself, and this task's own 7 tests over env.ts, build-app.factory.ts and build-app.ts are unchanged and still prove its 3 criteria. This task implements no specification node, so no test here carries a demonstrates.

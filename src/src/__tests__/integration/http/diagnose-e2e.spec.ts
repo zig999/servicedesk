@@ -55,8 +55,8 @@ const AREA_OUTAGE_CRITERION = "An active network outage is currently registered 
 const CONSOLIDATED_TEXT = 'an end-to-end drafted assessment write-up';
 
 const EXPECTED_NARROWED_EVALUATIONS: readonly Evaluation[] = [
-  { hypothesis: 'customer-equipment-fault', verdict: 'inconclusive', reason: 'no-data', citations: [], usage: { input_tokens: 0, output_tokens: 0 }, elapsed_ms: 0 },
-  { hypothesis: 'area-network-outage', verdict: 'inconclusive', reason: 'no-data', citations: [], usage: { input_tokens: 0, output_tokens: 0 }, elapsed_ms: 0 },
+  { hypothesis: 'customer-equipment-fault', verdict: 'inconclusive', reason: 'no-data', citations: [] },
+  { hypothesis: 'area-network-outage', verdict: 'inconclusive', reason: 'no-data', citations: [] },
 ];
 
 const EXPECTED_ASSESSMENT: Assessment = {

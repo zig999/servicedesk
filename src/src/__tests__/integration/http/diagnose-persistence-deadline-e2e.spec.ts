@@ -233,7 +233,7 @@ function buildFakes(fixture: IFixture): {
   consolidator.seed(
     {
       evaluations: [
-        { hypothesis: 'h1', verdict: 'inconclusive', reason: 'no-data', citations: [], usage: { input_tokens: 0, output_tokens: 0 }, elapsed_ms: 0 },
+        { hypothesis: 'h1', verdict: 'inconclusive', reason: 'no-data', citations: [] },
       ],
       evidence: [],
       consolidationRegister: 'plain',
