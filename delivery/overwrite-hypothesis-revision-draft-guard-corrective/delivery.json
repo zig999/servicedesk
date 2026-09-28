@@ -16,6 +16,22 @@
       "title": "overwriteRevision refuses without a draft — proof",
       "summary": "Two integration tests against the real Postgres instance prove overwriteHypothesisRevision now refuses with CaseHoldsNoDraftError (message and details exact) and leaves stored content unchanged when the case holds no draft, and that this refusal preempts ReleasedHypothesisRevisionNotAlterableError even when the targeted revision is itself released; a pre-existing test in the same file, whose premise the new guard invalidated, was rewritten whole to isolate the manifest-reference condition it always meant to test from the case-holds-a-draft condition this task's guard now enforces; the pre-existing overwrite-while-drafted behavior (criterion 3) is otherwise unchanged by this task and already carries evidence in the same file, so no further new test was written for it.",
       "task": "task/overwrite-revision-draft-guard/overwrite-revision-refuses-without-a-draft"
+    },
+    {
+      "id": "review/overwrite-hypothesis-revision-draft-guard-corrective",
+      "kind": "review",
+      "file": "review/overwrite-hypothesis-revision-draft-guard-corrective.md",
+      "title": "overwrite-hypothesis-revision-draft-guard-corrective review",
+      "summary": "Reviews task/overwrite-revision-draft-guard/overwrite-revision-refuses-without-a-draft over the two files its delivery touched: persistence/relational-case-store.repository.ts and its integration spec.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Overwriting a hypothesis-revision that is in released state, for a case that currently holds no draft version, is refused with CaseHoldsNoDraftError and never with ReleasedHypothesisRevisionNotAlterableError, whether alone or alongside it."
+      ],
+      "findings": 8
     }
   ],
   "edges": [
@@ -48,6 +64,12 @@
       "to": "implementation/overwrite-revision-draft-guard/overwrite-revision-refuses-without-a-draft",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/overwrite-hypothesis-revision-draft-guard-corrective",
+      "to": "task/overwrite-revision-draft-guard/overwrite-revision-refuses-without-a-draft",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

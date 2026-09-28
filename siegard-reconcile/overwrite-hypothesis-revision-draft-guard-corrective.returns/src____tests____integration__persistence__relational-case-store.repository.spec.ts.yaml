@@ -1,0 +1,72 @@
+findings:
+  - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+    where: "the it block 'answers none of the concepts the revision collected before the replacement, once the replacement drops them all', lines 1912-1938 (and the identical pattern recurring throughout the file wherever a revision is built with `collects: []`, e.g. lines 368-371, 641-658, 1030-1041, 1811-1827, 1891-1909, 1919-1938, 1946-1968)"
+    evidence: >-
+      await store.overwriteHypothesisRevision({ slug, hypothesis_name: 'a-hypothesis', revision, criterion:
+      'the replaced criterion', collects: [], resolution: aResolution(glossary) });
+
+      const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
+      expect(page.data[0]?.collects).toEqual([]);
+    cost: >-
+      A reader trusting this passing suite would conclude that RelationalCaseStore lets a hypothesis-revision
+      stand with zero collected concepts — both freshly inserted and after an overwrite that strips every
+      concept away — with no rejection anywhere in the file and no import of HypothesisRevisionCollectsNoConceptError
+      at all; the next reader chasing why a revision with nothing to cite still passed the store's own gate would
+      not find the refusal here, because this suite pins the opposite as the accepted outcome for exactly the
+      operation (overwrite) this file's own task concerns.
+    correction: >-
+      Either assert that insertHypothesisRevision/overwriteHypothesisRevision refuse an empty collects list with
+      HypothesisRevisionCollectsNoConceptError (HTTP 422), or stop using `collects: []` as an accepted fixture
+      value across this suite and supply at least one concept wherever a revision is expected to persist normally.
+    kind: contradicts
+    node: rules/knowledge/a-hypothesis-collects-at-least-one-concept
+read:
+  - node: domain/knowledge/hypothesis-revision
+    held_at: >-
+      the shape asserted for a read-back hypothesis-revision, carrying revision, criterion, collects, resolution
+      and state together
+    evidence: >-
+      expect(page.data).toEqual([{ revision, criterion: 'the replaced criterion', collects: [], resolution:
+      aResolution(newGlossary), state: 'draft' }]);
+  - node: domain/knowledge/hypothesis-revision-state
+    held_at: the state read back after releaseHypothesisRevision, and the state field on listed revisions
+    evidence: >-
+      await store.releaseHypothesisRevision(slug, 'a-hypothesis', revision); const state = await
+      store.readHypothesisRevisionOwnState(slug, 'a-hypothesis', revision); expect(state).toBe('released');
+  - node: rules/knowledge/a-released-hypothesis-revision-is-never-altered
+    held_at: >-
+      the overwrite-refusal assertion against a revision whose own stored state is released, mapped to HTTP 409
+    evidence: >-
+      const rejection = store.overwriteHypothesisRevision({ slug, hypothesis_name: 'a-hypothesis', revision,
+      criterion: "a criterion the revision's own released state should have refused", collects: [], resolution:
+      aResolution(glossary) }); await expect(rejection).rejects.toBeInstanceOf(ReleasedHypothesisRevisionNotAlterableError);
+      const caught = await rejection.catch((error: unknown) => error); expect(statusForError(caught)).toBe(409);
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: >-
+      the assertion that CaseHoldsNoDraftError alone answers an overwrite against a case holding no draft, even
+      where the targeted revision is itself released
+    evidence: >-
+      await expect(rejection).rejects.toBeInstanceOf(CaseHoldsNoDraftError); await
+      expect(rejection).rejects.not.toBeInstanceOf(ReleasedHypothesisRevisionNotAlterableError); await
+      expect(rejection).rejects.toMatchObject({ context: { slug } });
+  - node: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+    held_at: >-
+      not composed as one decision anywhere in this file — only its constituent facts are exercised separately:
+      insertHypothesisRevision always assigns the next number rather than ever overwriting, and
+      overwriteHypothesisRevision (given an explicit revision) replaces content in place while leaving the
+      revision number unchanged; the branch between the two, keyed on the highest revision's own release state,
+      belongs to what one test's own name calls "the write side," which this file does not call
+    evidence: >-
+      const first = await store.insertHypothesisRevision(revisionInput('a-hypothesis')); const second = await
+      store.insertHypothesisRevision(revisionInput('a-hypothesis')); const anothersFirst = await
+      store.insertHypothesisRevision(revisionInput('another-hypothesis')); expect([first, second,
+      anothersFirst]).toEqual([1, 2, 1]); — alongside — await store.overwriteHypothesisRevision({ ...revision,
+      criterion: 'the replaced criterion'... }); expect(page.data.map((item) => item.revision)).toEqual([revision]);
+looked_past: >-
+  Most of this file exercises case, case-version and case-summary behavior (draft/release lifecycle, catalog
+  paging, listing order, deletion, atomic rollback, the five updateable draft attributes including
+  consolidation_register) that belongs to nodes outside this pass's set, and the one test asserting the overwrite
+  runs "through the IHypothesisRevisionOverwrite port alone, without needing the rest of ICaseStore" states an
+  interface-segregation fact about code structure, not a domain fact, so it is left to a different judgment.
+candidates_opened:
+  - rules/knowledge/a-hypothesis-collects-at-least-one-concept

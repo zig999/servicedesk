@@ -1,0 +1,48 @@
+certified:
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    state: partial
+    tests:
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: >-
+          refuses insertHypothesisRevision, through CaseHoldsNoDraftError naming the slug, against a case that currently holds no draft version, inserting no revision
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: >-
+          does not refuse an overwrite attempt against a hypothesis-revision whose own state is draft, even though a released case version's manifest still references that revision, so long as the case currently holds a draft version of its own — isolating the manifest reference from the case-holds-a-draft precondition
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: >-
+          refuses overwriteHypothesisRevision through CaseHoldsNoDraftError whose message names the slug and whose details carry that slug and nothing else, leaving the revision's stored criterion, collects and resolution unchanged, when the case currently holds no draft version
+      - file: src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+        name: >-
+          refuses an overwrite attempt against a revision whose own state is released through CaseHoldsNoDraftError, never through ReleasedHypothesisRevisionNotAlterableError alone or alongside it, when the case currently holds no draft version
+    why: >-
+      The store-level half of the fact is exercised, and these tests would fail if it stopped
+      holding. A revision is refused through CaseHoldsNoDraftError when the case holds no draft,
+      for a new revision and for an overwrite. The overwrite leaves the stored criterion, collects
+      and resolution unchanged, and inserting leaves no row. The error's message contains the slug
+      and its context equals exactly { slug }. With a released revision and no draft,
+      CaseHoldsNoDraftError is what the store answers, not ReleasedHypothesisRevisionNotAlterableError.
+      Where a draft exists, the overwrite goes through.
+      Three parts of the fact go unexercised. (1) Nothing in the file runs a concept-acceptance
+      check, so nothing shows that the new revision's check uses the draft version's declared
+      subject type rather than another one, such as a released version's or one sent with the
+      request. The foreign-key test on an unregistered concept is not that check. (2) No test
+      applies statusForError to CaseHoldsNoDraftError or sends a request through HTTP. So the
+      refusal "with an HTTP 409 response" is not exercised. The only 409 assertion in the file is
+      for ReleasedHypothesisRevisionNotAlterableError. (3) "Details carry that slug and nothing
+      else" is asserted on the error's own context field, not on the details of an HTTP response,
+      so what the response carries goes unexercised. Two smaller notes. The insert-path test's
+      name says "naming the slug", but it checks context only with toMatchObject; it never checks
+      the message or that the context holds nothing else. The not.toBeInstanceOf check on
+      ReleasedHypothesisRevisionNotAlterableError adds almost nothing to the positive
+      CaseHoldsNoDraftError check, because a single rejection cannot report two errors. So
+      "never alongside it" is guarded only by that positive check.
+    remainder: testable
+    remainder_why: >-
+      Two assertions would close it. First, a case whose draft declares subject type S, plus a
+      revise request collecting a concept accepted for S but not for the subject type of an
+      earlier released version (or of a value sent with the request). The request is accepted,
+      and a concept accepted only for the other type is refused. Second, a revise request through
+      HTTP against a case holding no draft, including one whose target revision is released. The
+      answer is HTTP 409, the body reports CaseHoldsNoDraftError with a message naming the slug
+      and details exactly { slug }, no ReleasedHypothesisRevisionNotAlterableError appears, and no
+      revision is written.
