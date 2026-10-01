@@ -1,0 +1,7 @@
+---
+entries:
+- field: statement
+  unstated: What order contracts/knowledge/case-query's list-case-versions operation answers a case's versions in. Surfaced by /review-change's specification-conformance pass over case-creation-screen-corrective, evidence at frontend/app/src/routes/cases-list-screen.tsx's fetchCaseSummary, which treats the item at page offset versionCount-1 as "the highest-numbered version" -- correct only under ascending order, which no node stated.
+  decided: A listing of one case's versions answers them in descending version-number order, the highest-numbered version first and the first-ever version last. Recorded as a new invariant over domain/knowledge/case-version.
+  why: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first already decided this exact shape once, for the sibling listing of one hypothesis's own revisions, on the reasoning that the newest of a set a curator browses is what a curator most often needs and so is what an unconditioned reading answers first. A case's own versions are the same shape of append-only, never-renumbered sequence, so the same reasoning decides the same way. This puts the currently delivered frontend's fetchCaseSummary, which derives the highest-numbered version from the last page offset under an assumed ascending order, in breach of the newly-stated descending order; the code was not read as an input to this decision, and reconciling it is a separate act.
+---

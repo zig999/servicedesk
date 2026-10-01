@@ -1,0 +1,11 @@
+---
+entries:
+- field: statement
+  unstated: The material named the collision (a parameter and a request-body field, or two parameters, sharing one property name) as a real problem this draft must resolve, without naming which of the two colliding parts wins or in what order.
+  decided: The order OpenAPI 3.x itself gives a parameter's own location — path, then query, then header, then cookie — with the request body read last, one step further than the format's own order reaches.
+  why: a-security-scheme-collision-at-one-drafted-key-favors-declared-order already meets the identical shape of problem (two parts of one operation claiming one drafted key) over the sibling connector configuration draft and settles it by a fixed, document-given order rather than by refusing the draft or merging the two; reading a capability's own flat properties object (a-capability-input-schema-holds-a-well-formed-object) as the request body's natural last step keeps the order total over every part this draft reads.
+- field: statement
+  unstated: Which of two parameters equal in both name and location becomes the input_schema property of that name, or whether neither does — the location order this statement fixes ranks two such parameters alike, and no node closes the tie.
+  decided: The earlier of the two in the parameters array declaring them becomes the properties entry, holding its own type and required standing; the later is named in the draft's unresolved list with reason name-claimed-by-another-parameter, generating no properties entry — the same outcome a collision across two locations already has.
+  why: Once two parameters agree on name and location, array position is the only property of them the OpenAPI document still states differently, so it is the only tie-break readable from the operator's own document rather than invented here; reading neither would leave the draft with no entry for a name the operation genuinely declares, and refusing the draft would widen this operation's refusals past the unfetchable link and the unparseable or unsupported document its three refusal rules fix, for a document that parses and whose other parameters and fields are still worth reviewing.
+---

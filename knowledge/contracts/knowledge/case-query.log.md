@@ -1,0 +1,11 @@
+---
+entries:
+- field: operations
+  unstated: The same review decided that cases, the versions of a case, the hypotheses of a case and the revisions of a hypothesis each need a listing a curator browses by, without naming the operations or which api exposes them.
+  decided: list-cases, list-case-versions, list-hypotheses and list-hypothesis-revisions, added to case-query's own operations, alongside read-case.
+  why: case-query is already the one published api for every synchronous read the knowledge context offers; a listing is the same kind of read as read-case — validated, never file-backed — at a different cardinality, so it belongs beside read-case rather than splitting the context's one read surface into a second api. constraints/a-case-is-read-whole already anticipates independent reads of a hypothesis and its revisions apart from a whole case-version read, so this introduces no new tension with it.
+- field: operations
+  unstated: an-editing-surface-presents-a-drafts-own-declared-attributes-even-when-that-draft-does-not-read-back-as-a-case says a draft's editing surface presents the version's title, when_to_use, subject, fallback and consolidation_register exactly as its own stored record carries them, and never through case-query's whole-case assembly, on a reading where the version fails validation. No node names a published operation that returns that stored record by case slug and version number without validating the version or assembling it whole. read-case is the only per-version read published, and it answers only a validated, whole case.
+  decided: read-case-version, added to case-query's own operations beside read-case. It returns one case version's own stored title, when_to_use, subject, fallback and consolidation_register by case slug and version number, without validating that version at this reading and without assembling it as a whole case.
+  why: The operation is a synchronous read keyed exactly like read-case, and case-query is where the knowledge context publishes its synchronous reads. It needs a name separate from read-case because constraints/a-case-is-read-whole's fitness requires read-case to return a complete, validated case version or nothing, so read-case cannot answer an unvalidated partial record without that constraint being broken.
+---

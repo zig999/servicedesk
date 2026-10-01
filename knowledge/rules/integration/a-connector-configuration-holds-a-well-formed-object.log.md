@@ -1,0 +1,15 @@
+---
+entries:
+- field: statement
+  unstated: The status and error value of the malformed-write refusal, and whether a registration may supply the configuration as an object rather than as text while the value object declares text.
+  decided: HTTP 422 reporting ConnectorConfigurationNotWellFormedError; a registration may supply text or the object it parses to, and the registry holds and answers the configuration as text.
+  why: The material is the reconciliation record siegard-reconcile/connector-capability-corrections-post-closure-drift.md, whose findings report the delivered backend stating this fact while no node held it. The read rule beside this one already names its status and value. The value object declares configuration as string and the published read answers a string, so text is what the specification holds; accepting the parsed object on input is a tolerance of the registration surface that changes nothing a reader learns, so it is admitted rather than refused.
+- field: statement
+  unstated: Whether a null or an array configuration value is classified with the not-well-formed refusal or falls through to the incomplete one, and what an entirely absent configuration value answers.
+  decided: A null value or an array is not well-formed, the same refusal unparsable text already gets; an entirely absent configuration is a separate refusal, IncompleteConnectorConfigurationError, the same class an absent connector name already gets.
+  why: 'The material is siegard-reconcile/backend-post-corrections-code-drift.md, whose judge over connector-configuration-registry.service.ts reported this classification as decided in code alone (malformed-object-classification, commit 13014f2, whose own rationale classified null and an array as not well-formed but explicitly left an absent value''s classification unresolved, since the node "does not clearly decide" it). Absence reads as incomplete rather than malformed for the same reason a-connector-configuration-names-its-connector already reads an absent connector name that way: nothing was supplied to judge the syntax of, so there is nothing to call not well-formed.'
+- field: statement
+  unstated: What a present connector-configuration value that is neither a string nor a plain object — a boolean or a number — answers, distinctly from null, an array, or an entirely absent value.
+  decided: 'The same refusal an absent configuration gets: HTTP 422 reporting IncompleteConnectorConfigurationError, not ConnectorConfigurationNotWellFormedError.'
+  why: The material is siegard-reconcile/post-analyse-timeout-malformed-credential-drift.md, whose judge over connector-configuration-registry.service.ts reported this classification as decided in code alone. wellFormedConfiguration passes a present non-string, non-object, non-null, non-array value through unchanged, and registrationProblems then refuses it the same way it refuses an absent one ("configuration is not a plain object") — a boolean or a number carries no syntax to call well-formed or not well-formed, the same reasoning that already put an entirely absent value on the incomplete side rather than the malformed one.
+---

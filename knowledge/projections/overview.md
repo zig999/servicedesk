@@ -66,4 +66,4 @@ Derived by spec.py from the specification files; never edited.
 - the-stored-schema-mirrors-the-declared-model (system)
 - the-system-persists-to-one-relational-database (system)
 
-377 decision(s) disclosed, 12 fact(s) recorded as read in the decision log.
+405 decision(s) disclosed, 16 fact(s) recorded as read in the decision logs.

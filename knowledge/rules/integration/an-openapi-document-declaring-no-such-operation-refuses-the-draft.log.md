@@ -1,0 +1,11 @@
+---
+entries:
+- field: statement
+  unstated: No node states what draft-connector-configuration-from-openapi answers when the fetched document parses and declares OpenAPI 3.x but declares no operation at the path and HTTP method the request names -- whether the request is refused, or answered with a draft resolving nothing.
+  decided: The request is refused, naming that path and that method as the pairing the fetched document declares no operation for, and no draft is generated; a path the document does declare while declaring nothing for the named method under it is that same one refusal rather than a condition of its own. Recorded as a new invariant over domain/integration/connector-configuration-draft.
+  why: Every attribute a draft carries is read from one operation, so with no operation at the named pairing there is nothing to draft from; an empty draft would misstate what the unresolved list's closed vocabulary means, since each of its three reasons names something a chosen operation itself declared. Refused on its own account rather than folded into the fetch or the parse/version refusal, because the link answered and the document read cleanly here -- what was wrong was the operator's own selection, not the link or the document.
+- field: statement
+  unstated: The fact decided immediately above this one settled the status and error value for the draft operation's other two refusals (an unfetchable link, an unreadable document) but left this third refusal -- a document that reads fine but declares no operation at the named path and method -- with no HTTP status or error value of its own, a gap that fell out of deciding the two facts separately rather than one the material or an isolated judge left open.
+  decided: HTTP 422 reporting an OpenApiOperationNotFoundError.
+  why: The same reasoning the neighbouring refusal-status decision already gives applies unchanged -- the request is well formed and the document was read successfully, so 422 is this specification's answer for a well-formed request whose named content the domain refuses, not a server-side 500. The name follows the same subject-plus-condition convention the other two decided names just took (OpenApiDocumentNotFetchedError, OpenApiDocumentNotReadableError) -- a path-and-method pairing the document does not answer for.
+---

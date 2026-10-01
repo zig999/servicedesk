@@ -1,0 +1,7 @@
+---
+entries:
+- field: statement
+  unstated: No node stated where a curator is taken after a delete of a case holding no case version is accepted with HTTP 204. constraints/a-successful-case-deletion-answers-with-no-content explicitly left this open. rules/knowledge/a-case-holding-no-version-may-be-deleted and scenarios/knowledge/a-case-holding-no-version-is-deleted state only the effect and that the case leaves the listing. work/case-deletion-frontend/intake/scope.md asks only that the UI reflect the case's disappearance and never names a destination.
+  decided: The curator is taken to the surface presenting the listing of every case (list-cases). The curator is never taken to any surface addressed by the deleted case's slug, whether alone or with a version number.
+  why: After an accepted delete, the deleted slug names no case, and a-case-read-by-an-unknown-slug-or-version-is-refused answers any read of it with a 404 CaseNotFoundError. Landing there would show a refusal for the act that just succeeded. The specification already answered this same question for the other removals, in rules/integration/a-successful-removal-lands-on-the-removed-entitys-own-listing, by sending the operator to the removed entity's own listing. That precedent is taken again for a case. The listing of every case is also where a-case-holding-no-version-is-deleted already places the visible outcome, since the case no longer appears there.
+---

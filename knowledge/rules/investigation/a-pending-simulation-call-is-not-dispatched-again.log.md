@@ -1,0 +1,7 @@
+---
+entries:
+- field: statement
+  unstated: No node states whether the interface assembling a subject may have more than one simulate-case (or more than one simulate-hypothesis) call outstanding for the same subject at once, nor what a second dispatch does while the first has not yet ended.
+  decided: 'A new policy: while a simulate-case or simulate-hypothesis call the interface dispatched for a subject has not yet ended, a further dispatch of that same operation for that subject issues no request at all and leaves the pending run untouched; the guard is keyed by the operation and the subject together, and the operation is dispatchable again the moment the pending call ends, in a returned result or in a refusal alike.'
+  why: 'Blocking rather than allowing follows from what a simulation deliberately does not produce: a-simulation-writes-no-investigation keeps every run out of the record, so two concurrent runs of one operation over one subject are indistinguishable afterwards and whichever returns last silently replaces what the curator was reading. The block is affordable because the run is a bounded on-screen wait, not an open-ended job, and the operation frees the instant the pending call ends -- including on a refusal, since a refusal is an ending too. It is keyed per operation and per subject, rather than one lock over the whole screen, because the two operations answer different questions and a pending one says nothing about a dispatch of the other, while a second subject composed elsewhere is a different subject and blocks nothing.'
+---

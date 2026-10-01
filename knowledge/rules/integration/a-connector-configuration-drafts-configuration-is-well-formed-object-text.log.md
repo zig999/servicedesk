@@ -1,0 +1,7 @@
+---
+entries:
+- field: statement
+  unstated: Whether a connector configuration draft's own configuration is guaranteed to be well-formed JSON object text. domain/integration/connector-configuration-draft declares the attribute only as a string, while an-apply-confirmation-states-what-the-draft-would-change itemises what applying a draft would change only where the field's unsubmitted content and the draft's configuration are both well-formed JSON object text, and names an outcome for the field's content failing that test but none for the draft's.
+  decided: A connector configuration draft's configuration is always well-formed JSON object text — parsing, and parsing to a JSON object rather than to a null, an array, a string, a number or a boolean — for every operation of every document, recorded as a new invariant constraining domain/integration/connector-configuration-draft.
+  why: Everything a draft states about the call it read is stated as a key of that text — a method, an address, a statusMap and a responseMap drafted even where they hold no entry, and the query, headers and body an operation's own parts occupy — so a configuration that was not JSON object text would be a draft stating nothing at all, and no operation the generation admits can leave it short of one; declaring the guarantee rather than leaving it to the generator is what makes the apply confirmation's itemisation total over every draft it can meet.
+---
